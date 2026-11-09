@@ -73,3 +73,10 @@ Short records of key decisions: context, decision, alternatives considered, why.
 ## 2026-11-10 · Filing.duplicate_of kept, low priority
 - **Context:** NSE↔BSE dedup was planned, but BSE's APIs are blocked from GitHub runners, so scheduled ingest only sees NSE.
 - **Decision:** Keep the field (BSE may be used locally or later), but don't build dedup until BSE ingest is actually running.
+
+## 2026-11-10 · NSE is fetched only by GitHub Actions; the API never calls NSE
+- **Context:** `GET /health/sources` on Render (AWS Singapore) shows NSE returns 403 for everything — APIs, archive PDFs, XBRL, equity list. GitHub-hosted runners (Azure US) are not blocked. BSE PDFs and screener work from both.
+- **Decision:** All NSE ingestion runs in GitHub Actions jobs and writes to Supabase (and raw documents to storage). The Render API reads only from Supabase, screener and BSE-hosted PDFs. The equity list for autocomplete is refreshed by a job and served as static JSON.
+- **Open:** how a never-seen ticker gets its NSE-only data (XBRL results, corporate actions) on demand — see the question raised on 10 Nov.
+- **Alternatives:** proxying NSE through a residential IP (fragile, against the spirit of rule 6); moving the API to another host (no evidence another free datacenter host is unblocked, and GitHub runners already work).
+- **Diagnostics:** `/health/sources` stays in the API — cached 15 min and single-flight, so it can't be used to hammer the sources.

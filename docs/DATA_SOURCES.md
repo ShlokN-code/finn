@@ -1,21 +1,20 @@
 # Data sources
 
 Verified 10 Nov 2026 by the scripts in `backend/spikes/` (trimmed responses in `backend/spikes/samples/`).
-"Local" = dev machine in India; "GitHub" = `spike-ci` on GitHub-hosted runners (US datacenter IPs), which is where scheduled jobs run.
+"Local" = dev machine in India; "GitHub" = `spike-ci` on GitHub-hosted runners (US datacenter IPs), which is where scheduled jobs run; "Render" = the deployed API's `GET /health/sources` probe (AWS Singapore).
 
 ## Summary
 
-| # | Source | Local | GitHub | Use for | Fallback |
-|---|---|---|---|---|---|
-| a | Yahoo EOD prices (yfinance) | ✅ works (rate-limits bursts) | ✅ works | Adjusted daily OHLCV, 20-day volume, z-scores | NSE raw history + own adjustment |
-| a2 | Demo tickers on Yahoo `.NS` | ✅ 20/20 resolve | ✅ 20/20 | — | — |
-| b | NSE announcements | ✅ works | ✅ works | Primary filing feed | Last good snapshot; BSE only from non-datacenter IPs |
-| b2 | BSE announcements | ✅ works | ⚠️ **partly**: APIs blocked (HTTP 403); PDFs download | Local/backup only (finer subcategories) | NSE |
-| c | NSE calendar / board meetings / corporate actions / bulk & block deals | ✅ works | ✅ works | Calendar, ex-dates, deal explanations | NSE archive CSVs (deals) |
-| d | screener.in company page | ✅ works | ✅ works | Cross-check tables, document links | Exchange filings directly |
-| e | NSE equity list (`EQUITY_L.csv`) | ✅ works (browser session only) | ✅ works | Autocomplete (2,645 securities) | BSE scrip master (5,269 active) |
-| f | NSE XBRL for results | ✅ works | ✅ works | Results extraction (XBRL first) | Results PDF |
-
+| # | Source | Local | GitHub | Render | Use for | Fallback |
+|---|---|---|---|---|---|---|
+| a | Yahoo EOD prices (yfinance) | ✅ works (rate-limits bursts) | ✅ works | — (not needed) | Adjusted daily OHLCV, 20-day volume, z-scores | NSE raw history + own adjustment |
+| a2 | Demo tickers on Yahoo `.NS` | ✅ 20/20 resolve | ✅ 20/20 | — | — | — |
+| b | NSE announcements | ✅ works | ✅ works | ⛔ 403 | Primary filing feed | Last good snapshot; BSE only from non-datacenter IPs |
+| b2 | BSE announcements | ✅ works | ⚠️ **partly**: APIs blocked (HTTP 403); PDFs download | ⚠️ same: APIs 403, PDFs ✅ | Local/backup only (finer subcategories) | NSE |
+| c | NSE calendar / board meetings / corporate actions / bulk & block deals | ✅ works | ✅ works | ⛔ 403 | Calendar, ex-dates, deal explanations | NSE archive CSVs (deals) |
+| d | screener.in company page | ✅ works | ✅ works | ✅ works | Cross-check tables, document links | Exchange filings directly |
+| e | NSE equity list (`EQUITY_L.csv`) | ✅ works (browser session only) | ✅ works | ⛔ 403 | Autocomplete (2,645 securities) | BSE scrip master (5,269 active) |
+| f | NSE XBRL for results | ✅ works | ✅ works | ⛔ 403 (archive files too) | Results extraction (XBRL first) | Results PDF |
 ---
 
 ### What the GitHub-runner results mean
@@ -23,7 +22,8 @@ Verified 10 Nov 2026 by the scripts in `backend/spikes/` (trimmed responses in `
 - Runner egress: **US (Iowa / Wyoming), AS8075 Microsoft** — a datacenter IP, the worst case for exchange bot protection.
 - **NSE does not block it** (announcements, calendar, corporate actions, deals, archives, XBRL all pass). So scheduled ingest can run on GitHub Actions as planned, with NSE as the primary feed.
 - **BSE blocks its APIs** (scrip master and announcements → 403 HTML) **but serves its PDFs** (`xml-data/corpfiling/…` and `stockinfo/AnnPdfOpen.aspx`). So BSE announcements are a *local/backup* source only — finer subcategories and NSE↔BSE dedup are unavailable in scheduled jobs; classification relies on NSE `desc` + subject-text rules, then the cheap model. Screener's document index (mostly BSE PDF links) **is** usable from servers.
-- **Render is not tested yet** (different provider/IPs). Research-on-demand runs there and needs NSE and BSE PDFs (via screener's links). Test once the API is live; fallback is to pre-fetch documents in the nightly GitHub job.
+- **Render (AWS Singapore, AS16509) is blocked by NSE completely** — homepage warm-up, every API, archive PDFs (with or without cookies), XBRL files and the equity list all return 403. BSE APIs are 403 too; **BSE PDFs and screener work**. Re-check any time at `https://finn-api-4ejm.onrender.com/health/sources` (cached 15 min).
+- **Consequence:** the API on Render must never call NSE. All NSE data (filings, corporate actions, calendar, deals, XBRL, equity list) is fetched by GitHub Actions jobs and stored in Supabase; Render reads from Supabase. On-demand research on Render can use screener tables and BSE-hosted documents (transcripts, annual reports, decks) directly.
 - If NSE ever starts blocking datacenter IPs: serve the last good snapshot (rule 7) and run ingest from a residential machine as a stopgap.
 
 ---

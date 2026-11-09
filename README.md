@@ -4,7 +4,17 @@ Your portfolio's editor for Indian equities (NSE/BSE): it reads every filing, pr
 
 Built for the ENAM AI Engineer Build Challenge. Product spec: [docs/PRODUCT.md](docs/PRODUCT.md) · Decisions: [docs/DECISIONS.md](docs/DECISIONS.md) · Data sources: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) · Deploy: [docs/DEPLOY.md](docs/DEPLOY.md)
 
-> Status: skeleton. Data sources verified, contracts defined, web → API → database path built (dashboard setup in DEPLOY.md). No product features yet.
+> Status: skeleton. Data sources verified, contracts defined, web → API → database deployed. No product features yet.
+
+## Live
+
+| | URL |
+|---|---|
+| App (Vercel) | https://finn-tau-red.vercel.app |
+| API (Render, Singapore) | https://finn-api-4ejm.onrender.com — `/health`, `/health/db`, `/health/sources` |
+| Database | Supabase Postgres, Mumbai (not public) |
+
+The free Render instance can take up to ~50 s to wake; `keepalive` pings it every 10 minutes.
 
 ## Layout
 
