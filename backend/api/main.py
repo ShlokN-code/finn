@@ -2,6 +2,7 @@
 
 GET /health     — liveness (no DB), used by keep-alive pings.
 GET /health/db  — reads one row from Supabase Postgres to prove web → API → DB.
+GET /health/sources — can this server reach NSE/BSE/screener? (cached 15 min)
 """
 
 from __future__ import annotations
@@ -15,6 +16,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from api.diagnostics import get_probes
 from finn import __version__
 
 log = logging.getLogger("finn.api")
@@ -51,3 +53,8 @@ def health_db():
         "row": {"id": row[0], "message": row[1], "created_at": row[2].isoformat()},
         "db_ms": ms,
     }
+
+
+@app.get("/health/sources")
+def health_sources() -> dict:
+    return get_probes()
