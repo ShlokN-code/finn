@@ -77,6 +77,17 @@ Short records of key decisions: context, decision, alternatives considered, why.
 ## 2026-11-10 · NSE is fetched only by GitHub Actions; the API never calls NSE
 - **Context:** `GET /health/sources` on Render (AWS Singapore) shows NSE returns 403 for everything — APIs, archive PDFs, XBRL, equity list. GitHub-hosted runners (Azure US) are not blocked. BSE PDFs and screener work from both.
 - **Decision:** All NSE ingestion runs in GitHub Actions jobs and writes to Supabase (and raw documents to storage). The Render API reads only from Supabase, screener and BSE-hosted PDFs. The equity list for autocomplete is refreshed by a job and served as static JSON.
-- **Open:** how a never-seen ticker gets its NSE-only data (XBRL results, corporate actions) on demand — see the question raised on 10 Nov.
+- **On demand:** a never-seen ticker gets its NSE-only data from a dispatched GitHub job — see "On-demand NSE data via workflow dispatch" below.
 - **Alternatives:** proxying NSE through a residential IP (fragile, against the spirit of rule 6); moving the API to another host (no evidence another free datacenter host is unblocked, and GitHub runners already work).
 - **Diagnostics:** `/health/sources` stays in the API — cached 15 min and single-flight, so it can't be used to hammer the sources.
+
+## 2026-11-10 · On-demand NSE data via workflow dispatch (with guardrails)
+- **Context:** NSE blocks Render, so the API cannot fetch NSE data for a ticker that hasn't been ingested. GitHub-hosted runners can.
+- **Decision (product owner):** For a never-seen ticker, the API dispatches a GitHub Actions workflow that fetches that ticker's NSE data into Supabase (~1–2 min). Guardrails:
+  - Dispatch only for symbols in the NSE equity list.
+  - At most one dispatch per ticker per IST day; if a run for that ticker is queued or running, reuse it.
+  - Fine-grained GitHub token: this repo only, Actions permission only, 90-day expiry; stored only on Render.
+  - If dispatch or the run fails, NSE-backed sections say "Available after tonight's refresh" — no error state; the nightly job covers it.
+  - The dossier's core sections (snapshot, trajectory, Promise Ledger, cash, balance sheet) run on screener + BSE PDFs alone; NSE data only enriches and never blocks.
+- **Alternatives:** wait for the nightly job (simpler, but a curious evaluator sees gaps for hours); fetch NSE via a residential proxy (fragile, impolite).
+- **Plan:** docs/PLAN.md, "Research dossier — on-demand NSE data".
