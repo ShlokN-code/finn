@@ -53,11 +53,11 @@ Built for the ENAM Holdings AI Engineer Build Challenge (deadline 15 Nov 2026). 
 ### Card types
 
 1. **Results card** — Revenue, EBITDA, PBT, PAT: current quarter, QoQ %, YoY %. Consolidated by default, labelled. 8-quarter margin sparkline. "vs guidance" line from the Promise Ledger. "✓ Cross-checked" badge or "Couldn't verify — open filing".
-   - One results filing contains current / previous / year-ago quarter columns → QoQ and YoY from one document.
+   - Numbers come from NSE XBRL. Each XBRL filing holds only the current quarter (+ YTD), so QoQ and YoY use **three filings** — current, previous and year-ago quarter — matched on consolidated/standalone, cross-checked against screener's quarterly table. Fallback: the results PDF, whose table has current / previous / year-ago columns in one document.
    - EBITDA computed in code (PBT + finance costs + depreciation; document the other-income choice); formula shown on tap.
    - Sector-aware: banks/NBFCs show NII, PPOP, PAT instead of EBITDA.
 2. **Management change card** — mini-CV of the *incoming* person: prior companies/roles/tenure, qualifications, insider vs outside hire, outgoing person's tenure. Source order: profile in the filing itself (usually required by disclosure rules) → web-search snippets (no LinkedIn scraping).
-3. **Price/volume alert card** — move + likely explanation in priority order: a filing → bulk/block deal → sector/index move → otherwise "⚠️ No disclosure explains this move".
+3. **Price/volume alert card** — move + likely explanation in priority order: a filing → bulk/block deal → sector/index move → otherwise "⚠️ No disclosure explains this move". At most one price/volume event per stock per trading day (one card per event: card id = event id).
 4. **"What to watch" card** — when a results board meeting is announced: the promises the upcoming results will test. After results, the results card scores them.
 5. **One-liner card** — M&A, fund raise, litigation, credit rating, pledging, capex, order wins, insider trades: one line + key number.
 6. **Inline chip** — dividend, bonus/split: e.g. "₹8 dividend · record 21 Nov".
@@ -103,7 +103,7 @@ Built for the ENAM Holdings AI Engineer Build Challenge (deadline 15 Nov 2026). 
 | Quiet hours | 10 pm–7 am; only critical items break through |
 | Snooze | Per stock, 1 day / 1 week |
 
-**Corporate actions:** use adjusted prices/volumes; on ex-dates (dividend, bonus, split) the mechanical drop never triggers an alert, but a genuine move beyond it still does. Label the day ("Ex-dividend today").
+**Corporate actions:** use adjusted prices/volumes; on ex-dates (dividend, bonus, split) the mechanical drop never triggers an alert, but a genuine move beyond it still does. Label the day ("Ex-dividend today"). Ex-dates and action labels come from NSE's corporate-actions feed — it is the source of truth; price-feed action records are not trusted (Yahoo shows BAJFINANCE's split + bonus as one 2:1 split).
 
 **Delivery:** Telegram bot + PWA web push. "Connect Telegram" sends a test alert immediately. Telegram messages carry buttons: Open in FINN / Snooze.
 
@@ -113,7 +113,7 @@ Built for the ENAM Holdings AI Engineer Build Challenge (deadline 15 Nov 2026). 
 - "What you're watching" per holding (suggested, one-tap confirm).
 - Upcoming events calendar: results dates, concall times, record dates, AGMs.
 - Results-season scoreboard.
-- Import: paste tickers / CSV. Stored in the browser — no login ("your holdings stay on your phone unless you connect Telegram").
+- Import: paste tickers / CSV, each with a share **quantity or** a portfolio **weight %** (either is enough for position weight; quantity also enables ₹ impact). Stored in the browser — no login ("your holdings stay on your phone unless you connect Telegram").
 - **Opt-in server copy:** connecting Telegram (or web push) uploads only symbols + weights, tied to that chat — needed so the server can rank and push alerts. Shown before connecting; "Disconnect & delete" removes it. Ranking for the in-app Brief still runs on the phone.
 - Notes on any card/holding → decision journal.
 
@@ -125,6 +125,8 @@ Sections (one scrolling page):
 1. **Snapshot** — business, segments, revenue mix, headline numbers and ratios.
 2. **Trajectory** — 5–10 yr sparklines (revenue, margins, ROCE, PAT) + one line on what's growing/compressing.
 3. **⭐ Promise Ledger** — every forward-looking claim from the last 4–8 calls vs what was delivered: ✅ Kept / ❌ Missed / ↘ Goalposts moved / 🔇 Quietly dropped. Management credibility score + trend.
+   - **Numeric promises** (target value or range for a metric and period): the model only extracts the target; **code** compares the delivered figure against it and sets Kept / Missed.
+   - **The model judges** only qualitative promises (e.g. "launch in the US this year") and the cross-call patterns: ↘ goalposts moved (a later call revises the target or date) and 🔇 quietly dropped (no longer mentioned). Every verdict cites both calls.
 4. **Cash quality** — CFO/PAT over time, FCF.
 5. **Balance sheet** — D/E, working-capital days trend, funding.
 6. **What analysts keep asking** — repeated questions across calls.
@@ -139,9 +141,9 @@ Scoped to context; 3 suggested question chips per screen; structured answers (nu
 
 ## 10. Trust layer (applies everywhere)
 
-1. Adjusted prices for corporate actions.
+1. Adjusted prices for corporate actions; ex-dates from NSE's corporate-actions feed.
 2. Unit normalisation (lakh / crore / million → ₹ Cr).
-3. Results cross-validated against screener's quarterly table + sanity checks (PAT ≤ PBT normally, plausible margin ranges).
+3. Results (from three XBRL filings) cross-validated against screener's quarterly table + sanity checks (PAT ≤ PBT normally, plausible margin ranges).
 4. Freshness stamps on every screen and card.
 5. Consolidated vs standalone always labelled.
 6. Citation checker: every quote must exist in source text (fuzzy match).
@@ -167,9 +169,9 @@ Scoped to context; 3 suggested question chips per screen; structured answers (nu
 - **PWA over native/Expo/TestFlight:** the evaluator's first experience is a link, not an install. One codebase, instant deploys, fixes go live after submission.
 - **Telegram for push:** PWA push works on Android Chrome without install, but on iPhone only after "Add to Home Screen" (iOS 16.4+), which most evaluators won't do; some Android phones popular in India (Xiaomi, Vivo, Oppo) delay web notifications via battery optimisation. Telegram behaves identically on every phone with no install or permission steps. WhatsApp would be ideal for Indian users but business messaging needs verification/template approval — out of scope for 6 days. Both PWA push and Telegram are offered.
 - **"The LLM reads, code calculates."** No arithmetic in the model.
-- **Model routing:** rules → cheap model (classification, extraction) → strong model only for synthesis (Promise Ledger verdicts, bull/bear).
+- **Model routing:** rules → cheap model (classification, extraction) → strong model only for synthesis (qualitative Promise Ledger verdicts, goalposts moved / quietly dropped across calls, bull/bear). Numeric verdicts are computed in code.
 - **Long-context over RAG for concalls** (they fit in a cheap long-context model); RAG/chunking only for annual reports.
-- **XBRL first** for results if available; PDF tables second; multimodal model for scanned PDFs.
+- **XBRL first** for results: current + previous + year-ago quarter filings (one XBRL instance holds only the current quarter), cross-checked against screener; PDF tables second; multimodal model for scanned PDFs.
 - **Explicit, visible feedback rules instead of learned ranking** (one user, little data, must be explainable).
 - **"What you're watching" suggested from disclosures** instead of manual thesis entry (most users never fill blank boxes).
 - **No login; portfolio stored in the browser.** Opt-in server copy (symbols + weights only) when the user connects Telegram/web push, deletable any time.

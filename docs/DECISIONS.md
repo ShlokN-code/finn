@@ -45,3 +45,31 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Decision (product owner):** Holdings live in localStorage by default. Connecting Telegram (or web push) uploads a server copy of **symbols + weights only** (no quantities or cost), keyed to that chat/subscription. The connect screen says so; "Disconnect & delete" removes it. The in-app Brief still ranks on the phone.
 - **Alternatives:** browser-only (push limited to generic or watchlist-free alerts); full accounts/login (rejected in the spec — friction for evaluators).
 - **Implications:** a `push_subscriptions` table (chat id, symbols, weights, created_at) with RLS; a delete endpoint; `Holding.quantity` never leaves the device.
+
+## 2026-11-10 · Corporate actions: NSE feed is the source of truth
+- **Context:** Yahoo's prices are correctly split/bonus-adjusted, but its action records are not (BAJFINANCE's 1:2 split + 4:1 bonus on 16-Jun-2025 appears as one "2:1 split").
+- **Decision:** Ex-dates and labels ("Ex-dividend today", "Bonus 1:1") come from NSE `corporates-corporateActions`. Price-feed action columns are ignored. Alert logic uses adjusted returns and suppresses only the mechanical part of an ex-date move.
+- **Alternatives:** trust Yahoo's actions (wrong labels/ratios); BSE corporate actions (API blocked from GitHub runners).
+
+## 2026-11-10 · Results from three XBRL filings, cross-checked; PDF fallback
+- **Context:** The spec assumed one results filing gives current / previous / year-ago columns. NSE's XBRL instances carry only the current quarter (+ YTD).
+- **Decision:** For each results event, pull the XBRL for the current, previous and year-ago quarter (same consolidated/standalone basis) from `integrated-filing-results` (Mar-2025 onward) or `corporates-financial-results` (≤ Dec-2024). Compute QoQ/YoY and EBITDA in code. Cross-check against screener's quarterly table with `approx_equal`; mismatch → `unverified` with a `check_note`. If any XBRL is missing, fall back to the results PDF's three-column table.
+- **Alternatives:** PDF first (table parsing is error-prone, needs a model for scanned files); screener only (secondary source — fine for cross-checks, not as the cited source).
+- **Why:** XBRL is structured, exact and primary; three small files (~0.1 MB each) are cheap.
+
+## 2026-11-10 · Promise Ledger: code judges numbers, the model judges language
+- **Context:** The spec gave Promise Ledger verdicts to the strong model, which conflicts with rule 1 (no comparisons by a model).
+- **Decision:** For numeric promises the model only extracts metric, target value/range, period and quote; code compares the delivered `Figure` against the target and sets kept/missed. The strong model judges qualitative promises and cross-call patterns — goalposts moved (target/date revised in a later call) and quietly dropped (no longer mentioned) — and must cite both calls.
+- **Alternatives:** the model judges everything (violates rule 1, unauditable); code only (can't recognise a revised or abandoned promise phrased differently).
+
+## 2026-11-10 · One card per event; one price/volume event per stock per day
+- **Decision:** `Card.id = event_id`. Price/volume alerts become synthetic events keyed `SYMBOL:price_volume:YYYY-MM-DD` (IST trading day), so one stock gets at most one price/volume card per day, and feedback/undo apply to it like any other card.
+- **Alternatives:** separate card ids per alert (duplicates on volatile days; feedback scattered).
+
+## 2026-11-10 · Holding takes quantity or weight
+- **Decision:** `Holding.quantity` and `Holding.weight_pct` are both optional; either one gives position weight. Quantity also enables ₹ impact. Paste-import accepts either.
+- **Alternatives:** require quantity (most people paste tickers with weights, not share counts).
+
+## 2026-11-10 · Filing.duplicate_of kept, low priority
+- **Context:** NSE↔BSE dedup was planned, but BSE's APIs are blocked from GitHub runners, so scheduled ingest only sees NSE.
+- **Decision:** Keep the field (BSE may be used locally or later), but don't build dedup until BSE ingest is actually running.
