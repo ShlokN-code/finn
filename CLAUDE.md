@@ -25,7 +25,7 @@ FINN is a mobile-first financial investment agent for Indian equities (NSE/BSE).
 ## Stack
 
 - `web/` — Next.js (App Router) PWA, TypeScript, Tailwind, shadcn/ui, framer-motion. Deployed on Vercel. Mobile-first; desktop shows a landing page with a phone preview + QR.
-- `backend/` — Python 3.11.
+- `backend/` — Python 3.12. Local venv at `.venv/` (created from `/opt/anaconda3/bin/python3.12`; isolated from the Anaconda base env).
   - `backend/finn/` — shared package (sources, classification, ranking, extraction, research, llm routing, models).
   - `backend/api/` — FastAPI app (research on demand, Ask, Telegram webhook). Deployed on Render free tier.
   - `backend/jobs/` — scheduled scripts (ingest, rank, alerts, nightly dossier refresh, keep-alive).

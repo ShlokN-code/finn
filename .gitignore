@@ -5,3 +5,11 @@ __pycache__/
 .venv/
 .next/
 .DS_Store
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+backend/spikes/.cache/
+.vercel
+.env.*.local
