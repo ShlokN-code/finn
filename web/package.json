@@ -9,7 +9,7 @@
     "lint": "eslint",
     "gen:schema": "cd ../backend && ../.venv/bin/python -m finn.models.export_schema > ../web/lib/schema.json",
     "gen:types": "node scripts/gen-types.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
