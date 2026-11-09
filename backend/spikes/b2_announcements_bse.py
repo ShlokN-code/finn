@@ -36,6 +36,10 @@ if scrips:
             log(f"  {sym} ({isin}) -> {hit['SCRIP_CD']} / {hit.get('scrip_id')} / {hit.get('Scrip_Name')}")
         res.check(f"{sym} resolves to BSE scrip code via ISIN", bool(hit))
     save_sample("b2_bse_scrips_head.json", scrips[:5])
+else:
+    # Scrip master is 403 from GitHub runners — still test the announcements API with known codes.
+    codes = {"RELIANCE": "500325", "HDFCBANK": "500180", "INFY": "500209"}
+    log("  scrip master unavailable; using known scrip codes to test announcements")
 
 # 2) Announcements
 to_d, from_d = date.today(), date.today() - timedelta(days=30)
