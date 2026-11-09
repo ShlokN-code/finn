@@ -1,0 +1,328 @@
+{
+  "INFY": {
+    "filing": {
+      "attFileSize": "0 Bytes",
+      "audited": "Audited",
+      "broadcast_Date": "23-Oct-2026 20:16:14",
+      "cmName": "Infosys Limited",
+      "consolidated": "Consolidated",
+      "creation_Date": "23-Oct-2026 20:21:18",
+      "diff": "00:05:04",
+      "ixbrl": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_203729_23102026202117_iXBRL_WEB.html",
+      "ixbrlFileSize": "96.60 KB",
+      "pdf_attach": "https://nsearchives.nseindia.com/corporate/null",
+      "qe_Date": "30-SEP-2026",
+      "revised_Date": null,
+      "revision_Remark": null,
+      "seq_Id": "203729",
+      "smName": "Infosys Limited",
+      "symbol": "INFY",
+      "type": "Integrated Filing- Financials",
+      "type_Sub": "Original",
+      "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1745058_23102026082117_WEB.xml",
+      "xbrlFileSize": "148.74 KB"
+    },
+    "parsed": {
+      "meta": {
+        "Symbol": "INFY",
+        "DescriptionOfPresentationCurrency": "INR",
+        "LevelOfRounding": "Crores",
+        "TypeOfReportingPeriod": "Quarterly",
+        "WhetherResultsAreAuditedOrUnaudited": "Audited",
+        "NatureOfReportStandaloneConsolidated": "Consolidated"
+      },
+      "facts": {
+        "RevenueFromOperations": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 492440000000.0,
+            "decimals": "-7",
+            "value_cr": 49244.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 974540000000.0,
+            "decimals": "-7",
+            "value_cr": 97454.0
+          }
+        ],
+        "OtherIncome": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 8480000000.0,
+            "decimals": "-7",
+            "value_cr": 848.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 18320000000.0,
+            "decimals": "-7",
+            "value_cr": 1832.0
+          }
+        ],
+        "FinanceCosts": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 1150000000.0,
+            "decimals": "-7",
+            "value_cr": 115.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 2350000000.0,
+            "decimals": "-7",
+            "value_cr": 235.0
+          }
+        ],
+        "DepreciationDepletionAndAmortisationExpense": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 13590000000.0,
+            "decimals": "-7",
+            "value_cr": 1359.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 26050000000.0,
+            "decimals": "-7",
+            "value_cr": 2605.0
+          }
+        ],
+        "ProfitBeforeTax": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 110630000000.0,
+            "decimals": "-7",
+            "value_cr": 11063.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 220910000000.0,
+            "decimals": "-7",
+            "value_cr": 22091.0
+          }
+        ],
+        "ProfitLossForPeriod": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 78380000000.0,
+            "decimals": "-7",
+            "value_cr": 7838.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 156130000000.0,
+            "decimals": "-7",
+            "value_cr": 15613.0
+          }
+        ]
+      },
+      "n_contexts": 142
+    },
+    "quarters_available": [
+      "30-JUN-2025",
+      "30-JUN-2026",
+      "30-SEP-2025",
+      "30-SEP-2026",
+      "31-DEC-2025",
+      "31-MAR-2025",
+      "31-MAR-2026"
+    ]
+  },
+  "HDFCBANK": {
+    "filing": {
+      "attFileSize": "0 Bytes",
+      "audited": "Un-Audited",
+      "broadcast_Date": "17-Oct-2026 17:47:13",
+      "cmName": "HDFC Bank Limited",
+      "consolidated": "Consolidated",
+      "creation_Date": "17-Oct-2026 17:48:12",
+      "diff": "00:00:59",
+      "ixbrl": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_BANKING_202132_17102026174812_iXBRL_WEB.html",
+      "ixbrlFileSize": "62.00 KB",
+      "pdf_attach": "https://nsearchives.nseindia.com/corporate/null",
+      "qe_Date": "30-SEP-2026",
+      "revised_Date": null,
+      "revision_Remark": null,
+      "seq_Id": "202132",
+      "smName": "HDFC Bank Limited",
+      "symbol": "HDFCBANK",
+      "type": "Integrated Filing- Financials",
+      "type_Sub": "Original",
+      "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_BANKING_1740913_17102026054812_WEB.xml",
+      "xbrlFileSize": "78.86 KB"
+    },
+    "parsed": {
+      "meta": {
+        "Symbol": "HDFCBANK",
+        "DescriptionOfPresentationCurrency": "INR",
+        "LevelOfRounding": "Crores",
+        "TypeOfReportingPeriod": "Quarterly",
+        "WhetherResultsAreAuditedOrUnaudited": "Unaudited",
+        "NatureOfReportStandaloneConsolidated": "Consolidated"
+      },
+      "facts": {
+        "InterestEarned": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 951316300000.0,
+            "decimals": "-5",
+            "value_cr": 95131.63
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 1857069600000.0,
+            "decimals": "-5",
+            "value_cr": 185706.96
+          }
+        ],
+        "OtherIncome": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 342270600000.0,
+            "decimals": "-5",
+            "value_cr": 34227.06
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 767620900000.0,
+            "decimals": "-5",
+            "value_cr": 76762.09
+          }
+        ],
+        "InterestExpended": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 506674300000.0,
+            "decimals": "-5",
+            "value_cr": 50667.43
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 982930600000.0,
+            "decimals": "-5",
+            "value_cr": 98293.06
+          }
+        ],
+        "OperatingProfitBeforeProvisionAndContingencies": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 328715400000.0,
+            "decimals": "-5",
+            "value_cr": 32871.54
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 638675400000.0,
+            "decimals": "-5",
+            "value_cr": 63867.54
+          }
+        ],
+        "ProvisionsOtherThanTaxAndContingencies": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 42090000000.0,
+            "decimals": "-7",
+            "value_cr": 4209.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 80118400000.0,
+            "decimals": "-5",
+            "value_cr": 8011.84
+          }
+        ],
+        "GrossNonPerformingAssets": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 0.0,
+            "decimals": "-7",
+            "value_cr": 0.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 0.0,
+            "decimals": "-7",
+            "value_cr": 0.0
+          }
+        ],
+        "PercentageOfGrossNpa": [
+          {
+            "ctx": "OneD",
+            "start": "2026-07-01",
+            "end": "2026-09-30",
+            "value_inr": 0.0,
+            "decimals": "INF",
+            "value_cr": 0.0
+          },
+          {
+            "ctx": "FourD",
+            "start": "2026-04-01",
+            "end": "2026-09-30",
+            "value_inr": 0.0,
+            "decimals": "INF",
+            "value_cr": 0.0
+          }
+        ]
+      },
+      "n_contexts": 71
+    },
+    "quarters_available": [
+      "30-JUN-2025",
+      "30-JUN-2026",
+      "30-SEP-2025",
+      "30-SEP-2026",
+      "31-DEC-2025",
+      "31-MAR-2025",
+      "31-MAR-2026"
+    ]
+  }
+}

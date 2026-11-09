@@ -1,0 +1,239 @@
+{
+  "HAL": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 4999.0
+    },
+    "nse_name": "Hindustan Aeronautics Limited",
+    "isin": "INE066F01020",
+    "series": "EQ",
+    "flags": []
+  },
+  "EICHERMOT": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 7629.0
+    },
+    "nse_name": "Eicher Motors Limited",
+    "isin": "INE066A01021",
+    "series": "EQ",
+    "flags": []
+  },
+  "GRASIM": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 3169.7
+    },
+    "nse_name": "Grasim Industries Limited",
+    "isin": "INE047A01021",
+    "series": "EQ",
+    "flags": [
+      "10-Jan-2024: Rights 6:179 @ Premium Rs 1810/-"
+    ]
+  },
+  "TATAPOWER": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "Tata Power Company Limited",
+    "isin": "INE245A01021",
+    "series": "EQ",
+    "flags": []
+  },
+  "ALKEM": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 5398.5
+    },
+    "nse_name": "Alkem Laboratories Limited",
+    "isin": "INE540L01014",
+    "series": "EQ",
+    "flags": []
+  },
+  "KALYANKJIL": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 611.0
+    },
+    "nse_name": "Kalyan Jewellers India Limited",
+    "isin": "INE303R01014",
+    "series": "EQ",
+    "flags": []
+  },
+  "COCHINSHIP": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 1290.0
+    },
+    "nse_name": "Cochin Shipyard Limited",
+    "isin": "INE704P01025",
+    "series": "EQ",
+    "flags": [
+      "10-Jan-2024: Face Value Split (Sub-Division) - From Rs 10/- Per Share To Rs 5/- Per Share"
+    ]
+  },
+  "TITAGARH": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "TITAGARH RAIL SYSTEMS LIMITED",
+    "isin": "INE615H01020",
+    "series": "EQ",
+    "flags": []
+  },
+  "IDEA": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "Vodafone Idea Limited",
+    "isin": "INE669E01016",
+    "series": "EQ",
+    "flags": []
+  },
+  "RELIANCE": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 1324.4
+    },
+    "nse_name": "Reliance Industries Limited",
+    "isin": "INE002A01018",
+    "series": "EQ",
+    "flags": [
+      "28-Oct-2024: Bonus 1:1"
+    ]
+  },
+  "HDFCBANK": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "HDFC Bank Limited",
+    "isin": "INE040A01034",
+    "series": "EQ",
+    "flags": [
+      "26-Aug-2025: Bonus 1:1"
+    ]
+  },
+  "BAJFINANCE": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 1064.85
+    },
+    "nse_name": "Bajaj Finance Limited",
+    "isin": "INE296A01032",
+    "series": "EQ",
+    "flags": [
+      "16-Jun-2025: Bonus 4:1",
+      "16-Jun-2025: Face Value Split (Sub-Division) - From Rs 2/- Per Share To Re 1/- Per Share"
+    ]
+  },
+  "INFY": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "Infosys Limited",
+    "isin": "INE009A01021",
+    "series": "EQ",
+    "flags": [
+      "14-Nov-2025: Buy Back"
+    ]
+  },
+  "ITC": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 278.8
+    },
+    "nse_name": "ITC Limited",
+    "isin": "INE154A01025",
+    "series": "EQ",
+    "flags": [
+      "06-Jan-2025: Demerger"
+    ]
+  },
+  "DIVISLAB": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "Divi's Laboratories Limited",
+    "isin": "INE361B01024",
+    "series": "EQ",
+    "flags": []
+  },
+  "TATASTEEL": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "Tata Steel Limited",
+    "isin": "INE081A01020",
+    "series": "EQ",
+    "flags": []
+  },
+  "JUBLFOOD": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 428.5
+    },
+    "nse_name": "Jubilant Foodworks Limited",
+    "isin": "INE797F01020",
+    "series": "EQ",
+    "flags": []
+  },
+  "DIXON": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 12603.0
+    },
+    "nse_name": "Dixon Technologies (India) Limited",
+    "isin": "INE935N01020",
+    "series": "EQ",
+    "flags": []
+  },
+  "PERSISTENT": {
+    "yahoo": {
+      "rows": 0,
+      "last_date": null,
+      "last_close": null
+    },
+    "nse_name": "Persistent Systems Limited",
+    "isin": "INE262H01021",
+    "series": "EQ",
+    "flags": [
+      "28-Mar-2024: Face Value Split (Sub-Division) - From Rs 10/- Per Share To Rs 5/- Per Share"
+    ]
+  },
+  "POLYCAB": {
+    "yahoo": {
+      "rows": 21,
+      "last_date": "2026-11-09",
+      "last_close": 7832.5
+    },
+    "nse_name": "Polycab India Limited",
+    "isin": "INE455K01017",
+    "series": "EQ",
+    "flags": []
+  }
+}

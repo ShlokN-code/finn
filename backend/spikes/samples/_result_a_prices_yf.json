@@ -1,0 +1,52 @@
+[
+  {
+    "check": "RELIANCE.NS history returned rows",
+    "ok": true,
+    "detail": "740 rows"
+  },
+  {
+    "check": "RELIANCE.NS Close is split-adjusted across 2024-10-28",
+    "ok": "True",
+    "detail": "prev close 1327.85 → ex-date open 1337.00 (+0.7%); ratio 2.0"
+  },
+  {
+    "check": "RELIANCE.NS Adj Close differs from Close (dividend adjustment)",
+    "ok": "True",
+    "detail": ""
+  },
+  {
+    "check": "HDFCBANK.NS history returned rows",
+    "ok": true,
+    "detail": "740 rows"
+  },
+  {
+    "check": "HDFCBANK.NS Close is split-adjusted across 2025-08-26",
+    "ok": "True",
+    "detail": "prev close 982.05 → ex-date open 979.50 (-0.3%); ratio 2.0"
+  },
+  {
+    "check": "HDFCBANK.NS Adj Close differs from Close (dividend adjustment)",
+    "ok": "True",
+    "detail": ""
+  },
+  {
+    "check": "BAJFINANCE.NS history returned rows",
+    "ok": true,
+    "detail": "740 rows"
+  },
+  {
+    "check": "BAJFINANCE.NS Close is split-adjusted across 2025-06-16",
+    "ok": "True",
+    "detail": "prev close 933.10 → ex-date open 956.00 (+2.5%); ratio 2.0"
+  },
+  {
+    "check": "BAJFINANCE.NS Adj Close differs from Close (dividend adjustment)",
+    "ok": "True",
+    "detail": ""
+  },
+  {
+    "check": "batch yf.download works",
+    "ok": true,
+    "detail": "shape (5, 24)"
+  }
+]

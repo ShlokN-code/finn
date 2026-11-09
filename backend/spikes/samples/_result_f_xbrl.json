@@ -1,0 +1,37 @@
+[
+  {
+    "check": "corporates-financial-results lists XBRL links",
+    "ok": true,
+    "detail": "144 rows; latest period end 2024-12-31"
+  },
+  {
+    "check": "INFY: integrated-filing-results lists filings",
+    "ok": true,
+    "detail": "14 filings"
+  },
+  {
+    "check": "INFY: consolidated filing with XBRL exists",
+    "ok": true,
+    "detail": "7 consolidated"
+  },
+  {
+    "check": "INFY: XBRL instance downloads",
+    "ok": true,
+    "detail": "HTTP 200, 0.15 MB"
+  },
+  {
+    "check": "HDFCBANK: integrated-filing-results lists filings",
+    "ok": true,
+    "detail": "14 filings"
+  },
+  {
+    "check": "HDFCBANK: consolidated filing with XBRL exists",
+    "ok": true,
+    "detail": "7 consolidated"
+  },
+  {
+    "check": "HDFCBANK: XBRL instance downloads",
+    "ok": true,
+    "detail": "HTTP 200, 0.08 MB"
+  }
+]

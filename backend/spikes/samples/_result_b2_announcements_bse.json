@@ -1,0 +1,42 @@
+[
+  {
+    "check": "BSE scrip master (ListofScripData)",
+    "ok": true,
+    "detail": "HTTP 200, 5269 active equity scrips"
+  },
+  {
+    "check": "RELIANCE resolves to BSE scrip code via ISIN",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "HDFCBANK resolves to BSE scrip code via ISIN",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "INFY resolves to BSE scrip code via ISIN",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "check": "RELIANCE: AnnSubCategoryGetData 30d",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 20 rows"
+  },
+  {
+    "check": "HDFCBANK: AnnSubCategoryGetData 30d",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 15 rows"
+  },
+  {
+    "check": "INFY: AnnSubCategoryGetData 30d",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 16 rows"
+  },
+  {
+    "check": "BSE attachment PDF downloadable",
+    "ok": true,
+    "detail": ""
+  }
+]

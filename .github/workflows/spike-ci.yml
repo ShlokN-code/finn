@@ -1,0 +1,77 @@
+# Runs the data-source spikes from GitHub's (US, datacenter) runners to learn whether
+# NSE/BSE/screener/Yahoo block cloud IPs. Each source is its own step so its pass/fail
+# is visible in the run's job steps (readable via the public API).
+name: spike-ci
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "backend/spikes/**"
+      - ".github/workflows/spike-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  spikes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend/spikes
+    env:
+      SPIKE_NO_CACHE: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/spikes/requirements.txt
+      - run: pip install -r requirements.txt
+      - name: runner egress IP / country
+        run: curl -s https://ipinfo.io/json | python -c "import json,sys; d=json.load(sys.stdin); print(d.get('ip'), d.get('country'), d.get('org'))"
+        continue-on-error: true
+      - name: a_prices_yf
+        run: python a_prices_yf.py
+        continue-on-error: true
+      - name: a2_verify_portfolio
+        run: python a2_verify_portfolio.py
+        continue-on-error: true
+      - name: b_announcements_nse
+        run: python b_announcements_nse.py
+        continue-on-error: true
+      - name: b2_announcements_bse
+        run: python b2_announcements_bse.py
+        continue-on-error: true
+      - name: c_calendar_deals
+        run: python c_calendar_deals.py
+        continue-on-error: true
+      - name: d_screener
+        run: python d_screener.py BAJFINANCE
+        continue-on-error: true
+      - name: e_equity_list
+        run: python e_equity_list.py
+        continue-on-error: true
+      - name: f_xbrl
+        run: python f_xbrl.py
+        continue-on-error: true
+      - name: summary
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, pathlib
+          print("| spike | passed | failed checks |\n|---|---|---|")
+          for p in sorted(pathlib.Path("samples").glob("_result_*.json")):
+              rows = json.loads(p.read_text())
+              bad = [r["check"] + (": " + r["detail"] if r["detail"] else "") for r in rows if not r["ok"]]
+              print(f"| {p.stem[8:]} | {len(rows) - len(bad)}/{len(rows)} | {'<br>'.join(bad) or '-'} |")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spike-samples
+          path: backend/spikes/samples/

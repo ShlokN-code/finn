@@ -1,0 +1,102 @@
+[
+  {
+    "check": "HAL.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 4999.0"
+  },
+  {
+    "check": "EICHERMOT.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 7629.0"
+  },
+  {
+    "check": "GRASIM.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 3169.7"
+  },
+  {
+    "check": "TATAPOWER.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "ALKEM.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 5398.5"
+  },
+  {
+    "check": "KALYANKJIL.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 611.0"
+  },
+  {
+    "check": "COCHINSHIP.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 1290.0"
+  },
+  {
+    "check": "TITAGARH.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "IDEA.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "RELIANCE.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 1324.4"
+  },
+  {
+    "check": "HDFCBANK.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "BAJFINANCE.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 1064.85"
+  },
+  {
+    "check": "INFY.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "ITC.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 278.8"
+  },
+  {
+    "check": "DIVISLAB.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "TATASTEEL.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "JUBLFOOD.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 428.5"
+  },
+  {
+    "check": "DIXON.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 12603.0"
+  },
+  {
+    "check": "PERSISTENT.NS resolves on Yahoo with fresh data",
+    "ok": false,
+    "detail": "0 rows, last None close None"
+  },
+  {
+    "check": "POLYCAB.NS resolves on Yahoo with fresh data",
+    "ok": true,
+    "detail": "21 rows, last 2026-11-09 close 7832.5"
+  }
+]

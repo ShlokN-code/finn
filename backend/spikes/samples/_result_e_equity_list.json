@@ -1,0 +1,107 @@
+[
+  {
+    "check": "EQUITY_L.csv downloaded",
+    "ok": true,
+    "detail": "2645 securities"
+  },
+  {
+    "check": "HAL in NSE list",
+    "ok": true,
+    "detail": "Hindustan Aeronautics Limited | EQ | INE066F01020 | listed 28-MAR-2018"
+  },
+  {
+    "check": "EICHERMOT in NSE list",
+    "ok": true,
+    "detail": "Eicher Motors Limited | EQ | INE066A01021 | listed 07-SEP-2004"
+  },
+  {
+    "check": "GRASIM in NSE list",
+    "ok": true,
+    "detail": "Grasim Industries Limited | EQ | INE047A01021 | listed 10-MAY-1995"
+  },
+  {
+    "check": "TATAPOWER in NSE list",
+    "ok": true,
+    "detail": "Tata Power Company Limited | EQ | INE245A01021 | listed 03-APR-1996"
+  },
+  {
+    "check": "ALKEM in NSE list",
+    "ok": true,
+    "detail": "Alkem Laboratories Limited | EQ | INE540L01014 | listed 23-DEC-2015"
+  },
+  {
+    "check": "KALYANKJIL in NSE list",
+    "ok": true,
+    "detail": "Kalyan Jewellers India Limited | EQ | INE303R01014 | listed 26-MAR-2021"
+  },
+  {
+    "check": "COCHINSHIP in NSE list",
+    "ok": true,
+    "detail": "Cochin Shipyard Limited | EQ | INE704P01025 | listed 11-AUG-2017"
+  },
+  {
+    "check": "TITAGARH in NSE list",
+    "ok": true,
+    "detail": "TITAGARH RAIL SYSTEMS LIMITED | EQ | INE615H01020 | listed 21-APR-2008"
+  },
+  {
+    "check": "IDEA in NSE list",
+    "ok": true,
+    "detail": "Vodafone Idea Limited | EQ | INE669E01016 | listed 09-MAR-2007"
+  },
+  {
+    "check": "RELIANCE in NSE list",
+    "ok": true,
+    "detail": "Reliance Industries Limited | EQ | INE002A01018 | listed 29-NOV-1995"
+  },
+  {
+    "check": "HDFCBANK in NSE list",
+    "ok": true,
+    "detail": "HDFC Bank Limited | EQ | INE040A01034 | listed 08-NOV-1995"
+  },
+  {
+    "check": "BAJFINANCE in NSE list",
+    "ok": true,
+    "detail": "Bajaj Finance Limited | EQ | INE296A01032 | listed 01-APR-2003"
+  },
+  {
+    "check": "INFY in NSE list",
+    "ok": true,
+    "detail": "Infosys Limited | EQ | INE009A01021 | listed 08-FEB-1995"
+  },
+  {
+    "check": "ITC in NSE list",
+    "ok": true,
+    "detail": "ITC Limited | EQ | INE154A01025 | listed 23-AUG-1995"
+  },
+  {
+    "check": "DIVISLAB in NSE list",
+    "ok": true,
+    "detail": "Divi's Laboratories Limited | EQ | INE361B01024 | listed 12-MAR-2003"
+  },
+  {
+    "check": "TATASTEEL in NSE list",
+    "ok": true,
+    "detail": "Tata Steel Limited | EQ | INE081A01020 | listed 18-NOV-1998"
+  },
+  {
+    "check": "JUBLFOOD in NSE list",
+    "ok": true,
+    "detail": "Jubilant Foodworks Limited | EQ | INE797F01020 | listed 08-FEB-2010"
+  },
+  {
+    "check": "DIXON in NSE list",
+    "ok": true,
+    "detail": "Dixon Technologies (India) Limited | EQ | INE935N01020 | listed 18-SEP-2017"
+  },
+  {
+    "check": "PERSISTENT in NSE list",
+    "ok": true,
+    "detail": "Persistent Systems Limited | EQ | INE262H01021 | listed 06-APR-2010"
+  },
+  {
+    "check": "POLYCAB in NSE list",
+    "ok": true,
+    "detail": "Polycab India Limited | EQ | INE455K01017 | listed 16-APR-2019"
+  }
+]

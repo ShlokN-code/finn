@@ -1,0 +1,52 @@
+[
+  {
+    "check": "company page fetch",
+    "ok": true,
+    "detail": "HTTP 200, 267965 bytes, cached=False"
+  },
+  {
+    "check": "table #quarters",
+    "ok": true,
+    "detail": "13 periods (Sep 2023 … Sep 2026), 13 rows"
+  },
+  {
+    "check": "table #profit-loss",
+    "ok": true,
+    "detail": "13 periods (Mar 2015 … TTM), 13 rows"
+  },
+  {
+    "check": "table #balance-sheet",
+    "ok": true,
+    "detail": "13 periods (Mar 2015 … Sep 2026), 10 rows"
+  },
+  {
+    "check": "table #cash-flow",
+    "ok": true,
+    "detail": "12 periods (Mar 2015 … Mar 2026), 6 rows"
+  },
+  {
+    "check": "table #ratios",
+    "ok": true,
+    "detail": "12 periods (Mar 2015 … Mar 2026), 6 rows"
+  },
+  {
+    "check": "table #shareholding",
+    "ok": true,
+    "detail": "12 periods (Dec 2023 … Sep 2026), 5 rows"
+  },
+  {
+    "check": "annual report links",
+    "ok": true,
+    "detail": "11 links"
+  },
+  {
+    "check": "concall entries",
+    "ok": true,
+    "detail": "47 quarters"
+  },
+  {
+    "check": "concall transcript links present",
+    "ok": true,
+    "detail": "35 transcripts"
+  }
+]

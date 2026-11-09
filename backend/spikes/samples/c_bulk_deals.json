@@ -1,0 +1,112 @@
+[
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "ADROITIND",
+    "BD_SCRIP_NAME": "Adroit Industries (I) Ltd",
+    "BD_CLIENT_NAME": "PRIJAL TRADEFIN LLP",
+    "BD_BUY_SELL": "BUY",
+    "BD_QTY_TRD": 10162,
+    "BD_TP_WATP": 196.24,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "ADROITIND",
+    "BD_SCRIP_NAME": "Adroit Industries (I) Ltd",
+    "BD_CLIENT_NAME": "PRIJAL TRADEFIN LLP",
+    "BD_BUY_SELL": "SELL",
+    "BD_QTY_TRD": 232598,
+    "BD_TP_WATP": 194.56,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "ADROITIND",
+    "BD_SCRIP_NAME": "Adroit Industries (I) Ltd",
+    "BD_CLIENT_NAME": "SETU SECURITIES PVT LTD",
+    "BD_BUY_SELL": "SELL",
+    "BD_QTY_TRD": 50131,
+    "BD_TP_WATP": 192.79,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "ADROITIND",
+    "BD_SCRIP_NAME": "Adroit Industries (I) Ltd",
+    "BD_CLIENT_NAME": "SETU SECURITIES PVT LTD",
+    "BD_BUY_SELL": "BUY",
+    "BD_QTY_TRD": 327457,
+    "BD_TP_WATP": 192.77,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "AMCL",
+    "BD_SCRIP_NAME": "ANB Metal Cast Limited",
+    "BD_CLIENT_NAME": "MINERVA VENTURES FUND",
+    "BD_BUY_SELL": "SELL",
+    "BD_QTY_TRD": 383200,
+    "BD_TP_WATP": 295.81,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "COMSYN",
+    "BD_SCRIP_NAME": "Commercial Syn Bags Ltd",
+    "BD_CLIENT_NAME": "ARIHANT CAPITAL MARKETS LIMITED",
+    "BD_BUY_SELL": "SELL",
+    "BD_QTY_TRD": 230556,
+    "BD_TP_WATP": 273.5,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "COMSYN",
+    "BD_SCRIP_NAME": "Commercial Syn Bags Ltd",
+    "BD_CLIENT_NAME": "ARIHANT CAPITAL MARKETS LIMITED",
+    "BD_BUY_SELL": "BUY",
+    "BD_QTY_TRD": 332356,
+    "BD_TP_WATP": 267.28,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "COMSYN",
+    "BD_SCRIP_NAME": "Commercial Syn Bags Ltd",
+    "BD_CLIENT_NAME": "GOLDEN GOENKA MANAGEMENT CONSULTANCY SERVICES LLP",
+    "BD_BUY_SELL": "BUY",
+    "BD_QTY_TRD": 228711,
+    "BD_TP_WATP": 280,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "COMSYN",
+    "BD_SCRIP_NAME": "Commercial Syn Bags Ltd",
+    "BD_CLIENT_NAME": "MITASHI MERCANTILE PRIVATE LIMITED",
+    "BD_BUY_SELL": "SELL",
+    "BD_QTY_TRD": 343711,
+    "BD_TP_WATP": 278.32,
+    "BD_REMARKS": "-"
+  },
+  {
+    "BD_DT_DATE": "12-OCT-2026",
+    "BD_DT_ORDER": "2026-10-11T18:30:00.000Z",
+    "BD_SYMBOL": "DEEPA",
+    "BD_SCRIP_NAME": "Deepa Jewellers Limited",
+    "BD_CLIENT_NAME": "QE SECURITIES LLP",
+    "BD_BUY_SELL": "BUY",
+    "BD_QTY_TRD": 595086,
+    "BD_TP_WATP": 253.03,
+    "BD_REMARKS": "-"
+  }
+]

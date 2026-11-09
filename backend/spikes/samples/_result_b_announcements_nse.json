@@ -1,0 +1,47 @@
+[
+  {
+    "check": "NSE homepage warm-up sets cookies",
+    "ok": true,
+    "detail": "AKA_A2,_abck,ak_bmsc,bm_sz"
+  },
+  {
+    "check": "RELIANCE: corporate-announcements (30d window)",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 15531 bytes, 19 rows"
+  },
+  {
+    "check": "RELIANCE: corporate-announcements (no dates)",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 3038546 bytes, 3382 rows"
+  },
+  {
+    "check": "HDFCBANK: corporate-announcements (30d window)",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 11262 bytes, 16 rows"
+  },
+  {
+    "check": "HDFCBANK: corporate-announcements (no dates)",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 1727869 bytes, 2364 rows"
+  },
+  {
+    "check": "INFY: corporate-announcements (30d window)",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 10482 bytes, 15 rows"
+  },
+  {
+    "check": "INFY: corporate-announcements (no dates)",
+    "ok": true,
+    "detail": "HTTP 200, application/json, 2202260 bytes, 2949 rows"
+  },
+  {
+    "check": "attachment PDF downloadable",
+    "ok": true,
+    "detail": "HTTP 200, 234431 bytes, magic=b'%PDF'"
+  },
+  {
+    "check": "5 repeat calls at 2.5s spacing not blocked",
+    "ok": true,
+    "detail": "[200, 200, 200, 200, 200]"
+  }
+]

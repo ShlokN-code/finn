@@ -1,0 +1,52 @@
+[
+  {
+    "SYMBOL": "20MICRONS",
+    "NAME OF COMPANY": "20 Microns Limited",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "06-OCT-2008",
+    "PAID UP VALUE": "5",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE144J01027",
+    "FACE VALUE": "5"
+  },
+  {
+    "SYMBOL": "21STCENMGM",
+    "NAME OF COMPANY": "21st Century Management Services Limited",
+    "SERIES": "BE",
+    "DATE OF LISTING": "03-MAY-1995",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE253B01015",
+    "FACE VALUE": "10"
+  },
+  {
+    "SYMBOL": "360ONE",
+    "NAME OF COMPANY": "360 ONE WAM LIMITED",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "19-SEP-2019",
+    "PAID UP VALUE": "1",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE466L01038",
+    "FACE VALUE": "1"
+  },
+  {
+    "SYMBOL": "3BBLACKBIO",
+    "NAME OF COMPANY": "3B Blackbio Dx Limited",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "20-APR-2026",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE994E01018",
+    "FACE VALUE": "10"
+  },
+  {
+    "SYMBOL": "3IINFOLTD",
+    "NAME OF COMPANY": "3i Infotech Limited",
+    "SERIES": "BE",
+    "DATE OF LISTING": "22-OCT-2021",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE748C01038",
+    "FACE VALUE": "10"
+  }
+]
