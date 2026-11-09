@@ -113,7 +113,8 @@ Built for the ENAM Holdings AI Engineer Build Challenge (deadline 15 Nov 2026). 
 - "What you're watching" per holding (suggested, one-tap confirm).
 - Upcoming events calendar: results dates, concall times, record dates, AGMs.
 - Results-season scoreboard.
-- Import: paste tickers / CSV. Stored in the browser — no login ("your holdings never leave your phone").
+- Import: paste tickers / CSV. Stored in the browser — no login ("your holdings stay on your phone unless you connect Telegram").
+- **Opt-in server copy:** connecting Telegram (or web push) uploads only symbols + weights, tied to that chat — needed so the server can rank and push alerts. Shown before connecting; "Disconnect & delete" removes it. Ranking for the in-app Brief still runs on the phone.
 - Notes on any card/holding → decision journal.
 
 ## 8. Research dossier (any NSE ticker)
@@ -171,7 +172,7 @@ Scoped to context; 3 suggested question chips per screen; structured answers (nu
 - **XBRL first** for results if available; PDF tables second; multimodal model for scanned PDFs.
 - **Explicit, visible feedback rules instead of learned ranking** (one user, little data, must be explainable).
 - **"What you're watching" suggested from disclosures** instead of manual thesis entry (most users never fill blank boxes).
-- **No login; portfolio stored in the browser.**
+- **No login; portfolio stored in the browser.** Opt-in server copy (symbols + weights only) when the user connects Telegram/web push, deletable any time.
 - **"Brief", not "Today"**, because the window is configurable.
 
 ## 13. Deliberately left out
