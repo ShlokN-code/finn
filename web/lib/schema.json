@@ -1,0 +1,1777 @@
+{
+  "$defs": {
+    "Alert": {
+      "additionalProperties": false,
+      "description": "A push notification decision (stored server-side to enforce budget, batching, quiet hours, dedup).",
+      "properties": {
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "channels": {
+          "items": {
+            "enum": [
+              "telegram",
+              "webpush"
+            ],
+            "type": "string"
+          },
+          "title": "Channels",
+          "type": "array"
+        },
+        "day_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'Ex-dividend today'",
+          "title": "Day Label"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "explanations": {
+          "description": "In priority order",
+          "items": {
+            "$ref": "#/$defs/MoveExplanation"
+          },
+          "title": "Explanations",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "move_pct": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Adjusted close-to-close move"
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "normal"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "sent",
+            "batched",
+            "held_quiet_hours",
+            "over_budget",
+            "suppressed",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "status_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Reason"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "trading_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For price/volume alerts (IST trading day)",
+          "title": "Trading Date"
+        },
+        "trigger": {
+          "enum": [
+            "filing",
+            "price_move",
+            "volume_spike"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        },
+        "triggered_at": {
+          "format": "date-time",
+          "title": "Triggered At",
+          "type": "string"
+        },
+        "volume_ratio": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Volume \u00f7 20-day average",
+          "title": "Volume Ratio"
+        },
+        "z_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Z Score"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "trigger",
+        "event_id",
+        "severity",
+        "title",
+        "body",
+        "triggered_at",
+        "trading_date",
+        "move_pct",
+        "z_score",
+        "volume_ratio",
+        "explanations",
+        "day_label",
+        "channels",
+        "status",
+        "status_reason"
+      ],
+      "title": "Alert",
+      "type": "object"
+    },
+    "Card": {
+      "additionalProperties": false,
+      "description": "A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.",
+      "properties": {
+        "affects_drivers": {
+          "description": "Driver labels for the \ud83d\udc41 tag",
+          "items": {
+            "type": "string"
+          },
+          "title": "Affects Drivers",
+          "type": "array"
+        },
+        "as_of": {
+          "description": "Freshness of the underlying data",
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "ask_chips": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "title": "Ask Chips",
+          "type": "array"
+        },
+        "card_type": {
+          "enum": [
+            "results",
+            "management_change",
+            "price_volume",
+            "what_to_watch",
+            "one_liner",
+            "inline_chip"
+          ],
+          "title": "Card Type",
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "headline": {
+          "title": "Headline",
+          "type": "string"
+        },
+        "id": {
+          "description": "Same as event_id (one card per event)",
+          "title": "Id",
+          "type": "string"
+        },
+        "impact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Impact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "impact_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "key_figures": {
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Key Figures",
+          "type": "array"
+        },
+        "next_action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Action"
+        },
+        "rupee_impact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "\u20b9 effect on this holding, when computable"
+        },
+        "score": {
+          "$ref": "#/$defs/ScoreBreakdown"
+        },
+        "so_what": {
+          "description": "\u226410 words",
+          "title": "So What",
+          "type": "string"
+        },
+        "sources": {
+          "description": "Source chips (first = primary filing)",
+          "items": {
+            "$ref": "#/$defs/Citation"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "timeline": {
+          "items": {
+            "$ref": "#/$defs/TimelineItem"
+          },
+          "title": "Timeline",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "event_id",
+        "symbol",
+        "card_type",
+        "category",
+        "impact",
+        "impact_reason",
+        "headline",
+        "so_what",
+        "key_figures",
+        "rupee_impact",
+        "sources",
+        "timeline",
+        "next_action",
+        "ask_chips",
+        "affects_drivers",
+        "score",
+        "as_of"
+      ],
+      "title": "Card",
+      "type": "object"
+    },
+    "Category": {
+      "description": "FINN's filing taxonomy (PRODUCT.md \u00a74 'Category treatment').",
+      "enum": [
+        "results",
+        "mna",
+        "management_change",
+        "litigation",
+        "credit_rating",
+        "pledging",
+        "capex",
+        "press_release",
+        "insider_trading",
+        "fund_raise",
+        "dividend",
+        "bonus_split",
+        "earnings_call",
+        "agm_egm",
+        "postal_ballot",
+        "investor_meetings",
+        "unclassified"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "Citation": {
+      "additionalProperties": false,
+      "description": "Where a number or claim came from. Every Figure/Claim that is not `not_found` carries one.",
+      "properties": {
+        "exchange": {
+          "anyOf": [
+            {
+              "enum": [
+                "NSE",
+                "BSE"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exchange"
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Machine locator when there is no page, e.g. 'in-capmkt:ProfitBeforeTax@OneD' or 'screener:quarters/Net Profit/Sep 2026'",
+          "title": "Locator"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "1-based PDF page",
+          "title": "Page"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the source was published (UTC)",
+          "title": "Published At"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Verbatim snippet supporting the value/claim",
+          "title": "Quote"
+        },
+        "retrieved_at": {
+          "description": "When FINN fetched it (UTC) \u2014 drives freshness stamps",
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "source_type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human title, e.g. 'Q2 FY27 earnings call transcript'",
+          "title": "Title"
+        },
+        "url": {
+          "description": "Direct link to the document (exchange PDF, XBRL, etc.)",
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_type",
+        "url",
+        "title",
+        "exchange",
+        "page",
+        "quote",
+        "locator",
+        "published_at",
+        "retrieved_at"
+      ],
+      "title": "Citation",
+      "type": "object"
+    },
+    "Claim": {
+      "additionalProperties": false,
+      "description": "A sentence of text with provenance (snapshot lines, red flags, bull/bear bullets, impact reasons).",
+      "properties": {
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/Citation"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/VerificationStatus"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "status",
+        "citations"
+      ],
+      "title": "Claim",
+      "type": "object"
+    },
+    "Dossier": {
+      "additionalProperties": false,
+      "description": "Research dossier for any NSE ticker. Primary sources only; every number/claim cited.",
+      "properties": {
+        "analyst_questions": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "title": "Analyst Questions",
+          "type": "array"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "balance_sheet": {
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "title": "Balance Sheet",
+          "type": "array"
+        },
+        "bear": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "maxItems": 3,
+          "title": "Bear",
+          "type": "array"
+        },
+        "bull": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "maxItems": 3,
+          "title": "Bull",
+          "type": "array"
+        },
+        "cash_quality": {
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "title": "Cash Quality",
+          "type": "array"
+        },
+        "credibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Management credibility score (computed in code)"
+        },
+        "headline_figures": {
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Headline Figures",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "promises": {
+          "items": {
+            "$ref": "#/$defs/Promise"
+          },
+          "title": "Promises",
+          "type": "array"
+        },
+        "red_flags": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "title": "Red Flags",
+          "type": "array"
+        },
+        "sections": {
+          "additionalProperties": {
+            "$ref": "#/$defs/DossierSection"
+          },
+          "description": "Per-section status",
+          "title": "Sections",
+          "type": "object"
+        },
+        "snapshot": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "title": "Snapshot",
+          "type": "array"
+        },
+        "sources": {
+          "description": "Every document read",
+          "items": {
+            "$ref": "#/$defs/Citation"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "template": {
+          "description": "Banks/NBFCs: NII, PPOP, PAT; no EBITDA",
+          "enum": [
+            "standard",
+            "bank",
+            "nbfc"
+          ],
+          "title": "Template",
+          "type": "string"
+        },
+        "trajectory": {
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "title": "Trajectory",
+          "type": "array"
+        },
+        "trajectory_note": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "symbol",
+        "name",
+        "template",
+        "as_of",
+        "snapshot",
+        "headline_figures",
+        "trajectory",
+        "trajectory_note",
+        "promises",
+        "credibility",
+        "cash_quality",
+        "balance_sheet",
+        "analyst_questions",
+        "red_flags",
+        "bull",
+        "bear",
+        "sections",
+        "sources"
+      ],
+      "title": "Dossier",
+      "type": "object"
+    },
+    "DossierSection": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'Not found in sources: segment revenue'",
+          "title": "Note"
+        },
+        "status": {
+          "enum": [
+            "ready",
+            "partial",
+            "not_found"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "note"
+      ],
+      "title": "DossierSection",
+      "type": "object"
+    },
+    "Driver": {
+      "additionalProperties": false,
+      "description": "Something the user watches for a holding (Level-1 relevance), suggested from disclosures.",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "description": "Slug, e.g. 'TATAPOWER:renewables-capacity'",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "Short tag shown on cards, e.g. 'Margins'",
+          "title": "Label",
+          "type": "string"
+        },
+        "promise_ids": {
+          "description": "Related Promise Ledger items",
+          "items": {
+            "type": "string"
+          },
+          "title": "Promise Ids",
+          "type": "array"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why FINN suggested it, with citation"
+        },
+        "status": {
+          "enum": [
+            "suggested",
+            "confirmed",
+            "dismissed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "label",
+        "description",
+        "status",
+        "source",
+        "promise_ids"
+      ],
+      "title": "Driver",
+      "type": "object"
+    },
+    "Event": {
+      "additionalProperties": false,
+      "description": "Filings about one real-world event, threaded into a single unit (one card in the Brief).",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "driver_ids": {
+          "description": "Drivers this event touches",
+          "items": {
+            "type": "string"
+          },
+          "title": "Driver Ids",
+          "type": "array"
+        },
+        "figures": {
+          "description": "Extracted facts, e.g. results line items",
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Figures",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "impact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Impact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "impact_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "key": {
+          "description": "Threading key, e.g. 'INFY:results:Q2 FY27' or 'HDFCBANK:management_change:2026-11-06'",
+          "title": "Key",
+          "type": "string"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For results events"
+        },
+        "started_at": {
+          "format": "date-time",
+          "title": "Started At",
+          "type": "string"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "timeline": {
+          "items": {
+            "$ref": "#/$defs/TimelineItem"
+          },
+          "title": "Timeline",
+          "type": "array"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "key",
+        "symbol",
+        "category",
+        "title",
+        "period",
+        "started_at",
+        "updated_at",
+        "timeline",
+        "figures",
+        "impact",
+        "impact_reason",
+        "driver_ids"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "EventStage": {
+      "description": "Where a filing sits in an event thread (intimation \u2192 outcome \u2192 deck \u2192 call \u2192 transcript \u2192 ad).",
+      "enum": [
+        "intimation",
+        "outcome",
+        "presentation",
+        "call",
+        "transcript",
+        "newspaper_ad",
+        "clarification",
+        "other"
+      ],
+      "title": "EventStage",
+      "type": "string"
+    },
+    "Figure": {
+      "additionalProperties": false,
+      "description": "A number with provenance. Money is float \u20b9 crore; see DECISIONS.md (float vs Decimal).",
+      "properties": {
+        "basis": {
+          "anyOf": [
+            {
+              "enum": [
+                "consolidated",
+                "standalone"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Consolidated/standalone \u2014 always set for financials",
+          "title": "Basis"
+        },
+        "check_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cross-check detail, e.g. 'screener: 49,243 (\u0394 0.00%)'",
+          "title": "Check Note"
+        },
+        "citation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Citation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "formula": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For computed figures: human-readable formula",
+          "title": "Formula"
+        },
+        "inputs": {
+          "description": "For computed figures: the sourced inputs",
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "label": {
+          "description": "e.g. 'Revenue from operations', 'EBITDA margin'",
+          "title": "Label",
+          "type": "string"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Value exactly as printed, e.g. '1,23,456.78'",
+          "title": "Raw"
+        },
+        "raw_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit as printed, e.g. 'lakh', 'million', 'crore'",
+          "title": "Raw Unit"
+        },
+        "status": {
+          "$ref": "#/$defs/VerificationStatus"
+        },
+        "unit": {
+          "$ref": "#/$defs/Unit"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Null if and only if status == not_found",
+          "title": "Value"
+        }
+      },
+      "required": [
+        "label",
+        "value",
+        "unit",
+        "period",
+        "basis",
+        "status",
+        "citation",
+        "raw",
+        "raw_unit",
+        "check_note",
+        "formula",
+        "inputs"
+      ],
+      "title": "Figure",
+      "type": "object"
+    },
+    "Filing": {
+      "additionalProperties": false,
+      "description": "One exchange announcement, as ingested. NSE and BSE copies of the same document are both kept;\nthe later one points at the first via `duplicate_of`.",
+      "properties": {
+        "attachment_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attachment Url"
+        },
+        "bse_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bse Code"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Category"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "FINN category; null until classified"
+        },
+        "category_confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category Confidence"
+        },
+        "category_source": {
+          "anyOf": [
+            {
+              "enum": [
+                "rule",
+                "model"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category Source"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Filing.id of the same document on the other exchange",
+          "title": "Duplicate Of"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "exchange": {
+          "enum": [
+            "NSE",
+            "BSE"
+          ],
+          "title": "Exchange",
+          "type": "string"
+        },
+        "exchange_category": {
+          "description": "Exchange's own label, e.g. 'Change in Management'",
+          "title": "Exchange Category",
+          "type": "string"
+        },
+        "exchange_id": {
+          "description": "NSE seq_id / BSE NEWSID",
+          "title": "Exchange Id",
+          "type": "string"
+        },
+        "filed_at": {
+          "description": "Exchange dissemination time (UTC)",
+          "format": "date-time",
+          "title": "Filed At",
+          "type": "string"
+        },
+        "hidden_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Set when routine, e.g. 'Trading-window notice'",
+          "title": "Hidden Reason"
+        },
+        "id": {
+          "description": "Stable id: '<exchange>:<exchange_id>', e.g. 'NSE:118230211'",
+          "title": "Id",
+          "type": "string"
+        },
+        "isin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Isin"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventStage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "subject": {
+          "description": "Headline / attachment text from the exchange",
+          "title": "Subject",
+          "type": "string"
+        },
+        "symbol": {
+          "description": "NSE symbol (canonical key across the app)",
+          "title": "Symbol",
+          "type": "string"
+        },
+        "xbrl_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Xbrl Url"
+        }
+      },
+      "required": [
+        "id",
+        "exchange",
+        "exchange_id",
+        "symbol",
+        "isin",
+        "bse_code",
+        "filed_at",
+        "exchange_category",
+        "subject",
+        "attachment_url",
+        "xbrl_url",
+        "category",
+        "category_source",
+        "category_confidence",
+        "stage",
+        "hidden_reason",
+        "duplicate_of",
+        "event_id"
+      ],
+      "title": "Filing",
+      "type": "object"
+    },
+    "Holding": {
+      "additionalProperties": false,
+      "description": "One portfolio position. Lives in the browser (localStorage); the server only sees it transiently.",
+      "properties": {
+        "added_at": {
+          "format": "date-time",
+          "title": "Added At",
+          "type": "string"
+        },
+        "drivers": {
+          "items": {
+            "$ref": "#/$defs/Driver"
+          },
+          "title": "Drivers",
+          "type": "array"
+        },
+        "price_alert_pct": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Per-stock override of the \u00b14% default",
+          "title": "Price Alert Pct"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shares; used for weight and \u20b9 impact",
+          "title": "Quantity"
+        },
+        "snoozed_until": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snoozed Until"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "thesis": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional Level-2 thesis line",
+          "title": "Thesis"
+        },
+        "weight_pct": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 100,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If the user pasted weights instead",
+          "title": "Weight Pct"
+        }
+      },
+      "required": [
+        "symbol",
+        "quantity",
+        "weight_pct",
+        "drivers",
+        "thesis",
+        "price_alert_pct",
+        "snoozed_until",
+        "added_at"
+      ],
+      "title": "Holding",
+      "type": "object"
+    },
+    "Impact": {
+      "description": "Level-0 relevance: effect on the company's business \u2014 not a stock call.",
+      "enum": [
+        "positive",
+        "negative",
+        "mixed",
+        "neutral"
+      ],
+      "title": "Impact",
+      "type": "string"
+    },
+    "MoveExplanation": {
+      "additionalProperties": false,
+      "properties": {
+        "citation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Citation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "enum": [
+            "filing",
+            "bulk_block_deal",
+            "sector_move",
+            "index_move",
+            "none"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "description": "e.g. 'Q2 results filed 16:05' or '\u26a0\ufe0f No disclosure explains this move'",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "citation"
+      ],
+      "title": "MoveExplanation",
+      "type": "object"
+    },
+    "Period": {
+      "additionalProperties": false,
+      "description": "A reporting period. `label` is Indian-FY style and is computed in code, never by a model.",
+      "properties": {
+        "end": {
+          "format": "date",
+          "title": "End",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "quarter",
+            "half_year",
+            "nine_months",
+            "year",
+            "ttm",
+            "instant"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "description": "e.g. 'Q2 FY27' (Jul\u2013Sep 2026), 'FY26', 'H1 FY27', '30 Sep 2026'",
+          "title": "Label",
+          "type": "string"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start"
+        }
+      },
+      "required": [
+        "kind",
+        "start",
+        "end",
+        "label"
+      ],
+      "title": "Period",
+      "type": "object"
+    },
+    "Promise": {
+      "additionalProperties": false,
+      "description": "A forward-looking management statement and what happened to it (Promise Ledger).\nExported to TypeScript as `MgmtPromise` to avoid shadowing the built-in JS `Promise`.",
+      "properties": {
+        "delivered": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "due": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "made_in": {
+          "$ref": "#/$defs/Citation",
+          "description": "Transcript/deck with page and verbatim quote"
+        },
+        "made_on": {
+          "format": "date",
+          "title": "Made On",
+          "type": "string"
+        },
+        "metric": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'EBITDA margin', 'capacity (GW)'",
+          "title": "Metric"
+        },
+        "speaker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speaker"
+        },
+        "statement": {
+          "description": "Short normalised statement, e.g. 'EBITDA margin 20\u201322% in FY27'",
+          "title": "Statement",
+          "type": "string"
+        },
+        "superseded_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Promise.id that moved the goalposts",
+          "title": "Superseded By"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "target_high": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target High"
+        },
+        "target_low": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Low"
+        },
+        "target_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Unit"
+        },
+        "verdict": {
+          "enum": [
+            "kept",
+            "missed",
+            "goalposts_moved",
+            "quietly_dropped",
+            "pending",
+            "unverifiable"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        },
+        "verdict_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "statement",
+        "made_in",
+        "made_on",
+        "speaker",
+        "metric",
+        "target_low",
+        "target_high",
+        "target_unit",
+        "due",
+        "verdict",
+        "verdict_reason",
+        "delivered",
+        "superseded_by"
+      ],
+      "title": "MgmtPromise",
+      "type": "object"
+    },
+    "ScoreBreakdown": {
+      "additionalProperties": false,
+      "description": "score = category_weight \u00d7 position_weight \u00d7 relevance \u00d7 novelty \u00d7 surprise ('Why is this #1?').",
+      "properties": {
+        "category_weight": {
+          "title": "Category Weight",
+          "type": "number"
+        },
+        "notes": {
+          "description": "e.g. 'Touches confirmed driver: Margins'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        },
+        "novelty": {
+          "title": "Novelty",
+          "type": "number"
+        },
+        "position_weight": {
+          "title": "Position Weight",
+          "type": "number"
+        },
+        "relevance": {
+          "title": "Relevance",
+          "type": "number"
+        },
+        "surprise": {
+          "title": "Surprise",
+          "type": "number"
+        },
+        "total": {
+          "title": "Total",
+          "type": "number"
+        }
+      },
+      "required": [
+        "category_weight",
+        "position_weight",
+        "relevance",
+        "novelty",
+        "surprise",
+        "total",
+        "notes"
+      ],
+      "title": "ScoreBreakdown",
+      "type": "object"
+    },
+    "Series": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "anyOf": [
+            {
+              "enum": [
+                "consolidated",
+                "standalone"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "points": {
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Points",
+          "type": "array"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "unit",
+        "basis",
+        "points"
+      ],
+      "title": "Series",
+      "type": "object"
+    },
+    "SourceType": {
+      "enum": [
+        "exchange_filing",
+        "xbrl",
+        "annual_report",
+        "concall_transcript",
+        "investor_presentation",
+        "screener_table",
+        "price_feed",
+        "web_profile"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    },
+    "TimelineItem": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "filing_id": {
+          "title": "Filing Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "stage": {
+          "$ref": "#/$defs/EventStage"
+        }
+      },
+      "required": [
+        "stage",
+        "filing_id",
+        "at",
+        "label"
+      ],
+      "title": "TimelineItem",
+      "type": "object"
+    },
+    "Unit": {
+      "enum": [
+        "INR_CR",
+        "INR",
+        "INR_PER_SHARE",
+        "PCT",
+        "X",
+        "DAYS",
+        "COUNT",
+        "SHARES"
+      ],
+      "title": "Unit",
+      "type": "string"
+    },
+    "VerificationStatus": {
+      "enum": [
+        "verified",
+        "unverified",
+        "not_found"
+      ],
+      "title": "VerificationStatus",
+      "type": "string"
+    }
+  },
+  "title": "FinnContracts"
+}
