@@ -2,9 +2,9 @@
 
 Your portfolio's editor for Indian equities (NSE/BSE): it reads every filing, price move and transcript, and shows only what changes your view — with proof.
 
-Built for the ENAM AI Engineer Build Challenge. Product spec: [docs/PRODUCT.md](docs/PRODUCT.md) · Decisions: [docs/DECISIONS.md](docs/DECISIONS.md) · Data sources: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md)
+Built for the ENAM AI Engineer Build Challenge. Product spec: [docs/PRODUCT.md](docs/PRODUCT.md) · Decisions: [docs/DECISIONS.md](docs/DECISIONS.md) · Data sources: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) · Deploy: [docs/DEPLOY.md](docs/DEPLOY.md)
 
-> Status: skeleton. Data sources verified, contracts defined, web → API → database deployed. No product features yet.
+> Status: skeleton. Data sources verified, contracts defined, web → API → database path built (dashboard setup in DEPLOY.md). No product features yet.
 
 ## Layout
 
