@@ -64,7 +64,8 @@ for sym, code in codes.items():
     res.check(f"{sym}: AnnSubCategoryGetData 30d", bool(rows),
               f"HTTP {r.status_code}, {r.headers.get('content-type', '').split(';')[0]}, {len(rows)} rows")
 
-# 3) Attachment
+# 3) Attachment (if announcements were blocked, still test a known PDF: screener's document links point here)
+first_att = first_att or "bab324f6-6fab-42fc-8b79-a3881f4fb7c7.pdf"  # RELIANCE, 06-Nov-2026
 if first_att:
     for base in ("https://www.bseindia.com/xml-data/corpfiling/AttachLive/",
                  "https://www.bseindia.com/xml-data/corpfiling/AttachHis/"):

@@ -98,4 +98,14 @@ for x in ann_reports + [l for c in concalls for l in c["links"]]:
     hosts[h] = hosts.get(h, 0) + 1
 log(f"  document link hosts: {hosts}")
 
+# Can we fetch a transcript that screener links to? (Most point to BSE; BSE may block datacenter IPs.)
+from _common import bse_session  # noqa: E402
+
+t_link = next((lk["href"] for c in concalls for lk in c["links"] if lk["kind"].lower().startswith("transcript")
+               and "bseindia.com" in (lk["href"] or "")), None)
+if t_link:
+    pr = polite_get(bse_session(), t_link, headers={"Accept": "application/pdf,*/*"})
+    res.check("screener-linked BSE transcript PDF downloads", pr.ok and pr.content[:4] == b"%PDF",
+              f"HTTP {pr.status_code}, {len(pr.content)} bytes ({t_link[:70]}...)")
+
 res.finish()
