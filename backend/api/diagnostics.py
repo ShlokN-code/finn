@@ -21,6 +21,9 @@ FINN_UA = "FINN-research/0.1 (+https://github.com/ShlokN-code/finn)"
 NSE_GAP_S = 2.5
 # A known BSE attachment (RELIANCE, 06-Nov-2026) — screener's document links point to files like this.
 BSE_PDF = "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bab324f6-6fab-42fc-8b79-a3881f4fb7c7.pdf"
+# Known NSE archive files, used when the announcements API is blocked (it returns no URLs then).
+NSE_PDF = "https://nsearchives.nseindia.com/corporate/kavinavora_06112026191022_Pre_CLSA_SE_06112026.pdf"
+NSE_XBRL = "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1745057_23102026082111_WEB.xml"
 
 _lock = threading.Lock()
 _cache: dict | None = None
@@ -89,11 +92,19 @@ def run_probes() -> dict:
         return bool(rows), r.status_code, f"{len(rows)} rows"
 
     def nse_pdf():
-        if not pdf_url:
-            return False, None, "no attachment URL (announcements failed or empty)"
         time.sleep(1.5)
-        r = nse.get(pdf_url[0], timeout=20)
+        r = nse.get(pdf_url[0] if pdf_url else NSE_PDF, timeout=20)
         return r.ok and r.content[:4] == b"%PDF", r.status_code, f"{len(r.content)} bytes"
+
+    def nse_pdf_plain():
+        # Same archive file without cookies or a browser UA (what a minimal fetcher would send).
+        r = requests.get(NSE_PDF, timeout=20, headers={"User-Agent": FINN_UA})
+        return r.ok and r.content[:4] == b"%PDF", r.status_code, f"{len(r.content)} bytes"
+
+    def nse_xbrl():
+        time.sleep(1.5)
+        r = nse.get(NSE_XBRL, timeout=30)
+        return r.ok and r.content.lstrip()[:5] == b"<?xml", r.status_code, f"{len(r.content)} bytes"
 
     def nse_equity_list():
         time.sleep(1.5)
