@@ -28,6 +28,7 @@ The free Render instance can take up to ~50 s to wake; `keepalive` pings it ever
 | `backend/spikes/` | Standalone data-source probes (see DATA_SOURCES.md) |
 | `backend/db/migrations/` | SQL run in Supabase |
 | `.github/workflows/` | `ci` · `keepalive` · `spike-ci` |
+| `scripts/` | Dev utilities (`transcript_to_md.py` for AI logs) |
 
 ## Run locally
 
@@ -64,6 +65,17 @@ cd web && npm run gen:schema && npm run gen:types
 ```
 
 CI fails if `web/lib/schema.json` or `web/lib/types.ts` is stale.
+
+## AI logs
+
+Each phase's Claude Code session is saved as readable markdown in `docs/ai-logs/` (the desktop app has no export).
+At the end of a session, from the repo root:
+
+```bash
+python3 scripts/transcript_to_md.py --out docs/ai-logs/phase-N-name.md --title "Phase N — name" --summary "What the phase delivered"
+```
+
+It picks the newest transcript for this repo in `~/.claude/projects/`, keeps messages, replies and one-line tool summaries, and exits 2 if it finds emails, local paths or secret-like strings — review before committing (the repo is public).
 
 ## Evals
 
