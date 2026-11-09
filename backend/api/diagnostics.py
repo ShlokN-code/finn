@@ -151,6 +151,8 @@ def run_probes() -> dict:
         ("nse_announcements", nse_announcements),
         ("nse_corporate_actions", nse_corporate_actions),
         ("nse_attachment_pdf", nse_pdf),
+        ("nse_attachment_pdf_plain", nse_pdf_plain),
+        ("nse_xbrl_file", nse_xbrl),
         ("nse_equity_list", nse_equity_list),
         ("bse_announcements", bse_announcements),
         ("bse_attachment_pdf", bse_pdf),
