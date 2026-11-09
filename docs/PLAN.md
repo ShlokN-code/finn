@@ -1,8 +1,7 @@
-# Plan
+# Plan — backlog of agreed items
 
-Work items agreed but not yet built. Product scope lives in PRODUCT.md; reasons live in DECISIONS.md.
-
-> No phase breakdown existed in the repo when this file was created (10 Nov 2026). Items below are grouped by when they were agreed to happen; merge them into the full phase plan when it is written down.
+Work agreed in sessions but not yet built. Tick an item (`- [x]`, with the commit hash) when it is done and verified; don't delete it.
+Product scope lives in PRODUCT.md; reasons live in DECISIONS.md. The phase breakdown is kept outside the repo — each phase's prompt arrives at the start of its session.
 
 ## Start of next phase
 

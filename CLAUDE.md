@@ -10,6 +10,7 @@ FINN is a mobile-first financial investment agent for Indian equities (NSE/BSE).
 - **Thin-but-working beats broad-but-broken.** Get one path working end to end before widening. Never leave the deployed app broken.
 - **Ask when a decision is mine.** Product or UX choices, anything affecting the spec, anything costing money: ask. Implementation details: decide and tell me.
 - **When you make a meaningful technical decision, add a short entry to `docs/DECISIONS.md`** (context → decision → alternatives → why).
+- **`docs/PLAN.md` is the backlog of agreed items.** Add items when they're agreed; tick them off (with the commit hash) when done and verified. Each phase's prompt comes from me at the start of its session — check PLAN.md for items due in that phase.
 - Small, focused commits with clear messages.
 
 ## Non-negotiable rules
