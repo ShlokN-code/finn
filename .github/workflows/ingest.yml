@@ -6,14 +6,15 @@ on:
   schedule:
     - cron: "0 11 * * 1-5"      # 16:30 IST — daily post-close ingest
     - cron: "*/30 3-16 * * 1-5"  # every 30 min, 08:30–22:00 IST — filing checks (script gates the window)
+    - cron: "30 1 * * *"         # 07:00 IST daily — release alerts held during quiet hours
   workflow_dispatch:
     inputs:
       job:
-        description: "daily | filings | results | snapshot | migrate"
+        description: "daily | filings | results | alerts | snapshot | migrate"
         required: true
         default: daily
         type: choice
-        options: [daily, filings, results, snapshot, migrate]
+        options: [daily, filings, results, alerts, snapshot, migrate]
       symbols:
         description: "Comma-separated NSE symbols (default: demo portfolio)"
         required: false
@@ -47,6 +48,9 @@ jobs:
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       GEMINI_MODEL_CHEAP: ${{ vars.GEMINI_MODEL_CHEAP }}
       GEMINI_MODEL_STRONG: ${{ vars.GEMINI_MODEL_STRONG }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      WEB_BASE_URL: ${{ vars.WEB_BASE_URL }}
       FINN_CACHE_DIR: ${{ github.workspace }}/backend/.cache
       PYTHONUNBUFFERED: "1"
       # Dispatch inputs go through env, never interpolated into shell (script-injection safe).
@@ -74,6 +78,7 @@ jobs:
         run: |
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then job="$IN_JOB";
           elif [ "$SCHEDULE" = "0 11 * * 1-5" ]; then job=daily;
+          elif [ "$SCHEDULE" = "30 1 * * *" ]; then job=alerts;
           else job=filings; fi
           echo "job=$job" >> "$GITHUB_OUTPUT"
           echo "::notice title=ingest::job=$job"
@@ -93,6 +98,9 @@ jobs:
         run: |
           days="$IN_BACKFILL"; if [ "$days" = "0" ]; then days=45; fi
           python -m jobs.results --symbols "$IN_SYMBOLS" --days "$days"
+      - name: alerts
+        if: steps.pick.outputs.job == 'alerts'
+        run: python -m jobs.alerts
       - name: snapshot
         if: steps.pick.outputs.job == 'snapshot'
         run: python -m jobs.snapshot --date "$IN_DATE" --symbols "$IN_SYMBOLS"

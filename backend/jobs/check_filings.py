@@ -17,6 +17,7 @@ from finn.db import connect
 from finn.ingest import pipeline as p
 from finn.portfolio import tracked_symbols
 from finn.sources import nse
+from jobs.alerts import step_alerts
 
 WINDOW = (time(8, 30), time(22, 0))
 
@@ -43,6 +44,7 @@ def main() -> None:
         run.step("thread", p.step_thread, symbols)
         run.step("results_fetch", p.step_results_fetch, s, symbols)
         run.step("results_build", p.step_results_build, symbols)
+        run.step("alerts", step_alerts)
 
 
 if __name__ == "__main__":

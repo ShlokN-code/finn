@@ -20,6 +20,7 @@ from finn.push import subscriptions as subs
 from finn.signals.price_volume import INDEX_TICKERS
 from finn.signals.run import step_signals
 from finn.sources import nse
+from jobs.alerts import step_alerts
 
 
 def main() -> None:
@@ -56,6 +57,7 @@ def main() -> None:
         if is_trading_day(today) and not args.skip_prices:
             settings = [subs.settings_of(x) for x in subs.all_subscriptions(conn)]
             run.step("signals", step_signals, symbols, today, settings)
+        run.step("alerts", step_alerts)
 
 
 if __name__ == "__main__":
