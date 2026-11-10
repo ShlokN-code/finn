@@ -40,8 +40,10 @@ def instance(qe: date, values_cr: dict[str, float], decimals: str = "-7") -> byt
   <xbrli:segment><xbrldi:explicitMember dimension="a">b</xbrldi:explicitMember></xbrli:segment></xbrli:entity>
   <xbrli:period><xbrli:startDate>{qs}</xbrli:startDate><xbrli:endDate>{qe}</xbrli:endDate></xbrli:period>
  </xbrli:context>
- <in-capmkt:NatureOfReportStandaloneConsolidated contextRef="OneD">Consolidated</in-capmkt:NatureOfReportStandaloneConsolidated>
- <in-capmkt:RevenueFromOperations contextRef="Seg" unitRef="INR" decimals="-7">10000000</in-capmkt:RevenueFromOperations>
+ <in-capmkt:NatureOfReportStandaloneConsolidated contextRef="OneD">Consolidated
+ </in-capmkt:NatureOfReportStandaloneConsolidated>
+ <in-capmkt:RevenueFromOperations contextRef="Seg" unitRef="INR" decimals="-7">10000000
+ </in-capmkt:RevenueFromOperations>
  {facts}
 </xbrli:xbrl>""".encode()
 
