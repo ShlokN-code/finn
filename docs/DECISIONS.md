@@ -138,3 +138,49 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Cost:** NBFCs that issue NCDs weekly (BAJFINANCE) now produce a fund-raise one-liner each time; the Brief's ranking and feedback weights must keep these low.
 - **Alternatives:** keep routine-first ordering (cleaner Brief, but results ads and subsidiary IPOs vanish into the drawer).
 
+
+## 2026-11-10 · Ranking lives only in Python; the phone sends holdings per request
+- **Context:** Telegram alerts need ranking on the server; the spec had the in-app Brief ranking on the phone. Two implementations would drift.
+- **Decision (product owner):** one implementation in `finn/ranking/`. The phone POSTs symbols + weights and its feedback rules to `/brief`; the API ranks and stores nothing (no request-body logging). Share quantities never leave the phone, so ₹ impact is computed there from the card's move %.
+- **Wording everywhere:** "Holdings are used only to rank your Brief and are never stored, unless you turn on Telegram alerts."
+- **Alternatives:** a TypeScript port with shared test vectors (two copies to keep in sync).
+
+## 2026-11-10 · Ranking constants
+- `score = category_weight × position_weight × relevance × novelty × surprise`; each factor is explained in `ScoreBreakdown.notes` ("Why is this #1?").
+- **Category base:** results 1.0 · M&A 0.95 · management change 0.9 · credit rating 0.8 (downgrade 0.9, upgrade/reaffirm 0.5) · litigation 0.8 · pledging 0.8 (decrease 0.4) · price/volume 0.7 · capex 0.6 · press release 0.5 · insider trade 0.5 · fund raise 0.4 · dividend / bonus-split 0.3 · call / AGM / postal ballot 0.25 · hidden categories 0.
+- **Position:** `0.40 + 0.285·√weight%`, capped 1.8 (≈0.80 at 2 %, ≈1.50 at 15 %, as the spec sketches); not held 0.4.
+- **Relevance (Level 0):** positive/negative 1.2, mixed 1.1, neutral 0.8, untagged 1.0; Level-1 driver hit ×1.5 (hook; drivers arrive with the Promise Ledger).
+- **Novelty:** event started inside the window 1.0; otherwise the most substantive filing inside the window (outcome 1.0, deck/call/transcript 0.6, intimation 0.5, ad/clarification 0.3). Same symbol+category repeats within 30 days ×0.5 each (floor 0.125) — BAJFINANCE's weekly NCD allotments sink instead of each looking like news.
+- **Surprise:** results: `1 + min(1, |PAT YoY − mean of the 4 prior quarters' PAT YoY| / 20 pp)` from screener's 13 quarters; price/volume: `clamp(|z|/2, 1, 2)`; others 1.0. Guidance deviation is a hook for the Promise Ledger.
+- **Feedback:** ×0.8 per "not useful" at the chosen scope (stock / category / stock+category / this event), ×1.25 per "useful", bounded [0.1, 2.0]; critical categories (results, M&A, management change, rating downgrade) never fall below 0.5× base. Rules are visible objects (`WeightRule`) with Reset.
+- **Why these numbers:** hand-set and explainable; tests pin the spec's examples (position curve points, a big event in a small holding beating a small event in a big one).
+
+## 2026-11-10 · Results card: operating EBITDA, three verification states
+- **EBITDA = profit before exceptional items and tax + finance costs + D&A − other income.** Other income (treasury yield, dividends) and one-off exceptional items are excluded, so EBITDA reflects operations and equals screener's "Operating Profit" (Sales − Expenses) — which makes it cross-checkable. When only PBT is reported, exceptional items are added back from their own line. Banks: NII = interest earned − interest expended, PPOP as reported. NBFCs: NII = interest income − finance costs, PPOP = PBT + impairment on financial instruments.
+- **Verification:** every line of each quarter is compared with screener's quarterly table with a tolerance summed from the sources' rounding (XBRL `decimals`, screener's whole crore). States: **cross_checked** (all agree + sanity checks pass), **pending** (screener hasn't published the quarter yet — numbers shown, labelled, re-checked every run), **mismatch** (any disagreement or failed sanity check → "Couldn't verify — open filing", no numbers, no impact tag). Margins, QoQ and YoY are verified only when every input is.
+- **Sanity checks:** revenue > 0; EBITDA margin within −50…80 %; revenue + other income − expenses reconciles to PBT before exceptional items.
+- **Order of sources:** XBRL (three filings) → results-PDF table (text layer; the PDF lands ~4 h before the XBRL — INFY 16:08 vs 20:16) → multimodal model for scanned PDFs. PDF-sourced cards upgrade to XBRL when it's filed (no re-alert).
+- **Level-0 impact for results is decided in code:** revenue (NII for lenders) and PAT YoY both up → positive, both down → negative, else mixed.
+
+## 2026-11-10 · Price/volume signals
+- Moves from Yahoo `adj_close`; ex-dates and labels from NSE corporate actions. If on a bonus/split/large-dividend ex-date Yahoo hasn't restated history yet (the day's ratio sits closer to the mechanical factor than to 1), the factor is divided out and only the residual is tested; volume ratio is corrected the same way.
+- Triggers per user settings: |move| ≥ threshold (per-stock override), and with volatility-aware on also |z| ≥ 2 (σ of the previous 60 sessions); sector-relative tests stock − sector index; volume ≥ N× the previous 20 sessions' mean.
+- Sector index: Nifty sector indices on Yahoo mapped from NSE's `smIndustry` (names without an industry mapped by hand); fallback Nifty 50. Thin Yahoo series (Defence, Healthcare, Consumer Durables) are not used.
+- Explanation chain: the most substantive material filing since the previous close (outcome before deck/ad) → the day's largest bulk/block deal → sector or index moved the same way by ≥ half the stock's move → "⚠️ No disclosure explains this move".
+- One synthetic `price_volume` event per stock per day; re-threading never deletes them.
+
+## 2026-11-10 · Alerts: dispatch rules
+- Per subscriber, per new event on their holdings (and only events after they connected): push category → snooze → feedback (non-critical events scoring < 0.2 after "not useful" stay in the Brief) → quiet hours 22:00–07:00 IST (critical = results, M&A, management change, rating downgrade break through) → budget 5 messages / IST day (critical not counted; overflow `over_budget`, stays in the Brief) → batching (≥ 2 normal alerts in one run → one "N updates on your holdings" message counting once).
+- Results are pushed once their numbers are built, or 6 h after the outcome regardless.
+- One `alerts` row per (subscriber, event): reruns never resend; quiet-hours holds are reconsidered by the 07:00 IST cron.
+
+## 2026-11-10 · Telegram connection
+- Bare `/start` (no token) subscribes the chat to the demo portfolio (equal weights), says so, and sends a test alert (product owner). `/start <token>` uses the holdings the web uploaded; tokens are single-use, 15 minutes, stored hashed. The browser keeps a subscriber secret (stored hashed) to update or delete its server copy; `/stop` deletes everything.
+- Webhook calls are rejected unless they carry `TELEGRAM_WEBHOOK_SECRET`. Group chats are ignored.
+
+## 2026-11-10 · Management-change profiles; Tavily optional
+- The cheap model copies the profile as printed (roles, periods, qualifications, quotes); code parses years, decides insider (an earlier role at this company or "associated with the company since…"), computes the outgoing person's tenure, and drops anything whose quote isn't in the filing text.
+- Web enrichment via Tavily (product owner): snippets only, LinkedIn and social sites excluded, items must quote a snippet, shown as "web · unverified". Without `TAVILY_API_KEY`, or on quota/errors, the card ships from the filing alone (`web_enrichment = unavailable`) and a later run retries.
+
+## 2026-11-10 · Level-0 tags and one-liners
+- One cheap-model call per non-results, non-price event (≤ 25 per run): impact, ≤ 20-word reason with a verbatim quote, ≤ 10-word so-what, category facts as printed. Code checks the quote against the PDF text (unverified if absent), parses amounts (no unit → no figure), and decides rating up/down on a coded scale and pledge increase/decrease. Dividend/bonus/split chips come from NSE corporate actions with no model.

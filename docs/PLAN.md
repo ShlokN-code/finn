@@ -41,6 +41,23 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [ ] **Rules:** press releases announcing results or new facilities without the words "results"/"capacity" fall to `press_release` (2 eval misses, PERSISTENT).
 - [ ] **Backfill older filings** in daily slices if the Brief or calendar needs more than 120 days.
 
+## Phase 2 — ranking, cards, alerts, Telegram (10–11 Nov 2026)
+
+- [x] Contracts (card details, `WeightRule`, `AlertSettings`), migration 0003, privacy wording — `2866877`
+- [x] Results from three XBRL filings + screener cross-check (cross_checked / pending / mismatch), operating EBITDA, bank/NBFC templates — `4a1f183`, `57f8d22`
+- [x] Results PDF fallback (text table → multimodal for scans) — `c731f53`
+- [x] Ranking + feedback rules + `/brief` + card builder — `6cdadca`, novelty fix `e45cd32`
+- [x] Telegram bot (/start [token], /stop, Snooze), `/telegram/link`, webhook, test alert — `6cdadca`, `d1d2073`
+- [x] Price/volume signals with ex-date handling, sector-relative, explanations — `839579c`
+- [x] Alert dispatch: budget, batching, quiet hours, snooze, idempotent — `38e43f4`
+- [x] Level-0 tags, one-liners, chips, management profiles (+ optional Tavily) — `4de7ecf`
+- [x] Web: reusable card components, `/e/<id>`, `/connect` — `e45cd32`
+- [ ] **Acceptance 1:** dispatch `results` on Actions for COCHINSHIP, TATASTEEL, DIVISLAB, HDFCBANK (bank), BAJFINANCE (NBFC), TRENT/POLYCAB (outside demo) → check numbers by hand against the PDFs; confirm ✓ or explain each mismatch.
+- [ ] **Acceptance 2:** create the bot (DEPLOY.md §4), run `jobs.telegram_setup`, `/start` → test alert on the product owner's phone; Snooze and Open in FINN work.
+- [ ] Verify XBRL element names for banks and NBFCs on real instances (PAT/PBT candidates in `compute.ELEMENTS`).
+- [ ] `TAVILY_API_KEY` when the product owner signs up (cards already work without it).
+- [ ] Older results XBRL (≤ Dec-2024, `corporates-financial-results`) — only needed for year-ago comparisons before Mar-2025.
+
 ## Phase 5
 
 - [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.
