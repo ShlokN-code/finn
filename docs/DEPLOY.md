@@ -181,3 +181,21 @@ Tell Claude once the jobs are saved: the `ingest_runs` table records `trigger = 
 GitHub's run list shows them as `workflow_dispatch`. A plain manual **Run workflow** from GitHub's UI still forces a
 filings run outside the window and never skips; the scheduler's `"scheduled":"true"` makes a run respect the window
 and skip a slot that already ran.
+
+## 7. Research dossiers (Phase 3) — ~3 min on Render
+
+Dossier builds run in a background thread inside the API process, so Render needs the model keys and one flag.
+
+1. Render → `finn-api` → **Settings** → **Start Command** → `uvicorn api.main:app --host 0.0.0.0 --port $PORT --workers 1` → **Save**. (One process, so exactly one build worker; 512 MB allows one build at a time.)
+2. **Environment** → add:
+   | Key | Value |
+   |---|---|
+   | `RESEARCH_WORKER` | `1` |
+   | `GEMINI_API_KEY` | same as the GitHub secret |
+   | `GEMINI_MODEL_CHEAP` | `gemini-3.5-flash-lite` |
+   | `GEMINI_MODEL_STRONG` | `gemini-3.8-flash` |
+   | `GEMINI_MODEL_STRONG_FALLBACKS` | the Gemini 3 Flash and 2.5 Flash ids, comma-separated (`python -m finn.llm.check` lists them) |
+   | `GROQ_API_KEY` | same as the GitHub secret (Ask fallback only) |
+3. **Save, rebuild and deploy**. Check: `https://<render-url>/research/POLYCAB` returns JSON with `"symbol": "POLYCAB"`.
+
+A restart or deploy mid-build is safe: the job's heartbeat stops, it goes back to the queue after 3 minutes, and every stage is cached in Supabase, so the rerun is quick. The daily cap on new dossiers is `RESEARCH_DAILY_BUILDS` (default 15).

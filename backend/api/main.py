@@ -4,6 +4,7 @@ GET /health     — liveness (no DB), used by keep-alive pings.
 GET /health/db  — reads one row from Supabase Postgres to prove web → API → DB.
 GET|HEAD /ping  — keepalive: SELECT 1 on Supabase, plain-text 'ok', never compressed (cron-job.org).
 GET /health/sources — can this server reach NSE/BSE/screener? (cached 15 min)
+/research/*     — dossiers, build jobs, Ask (api/research.py)
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ from __future__ import annotations
 import logging
 import os
 import time
+from contextlib import asynccontextmanager
 
 import psycopg
 from fastapi import FastAPI
@@ -19,11 +21,26 @@ from fastapi.responses import JSONResponse, PlainTextResponse
 
 from api.diagnostics import get_probes
 from api.push import router as push_router
+from api.research import router as research_router
 from finn import __version__
 
 log = logging.getLogger("finn.api")
-app = FastAPI(title="FINN API", version=__version__)
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    # Research builds run in a background thread of this process — only where RESEARCH_WORKER=1 (Render, started
+    # with --workers 1), never in tests or a second uvicorn worker.
+    if os.environ.get("RESEARCH_WORKER") == "1":
+        from finn.research.jobs import Worker
+
+        Worker.start_once()
+    yield
+
+
+app = FastAPI(title="FINN API", version=__version__, lifespan=lifespan)
 app.include_router(push_router)
+app.include_router(research_router)
 
 _origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()]
 if _origins:

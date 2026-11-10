@@ -1,4 +1,4 @@
-"""Core FINN contracts: Filing, Event, Card, Alert, Holding, Driver, Promise, Dossier.
+"""Core FINN contracts: Filing, Event, Card, Alert, Holding, Driver (research contracts: finn/models/research.py).
 
 Pydantic is the source of truth; web/lib/types.ts is generated from these (see scripts/gen_types).
 """
@@ -9,7 +9,7 @@ from datetime import date
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, ConfigDict, Field, field_validator
+from pydantic import AwareDatetime, Field, field_validator
 
 from finn.models.common import (
     Basis,
@@ -373,52 +373,4 @@ class AlertSettings(Model):
 # ---------------------------------------------------------------------------------------------
 
 
-class Promise(Model):
-    """A forward-looking management statement and what happened to it (Promise Ledger).
-    Exported to TypeScript as `MgmtPromise` to avoid shadowing the built-in JS `Promise`."""
-
-    model_config = ConfigDict(title="MgmtPromise")  # merged with Model.model_config
-
-    id: str
-    symbol: str
-    statement: str = Field(description="Short normalised statement, e.g. 'EBITDA margin 20–22% in FY27'")
-    made_in: Citation = Field(description="Transcript/deck with page and verbatim quote")
-    made_on: date
-    speaker: str | None = None
-    metric: str | None = Field(None, description="e.g. 'EBITDA margin', 'capacity (GW)'")
-    target_low: float | None = None
-    target_high: float | None = None
-    target_unit: str | None = None
-    due: Period | None = None
-    verdict: Literal["kept", "missed", "goalposts_moved", "quietly_dropped", "pending", "unverifiable"]
-    verdict_reason: Claim | None = None
-    delivered: Figure | None = None
-    superseded_by: str | None = Field(None, description="Promise.id that moved the goalposts")
-
-
-class DossierSection(Model):
-    status: Literal["ready", "partial", "not_found"]
-    note: str | None = Field(None, description="e.g. 'Not found in sources: segment revenue'")
-
-
-class Dossier(Model):
-    """Research dossier for any NSE ticker. Primary sources only; every number/claim cited."""
-
-    symbol: str
-    name: str
-    template: Literal["standard", "bank", "nbfc"] = Field(description="Banks/NBFCs: NII, PPOP, PAT; no EBITDA")
-    as_of: AwareDatetime
-    snapshot: list[Claim] = Field(default_factory=list)
-    headline_figures: list[Figure] = Field(default_factory=list)
-    trajectory: list[Series] = Field(default_factory=list)
-    trajectory_note: Claim | None = None
-    promises: list[Promise] = Field(default_factory=list)
-    credibility: Figure | None = Field(None, description="Management credibility score (computed in code)")
-    cash_quality: list[Series] = Field(default_factory=list)
-    balance_sheet: list[Series] = Field(default_factory=list)
-    analyst_questions: list[Claim] = Field(default_factory=list)
-    red_flags: list[Claim] = Field(default_factory=list)
-    bull: list[Claim] = Field(default_factory=list, max_length=3)
-    bear: list[Claim] = Field(default_factory=list, max_length=3)
-    sections: dict[str, DossierSection] = Field(default_factory=dict, description="Per-section status")
-    sources: list[Citation] = Field(default_factory=list, description="Every document read")
+# Promise Ledger and Dossier contracts live in finn/models/research.py.

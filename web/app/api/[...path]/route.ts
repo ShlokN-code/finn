@@ -11,6 +11,12 @@ const ALLOWED: [string, RegExp][] = [
   ["GET", /^subscriptions\/me$/],
   ["PUT", /^subscriptions\/me$/],
   ["DELETE", /^subscriptions\/me$/],
+  // Research (Phase 3): builds run in the background on the API, so every call here returns quickly.
+  ["GET", /^research\/symbols$/],
+  ["GET", /^research\/jobs\/\d+$/],
+  ["GET", /^research\/[A-Za-z0-9&_-]{1,20}$/],
+  ["POST", /^research\/[A-Za-z0-9&_-]{1,20}\/build$/],
+  ["POST", /^research\/[A-Za-z0-9&_-]{1,20}\/ask$/],
 ];
 
 async function proxy(req: Request, ctx: RouteContext<"/api/[...path]">) {

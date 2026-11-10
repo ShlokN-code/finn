@@ -267,6 +267,130 @@
       "title": "AlertSettings",
       "type": "object"
     },
+    "AnalystsSection": {
+      "additionalProperties": false,
+      "properties": {
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        },
+        "points": {
+          "items": {
+            "$ref": "#/$defs/PressurePoint"
+          },
+          "title": "Points",
+          "type": "array"
+        }
+      },
+      "required": [
+        "meta",
+        "points"
+      ],
+      "title": "AnalystsSection",
+      "type": "object"
+    },
+    "AskAnswer": {
+      "additionalProperties": false,
+      "properties": {
+        "answer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Status 'not_found' \u2192 'Not found in sources'"
+        },
+        "figures": {
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Figures",
+          "type": "array"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "resume_after": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume After"
+        },
+        "status": {
+          "enum": [
+            "answered",
+            "not_found",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "question",
+        "answer",
+        "figures",
+        "resume_after",
+        "model"
+      ],
+      "title": "AskAnswer",
+      "type": "object"
+    },
+    "BullBearSection": {
+      "additionalProperties": false,
+      "properties": {
+        "bear": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "maxItems": 3,
+          "title": "Bear",
+          "type": "array"
+        },
+        "bull": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "maxItems": 3,
+          "title": "Bull",
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        }
+      },
+      "required": [
+        "meta",
+        "bull",
+        "bear"
+      ],
+      "title": "BullBearSection",
+      "type": "object"
+    },
     "Card": {
       "additionalProperties": false,
       "description": "A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.",
@@ -708,172 +832,179 @@
       "title": "Claim",
       "type": "object"
     },
-    "Dossier": {
+    "Credibility": {
       "additionalProperties": false,
-      "description": "Research dossier for any NSE ticker. Primary sources only; every number/claim cited.",
       "properties": {
-        "analyst_questions": {
-          "items": {
-            "$ref": "#/$defs/Claim"
-          },
-          "title": "Analyst Questions",
-          "type": "array"
-        },
-        "as_of": {
-          "format": "date-time",
-          "title": "As Of",
-          "type": "string"
-        },
-        "balance_sheet": {
-          "items": {
-            "$ref": "#/$defs/Series"
-          },
-          "title": "Balance Sheet",
-          "type": "array"
-        },
-        "bear": {
-          "items": {
-            "$ref": "#/$defs/Claim"
-          },
-          "maxItems": 3,
-          "title": "Bear",
-          "type": "array"
-        },
-        "bull": {
-          "items": {
-            "$ref": "#/$defs/Claim"
-          },
-          "maxItems": 3,
-          "title": "Bull",
-          "type": "array"
-        },
-        "cash_quality": {
-          "items": {
-            "$ref": "#/$defs/Series"
-          },
-          "title": "Cash Quality",
-          "type": "array"
-        },
-        "credibility": {
+        "earlier": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Figure"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Management credibility score (computed in code)"
-        },
-        "headline_figures": {
-          "items": {
-            "$ref": "#/$defs/Figure"
-          },
-          "title": "Headline Figures",
-          "type": "array"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "promises": {
-          "items": {
-            "$ref": "#/$defs/Promise"
-          },
-          "title": "Promises",
-          "type": "array"
-        },
-        "red_flags": {
-          "items": {
-            "$ref": "#/$defs/Claim"
-          },
-          "title": "Red Flags",
-          "type": "array"
-        },
-        "sections": {
-          "additionalProperties": {
-            "$ref": "#/$defs/DossierSection"
-          },
-          "description": "Per-section status",
-          "title": "Sections",
-          "type": "object"
-        },
-        "snapshot": {
-          "items": {
-            "$ref": "#/$defs/Claim"
-          },
-          "title": "Snapshot",
-          "type": "array"
-        },
-        "sources": {
-          "description": "Every document read",
-          "items": {
-            "$ref": "#/$defs/Citation"
-          },
-          "title": "Sources",
-          "type": "array"
-        },
-        "symbol": {
-          "title": "Symbol",
-          "type": "string"
-        },
-        "template": {
-          "description": "Banks/NBFCs: NII, PPOP, PAT; no EBITDA",
-          "enum": [
-            "standard",
-            "bank",
-            "nbfc"
-          ],
-          "title": "Template",
-          "type": "string"
-        },
-        "trajectory": {
-          "items": {
-            "$ref": "#/$defs/Series"
-          },
-          "title": "Trajectory",
-          "type": "array"
-        },
-        "trajectory_note": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Claim"
+              "$ref": "#/$defs/TrendHalf"
             },
             {
               "type": "null"
             }
           ],
           "default": null
+        },
+        "formula": {
+          "title": "Formula",
+          "type": "string"
+        },
+        "kept": {
+          "title": "Kept",
+          "type": "integer"
+        },
+        "min_n": {
+          "default": 5,
+          "title": "Min N",
+          "type": "integer"
+        },
+        "n": {
+          "description": "kept + missed + goalposts_moved + quietly_dropped",
+          "title": "N",
+          "type": "integer"
+        },
+        "numeric_n": {
+          "description": "Of n, verdicts decided in code",
+          "title": "Numeric N",
+          "type": "integer"
+        },
+        "qualitative_n": {
+          "description": "Of n, verdicts written by a strong model",
+          "title": "Qualitative N",
+          "type": "integer"
+        },
+        "recent": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TrendHalf"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Promises settled by results reported in the last 4 calls"
+        },
+        "score_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "kept \u00f7 n \u00d7 100, computed in code",
+          "title": "Score Pct"
+        },
+        "shown": {
+          "description": "False below min_n \u2014 the UI shows 'Not enough scored promises (n=3)'",
+          "title": "Shown",
+          "type": "boolean"
+        },
+        "trend": {
+          "anyOf": [
+            {
+              "enum": [
+                "up",
+                "down",
+                "flat"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trend"
         }
       },
       "required": [
-        "symbol",
-        "name",
-        "template",
-        "as_of",
-        "snapshot",
-        "headline_figures",
-        "trajectory",
-        "trajectory_note",
-        "promises",
-        "credibility",
-        "cash_quality",
-        "balance_sheet",
-        "analyst_questions",
-        "red_flags",
-        "bull",
-        "bear",
-        "sections",
-        "sources"
+        "shown",
+        "score_pct",
+        "kept",
+        "n",
+        "numeric_n",
+        "qualitative_n",
+        "min_n",
+        "trend",
+        "recent",
+        "earlier",
+        "formula"
       ],
-      "title": "Dossier",
+      "title": "Credibility",
       "type": "object"
     },
-    "DossierSection": {
+    "DocumentRef": {
       "additionalProperties": false,
       "properties": {
-        "note": {
+        "call_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Call Date"
+        },
+        "id": {
+          "description": "sha256 of the PDF bytes (or of the URL when it could not be downloaded)",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "transcript",
+            "annual_report",
+            "investor_presentation"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "pages": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pages"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Quarter the call discussed / year of the annual report"
+        },
+        "status": {
+          "enum": [
+            "read",
+            "scanned",
+            "too_large",
+            "failed",
+            "not_pdf",
+            "skipped"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "status_note": {
           "anyOf": [
             {
               "type": "string"
@@ -883,24 +1014,465 @@
             }
           ],
           "default": null,
-          "description": "e.g. 'Not found in sources: segment revenue'",
-          "title": "Note"
+          "title": "Status Note"
         },
-        "status": {
-          "enum": [
-            "ready",
-            "partial",
-            "not_found"
-          ],
-          "title": "Status",
+        "title": {
+          "description": "e.g. 'Q2 FY27 earnings call transcript', 'Annual Report FY26'",
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
           "type": "string"
         }
       },
       "required": [
+        "id",
+        "kind",
+        "title",
+        "period",
+        "call_date",
+        "url",
         "status",
-        "note"
+        "status_note",
+        "pages"
       ],
-      "title": "DossierSection",
+      "title": "DocumentRef",
+      "type": "object"
+    },
+    "Dossier": {
+      "additionalProperties": false,
+      "description": "Research dossier for any NSE ticker. Primary sources only; every number/claim cited.",
+      "properties": {
+        "analysts": {
+          "$ref": "#/$defs/AnalystsSection"
+        },
+        "as_of": {
+          "description": "Freshness of the underlying data (latest source fetch)",
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "ask_chips": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "title": "Ask Chips",
+          "type": "array"
+        },
+        "balance_sheet": {
+          "$ref": "#/$defs/SeriesSection"
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "enum": [
+                "consolidated",
+                "standalone"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Consolidated by default; standalone when that's all there is",
+          "title": "Basis"
+        },
+        "built_at": {
+          "format": "date-time",
+          "title": "Built At",
+          "type": "string"
+        },
+        "bull_bear": {
+          "$ref": "#/$defs/BullBearSection"
+        },
+        "cash_quality": {
+          "$ref": "#/$defs/SeriesSection"
+        },
+        "cost": {
+          "$ref": "#/$defs/DossierCost"
+        },
+        "drivers": {
+          "$ref": "#/$defs/DriversSection"
+        },
+        "exchange_data": {
+          "$ref": "#/$defs/ExchangeDataSection"
+        },
+        "ledger": {
+          "$ref": "#/$defs/LedgerSection"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/$defs/DossierQuality"
+        },
+        "red_flags": {
+          "$ref": "#/$defs/RedFlagsSection"
+        },
+        "schema_version": {
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "screener_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Screener Url"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/SnapshotSection"
+        },
+        "sources": {
+          "description": "Every document considered",
+          "items": {
+            "$ref": "#/$defs/DocumentRef"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "template": {
+          "description": "Banks/NBFCs: NII, PAT, ROE; no EBITDA",
+          "enum": [
+            "standard",
+            "bank",
+            "nbfc"
+          ],
+          "title": "Template",
+          "type": "string"
+        },
+        "trajectory": {
+          "$ref": "#/$defs/TrajectorySection"
+        }
+      },
+      "required": [
+        "schema_version",
+        "symbol",
+        "name",
+        "template",
+        "basis",
+        "as_of",
+        "built_at",
+        "snapshot",
+        "trajectory",
+        "ledger",
+        "cash_quality",
+        "balance_sheet",
+        "analysts",
+        "red_flags",
+        "bull_bear",
+        "drivers",
+        "exchange_data",
+        "ask_chips",
+        "sources",
+        "screener_url",
+        "quality",
+        "cost"
+      ],
+      "title": "Dossier",
+      "type": "object"
+    },
+    "DossierCost": {
+      "additionalProperties": false,
+      "properties": {
+        "cache_hits": {
+          "default": 0,
+          "title": "Cache Hits",
+          "type": "integer"
+        },
+        "calls": {
+          "default": 0,
+          "title": "Calls",
+          "type": "integer"
+        },
+        "est_usd": {
+          "default": 0.0,
+          "description": "At paid list prices; the free tier bills nothing",
+          "title": "Est Usd",
+          "type": "number"
+        },
+        "models": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "description": "Model id \u2192 calls",
+          "title": "Models",
+          "type": "object"
+        },
+        "tokens_in": {
+          "default": 0,
+          "title": "Tokens In",
+          "type": "integer"
+        },
+        "tokens_out": {
+          "default": 0,
+          "title": "Tokens Out",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "calls",
+        "cache_hits",
+        "tokens_in",
+        "tokens_out",
+        "est_usd",
+        "models"
+      ],
+      "title": "DossierCost",
+      "type": "object"
+    },
+    "DossierJob": {
+      "additionalProperties": false,
+      "properties": {
+        "counters": {
+          "$ref": "#/$defs/JobCounters"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        },
+        "finished_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Finished At"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "message": {
+          "description": "e.g. 'Reading 4 of 8 transcripts \u00b7 23 guidance statements found'",
+          "title": "Message",
+          "type": "string"
+        },
+        "queue_position": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "1 = next; null when running or finished",
+          "title": "Queue Position"
+        },
+        "queued_at": {
+          "format": "date-time",
+          "title": "Queued At",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "requested",
+            "nightly",
+            "new_document",
+            "prewarm",
+            "resume"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "resume_after": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume After"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stage"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Started At"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "waiting_quota",
+            "done",
+            "partial",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/JobStep"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "status",
+        "reason",
+        "queue_position",
+        "stage",
+        "steps",
+        "counters",
+        "message",
+        "queued_at",
+        "started_at",
+        "updated_at",
+        "finished_at",
+        "resume_after",
+        "error"
+      ],
+      "title": "DossierJob",
+      "type": "object"
+    },
+    "DossierQuality": {
+      "additionalProperties": false,
+      "properties": {
+        "claims_dropped": {
+          "default": 0,
+          "description": "Model claims dropped (unknown fact id, number mismatch)",
+          "title": "Claims Dropped",
+          "type": "integer"
+        },
+        "quotes_checked": {
+          "default": 0,
+          "title": "Quotes Checked",
+          "type": "integer"
+        },
+        "quotes_dropped": {
+          "default": 0,
+          "description": "Model quotes not found in the source text \u2014 dropped",
+          "title": "Quotes Dropped",
+          "type": "integer"
+        },
+        "quotes_reanchored": {
+          "default": 0,
+          "description": "Quotes moved to the page/sentence where they actually are",
+          "title": "Quotes Reanchored",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "quotes_checked",
+        "quotes_dropped",
+        "quotes_reanchored",
+        "claims_dropped"
+      ],
+      "title": "DossierQuality",
+      "type": "object"
+    },
+    "DossierResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "dossier": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Dossier"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Last good dossier (may be partial); null = never built"
+        },
+        "dossier_version": {
+          "default": 0,
+          "description": "Increments on every publish; refetch when it changes",
+          "title": "Dossier Version",
+          "type": "integer"
+        },
+        "job": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DossierJob"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Active or most recent build"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "dossier",
+        "job",
+        "dossier_version"
+      ],
+      "title": "DossierResponse",
       "type": "object"
     },
     "Driver": {
@@ -965,6 +1537,28 @@
         "promise_ids"
       ],
       "title": "Driver",
+      "type": "object"
+    },
+    "DriversSection": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/Driver"
+          },
+          "maxItems": 3,
+          "title": "Items",
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        }
+      },
+      "required": [
+        "meta",
+        "items"
+      ],
+      "title": "DriversSection",
       "type": "object"
     },
     "Event": {
@@ -1145,6 +1739,40 @@
       ],
       "title": "EventStage",
       "type": "string"
+    },
+    "ExchangeDataSection": {
+      "additionalProperties": false,
+      "description": "NSE-backed enrichment (fetched by GitHub Actions; never blocks the core sections).",
+      "properties": {
+        "latest_results": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResultsDetail"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        },
+        "pledging": {
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Pledging",
+          "type": "array"
+        }
+      },
+      "required": [
+        "meta",
+        "latest_results",
+        "pledging"
+      ],
+      "title": "ExchangeDataSection",
+      "type": "object"
     },
     "Figure": {
       "additionalProperties": false,
@@ -1641,6 +2269,180 @@
       "title": "Impact",
       "type": "string"
     },
+    "JobCounters": {
+      "additionalProperties": false,
+      "properties": {
+        "guidance_found": {
+          "default": 0,
+          "title": "Guidance Found",
+          "type": "integer"
+        },
+        "quotes_dropped": {
+          "default": 0,
+          "title": "Quotes Dropped",
+          "type": "integer"
+        },
+        "transcripts_read": {
+          "default": 0,
+          "title": "Transcripts Read",
+          "type": "integer"
+        },
+        "transcripts_total": {
+          "default": 0,
+          "title": "Transcripts Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "transcripts_total",
+        "transcripts_read",
+        "guidance_found",
+        "quotes_dropped"
+      ],
+      "title": "JobCounters",
+      "type": "object"
+    },
+    "JobStep": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "key": {
+          "description": "discover | documents | extract | compute | ledger | judge | reduce | publish",
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "running",
+            "done",
+            "skipped",
+            "failed",
+            "waiting"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "status",
+        "detail"
+      ],
+      "title": "JobStep",
+      "type": "object"
+    },
+    "LedgerCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "cant_score": {
+          "default": 0,
+          "title": "Cant Score",
+          "type": "integer"
+        },
+        "goalposts_moved": {
+          "default": 0,
+          "title": "Goalposts Moved",
+          "type": "integer"
+        },
+        "kept": {
+          "default": 0,
+          "title": "Kept",
+          "type": "integer"
+        },
+        "missed": {
+          "default": 0,
+          "title": "Missed",
+          "type": "integer"
+        },
+        "not_yet_due": {
+          "default": 0,
+          "title": "Not Yet Due",
+          "type": "integer"
+        },
+        "quietly_dropped": {
+          "default": 0,
+          "title": "Quietly Dropped",
+          "type": "integer"
+        },
+        "raised": {
+          "default": 0,
+          "description": "Threads whose target was raised (a badge, not a verdict)",
+          "title": "Raised",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kept",
+        "missed",
+        "goalposts_moved",
+        "quietly_dropped",
+        "not_yet_due",
+        "cant_score",
+        "raised"
+      ],
+      "title": "LedgerCounts",
+      "type": "object"
+    },
+    "LedgerSection": {
+      "additionalProperties": false,
+      "properties": {
+        "calls_read": {
+          "default": 0,
+          "title": "Calls Read",
+          "type": "integer"
+        },
+        "counts": {
+          "$ref": "#/$defs/LedgerCounts"
+        },
+        "credibility": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Credibility"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        },
+        "promises": {
+          "items": {
+            "$ref": "#/$defs/Promise"
+          },
+          "title": "Promises",
+          "type": "array"
+        }
+      },
+      "required": [
+        "meta",
+        "promises",
+        "credibility",
+        "counts",
+        "calls_read"
+      ],
+      "title": "LedgerSection",
+      "type": "object"
+    },
     "ManagementDetail": {
       "additionalProperties": false,
       "properties": {
@@ -1963,6 +2765,44 @@
       "title": "PersonProfile",
       "type": "object"
     },
+    "PressurePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "$ref": "#/$defs/Claim",
+          "description": "What analysts keep asking, citing the questions"
+        },
+        "metric_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metric Key"
+        },
+        "n_calls": {
+          "description": "Distinct calls where it was asked (\u2265 2)",
+          "title": "N Calls",
+          "type": "integer"
+        },
+        "theme": {
+          "title": "Theme",
+          "type": "string"
+        }
+      },
+      "required": [
+        "theme",
+        "claim",
+        "n_calls",
+        "metric_key"
+      ],
+      "title": "PressurePoint",
+      "type": "object"
+    },
     "PriceVolumeDetail": {
       "additionalProperties": false,
       "properties": {
@@ -2185,8 +3025,11 @@
     },
     "Promise": {
       "additionalProperties": false,
-      "description": "A forward-looking management statement and what happened to it (Promise Ledger).\nExported to TypeScript as `MgmtPromise` to avoid shadowing the built-in JS `Promise`.",
+      "description": "A promise thread: the same metric, basis and period across calls, and what happened to it.\nExported to TypeScript as `MgmtPromise` (avoids shadowing JS `Promise`).",
       "properties": {
+        "basis": {
+          "$ref": "#/$defs/PromiseBasis"
+        },
         "delivered": {
           "anyOf": [
             {
@@ -2196,33 +3039,34 @@
               "type": "null"
             }
           ],
-          "default": null
+          "default": null,
+          "description": "What was delivered, with provenance"
         },
-        "due": {
+        "delivered_source": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Period"
+              "enum": [
+                "screener",
+                "management_reported",
+                "xbrl"
+              ],
+              "type": "string"
             },
             {
               "type": "null"
             }
           ],
-          "default": null
+          "default": null,
+          "title": "Delivered Source"
         },
-        "id": {
-          "title": "Id",
-          "type": "string"
+        "driver_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Driver Ids",
+          "type": "array"
         },
-        "made_in": {
-          "$ref": "#/$defs/Citation",
-          "description": "Transcript/deck with page and verbatim quote"
-        },
-        "made_on": {
-          "format": "date",
-          "title": "Made On",
-          "type": "string"
-        },
-        "metric": {
+        "dropped_note": {
           "anyOf": [
             {
               "type": "string"
@@ -2232,8 +3076,275 @@
             }
           ],
           "default": null,
-          "description": "e.g. 'EBITDA margin', 'capacity (GW)'",
-          "title": "Metric"
+          "description": "e.g. 'Not mentioned in the 2 calls since Q1 FY26'",
+          "title": "Dropped Note"
+        },
+        "id": {
+          "description": "Deterministic hash of the code-built thread key",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "point",
+            "range",
+            "at_least",
+            "at_most",
+            "qualitative"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "measure": {
+          "enum": [
+            "level",
+            "growth",
+            "change",
+            "qualitative"
+          ],
+          "title": "Measure",
+          "type": "string"
+        },
+        "metric": {
+          "description": "As management named it, e.g. 'EBITDA margin'",
+          "title": "Metric",
+          "type": "string"
+        },
+        "metric_key": {
+          "description": "Controlled vocabulary key, e.g. 'ebitda_margin', 'credit_cost', 'other'",
+          "title": "Metric Key",
+          "type": "string"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resolved in code; null = no date given (medium term)"
+        },
+        "revision": {
+          "description": "raised/lowered judged by the metric's direction (lower credit cost = raised ambition)",
+          "enum": [
+            "none",
+            "raised",
+            "lowered",
+            "narrowed",
+            "delayed",
+            "revised"
+          ],
+          "title": "Revision",
+          "type": "string"
+        },
+        "scored_target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PromiseStatement"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The statement scored: the last target given before the period ended"
+        },
+        "statement": {
+          "description": "Normalised one-liner built in code, e.g. 'EBITDA margin 11\u201313% in FY27'",
+          "title": "Statement",
+          "type": "string"
+        },
+        "statements": {
+          "description": "Oldest first",
+          "items": {
+            "$ref": "#/$defs/PromiseStatement"
+          },
+          "minItems": 1,
+          "title": "Statements",
+          "type": "array"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "kept",
+            "missed",
+            "goalposts_moved",
+            "quietly_dropped",
+            "not_yet_due",
+            "cant_score"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        },
+        "verdict_by": {
+          "enum": [
+            "code",
+            "model"
+          ],
+          "title": "Verdict By",
+          "type": "string"
+        },
+        "verdict_model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Model id that wrote a qualitative verdict",
+          "title": "Verdict Model"
+        },
+        "verdict_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why, citing the promise and the evidence (both calls)"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "metric",
+        "metric_key",
+        "measure",
+        "kind",
+        "basis",
+        "period",
+        "statement",
+        "statements",
+        "scored_target",
+        "revision",
+        "verdict",
+        "verdict_by",
+        "verdict_model",
+        "verdict_reason",
+        "delivered",
+        "delivered_source",
+        "dropped_note",
+        "driver_ids"
+      ],
+      "title": "MgmtPromise",
+      "type": "object"
+    },
+    "PromiseBasis": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "enum": [
+            "INR",
+            "USD",
+            "constant_currency",
+            "unspecified",
+            "not_money"
+          ],
+          "title": "Currency",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "consolidated",
+            "standalone",
+            "segment",
+            "unspecified"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "segment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Segment name when scope == 'segment'",
+          "title": "Segment"
+        }
+      },
+      "required": [
+        "currency",
+        "scope",
+        "segment"
+      ],
+      "title": "PromiseBasis",
+      "type": "object"
+    },
+    "PromiseStatement": {
+      "additionalProperties": false,
+      "description": "One call's version of a promise (restatements across calls are grouped into one thread).",
+      "properties": {
+        "call_label": {
+          "description": "e.g. 'Q1 FY27 call'",
+          "title": "Call Label",
+          "type": "string"
+        },
+        "doc_id": {
+          "title": "Doc Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "point",
+            "range",
+            "at_least",
+            "at_most",
+            "qualitative"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "made_on": {
+          "format": "date",
+          "title": "Made On",
+          "type": "string"
+        },
+        "period_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Period exactly as said, e.g. 'this fiscal', 'by FY28'",
+          "title": "Period Text"
+        },
+        "quote": {
+          "$ref": "#/$defs/Citation",
+          "description": "Verbatim quote with page \u2014 checked against the transcript text"
+        },
+        "raw_target": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Target exactly as said, e.g. '20-22%', '\u20b91,500 crore'",
+          "title": "Raw Target"
         },
         "speaker": {
           "anyOf": [
@@ -2246,28 +3357,6 @@
           ],
           "default": null,
           "title": "Speaker"
-        },
-        "statement": {
-          "description": "Short normalised statement, e.g. 'EBITDA margin 20\u201322% in FY27'",
-          "title": "Statement",
-          "type": "string"
-        },
-        "superseded_by": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Promise.id that moved the goalposts",
-          "title": "Superseded By"
-        },
-        "symbol": {
-          "title": "Symbol",
-          "type": "string"
         },
         "target_high": {
           "anyOf": [
@@ -2291,9 +3380,10 @@
             }
           ],
           "default": null,
+          "description": "Normalised (\u20b9 Cr for money, percentage points for %/bps)",
           "title": "Target Low"
         },
-        "target_unit": {
+        "unit": {
           "anyOf": [
             {
               "type": "string"
@@ -2303,50 +3393,98 @@
             }
           ],
           "default": null,
-          "title": "Target Unit"
-        },
-        "verdict": {
-          "enum": [
-            "kept",
-            "missed",
-            "goalposts_moved",
-            "quietly_dropped",
-            "pending",
-            "unverifiable"
-          ],
-          "title": "Verdict",
-          "type": "string"
-        },
-        "verdict_reason": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Claim"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+          "description": "Normalised unit: 'INR_CR', 'PCT', 'USD_MN', 'DAYS', 'X', \u2026",
+          "title": "Unit"
         }
       },
       "required": [
-        "id",
-        "symbol",
-        "statement",
-        "made_in",
+        "doc_id",
+        "call_label",
         "made_on",
-        "speaker",
-        "metric",
+        "kind",
         "target_low",
         "target_high",
-        "target_unit",
-        "due",
-        "verdict",
-        "verdict_reason",
-        "delivered",
-        "superseded_by"
+        "unit",
+        "raw_target",
+        "period_text",
+        "quote",
+        "speaker"
       ],
-      "title": "MgmtPromise",
+      "title": "PromiseStatement",
+      "type": "object"
+    },
+    "RedFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "$ref": "#/$defs/Claim"
+        },
+        "figures": {
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Figures",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "auditor_opinion",
+            "contingent_liabilities",
+            "related_party",
+            "pledging",
+            "disappearing_kpi",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "claim",
+        "figures",
+        "severity"
+      ],
+      "title": "RedFlag",
+      "type": "object"
+    },
+    "RedFlagsSection": {
+      "additionalProperties": false,
+      "properties": {
+        "checked": {
+          "description": "What was checked and found clean, e.g. 'Auditor opinion: unmodified'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Checked",
+          "type": "array"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/RedFlag"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        }
+      },
+      "required": [
+        "meta",
+        "items",
+        "checked"
+      ],
+      "title": "RedFlagsSection",
       "type": "object"
     },
     "ResultsDetail": {
@@ -2619,6 +3757,113 @@
       "title": "ScoreBreakdown",
       "type": "object"
     },
+    "SectionMeta": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When this section's content was built (UTC)",
+          "title": "As Of"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Human line, e.g. 'Based on 3 calls' or 'Available after tonight's refresh'",
+          "title": "Note"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "not_built_yet",
+                "no_screener_page",
+                "no_transcripts",
+                "few_transcripts",
+                "scanned_documents",
+                "no_annual_report",
+                "not_meaningful_for_lenders",
+                "llm_quota",
+                "llm_unavailable",
+                "nse_pending",
+                "nse_unavailable",
+                "below_min_n",
+                "not_found_in_sources",
+                "source_unreachable"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "resume_after": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When a quota-blocked section resumes (UTC)",
+          "title": "Resume After"
+        },
+        "status": {
+          "enum": [
+            "ready",
+            "partial",
+            "building",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "written_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Model id when the text was written by a model",
+          "title": "Written By"
+        }
+      },
+      "required": [
+        "status",
+        "reason",
+        "note",
+        "as_of",
+        "resume_after",
+        "written_by"
+      ],
+      "title": "SectionMeta",
+      "type": "object"
+    },
     "Series": {
       "additionalProperties": false,
       "properties": {
@@ -2663,6 +3908,76 @@
       "title": "Series",
       "type": "object"
     },
+    "SeriesSection": {
+      "additionalProperties": false,
+      "properties": {
+        "latest": {
+          "description": "Latest-year values for the headline row",
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Latest",
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        },
+        "series": {
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "title": "Series",
+          "type": "array"
+        }
+      },
+      "required": [
+        "meta",
+        "series",
+        "latest"
+      ],
+      "title": "SeriesSection",
+      "type": "object"
+    },
+    "SnapshotSection": {
+      "additionalProperties": false,
+      "properties": {
+        "headline": {
+          "description": "Market cap, revenue, PAT, ROCE/ROE \u2026",
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Headline",
+          "type": "array"
+        },
+        "lines": {
+          "description": "Business description, segments, mix",
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "title": "Lines",
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        },
+        "segments": {
+          "description": "Segment revenue/share as reported",
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "meta",
+        "lines",
+        "segments",
+        "headline"
+      ],
+      "title": "SnapshotSection",
+      "type": "object"
+    },
     "SourceType": {
       "enum": [
         "exchange_filing",
@@ -2704,6 +4019,69 @@
         "label"
       ],
       "title": "TimelineItem",
+      "type": "object"
+    },
+    "TrajectorySection": {
+      "additionalProperties": false,
+      "properties": {
+        "growth": {
+          "description": "CAGRs (computed in code)",
+          "items": {
+            "$ref": "#/$defs/Figure"
+          },
+          "title": "Growth",
+          "type": "array"
+        },
+        "meta": {
+          "$ref": "#/$defs/SectionMeta"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "One line on what is growing / compressing"
+        },
+        "series": {
+          "description": "5\u201312 years: revenue, margins, ROCE, PAT",
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "title": "Series",
+          "type": "array"
+        }
+      },
+      "required": [
+        "meta",
+        "series",
+        "growth",
+        "note"
+      ],
+      "title": "TrajectorySection",
+      "type": "object"
+    },
+    "TrendHalf": {
+      "additionalProperties": false,
+      "properties": {
+        "kept": {
+          "title": "Kept",
+          "type": "integer"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kept",
+        "n"
+      ],
+      "title": "TrendHalf",
       "type": "object"
     },
     "Unit": {

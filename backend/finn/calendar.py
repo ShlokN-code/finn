@@ -131,3 +131,14 @@ def results_quarter_for(filed: date, *, forward_looking: bool = True) -> date:
     if forward_looking and (upcoming - filed).days <= 15:
         return upcoming
     return quarter_end_on_or_before(filed)
+
+
+def next_quota_reset(now: datetime | None = None) -> datetime:
+    """Gemini's free-tier daily quotas reset at midnight America/Los_Angeles (13:30 IST in winter, 12:30 IST in
+    summer). Returned as an aware UTC datetime."""
+    from zoneinfo import ZoneInfo
+
+    la = ZoneInfo("America/Los_Angeles")
+    local = (now or now_utc()).astimezone(la)
+    nxt = datetime.combine(local.date() + timedelta(days=1), time(0, 0), tzinfo=la)
+    return nxt.astimezone(UTC)

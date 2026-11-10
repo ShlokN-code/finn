@@ -212,6 +212,86 @@ export interface AlertSettings {
   volatility_aware: boolean;
   volume_multiple: number;
 }
+export interface AnalystsSection {
+  meta: SectionMeta;
+  points: PressurePoint[];
+}
+export interface SectionMeta {
+  /**
+   * When this section's content was built (UTC)
+   */
+  as_of: string | null;
+  /**
+   * Human line, e.g. 'Based on 3 calls' or 'Available after tonight's refresh'
+   */
+  note: string | null;
+  reason:
+    | (
+        | "not_built_yet"
+        | "no_screener_page"
+        | "no_transcripts"
+        | "few_transcripts"
+        | "scanned_documents"
+        | "no_annual_report"
+        | "not_meaningful_for_lenders"
+        | "llm_quota"
+        | "llm_unavailable"
+        | "nse_pending"
+        | "nse_unavailable"
+        | "below_min_n"
+        | "not_found_in_sources"
+        | "source_unreachable"
+      )
+    | null;
+  /**
+   * When a quota-blocked section resumes (UTC)
+   */
+  resume_after: string | null;
+  status: "ready" | "partial" | "building" | "unavailable";
+  /**
+   * Model id when the text was written by a model
+   */
+  written_by: string | null;
+}
+export interface PressurePoint {
+  claim: Claim;
+  metric_key: string | null;
+  /**
+   * Distinct calls where it was asked (≥ 2)
+   */
+  n_calls: number;
+  theme: string;
+}
+/**
+ * A sentence of text with provenance (snapshot lines, red flags, bull/bear bullets, impact reasons).
+ */
+export interface Claim {
+  citations: Citation[];
+  status: VerificationStatus;
+  text: string;
+}
+export interface AskAnswer {
+  /**
+   * Status 'not_found' → 'Not found in sources'
+   */
+  answer: Claim | null;
+  figures: Figure[];
+  model: string | null;
+  question: string;
+  resume_after: string | null;
+  status: "answered" | "not_found" | "unavailable";
+}
+export interface BullBearSection {
+  /**
+   * @maxItems 3
+   */
+  bear: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
+  /**
+   * @maxItems 3
+   */
+  bull: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
+  meta: SectionMeta;
+}
 /**
  * A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.
  */
@@ -359,14 +439,6 @@ export interface PersonProfile {
    */
   tenure_years: Figure | null;
 }
-/**
- * A sentence of text with provenance (snapshot lines, red flags, bull/bear bullets, impact reasons).
- */
-export interface Claim {
-  citations: Citation[];
-  status: VerificationStatus;
-  text: string;
-}
 export interface PriorRole {
   citation: Citation;
   company: string;
@@ -458,85 +530,133 @@ export interface TimelineItem {
   label: string;
   stage: EventStage;
 }
+export interface Credibility {
+  earlier: TrendHalf | null;
+  formula: string;
+  kept: number;
+  min_n: number;
+  /**
+   * kept + missed + goalposts_moved + quietly_dropped
+   */
+  n: number;
+  /**
+   * Of n, verdicts decided in code
+   */
+  numeric_n: number;
+  /**
+   * Of n, verdicts written by a strong model
+   */
+  qualitative_n: number;
+  /**
+   * Promises settled by results reported in the last 4 calls
+   */
+  recent: TrendHalf | null;
+  /**
+   * kept ÷ n × 100, computed in code
+   */
+  score_pct: number | null;
+  /**
+   * False below min_n — the UI shows 'Not enough scored promises (n=3)'
+   */
+  shown: boolean;
+  trend: ("up" | "down" | "flat") | null;
+}
+export interface TrendHalf {
+  kept: number;
+  n: number;
+}
+export interface DocumentRef {
+  call_date: string | null;
+  /**
+   * sha256 of the PDF bytes (or of the URL when it could not be downloaded)
+   */
+  id: string;
+  kind: "transcript" | "annual_report" | "investor_presentation";
+  pages: number | null;
+  /**
+   * Quarter the call discussed / year of the annual report
+   */
+  period: Period | null;
+  status: "read" | "scanned" | "too_large" | "failed" | "not_pdf" | "skipped";
+  status_note: string | null;
+  /**
+   * e.g. 'Q2 FY27 earnings call transcript', 'Annual Report FY26'
+   */
+  title: string;
+  url: string;
+}
 /**
  * Research dossier for any NSE ticker. Primary sources only; every number/claim cited.
  */
 export interface Dossier {
-  analyst_questions: Claim[];
+  analysts: AnalystsSection;
+  /**
+   * Freshness of the underlying data (latest source fetch)
+   */
   as_of: string;
-  balance_sheet: Series[];
   /**
    * @maxItems 3
    */
-  bear: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
+  ask_chips: [] | [string] | [string, string] | [string, string, string];
+  balance_sheet: SeriesSection;
   /**
-   * @maxItems 3
+   * Consolidated by default; standalone when that's all there is
    */
-  bull: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
-  cash_quality: Series[];
-  /**
-   * Management credibility score (computed in code)
-   */
-  credibility: Figure | null;
-  headline_figures: Figure[];
+  basis: ("consolidated" | "standalone") | null;
+  built_at: string;
+  bull_bear: BullBearSection;
+  cash_quality: SeriesSection;
+  cost: DossierCost;
+  drivers: DriversSection;
+  exchange_data: ExchangeDataSection;
+  ledger: LedgerSection;
   name: string;
-  promises: MgmtPromise[];
-  red_flags: Claim[];
+  quality: DossierQuality;
+  red_flags: RedFlagsSection;
+  schema_version: number;
+  screener_url: string | null;
+  snapshot: SnapshotSection;
   /**
-   * Per-section status
+   * Every document considered
    */
-  sections: {
-    [k: string]: DossierSection | undefined;
-  };
-  snapshot: Claim[];
-  /**
-   * Every document read
-   */
-  sources: Citation[];
+  sources: DocumentRef[];
   symbol: string;
   /**
-   * Banks/NBFCs: NII, PPOP, PAT; no EBITDA
+   * Banks/NBFCs: NII, PAT, ROE; no EBITDA
    */
   template: "standard" | "bank" | "nbfc";
-  trajectory: Series[];
-  trajectory_note: Claim | null;
+  trajectory: TrajectorySection;
 }
-/**
- * A forward-looking management statement and what happened to it (Promise Ledger).
- * Exported to TypeScript as `MgmtPromise` to avoid shadowing the built-in JS `Promise`.
- */
-export interface MgmtPromise {
-  delivered: Figure | null;
-  due: Period | null;
-  id: string;
-  made_in: Citation;
-  made_on: string;
+export interface SeriesSection {
   /**
-   * e.g. 'EBITDA margin', 'capacity (GW)'
+   * Latest-year values for the headline row
    */
-  metric: string | null;
-  speaker: string | null;
-  /**
-   * Short normalised statement, e.g. 'EBITDA margin 20–22% in FY27'
-   */
-  statement: string;
-  /**
-   * Promise.id that moved the goalposts
-   */
-  superseded_by: string | null;
-  symbol: string;
-  target_high: number | null;
-  target_low: number | null;
-  target_unit: string | null;
-  verdict: "kept" | "missed" | "goalposts_moved" | "quietly_dropped" | "pending" | "unverifiable";
-  verdict_reason: Claim | null;
+  latest: Figure[];
+  meta: SectionMeta;
+  series: Series[];
 }
-export interface DossierSection {
+export interface DossierCost {
+  cache_hits: number;
+  calls: number;
   /**
-   * e.g. 'Not found in sources: segment revenue'
+   * At paid list prices; the free tier bills nothing
    */
-  note: string | null;
-  status: "ready" | "partial" | "not_found";
+  est_usd: number;
+  /**
+   * Model id → calls
+   */
+  models: {
+    [k: string]: number | undefined;
+  };
+  tokens_in: number;
+  tokens_out: number;
+}
+export interface DriversSection {
+  /**
+   * @maxItems 3
+   */
+  items: [] | [Driver] | [Driver, Driver] | [Driver, Driver, Driver];
+  meta: SectionMeta;
 }
 /**
  * Something the user watches for a holding (Level-1 relevance), suggested from disclosures.
@@ -560,6 +680,254 @@ export interface Driver {
    */
   source: Claim | null;
   status: "suggested" | "confirmed" | "dismissed";
+  symbol: string;
+}
+/**
+ * NSE-backed enrichment (fetched by GitHub Actions; never blocks the core sections).
+ */
+export interface ExchangeDataSection {
+  latest_results: ResultsDetail | null;
+  meta: SectionMeta;
+  pledging: Figure[];
+}
+export interface LedgerSection {
+  calls_read: number;
+  counts: LedgerCounts;
+  credibility: Credibility | null;
+  meta: SectionMeta;
+  promises: MgmtPromise[];
+}
+export interface LedgerCounts {
+  cant_score: number;
+  goalposts_moved: number;
+  kept: number;
+  missed: number;
+  not_yet_due: number;
+  quietly_dropped: number;
+  /**
+   * Threads whose target was raised (a badge, not a verdict)
+   */
+  raised: number;
+}
+/**
+ * A promise thread: the same metric, basis and period across calls, and what happened to it.
+ * Exported to TypeScript as `MgmtPromise` (avoids shadowing JS `Promise`).
+ */
+export interface MgmtPromise {
+  basis: PromiseBasis;
+  /**
+   * What was delivered, with provenance
+   */
+  delivered: Figure | null;
+  delivered_source: ("screener" | "management_reported" | "xbrl") | null;
+  driver_ids: string[];
+  /**
+   * e.g. 'Not mentioned in the 2 calls since Q1 FY26'
+   */
+  dropped_note: string | null;
+  /**
+   * Deterministic hash of the code-built thread key
+   */
+  id: string;
+  kind: "point" | "range" | "at_least" | "at_most" | "qualitative";
+  measure: "level" | "growth" | "change" | "qualitative";
+  /**
+   * As management named it, e.g. 'EBITDA margin'
+   */
+  metric: string;
+  /**
+   * Controlled vocabulary key, e.g. 'ebitda_margin', 'credit_cost', 'other'
+   */
+  metric_key: string;
+  /**
+   * Resolved in code; null = no date given (medium term)
+   */
+  period: Period | null;
+  /**
+   * raised/lowered judged by the metric's direction (lower credit cost = raised ambition)
+   */
+  revision: "none" | "raised" | "lowered" | "narrowed" | "delayed" | "revised";
+  /**
+   * The statement scored: the last target given before the period ended
+   */
+  scored_target: PromiseStatement | null;
+  /**
+   * Normalised one-liner built in code, e.g. 'EBITDA margin 11–13% in FY27'
+   */
+  statement: string;
+  /**
+   * Oldest first
+   *
+   * @minItems 1
+   */
+  statements: [PromiseStatement, ...PromiseStatement[]];
+  symbol: string;
+  verdict: "kept" | "missed" | "goalposts_moved" | "quietly_dropped" | "not_yet_due" | "cant_score";
+  verdict_by: "code" | "model";
+  /**
+   * Model id that wrote a qualitative verdict
+   */
+  verdict_model: string | null;
+  /**
+   * Why, citing the promise and the evidence (both calls)
+   */
+  verdict_reason: Claim | null;
+}
+export interface PromiseBasis {
+  currency: "INR" | "USD" | "constant_currency" | "unspecified" | "not_money";
+  scope: "consolidated" | "standalone" | "segment" | "unspecified";
+  /**
+   * Segment name when scope == 'segment'
+   */
+  segment: string | null;
+}
+/**
+ * One call's version of a promise (restatements across calls are grouped into one thread).
+ */
+export interface PromiseStatement {
+  /**
+   * e.g. 'Q1 FY27 call'
+   */
+  call_label: string;
+  doc_id: string;
+  kind: "point" | "range" | "at_least" | "at_most" | "qualitative";
+  made_on: string;
+  /**
+   * Period exactly as said, e.g. 'this fiscal', 'by FY28'
+   */
+  period_text: string | null;
+  quote: Citation;
+  /**
+   * Target exactly as said, e.g. '20-22%', '₹1,500 crore'
+   */
+  raw_target: string | null;
+  speaker: string | null;
+  target_high: number | null;
+  /**
+   * Normalised (₹ Cr for money, percentage points for %/bps)
+   */
+  target_low: number | null;
+  /**
+   * Normalised unit: 'INR_CR', 'PCT', 'USD_MN', 'DAYS', 'X', …
+   */
+  unit: string | null;
+}
+export interface DossierQuality {
+  /**
+   * Model claims dropped (unknown fact id, number mismatch)
+   */
+  claims_dropped: number;
+  quotes_checked: number;
+  /**
+   * Model quotes not found in the source text — dropped
+   */
+  quotes_dropped: number;
+  /**
+   * Quotes moved to the page/sentence where they actually are
+   */
+  quotes_reanchored: number;
+}
+export interface RedFlagsSection {
+  /**
+   * What was checked and found clean, e.g. 'Auditor opinion: unmodified'
+   */
+  checked: string[];
+  items: RedFlag[];
+  meta: SectionMeta;
+}
+export interface RedFlag {
+  claim: Claim;
+  figures: Figure[];
+  kind:
+    | "auditor_opinion"
+    | "contingent_liabilities"
+    | "related_party"
+    | "pledging"
+    | "disappearing_kpi"
+    | "other";
+  severity: "high" | "medium" | "low";
+}
+export interface SnapshotSection {
+  /**
+   * Market cap, revenue, PAT, ROCE/ROE …
+   */
+  headline: Figure[];
+  /**
+   * Business description, segments, mix
+   */
+  lines: Claim[];
+  meta: SectionMeta;
+  /**
+   * Segment revenue/share as reported
+   */
+  segments: Figure[];
+}
+export interface TrajectorySection {
+  /**
+   * CAGRs (computed in code)
+   */
+  growth: Figure[];
+  meta: SectionMeta;
+  /**
+   * One line on what is growing / compressing
+   */
+  note: Claim | null;
+  /**
+   * 5–12 years: revenue, margins, ROCE, PAT
+   */
+  series: Series[];
+}
+export interface DossierJob {
+  counters: JobCounters;
+  error: string | null;
+  finished_at: string | null;
+  id: number;
+  /**
+   * e.g. 'Reading 4 of 8 transcripts · 23 guidance statements found'
+   */
+  message: string;
+  /**
+   * 1 = next; null when running or finished
+   */
+  queue_position: number | null;
+  queued_at: string;
+  reason: "requested" | "nightly" | "new_document" | "prewarm" | "resume";
+  resume_after: string | null;
+  stage: string | null;
+  started_at: string | null;
+  status: "queued" | "running" | "waiting_quota" | "done" | "partial" | "failed";
+  steps: JobStep[];
+  symbol: string;
+  updated_at: string;
+}
+export interface JobCounters {
+  guidance_found: number;
+  quotes_dropped: number;
+  transcripts_read: number;
+  transcripts_total: number;
+}
+export interface JobStep {
+  detail: string | null;
+  /**
+   * discover | documents | extract | compute | ledger | judge | reduce | publish
+   */
+  key: string;
+  label: string;
+  status: "pending" | "running" | "done" | "skipped" | "failed" | "waiting";
+}
+export interface DossierResponse {
+  /**
+   * Last good dossier (may be partial); null = never built
+   */
+  dossier: Dossier | null;
+  /**
+   * Increments on every publish; refetch when it changes
+   */
+  dossier_version: number;
+  /**
+   * Active or most recent build
+   */
+  job: DossierJob | null;
   symbol: string;
 }
 /**
