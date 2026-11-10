@@ -55,8 +55,9 @@ WEB_SYSTEM = (
     "of a role the filing names without dates, qualifications, notable achievements (awards, turnarounds, "
     "launches, boards). Skip snippets that merely report this appointment or restate the filing. Prefer, in "
     "order: professional profiles, company leadership/bio pages, prior employers' pages, then news. Each item "
-    "cites its snippet number and a verbatim quote from that snippet (≤ 30 words). Copy years as printed; do "
-    "not calculate. Ignore snippets about a different person with the same name. Return nothing you cannot quote."
+    "cites its snippet number and a verbatim quote from that snippet (≤ 30 words). If you give a role's "
+    "period, the quote must include those years exactly as printed; do not calculate. Ignore snippets about a "
+    "different person with the same name. Return nothing you cannot quote."
 )
 WEB_SCHEMA = {
     "type": "object",
@@ -70,8 +71,9 @@ WEB_SCHEMA = {
 }  # fmt: skip
 
 # Web source kinds, in order of preference (the product owner's ranking). Decided in code from the URL.
-KIND_LABEL = {"profile": "Professional profile", "bio": "Leadership/bio page", "prior_employer": "Prior employer",
-              "news": "News"}  # fmt: skip
+KIND_LABEL = {"exchange_filing": "Exchange filing", "profile": "Professional profile", "bio": "Leadership/bio page",
+              "prior_employer": "Prior employer", "news": "News"}  # fmt: skip
+EXCHANGE_HOSTS = ("nseindia.com", "bseindia.com")
 PROFILE_HOSTS = ("linkedin.com", "theorg.com", "crunchbase.com")
 NEWS_HOSTS = ("economictimes", "moneycontrol", "livemint", "thehindubusinessline", "thehindu", "business-standard",
               "financialexpress", "ndtv", "reuters", "bloomberg", "cnbc", "zeebiz", "indianexpress",
@@ -133,6 +135,8 @@ def source_kind(url: str, company: str, prior_companies: list[str]) -> str:
 
     u = urlparse(url)
     host, path = u.netloc.lower().removeprefix("www."), u.path.lower()
+    if any(host == d or host.endswith("." + d) for d in EXCHANGE_HOSTS):
+        return "exchange_filing"  # another filing (e.g. a postal-ballot notice with the director's profile)
     if any(host == d or host.endswith("." + d) for d in PROFILE_HOSTS):
         return "profile"
     if any(n in host for n in NEWS_HOSTS):
@@ -271,10 +275,43 @@ def build_detail(d: dict, event: dict, filing: dict, source: str, pages: list[st
                 ten = Figure(label="Tenure", value=round(y, 1), unit="YEARS",
                              status="verified" if jc.quote else "unverified", citation=jc,
                              raw=p.get("joined_company"))  # fmt: skip
-        people.append(PersonProfile(name=p["name"][:120], role=(p.get("role") or "—")[:120],
-                                    change=p.get("change") or "other", prior_roles=roles, qualifications=quals,
-                                    insider=ins, insider_reason=why, tenure_years=ten, profile=profile))  # fmt: skip
+        person = PersonProfile(name=p["name"][:120], role=(p.get("role") or "—")[:120],
+                               change=p.get("change") or "other", prior_roles=roles, qualifications=quals,
+                               insider=ins, insider_reason=why, tenure_years=ten, profile=profile)  # fmt: skip
+        if substantive(person):
+            people.append(person)
     return ManagementDetail(people=people, web_enrichment="not_run")
+
+
+def substantive(p: PersonProfile) -> bool:
+    """Not a passing mention (e.g. the company secretary who signed the letter): a real change, or something
+    the filing says about them."""
+    return p.change != "other" or bool(p.profile or p.prior_roles or p.qualifications or p.tenure_years)
+
+
+_HONORIFIC = re.compile(r"^(mr|mrs|ms|dr|shri|smt|prof)\.?\s+", re.I)
+
+
+def surname(name: str) -> str:
+    parts = _HONORIFIC.sub("", name.strip()).split()
+    return parts[-1].lower().strip(".,") if parts else ""
+
+
+def _around(content: str, quote: str, width: int = 250) -> str:
+    """The snippet text around where the quote sits (whole snippet if it can't be located exactly)."""
+    low, q = content.lower(), (quote or "").lower().strip()
+    i = low.find(q[:40]) if q else -1
+    return content if i < 0 else content[max(0, i - width) : i + len(q) + width]
+
+
+def about_person(name: str, sn: dict, quote: str) -> bool:
+    """The fact is tied to this person: their surname is in the snippet's title (a profile page) or near the
+    quote (a board page listing several directors must name them next to the role)."""
+    sur = surname(name)
+    if len(sur) < 2:
+        return False
+    pat = re.compile(rf"\b{re.escape(sur)}\b", re.I)
+    return bool(pat.search(sn.get("title") or "") or pat.search(_around(sn["content"], quote)))
 
 
 def _snippets(p: PersonProfile, company: str) -> list[dict]:
@@ -299,7 +336,7 @@ def enrich(router: Router, detail: ManagementDetail, company: str) -> Management
         return detail.model_copy(update={"web_enrichment": "unavailable", "web_note": "TAVILY_API_KEY not set"})
     people, kinds = [], {}
     try:
-        for p in detail.people:
+        for p in [x for x in detail.people if substantive(x)]:
             if p.change not in ("appointed", "re_designated"):
                 people.append(p)
                 continue
@@ -349,11 +386,16 @@ def _apply_web(p: PersonProfile, items: list[dict], snippets: list[dict]) -> tup
         sn = snippets[i]
         if not quote_in_text(it.get("quote"), sn["content"]):
             continue  # citation checker: unquotable → dropped
+        if not about_person(p.name, sn, it["quote"]):
+            continue  # e.g. a generic 'Independent Director' line from a page listing several people
         c = Citation(source_type="web_profile", url=sn["url"], title=f"{KIND_LABEL[sn['kind']]} · {sn['title']}"[:120],
                      quote=it["quote"][:300], retrieved_at=datetime.now(UTC))  # fmt: skip
         kind = it.get("kind")
         if kind == "role" and it.get("company"):
             s, e = years(it.get("period"))
+            if any(y is not None and str(y) not in it["quote"] for y in (s, e)):
+                s = e = None  # dates must be in the quoted text itself: list-like snippets (LinkedIn) put a
+                # neighbouring role's years close by, so "nearby" isn't proof — no quoted date, no date
             hit = next((k for k, r in enumerate(roles) if same_company(r.company, it["company"])), None)
             if hit is not None:
                 r = roles[hit]

@@ -176,3 +176,45 @@ def test_web_search_that_only_restates_the_filing_finds_nothing(monkeypatch):
 
     out = mg.enrich(Router(), det, "X Ltd")
     assert out.web_enrichment == "nothing_found" and out.people == det.people
+
+
+def test_web_facts_must_name_the_person_and_print_their_dates(monkeypatch):
+    # IDEA, Sep 2026: a board page's generic "Non-Executive & Independent Director" line, and LinkedIn roles
+    # whose years came from the model's 'period' field rather than the snippet
+    det = mg.ManagementDetail(people=[mg.PersonProfile(name="Ms. Gopika Pant", role="Independent Woman Director",
+                                                       change="appointed")], web_enrichment="not_run")  # fmt: skip
+    board = ("Board of Directors. Mr. Ram Raghavan, Managing Director. Ms. Alice Rao, Non-Executive & Independent "
+             "Director. Mr. B. Sen, Chairman.")  # fmt: skip
+    linkedin = "Senior Partner at Indian Law Partners · Partner at Amarchand Mangaldas 1993 - 2007"
+    snippets = [
+        {"title": "Board of Directors | Colgate-Palmolive", "url": "https://www.colgatepalmolive.co.in/who-we-are/"
+         "board-of-directors", "content": board, "kind": "bio"},
+        {"title": "Gopika Pant - Senior Partner", "url": "https://in.linkedin.com/in/gopika-pant", "content": linkedin,
+         "kind": "profile"},
+    ]  # fmt: skip
+    items = [
+        {"kind": "role", "company": "Colgate-Palmolive", "role": "Non-Executive & Independent Director", "snippet": 0,
+         "quote": "Non-Executive & Independent Director"},
+        {"kind": "role", "company": "Indian Law Partners", "role": "Senior Partner", "period": "2008 - 2020",
+         "snippet": 1, "quote": "Senior Partner at Indian Law Partners"},
+        {"kind": "role", "company": "Amarchand Mangaldas", "role": "Partner", "period": "1993 - 2007", "snippet": 1,
+         "quote": "Partner at Amarchand Mangaldas 1993 - 2007"},
+    ]  # fmt: skip
+    p, added = mg._apply_web(det.people[0], items, snippets)
+    assert [(r.company, r.start_year, r.end_year) for r in p.prior_roles] == [
+        ("Indian Law Partners", None, None),  # '2008 - 2020' isn't in the snippet → no dates
+        ("Amarchand Mangaldas", 1993, 2007),
+    ]  # board-page line doesn't name her → dropped
+    assert added == ["profile", "profile"]
+
+
+def test_exchange_filing_url_and_passing_mentions():
+    assert mg.source_kind("https://nsearchives.nseindia.com/corporate/IDEA_21092026_PostalBallot.pdf",
+                          "Vodafone Idea Limited", []) == "exchange_filing"  # fmt: skip
+    assert list(mg.KIND_LABEL)[0] == "exchange_filing"
+    det = mg.build_detail({"people": [
+        {"name": "Ms. Gopika Pant", "role": "Independent Woman Director", "change": "appointed"},
+        {"name": "Pankaj Kapdeo", "role": "Company Secretary", "change": "other"}]},  # signed the letter
+        {"symbol": "IDEA"}, FILING, "text", [], "Vodafone Idea Limited")  # fmt: skip
+    assert [x.name for x in det.people] == ["Ms. Gopika Pant"]
+    assert mg.surname("Ms. Gopika Pant") == "pant" and mg.surname("Mr. Anil Berera") == "berera"

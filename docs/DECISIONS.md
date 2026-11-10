@@ -249,3 +249,15 @@ Short records of key decisions: context, decision, alternatives considered, why.
 ## 2026-11-10 · Groq fallback model
 - **Context:** the first smoke test with the product owner's Groq key returned 404 `model_not_found` for `llama-3.1-8b-instant`, which Groq has retired. The fallback had never actually run.
 - **Decision:** the default is now `qwen/qwen3.8-27b`, with `GROQ_MODEL` as an override. On a real-shaped management-profile extraction it gave the same answer as `openai/gpt-oss-20b` with 48 output tokens instead of 221 (gpt-oss spends tokens reasoning), which stretches Groq's free-tier token limits.
+
+## 2026-11-10 · Web facts must be about this person, with dates from the quote
+- **Context:** the IDEA rebuild (Gopika Pant, Anil Berera) exposed three ways a web fact could look sourced and still be wrong:
+  - A board page's generic "Non-Executive & Independent Director" line was attached to Gopika Pant, though the quote didn't name her.
+  - LinkedIn dates came from the model's `period` field. On a snippet that lists several Whirlpool roles, two runs gave 2017–2019 and 2008–2017.
+  - An exchange filing found by search (IDEA's postal-ballot notice) was labelled "news".
+- **Decision:**
+  - **About this person:** a web fact is kept only if the person's surname is in the snippet's title (a profile page) or near the quote.
+  - **Dates from the quote:** a role keeps dates only when the years are inside the quoted text, and the prompt requires quoting them. Otherwise the role shows without dates.
+  - **Exchange filings:** search results on nseindia.com/bseindia.com are their own kind, "Exchange filing", ranked first.
+  - **Passing mentions:** people only mentioned in passing (change "other" and nothing said about them, e.g. the company secretary who signs the letter) are dropped.
+- **Why:** a quote that doesn't name the person, or a date the quote doesn't print, is a guess with a URL attached.
