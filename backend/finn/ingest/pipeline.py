@@ -229,7 +229,8 @@ def step_classify(run: Run, s: NSESession | None, symbols: list[str] | None) -> 
     run.stats["classification"] = clf.stats.as_dict()
     run.stats["llm"] = router.stats.as_dict()
     for msg in clf.stats.failures[:50]:
-        run.failures.append({"step": "classify", "scope": msg.split(" ")[1] if " " in msg else "?", "error": msg})
+        scope = msg.split(" ")[1].rstrip(":") if " " in msg else "?"
+        run.failures.append({"step": "classify", "scope": scope, "error": " ".join(msg.split())})
 
 
 def step_thread(run: Run, symbols: list[str]) -> None:

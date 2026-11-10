@@ -58,6 +58,7 @@ _PATTERNS = [
     re.compile(_ENDED + _MON + r"\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})", re.I),  # September 30, 2026
     re.compile(_ENDED + _MON + r",?\s+(\d{4})", re.I),  # September 2026
 ]
+_PAST_CALL = re.compile(r"audio|recording|webcast|transcript|held on", re.I)
 _QFY = re.compile(r"\bQ([1-4])\s*[- ]?\s*FY\s*'?(\d{2,4})\b", re.I)
 
 
@@ -140,7 +141,10 @@ def thread(filings: list[Filing]) -> tuple[list[Event], dict[str, str | None]]:
             if cat in UNTHREADED:
                 continue
             if cat in RESULTS_THREAD:
-                qe = quarter_from_text(f.subject) or results_quarter_for(to_ist(f.filed_at).date())
+                forward = st in (S.intimation, None) or (st == S.call and not _PAST_CALL.search(f.subject))
+                qe = quarter_from_text(f.subject) or results_quarter_for(
+                    to_ist(f.filed_at).date(), forward_looking=forward
+                )
                 period = quarter_period(qe)
                 key = f"{symbol}:results:{period.label}"
                 meta.setdefault(key, {"symbol": symbol, "category": C.results, "period": period})

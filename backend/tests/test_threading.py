@@ -88,3 +88,15 @@ def test_results_quarter_falls_back_to_filing_date():
                stage="transcript")  # fmt: skip
     events, _ = thread([f])
     assert events[0].key == "X:results:Q2 FY27"
+
+
+def test_post_results_filings_never_point_at_an_unfinished_quarter():
+    # COCHINSHIP filed a Q1 transcript on 18 Sep (12 days before Q2 ended); it must not join Q2's thread.
+    f = Filing(id="NSE:2", exchange="NSE", exchange_id="2", symbol="X", exchange_category="Updates",
+               subject="Transcript", filed_at=datetime(2026, 9, 18, 5, tzinfo=UTC), category="earnings_call",
+               stage="transcript")  # fmt: skip
+    intimation = Filing(id="NSE:3", exchange="NSE", exchange_id="3", symbol="X", exchange_category="Board Meeting",
+                        subject="Board meeting", filed_at=datetime(2026, 9, 20, 5, tzinfo=UTC), category="results",
+                        stage="intimation")  # fmt: skip
+    keys = {e.key for e in thread([f, intimation])[0]}
+    assert keys == {"X:results:Q1 FY27", "X:results:Q2 FY27"}

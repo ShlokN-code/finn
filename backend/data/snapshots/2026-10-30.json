@@ -1,0 +1,5106 @@
+{
+ "label": "showcase-2026-10-30",
+ "trading_date": "2026-10-30",
+ "frozen_at": "2026-11-10T08:56:16.462749+00:00",
+ "symbols": [
+  "HAL",
+  "EICHERMOT",
+  "GRASIM",
+  "TATAPOWER",
+  "ALKEM",
+  "KALYANKJIL",
+  "COCHINSHIP",
+  "TITAGARH",
+  "IDEA",
+  "RELIANCE",
+  "HDFCBANK",
+  "BAJFINANCE",
+  "INFY",
+  "ITC",
+  "DIVISLAB",
+  "TATASTEEL",
+  "JUBLFOOD",
+  "DIXON"
+ ],
+ "summary": {
+  "filings": 16,
+  "events": 7,
+  "hidden_filings": 3,
+  "tier_split": {
+   "exchange": 3,
+   "rule": 13
+  },
+  "deals": 0
+ },
+ "filings": [
+  {
+   "id": "NSE:BM-b5debcf6762c9dad",
+   "exchange": "NSE",
+   "exchange_id": "BM-b5debcf6762c9dad",
+   "symbol": "GRASIM",
+   "isin": "INE047A01013",
+   "filed_at": "2026-10-30T05:51:18+00:00",
+   "exchange_category": "Board Meeting: Financial Results",
+   "subject": "Board meeting on 13-Nov-2026: Board Meeting Intimation for considering and approving the Unaudited Financial Results of the Company for the quarter and half year ended 30th September 2026",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/GRASIM_30102026112048_SEintimation.pdf",
+   "attachment_size": "180.09 KB",
+   "xbrl_url": null,
+   "category": "results",
+   "category_source": "exchange",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "exchange",
+   "classify_note": "desc=Board Meeting: Financial Results",
+   "stage": "intimation",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "GRASIM:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:47.452827+00:00"
+  },
+  {
+   "id": "NSE:BM-02b4f3c3056adab3",
+   "exchange": "NSE",
+   "exchange_id": "BM-02b4f3c3056adab3",
+   "symbol": "GRASIM",
+   "isin": "INE047A01013",
+   "filed_at": "2026-10-30T05:54:33+00:00",
+   "exchange_category": "Board Meeting: Board Meeting Intimation",
+   "subject": "Grasim Industries Limited has informed the Exchange about Board Meeting to be held on 13-Nov-2026 to inter-alia consider and approve the Unaudited Financial results of the Company for the Half Yearly ended September 2026 .",
+   "attachment_url": null,
+   "attachment_size": "14.50 KB",
+   "xbrl_url": "https://nsearchives.nseindia.com/corporate/xbrl/PRIOR_INTIMATION_1234_WebXMLFile_20261030_112431187.xml",
+   "category": "results",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=board_meeting_intimation",
+   "stage": "intimation",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "GRASIM:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:47.452827+00:00"
+  },
+  {
+   "id": "NSE:106836184",
+   "exchange": "NSE",
+   "exchange_id": "106836184",
+   "symbol": "HDFCBANK",
+   "isin": "INE040A01018",
+   "filed_at": "2026-10-30T07:54:25+00:00",
+   "exchange_category": "ESOP/ESOS/ESPS",
+   "subject": "HDFC Bank Limited has informed the Exchange regarding Allotment of 4675598 Shares.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_30102026132409_SELetterESOP30102026.pdf",
+   "attachment_size": "279.26 KB",
+   "xbrl_url": null,
+   "category": "routine",
+   "category_source": "exchange",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "exchange",
+   "classify_note": "desc=ESOP/ESOS/ESPS",
+   "stage": null,
+   "hidden_reason": "ESOP allotment / grant",
+   "duplicate_of": null,
+   "event_id": null,
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106836343",
+   "exchange": "NSE",
+   "exchange_id": "106836343",
+   "symbol": "BAJFINANCE",
+   "isin": "INE296A01016",
+   "filed_at": "2026-10-30T09:23:39+00:00",
+   "exchange_category": "Allotment of Securities",
+   "subject": "Bajaj Finance Limited has informed the Exchange regarding allotment of 2,06,950 securities pursuant to Non Convertible Securities at its meeting held on October 30, 2026",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/BAJFINANCE_30102026145301_REG30_Allotment_intimation.pdf",
+   "attachment_size": "261.29 KB",
+   "xbrl_url": null,
+   "category": "routine",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=debt_allotment",
+   "stage": null,
+   "hidden_reason": "Debt securities (NCD/CP)",
+   "duplicate_of": null,
+   "event_id": null,
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106836406",
+   "exchange": "NSE",
+   "exchange_id": "106836406",
+   "symbol": "ALKEM",
+   "isin": "INE540L01014",
+   "filed_at": "2026-10-30T09:50:51+00:00",
+   "exchange_category": "General Updates",
+   "subject": "Alkem Laboratories Limited has informed the Exchange about US FDA Inspection at Company s API manufacturing facility located at Mandva.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/ALKEM_30102026152036_Closure_of_USFDA_inspection_-Mandva-signed.pdf",
+   "attachment_size": "245.66 KB",
+   "xbrl_url": null,
+   "category": "litigation",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=litigation",
+   "stage": null,
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "ALKEM:litigation:2026-10-30",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106836523",
+   "exchange": "NSE",
+   "exchange_id": "106836523",
+   "symbol": "DIXON",
+   "isin": "INE935N01012",
+   "filed_at": "2026-10-30T10:37:24+00:00",
+   "exchange_category": "Outcome of Board Meeting",
+   "subject": "Dixon Technologies (India) Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/DIXON_30102026160547_Outcome30102026.pdf",
+   "attachment_size": "3.82 MB",
+   "xbrl_url": null,
+   "category": "results",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=results_outcome",
+   "stage": "outcome",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "DIXON:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106836531",
+   "exchange": "NSE",
+   "exchange_id": "106836531",
+   "symbol": "DIXON",
+   "isin": "INE935N01012",
+   "filed_at": "2026-10-30T10:40:13+00:00",
+   "exchange_category": "Change in Management",
+   "subject": "Dixon Technologies (India) Limited has informed the Exchange about change in Management",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/DIXON_30102026160939_Outcome30102026.pdf",
+   "attachment_size": "3.82 MB",
+   "xbrl_url": null,
+   "category": "management_change",
+   "category_source": "exchange",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "exchange",
+   "classify_note": "desc=Change in Management",
+   "stage": null,
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "DIXON:management_change:2026-10-30",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106836561",
+   "exchange": "NSE",
+   "exchange_id": "106836561",
+   "symbol": "DIXON",
+   "isin": "INE935N01012",
+   "filed_at": "2026-10-30T10:49:58+00:00",
+   "exchange_category": "Investor Presentation",
+   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Investor Presentation",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/DIXON_30102026161836_OutcomewithPPT30102026.pdf",
+   "attachment_size": "6.46 MB",
+   "xbrl_url": null,
+   "category": "investor_meetings",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=desc_investor_presentation",
+   "stage": "presentation",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "DIXON:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837169",
+   "exchange": "NSE",
+   "exchange_id": "106837169",
+   "symbol": "TATASTEEL",
+   "isin": "INE081A01012",
+   "filed_at": "2026-10-30T13:09:46+00:00",
+   "exchange_category": "Analysts/Institutional Investor Meet/Con. Call Updates",
+   "subject": "Tata Steel Limited has informed the Exchange about Schedule of meet for 2QFY27 Earnings Discussion",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/NIDHIFADNAVIS_30102026183553_BSENSECombined.pdf",
+   "attachment_size": "1.99 MB",
+   "xbrl_url": null,
+   "category": "investor_meetings",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=investor_meet",
+   "stage": null,
+   "hidden_reason": "Investor-meeting notice",
+   "duplicate_of": null,
+   "event_id": null,
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837197",
+   "exchange": "NSE",
+   "exchange_id": "106837197",
+   "symbol": "INFY",
+   "isin": "INE009A01021",
+   "filed_at": "2026-10-30T13:20:50+00:00",
+   "exchange_category": "Updates",
+   "subject": "Infosys Limited has informed the Exchange regarding 'Infosys Announces Expansion of Pocharam Development Center in Hyderabad'.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/INFY_30102026185037_PR_30102026.pdf",
+   "attachment_size": "3.28 MB",
+   "xbrl_url": null,
+   "category": "capex",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=capex",
+   "stage": null,
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "INFY:capex:2026-10-30",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837283",
+   "exchange": "NSE",
+   "exchange_id": "106837283",
+   "symbol": "GRASIM",
+   "isin": "INE047A01013",
+   "filed_at": "2026-10-30T13:40:40+00:00",
+   "exchange_category": "General Updates",
+   "subject": "Update on acquisition of Solenergi Power Private Limited by Aditya Birla Renewables Limited, a subsidiary of the Company",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/GRASIM_30102026191027_SEIntimation.pdf",
+   "attachment_size": "389.90 KB",
+   "xbrl_url": null,
+   "category": "mna",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=mna",
+   "stage": null,
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "GRASIM:mna:2026-10-30",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837394",
+   "exchange": "NSE",
+   "exchange_id": "106837394",
+   "symbol": "RELIANCE",
+   "isin": "INE002A01018",
+   "filed_at": "2026-10-30T14:10:12+00:00",
+   "exchange_category": "Outcome of Board Meeting",
+   "subject": "In continuation of our letter dated October 27, 2026, we wish to inform you that the Board of Directors of the Company, at its meeting held today, has, inter alia:1. approved the unaudited Financial Results (Consolidated and Standalone) for the quarter and half year ended September 30, 2026; and2. passed an enabling resolution authorising the issuance of listed, secured / unsecured, redeemable non-convertible debentures up to Rs. 15,000 crore, in one or more tranches, on private placement basis.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/kavinavora_30102026193935_SE_30102026_Results.pdf",
+   "attachment_size": "8.41 MB",
+   "xbrl_url": null,
+   "category": "results",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=results_outcome",
+   "stage": "outcome",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "RELIANCE:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837395",
+   "exchange": "NSE",
+   "exchange_id": "106837395",
+   "symbol": "RELIANCE",
+   "isin": "INE002A01018",
+   "filed_at": "2026-10-30T14:10:12+00:00",
+   "exchange_category": "Outcome of Board Meeting",
+   "subject": "In continuation of our letter dated October 27, 2026, we wish to inform you that the Board of Directors of the Company, at its meeting held today, has, inter alia:1. approved the unaudited Financial Results (Consolidated and Standalone) for the quarter and half year ended September 30, 2026; and2. passed an enabling resolution authorising the issuance of listed, secured / unsecured, redeemable non-convertible debentures up to Rs. 15,000 crore, in one or more tranches, on private placement basis.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/kavinavora_30102026193952_SE_30102026_Results.pdf",
+   "attachment_size": "8.41 MB",
+   "xbrl_url": null,
+   "category": "results",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=results_outcome",
+   "stage": "outcome",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "RELIANCE:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837406",
+   "exchange": "NSE",
+   "exchange_id": "106837406",
+   "symbol": "RELIANCE",
+   "isin": "INE002A01018",
+   "filed_at": "2026-10-30T14:13:25+00:00",
+   "exchange_category": "Press Release",
+   "subject": "In continuation of our letter of today's date on the Unaudited Financial Results (Consolidated and Standalone) for the quarter and half year ended September 30, 2026, we attach a copy of media release being issued by the Company.",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/kavinavora_30102026194315_SE_30102026_MR.pdf",
+   "attachment_size": "1.07 MB",
+   "xbrl_url": null,
+   "category": "results",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=results_outcome",
+   "stage": "outcome",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "RELIANCE:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837413",
+   "exchange": "NSE",
+   "exchange_id": "106837413",
+   "symbol": "RELIANCE",
+   "isin": "INE002A01018",
+   "filed_at": "2026-10-30T14:17:13+00:00",
+   "exchange_category": "Investor Presentation",
+   "subject": "Reliance Industries Limited has informed the Exchange about Investor Presentation",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/kavinavora_30102026194557_SE_30102026_IP.pdf",
+   "attachment_size": "1.98 MB",
+   "xbrl_url": null,
+   "category": "investor_meetings",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=desc_investor_presentation",
+   "stage": "presentation",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "RELIANCE:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  },
+  {
+   "id": "NSE:106837485",
+   "exchange": "NSE",
+   "exchange_id": "106837485",
+   "symbol": "DIXON",
+   "isin": "INE935N01012",
+   "filed_at": "2026-10-30T15:02:53+00:00",
+   "exchange_category": "Analysts/Institutional Investor Meet/Con. Call Updates",
+   "subject": "Dixon Technologies (India) Limited has informed the Exchange about Link of Recording",
+   "attachment_url": "https://nsearchives.nseindia.com/corporate/DIXON_30102026203021_ConferenceCallRecordingIntimation30102026.pdf",
+   "attachment_size": "646.23 KB",
+   "xbrl_url": null,
+   "category": "earnings_call",
+   "category_source": "rule",
+   "category_model": null,
+   "category_confidence": null,
+   "classify_tier": "rule",
+   "classify_note": "rule=call_recording",
+   "stage": "call",
+   "hidden_reason": null,
+   "duplicate_of": null,
+   "event_id": "DIXON:results:Q2 FY27",
+   "fetched_at": "2026-11-10T08:38:04.586381+00:00"
+  }
+ ],
+ "events": [
+  {
+   "id": "DIXON:results:Q2 FY27",
+   "key": "DIXON:results:Q2 FY27",
+   "symbol": "DIXON",
+   "category": "results",
+   "title": "Q2 FY27 results",
+   "period": {
+    "end": "2026-09-30",
+    "kind": "quarter",
+    "label": "Q2 FY27",
+    "start": "2026-07-01"
+   },
+   "started_at": "2026-10-23T12:34:18+00:00",
+   "updated_at": "2026-11-05T11:06:22+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-23T12:34:18Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:BM-aa8ecd2578064f48"
+    },
+    {
+     "at": "2026-10-23T12:57:48Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:BM-cdabc5a5d60b7822"
+    },
+    {
+     "at": "2026-10-30T10:37:24Z",
+     "label": "Results filed",
+     "stage": "outcome",
+     "filing_id": "NSE:106836523"
+    },
+    {
+     "at": "2026-10-30T10:49:58Z",
+     "label": "Investor presentation",
+     "stage": "presentation",
+     "filing_id": "NSE:106836561"
+    },
+    {
+     "at": "2026-10-30T15:02:53Z",
+     "label": "Call recording",
+     "stage": "call",
+     "filing_id": "NSE:106837485"
+    },
+    {
+     "at": "2026-10-31T14:02:45Z",
+     "label": "Newspaper ad",
+     "stage": "newspaper_ad",
+     "filing_id": "NSE:106838529"
+    },
+    {
+     "at": "2026-11-05T11:06:22Z",
+     "label": "Call transcript",
+     "stage": "transcript",
+     "filing_id": "NSE:106847469"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  },
+  {
+   "id": "GRASIM:results:Q2 FY27",
+   "key": "GRASIM:results:Q2 FY27",
+   "symbol": "GRASIM",
+   "category": "results",
+   "title": "Q2 FY27 results",
+   "period": {
+    "end": "2026-09-30",
+    "kind": "quarter",
+    "label": "Q2 FY27",
+    "start": "2026-07-01"
+   },
+   "started_at": "2026-10-30T05:51:18+00:00",
+   "updated_at": "2026-11-02T11:05:13+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-30T05:51:18Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:BM-b5debcf6762c9dad"
+    },
+    {
+     "at": "2026-10-30T05:54:33Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:BM-02b4f3c3056adab3"
+    },
+    {
+     "at": "2026-11-02T11:05:13Z",
+     "label": "Earnings call",
+     "stage": "call",
+     "filing_id": "NSE:106839795"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  },
+  {
+   "id": "RELIANCE:results:Q2 FY27",
+   "key": "RELIANCE:results:Q2 FY27",
+   "symbol": "RELIANCE",
+   "category": "results",
+   "title": "Q2 FY27 results",
+   "period": {
+    "end": "2026-09-30",
+    "kind": "quarter",
+    "label": "Q2 FY27",
+    "start": "2026-07-01"
+   },
+   "started_at": "2026-10-27T13:40:53+00:00",
+   "updated_at": "2026-11-01T17:39:23+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-27T13:40:53Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:BM-fd74f593d25c71b5"
+    },
+    {
+     "at": "2026-10-27T13:47:11Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:106830931"
+    },
+    {
+     "at": "2026-10-27T13:50:14Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:BM-d0cb8dcfa1c2fa22"
+    },
+    {
+     "at": "2026-10-27T16:41:29Z",
+     "label": "Board meeting intimated",
+     "stage": "intimation",
+     "filing_id": "NSE:106831152"
+    },
+    {
+     "at": "2026-10-30T14:10:12Z",
+     "label": "Results filed",
+     "stage": "outcome",
+     "filing_id": "NSE:106837394"
+    },
+    {
+     "at": "2026-10-30T14:10:12Z",
+     "label": "Results filed",
+     "stage": "outcome",
+     "filing_id": "NSE:106837395"
+    },
+    {
+     "at": "2026-10-30T14:13:25Z",
+     "label": "Results filed",
+     "stage": "outcome",
+     "filing_id": "NSE:106837406"
+    },
+    {
+     "at": "2026-10-30T14:17:13Z",
+     "label": "Investor presentation",
+     "stage": "presentation",
+     "filing_id": "NSE:106837413"
+    },
+    {
+     "at": "2026-10-31T12:04:04Z",
+     "label": "Call recording",
+     "stage": "call",
+     "filing_id": "NSE:106838338"
+    },
+    {
+     "at": "2026-11-01T17:39:23Z",
+     "label": "Call transcript",
+     "stage": "transcript",
+     "filing_id": "NSE:106838897"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  },
+  {
+   "id": "GRASIM:mna:2026-10-30",
+   "key": "GRASIM:mna:2026-10-30",
+   "symbol": "GRASIM",
+   "category": "mna",
+   "title": "M&A / restructuring: Update on acquisition of Solenergi Power Private Limited by Aditya Birla Renewables Limited, a subsi",
+   "period": null,
+   "started_at": "2026-10-30T13:40:40+00:00",
+   "updated_at": "2026-10-30T13:40:40+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-30T13:40:40Z",
+     "label": "Update on acquisition of Solenergi Power Private Limited by Aditya Birla Renewables Limite",
+     "stage": "other",
+     "filing_id": "NSE:106837283"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  },
+  {
+   "id": "INFY:capex:2026-10-30",
+   "key": "INFY:capex:2026-10-30",
+   "symbol": "INFY",
+   "category": "capex",
+   "title": "Capex / capacity: Infosys Announces Expansion of Pocharam Development Center in Hyderabad",
+   "period": null,
+   "started_at": "2026-10-30T13:20:50+00:00",
+   "updated_at": "2026-10-30T13:20:50+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-30T13:20:50Z",
+     "label": "Infosys Announces Expansion of Pocharam Development Center in Hyderabad",
+     "stage": "other",
+     "filing_id": "NSE:106837197"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  },
+  {
+   "id": "DIXON:management_change:2026-10-30",
+   "key": "DIXON:management_change:2026-10-30",
+   "symbol": "DIXON",
+   "category": "management_change",
+   "title": "Management change: change in Management",
+   "period": null,
+   "started_at": "2026-10-30T10:40:13+00:00",
+   "updated_at": "2026-10-30T10:40:13+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-30T10:40:13Z",
+     "label": "change in Management",
+     "stage": "other",
+     "filing_id": "NSE:106836531"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  },
+  {
+   "id": "ALKEM:litigation:2026-10-30",
+   "key": "ALKEM:litigation:2026-10-30",
+   "symbol": "ALKEM",
+   "category": "litigation",
+   "title": "Legal / regulatory: US FDA Inspection at Company s API manufacturing facility located at Mandva",
+   "period": null,
+   "started_at": "2026-10-30T09:50:51+00:00",
+   "updated_at": "2026-10-30T09:50:51+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-30T09:50:51Z",
+     "label": "US FDA Inspection at Company s API manufacturing facility located at Mandva",
+     "stage": "other",
+     "filing_id": "NSE:106836406"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+  }
+ ],
+ "prices": [
+  {
+   "symbol": "ALKEM",
+   "date": "2026-09-30",
+   "open": 5249.5,
+   "high": 5276.5,
+   "low": 5135.0,
+   "close": 5163.5,
+   "adj_close": 5163.5,
+   "volume": 146577
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-01",
+   "open": 5150.0,
+   "high": 5220.0,
+   "low": 5110.0,
+   "close": 5220.0,
+   "adj_close": 5220.0,
+   "volume": 291015
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-05",
+   "open": 5210.0,
+   "high": 5235.0,
+   "low": 5136.0,
+   "close": 5192.5,
+   "adj_close": 5192.5,
+   "volume": 102619
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-06",
+   "open": 5223.5,
+   "high": 5292.0,
+   "low": 5165.0,
+   "close": 5292.0,
+   "adj_close": 5292.0,
+   "volume": 63668
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-07",
+   "open": 5297.0,
+   "high": 5404.5,
+   "low": 5292.0,
+   "close": 5350.5,
+   "adj_close": 5350.5,
+   "volume": 205152
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-08",
+   "open": 5407.0,
+   "high": 5407.0,
+   "low": 5237.5,
+   "close": 5249.5,
+   "adj_close": 5249.5,
+   "volume": 281234
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-09",
+   "open": 5252.0,
+   "high": 5299.0,
+   "low": 5225.0,
+   "close": 5279.0,
+   "adj_close": 5279.0,
+   "volume": 96074
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-12",
+   "open": 5256.5,
+   "high": 5300.5,
+   "low": 5201.0,
+   "close": 5205.0,
+   "adj_close": 5205.0,
+   "volume": 179595
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-13",
+   "open": 5206.0,
+   "high": 5288.5,
+   "low": 5172.0,
+   "close": 5250.0,
+   "adj_close": 5250.0,
+   "volume": 103084
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-14",
+   "open": 5259.0,
+   "high": 5270.5,
+   "low": 5171.0,
+   "close": 5201.0,
+   "adj_close": 5201.0,
+   "volume": 79840
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-15",
+   "open": 5210.0,
+   "high": 5249.0,
+   "low": 5120.5,
+   "close": 5120.5,
+   "adj_close": 5120.5,
+   "volume": 59913
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-16",
+   "open": 5138.5,
+   "high": 5147.0,
+   "low": 5042.0,
+   "close": 5050.0,
+   "adj_close": 5050.0,
+   "volume": 160798
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-19",
+   "open": 5042.5,
+   "high": 5099.5,
+   "low": 4975.5,
+   "close": 5004.0,
+   "adj_close": 5004.0,
+   "volume": 95218
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-21",
+   "open": 4979.0,
+   "high": 5050.5,
+   "low": 4891.5,
+   "close": 5015.0,
+   "adj_close": 5015.0,
+   "volume": 279107
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-22",
+   "open": 4982.0,
+   "high": 5015.0,
+   "low": 4811.0,
+   "close": 5013.5,
+   "adj_close": 5013.5,
+   "volume": 49335
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-23",
+   "open": 4975.5,
+   "high": 5019.5,
+   "low": 4877.0,
+   "close": 4947.0,
+   "adj_close": 4947.0,
+   "volume": 54982
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-26",
+   "open": 4960.0,
+   "high": 5030.0,
+   "low": 4878.5,
+   "close": 5030.0,
+   "adj_close": 5030.0,
+   "volume": 69617
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-27",
+   "open": 4990.0,
+   "high": 5166.0,
+   "low": 4963.0,
+   "close": 5078.0,
+   "adj_close": 5078.0,
+   "volume": 166281
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-28",
+   "open": 5076.0,
+   "high": 5079.0,
+   "low": 5003.5,
+   "close": 5070.0,
+   "adj_close": 5070.0,
+   "volume": 78885
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-29",
+   "open": 5093.0,
+   "high": 5104.0,
+   "low": 5045.0,
+   "close": 5079.0,
+   "adj_close": 5079.0,
+   "volume": 58530
+  },
+  {
+   "symbol": "ALKEM",
+   "date": "2026-10-30",
+   "open": 5060.5,
+   "high": 5134.5,
+   "low": 5030.0,
+   "close": 5113.5,
+   "adj_close": 5113.5,
+   "volume": 108036
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-09-30",
+   "open": 981.5,
+   "high": 981.5,
+   "low": 955.799987792969,
+   "close": 959.400024414062,
+   "adj_close": 959.400024414062,
+   "volume": 6625616
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-01",
+   "open": 953.900024414062,
+   "high": 955.950012207031,
+   "low": 937.299987792969,
+   "close": 948.299987792969,
+   "adj_close": 948.299987792969,
+   "volume": 5698769
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-05",
+   "open": 962.549987792969,
+   "high": 995.799987792969,
+   "low": 962.549987792969,
+   "close": 970.0,
+   "adj_close": 970.0,
+   "volume": 12682669
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-06",
+   "open": 970.0,
+   "high": 973.25,
+   "low": 957.0,
+   "close": 963.099975585938,
+   "adj_close": 963.099975585938,
+   "volume": 4380406
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-07",
+   "open": 969.150024414062,
+   "high": 984.400024414062,
+   "low": 952.299987792969,
+   "close": 963.849975585938,
+   "adj_close": 963.849975585938,
+   "volume": 11415155
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-08",
+   "open": 956.5,
+   "high": 962.75,
+   "low": 946.299987792969,
+   "close": 955.950012207031,
+   "adj_close": 955.950012207031,
+   "volume": 9368412
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-09",
+   "open": 951.950012207031,
+   "high": 968.0,
+   "low": 950.700012207031,
+   "close": 960.0,
+   "adj_close": 960.0,
+   "volume": 7684275
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-12",
+   "open": 960.0,
+   "high": 972.849975585938,
+   "low": 954.0,
+   "close": 957.25,
+   "adj_close": 957.25,
+   "volume": 5044925
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-13",
+   "open": 946.599975585938,
+   "high": 986.5,
+   "low": 946.099975585938,
+   "close": 982.75,
+   "adj_close": 982.75,
+   "volume": 7559515
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-14",
+   "open": 980.0,
+   "high": 984.75,
+   "low": 957.0,
+   "close": 957.0,
+   "adj_close": 957.0,
+   "volume": 7139305
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-15",
+   "open": 951.900024414062,
+   "high": 975.0,
+   "low": 947.650024414062,
+   "close": 965.25,
+   "adj_close": 965.25,
+   "volume": 10802450
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-16",
+   "open": 966.0,
+   "high": 982.099975585938,
+   "low": 958.5,
+   "close": 982.099975585938,
+   "adj_close": 982.099975585938,
+   "volume": 7810809
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-19",
+   "open": 985.0,
+   "high": 985.5,
+   "low": 955.599975585938,
+   "close": 957.349975585938,
+   "adj_close": 957.349975585938,
+   "volume": 8308852
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-21",
+   "open": 963.700012207031,
+   "high": 968.799987792969,
+   "low": 918.700012207031,
+   "close": 926.0,
+   "adj_close": 926.0,
+   "volume": 18557070
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-22",
+   "open": 907.450012207031,
+   "high": 942.099975585938,
+   "low": 907.400024414062,
+   "close": 942.099975585938,
+   "adj_close": 942.099975585938,
+   "volume": 10621523
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-23",
+   "open": 940.0,
+   "high": 949.700012207031,
+   "low": 915.400024414062,
+   "close": 928.950012207031,
+   "adj_close": 928.950012207031,
+   "volume": 6270760
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-26",
+   "open": 920.0,
+   "high": 926.700012207031,
+   "low": 906.200012207031,
+   "close": 918.700012207031,
+   "adj_close": 918.700012207031,
+   "volume": 3976714
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-27",
+   "open": 916.0,
+   "high": 924.0,
+   "low": 907.5,
+   "close": 912.0,
+   "adj_close": 912.0,
+   "volume": 6233563
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-28",
+   "open": 905.0,
+   "high": 919.0,
+   "low": 899.150024414062,
+   "close": 917.25,
+   "adj_close": 917.25,
+   "volume": 5460928
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-29",
+   "open": 915.0,
+   "high": 943.299987792969,
+   "low": 908.75,
+   "close": 938.900024414062,
+   "adj_close": 938.900024414062,
+   "volume": 8659753
+  },
+  {
+   "symbol": "BAJFINANCE",
+   "date": "2026-10-30",
+   "open": 934.0,
+   "high": 952.450012207031,
+   "low": 931.200012207031,
+   "close": 939.099975585938,
+   "adj_close": 939.099975585938,
+   "volume": 9334765
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-09-30",
+   "open": 1332.0,
+   "high": 1348.59997558594,
+   "low": 1305.69995117188,
+   "close": 1315.0,
+   "adj_close": 1315.0,
+   "volume": 985418
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-01",
+   "open": 1315.0,
+   "high": 1315.90002441406,
+   "low": 1265.59997558594,
+   "close": 1287.0,
+   "adj_close": 1287.0,
+   "volume": 727942
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-05",
+   "open": 1295.90002441406,
+   "high": 1308.0,
+   "low": 1279.30004882812,
+   "close": 1283.80004882812,
+   "adj_close": 1283.80004882812,
+   "volume": 678043
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-06",
+   "open": 1285.19995117188,
+   "high": 1293.09997558594,
+   "low": 1273.5,
+   "close": 1282.0,
+   "adj_close": 1282.0,
+   "volume": 860827
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-07",
+   "open": 1282.0,
+   "high": 1282.0,
+   "low": 1246.40002441406,
+   "close": 1255.09997558594,
+   "adj_close": 1255.09997558594,
+   "volume": 929402
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-08",
+   "open": 1255.09997558594,
+   "high": 1256.0,
+   "low": 1200.0,
+   "close": 1200.0,
+   "adj_close": 1200.0,
+   "volume": 940775
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-09",
+   "open": 1214.90002441406,
+   "high": 1257.0,
+   "low": 1213.0,
+   "close": 1230.0,
+   "adj_close": 1230.0,
+   "volume": 2284003
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-12",
+   "open": 1240.0,
+   "high": 1262.0,
+   "low": 1227.40002441406,
+   "close": 1232.0,
+   "adj_close": 1232.0,
+   "volume": 761099
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-13",
+   "open": 1233.0,
+   "high": 1266.0,
+   "low": 1220.0,
+   "close": 1265.0,
+   "adj_close": 1265.0,
+   "volume": 728423
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-14",
+   "open": 1262.30004882812,
+   "high": 1276.80004882812,
+   "low": 1250.69995117188,
+   "close": 1253.0,
+   "adj_close": 1253.0,
+   "volume": 777895
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-15",
+   "open": 1250.69995117188,
+   "high": 1263.69995117188,
+   "low": 1238.30004882812,
+   "close": 1254.0,
+   "adj_close": 1254.0,
+   "volume": 499343
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-16",
+   "open": 1254.0,
+   "high": 1262.5,
+   "low": 1246.09997558594,
+   "close": 1248.80004882812,
+   "adj_close": 1248.80004882812,
+   "volume": 432392
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-19",
+   "open": 1248.80004882812,
+   "high": 1249.40002441406,
+   "low": 1222.0,
+   "close": 1226.5,
+   "adj_close": 1226.5,
+   "volume": 294423
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-21",
+   "open": 1231.90002441406,
+   "high": 1234.90002441406,
+   "low": 1150.09997558594,
+   "close": 1167.09997558594,
+   "adj_close": 1167.09997558594,
+   "volume": 1548758
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-22",
+   "open": 1156.59997558594,
+   "high": 1184.0,
+   "low": 1146.30004882812,
+   "close": 1163.90002441406,
+   "adj_close": 1163.90002441406,
+   "volume": 1034858
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-23",
+   "open": 1163.90002441406,
+   "high": 1164.09997558594,
+   "low": 1126.69995117188,
+   "close": 1139.90002441406,
+   "adj_close": 1139.90002441406,
+   "volume": 759376
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-26",
+   "open": 1129.0,
+   "high": 1150.90002441406,
+   "low": 1120.0,
+   "close": 1133.90002441406,
+   "adj_close": 1133.90002441406,
+   "volume": 687287
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-27",
+   "open": 1143.0,
+   "high": 1156.5,
+   "low": 1101.19995117188,
+   "close": 1123.5,
+   "adj_close": 1123.5,
+   "volume": 1096787
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-28",
+   "open": 1118.19995117188,
+   "high": 1135.90002441406,
+   "low": 1112.59997558594,
+   "close": 1129.90002441406,
+   "adj_close": 1129.90002441406,
+   "volume": 486320
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-29",
+   "open": 1130.40002441406,
+   "high": 1157.0,
+   "low": 1124.59997558594,
+   "close": 1155.80004882812,
+   "adj_close": 1155.80004882812,
+   "volume": 502702
+  },
+  {
+   "symbol": "COCHINSHIP",
+   "date": "2026-10-30",
+   "open": 1183.0,
+   "high": 1183.0,
+   "low": 1114.19995117188,
+   "close": 1114.19995117188,
+   "adj_close": 1114.19995117188,
+   "volume": 784051
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-09-30",
+   "open": 9499.5,
+   "high": 9505.0,
+   "low": 9275.0,
+   "close": 9291.5,
+   "adj_close": 9291.5,
+   "volume": 541269
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-01",
+   "open": 9277.0,
+   "high": 9318.0,
+   "low": 9078.0,
+   "close": 9249.0,
+   "adj_close": 9249.0,
+   "volume": 567310
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-05",
+   "open": 9251.0,
+   "high": 9285.5,
+   "low": 9113.5,
+   "close": 9196.0,
+   "adj_close": 9196.0,
+   "volume": 480338
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-06",
+   "open": 9210.0,
+   "high": 9557.5,
+   "low": 9165.0,
+   "close": 9550.0,
+   "adj_close": 9550.0,
+   "volume": 465106
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-07",
+   "open": 9500.5,
+   "high": 9660.0,
+   "low": 9494.0,
+   "close": 9588.0,
+   "adj_close": 9588.0,
+   "volume": 422217
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-08",
+   "open": 9588.0,
+   "high": 9658.0,
+   "low": 9355.0,
+   "close": 9361.0,
+   "adj_close": 9361.0,
+   "volume": 441895
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-09",
+   "open": 9417.0,
+   "high": 9460.5,
+   "low": 9273.0,
+   "close": 9340.0,
+   "adj_close": 9340.0,
+   "volume": 378861
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-12",
+   "open": 9346.0,
+   "high": 9431.5,
+   "low": 9297.0,
+   "close": 9426.0,
+   "adj_close": 9426.0,
+   "volume": 358499
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-13",
+   "open": 9411.0,
+   "high": 9423.5,
+   "low": 9164.5,
+   "close": 9285.0,
+   "adj_close": 9285.0,
+   "volume": 416650
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-14",
+   "open": 9315.0,
+   "high": 9315.0,
+   "low": 8937.5,
+   "close": 9023.0,
+   "adj_close": 9023.0,
+   "volume": 992022
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-15",
+   "open": 9085.0,
+   "high": 9124.5,
+   "low": 8950.0,
+   "close": 9030.0,
+   "adj_close": 9030.0,
+   "volume": 645244
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-16",
+   "open": 9030.5,
+   "high": 9248.0,
+   "low": 8985.5,
+   "close": 9144.5,
+   "adj_close": 9144.5,
+   "volume": 778528
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-19",
+   "open": 9191.5,
+   "high": 9323.5,
+   "low": 9045.0,
+   "close": 9087.0,
+   "adj_close": 9087.0,
+   "volume": 448972
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-21",
+   "open": 9190.0,
+   "high": 9243.0,
+   "low": 9041.0,
+   "close": 9190.0,
+   "adj_close": 9190.0,
+   "volume": 685478
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-22",
+   "open": 9114.0,
+   "high": 9190.0,
+   "low": 9006.5,
+   "close": 9162.0,
+   "adj_close": 9162.0,
+   "volume": 1040584
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-23",
+   "open": 9165.0,
+   "high": 9175.5,
+   "low": 8797.0,
+   "close": 8950.0,
+   "adj_close": 8950.0,
+   "volume": 620261
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-26",
+   "open": 8900.0,
+   "high": 9080.0,
+   "low": 8860.0,
+   "close": 9050.0,
+   "adj_close": 9050.0,
+   "volume": 576071
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-27",
+   "open": 9090.0,
+   "high": 9505.5,
+   "low": 9067.0,
+   "close": 9505.5,
+   "adj_close": 9505.5,
+   "volume": 802780
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-28",
+   "open": 9460.0,
+   "high": 9699.5,
+   "low": 9370.0,
+   "close": 9558.5,
+   "adj_close": 9558.5,
+   "volume": 745043
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-29",
+   "open": 9563.0,
+   "high": 9685.5,
+   "low": 9534.0,
+   "close": 9664.0,
+   "adj_close": 9664.0,
+   "volume": 395258
+  },
+  {
+   "symbol": "DIVISLAB",
+   "date": "2026-10-30",
+   "open": 9680.0,
+   "high": 9865.0,
+   "low": 9621.5,
+   "close": 9780.0,
+   "adj_close": 9780.0,
+   "volume": 1027380
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-09-30",
+   "open": 13300.0,
+   "high": 13425.0,
+   "low": 13100.0,
+   "close": 13100.0,
+   "adj_close": 13100.0,
+   "volume": 273569
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-01",
+   "open": 13151.0,
+   "high": 13290.0,
+   "low": 12651.0,
+   "close": 12700.0,
+   "adj_close": 12700.0,
+   "volume": 258830
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-05",
+   "open": 12729.0,
+   "high": 12899.0,
+   "low": 12692.0,
+   "close": 12748.0,
+   "adj_close": 12748.0,
+   "volume": 211036
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-06",
+   "open": 12751.0,
+   "high": 13039.0,
+   "low": 12660.0,
+   "close": 13015.0,
+   "adj_close": 13015.0,
+   "volume": 175676
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-07",
+   "open": 13030.0,
+   "high": 13072.0,
+   "low": 12897.0,
+   "close": 13024.0,
+   "adj_close": 13024.0,
+   "volume": 157095
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-08",
+   "open": 13060.0,
+   "high": 13070.0,
+   "low": 12632.0,
+   "close": 12650.0,
+   "adj_close": 12650.0,
+   "volume": 215841
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-09",
+   "open": 12730.0,
+   "high": 12875.0,
+   "low": 12602.0,
+   "close": 12774.0,
+   "adj_close": 12774.0,
+   "volume": 164138
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-12",
+   "open": 12838.0,
+   "high": 12878.0,
+   "low": 12610.0,
+   "close": 12660.0,
+   "adj_close": 12660.0,
+   "volume": 172532
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-13",
+   "open": 12708.0,
+   "high": 12805.0,
+   "low": 12581.0,
+   "close": 12740.0,
+   "adj_close": 12740.0,
+   "volume": 132075
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-14",
+   "open": 12760.0,
+   "high": 12948.0,
+   "low": 12662.0,
+   "close": 12820.0,
+   "adj_close": 12820.0,
+   "volume": 145473
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-15",
+   "open": 12820.0,
+   "high": 12953.0,
+   "low": 12666.0,
+   "close": 12666.0,
+   "adj_close": 12666.0,
+   "volume": 310891
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-16",
+   "open": 12770.0,
+   "high": 12850.0,
+   "low": 12268.0,
+   "close": 12340.0,
+   "adj_close": 12340.0,
+   "volume": 477554
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-19",
+   "open": 12400.0,
+   "high": 12495.0,
+   "low": 12084.0,
+   "close": 12100.0,
+   "adj_close": 12100.0,
+   "volume": 310831
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-21",
+   "open": 12175.0,
+   "high": 12179.0,
+   "low": 11581.0,
+   "close": 11689.0,
+   "adj_close": 11689.0,
+   "volume": 503302
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-22",
+   "open": 11670.0,
+   "high": 11805.0,
+   "low": 11421.0,
+   "close": 11594.0,
+   "adj_close": 11594.0,
+   "volume": 276958
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-23",
+   "open": 11625.0,
+   "high": 11689.0,
+   "low": 11100.0,
+   "close": 11191.0,
+   "adj_close": 11191.0,
+   "volume": 352292
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-26",
+   "open": 11108.0,
+   "high": 11278.0,
+   "low": 11022.0,
+   "close": 11161.0,
+   "adj_close": 11161.0,
+   "volume": 233086
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-27",
+   "open": 11200.0,
+   "high": 11321.0,
+   "low": 11115.0,
+   "close": 11233.0,
+   "adj_close": 11233.0,
+   "volume": 304443
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-28",
+   "open": 11235.0,
+   "high": 11522.0,
+   "low": 11121.0,
+   "close": 11400.0,
+   "adj_close": 11400.0,
+   "volume": 259771
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-29",
+   "open": 11400.0,
+   "high": 11589.0,
+   "low": 11361.0,
+   "close": 11488.0,
+   "adj_close": 11488.0,
+   "volume": 299637
+  },
+  {
+   "symbol": "DIXON",
+   "date": "2026-10-30",
+   "open": 11500.0,
+   "high": 11513.0,
+   "low": 10932.0,
+   "close": 11000.0,
+   "adj_close": 11000.0,
+   "volume": 521838
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-09-30",
+   "open": 7182.0,
+   "high": 7245.0,
+   "low": 7120.0,
+   "close": 7150.0,
+   "adj_close": 7150.0,
+   "volume": 418141
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-01",
+   "open": 7120.0,
+   "high": 7146.0,
+   "low": 6840.0,
+   "close": 6920.0,
+   "adj_close": 6920.0,
+   "volume": 817452
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-05",
+   "open": 6975.0,
+   "high": 7066.0,
+   "low": 6901.5,
+   "close": 7021.5,
+   "adj_close": 7021.5,
+   "volume": 381658
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-06",
+   "open": 7065.0,
+   "high": 7074.5,
+   "low": 6976.0,
+   "close": 7051.0,
+   "adj_close": 7051.0,
+   "volume": 233372
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-07",
+   "open": 7004.0,
+   "high": 7050.0,
+   "low": 6960.0,
+   "close": 6960.0,
+   "adj_close": 6960.0,
+   "volume": 272452
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-08",
+   "open": 6936.0,
+   "high": 6950.0,
+   "low": 6767.5,
+   "close": 6767.5,
+   "adj_close": 6767.5,
+   "volume": 361283
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-09",
+   "open": 6815.0,
+   "high": 7078.0,
+   "low": 6801.0,
+   "close": 7050.0,
+   "adj_close": 7050.0,
+   "volume": 551231
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-12",
+   "open": 7040.0,
+   "high": 7168.0,
+   "low": 7008.5,
+   "close": 7119.0,
+   "adj_close": 7119.0,
+   "volume": 377241
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-13",
+   "open": 7098.0,
+   "high": 7170.5,
+   "low": 7031.0,
+   "close": 7163.0,
+   "adj_close": 7163.0,
+   "volume": 346905
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-14",
+   "open": 7135.0,
+   "high": 7154.5,
+   "low": 7040.0,
+   "close": 7082.5,
+   "adj_close": 7082.5,
+   "volume": 460500
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-15",
+   "open": 7082.5,
+   "high": 7270.5,
+   "low": 7050.0,
+   "close": 7225.0,
+   "adj_close": 7225.0,
+   "volume": 418885
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-16",
+   "open": 7225.5,
+   "high": 7286.0,
+   "low": 7185.5,
+   "close": 7284.5,
+   "adj_close": 7284.5,
+   "volume": 368563
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-19",
+   "open": 7320.0,
+   "high": 7438.5,
+   "low": 7308.0,
+   "close": 7349.0,
+   "adj_close": 7349.0,
+   "volume": 490129
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-21",
+   "open": 7360.5,
+   "high": 7416.0,
+   "low": 7088.5,
+   "close": 7170.5,
+   "adj_close": 7170.5,
+   "volume": 570831
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-22",
+   "open": 7088.0,
+   "high": 7230.0,
+   "low": 7022.0,
+   "close": 7084.5,
+   "adj_close": 7084.5,
+   "volume": 406738
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-23",
+   "open": 7099.5,
+   "high": 7100.0,
+   "low": 6911.0,
+   "close": 7066.0,
+   "adj_close": 7066.0,
+   "volume": 369072
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-26",
+   "open": 7002.0,
+   "high": 7102.0,
+   "low": 6931.5,
+   "close": 7099.5,
+   "adj_close": 7099.5,
+   "volume": 331591
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-27",
+   "open": 7069.5,
+   "high": 7170.0,
+   "low": 7067.5,
+   "close": 7165.0,
+   "adj_close": 7165.0,
+   "volume": 333270
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-28",
+   "open": 7140.0,
+   "high": 7300.0,
+   "low": 7124.5,
+   "close": 7300.0,
+   "adj_close": 7300.0,
+   "volume": 377246
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-29",
+   "open": 7280.0,
+   "high": 7303.5,
+   "low": 7210.0,
+   "close": 7238.0,
+   "adj_close": 7238.0,
+   "volume": 303706
+  },
+  {
+   "symbol": "EICHERMOT",
+   "date": "2026-10-30",
+   "open": 7239.0,
+   "high": 7343.0,
+   "low": 7198.0,
+   "close": 7220.0,
+   "adj_close": 7220.0,
+   "volume": 387958
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-09-30",
+   "open": 3100.0,
+   "high": 3112.30004882812,
+   "low": 3046.39990234375,
+   "close": 3061.89990234375,
+   "adj_close": 3061.89990234375,
+   "volume": 448156
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-01",
+   "open": 3038.0,
+   "high": 3045.0,
+   "low": 2944.39990234375,
+   "close": 2962.0,
+   "adj_close": 2962.0,
+   "volume": 1385746
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-05",
+   "open": 2968.0,
+   "high": 3024.0,
+   "low": 2961.5,
+   "close": 2972.0,
+   "adj_close": 2972.0,
+   "volume": 263562
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-06",
+   "open": 2988.0,
+   "high": 2988.69995117188,
+   "low": 2935.60009765625,
+   "close": 2969.0,
+   "adj_close": 2969.0,
+   "volume": 359655
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-07",
+   "open": 2945.5,
+   "high": 2957.19995117188,
+   "low": 2901.60009765625,
+   "close": 2921.10009765625,
+   "adj_close": 2921.10009765625,
+   "volume": 235855
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-08",
+   "open": 2909.0,
+   "high": 2919.89990234375,
+   "low": 2853.5,
+   "close": 2856.80004882812,
+   "adj_close": 2856.80004882812,
+   "volume": 493070
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-09",
+   "open": 2863.80004882812,
+   "high": 2894.89990234375,
+   "low": 2857.80004882812,
+   "close": 2890.0,
+   "adj_close": 2890.0,
+   "volume": 222643
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-12",
+   "open": 2899.39990234375,
+   "high": 2919.5,
+   "low": 2854.80004882812,
+   "close": 2858.0,
+   "adj_close": 2858.0,
+   "volume": 117363
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-13",
+   "open": 2864.0,
+   "high": 2919.89990234375,
+   "low": 2854.0,
+   "close": 2912.0,
+   "adj_close": 2912.0,
+   "volume": 327115
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-14",
+   "open": 2907.0,
+   "high": 2921.60009765625,
+   "low": 2866.10009765625,
+   "close": 2873.0,
+   "adj_close": 2873.0,
+   "volume": 328898
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-15",
+   "open": 2874.89990234375,
+   "high": 2908.30004882812,
+   "low": 2865.0,
+   "close": 2885.89990234375,
+   "adj_close": 2885.89990234375,
+   "volume": 327872
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-16",
+   "open": 2899.0,
+   "high": 2924.60009765625,
+   "low": 2843.39990234375,
+   "close": 2920.0,
+   "adj_close": 2920.0,
+   "volume": 523802
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-19",
+   "open": 2920.0,
+   "high": 2954.80004882812,
+   "low": 2866.5,
+   "close": 2879.0,
+   "adj_close": 2879.0,
+   "volume": 308699
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-21",
+   "open": 2865.0,
+   "high": 2913.89990234375,
+   "low": 2861.10009765625,
+   "close": 2889.10009765625,
+   "adj_close": 2889.10009765625,
+   "volume": 305442
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-22",
+   "open": 2854.0,
+   "high": 2894.39990234375,
+   "low": 2828.19995117188,
+   "close": 2894.39990234375,
+   "adj_close": 2894.39990234375,
+   "volume": 214550
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-23",
+   "open": 2875.0,
+   "high": 2901.30004882812,
+   "low": 2857.80004882812,
+   "close": 2894.0,
+   "adj_close": 2894.0,
+   "volume": 314075
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-26",
+   "open": 2871.10009765625,
+   "high": 2950.0,
+   "low": 2858.0,
+   "close": 2950.0,
+   "adj_close": 2950.0,
+   "volume": 218825
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-27",
+   "open": 2930.10009765625,
+   "high": 2941.39990234375,
+   "low": 2881.0,
+   "close": 2900.80004882812,
+   "adj_close": 2900.80004882812,
+   "volume": 461435
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-28",
+   "open": 2889.80004882812,
+   "high": 2915.0,
+   "low": 2876.30004882812,
+   "close": 2900.0,
+   "adj_close": 2900.0,
+   "volume": 541629
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-29",
+   "open": 2883.10009765625,
+   "high": 2943.19995117188,
+   "low": 2883.10009765625,
+   "close": 2932.80004882812,
+   "adj_close": 2932.80004882812,
+   "volume": 241502
+  },
+  {
+   "symbol": "GRASIM",
+   "date": "2026-10-30",
+   "open": 2925.0,
+   "high": 2981.39990234375,
+   "low": 2900.10009765625,
+   "close": 2981.39990234375,
+   "adj_close": 2981.39990234375,
+   "volume": 524614
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-09-30",
+   "open": 4640.0,
+   "high": 4701.0,
+   "low": 4614.7001953125,
+   "close": 4668.0,
+   "adj_close": 4668.0,
+   "volume": 1233758
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-01",
+   "open": 4666.0,
+   "high": 4699.7001953125,
+   "low": 4559.2998046875,
+   "close": 4601.0,
+   "adj_close": 4601.0,
+   "volume": 739864
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-05",
+   "open": 4601.0,
+   "high": 4688.0,
+   "low": 4601.0,
+   "close": 4680.0,
+   "adj_close": 4680.0,
+   "volume": 465865
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-06",
+   "open": 4680.0,
+   "high": 4837.10009765625,
+   "low": 4680.0,
+   "close": 4816.0,
+   "adj_close": 4816.0,
+   "volume": 935720
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-07",
+   "open": 4819.89990234375,
+   "high": 4831.39990234375,
+   "low": 4732.10009765625,
+   "close": 4746.2998046875,
+   "adj_close": 4746.2998046875,
+   "volume": 515972
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-08",
+   "open": 4756.7001953125,
+   "high": 4759.7998046875,
+   "low": 4620.5,
+   "close": 4647.39990234375,
+   "adj_close": 4647.39990234375,
+   "volume": 521431
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-09",
+   "open": 4650.0,
+   "high": 4696.0,
+   "low": 4590.0,
+   "close": 4655.60009765625,
+   "adj_close": 4655.60009765625,
+   "volume": 503087
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-12",
+   "open": 4662.0,
+   "high": 4777.0,
+   "low": 4662.0,
+   "close": 4760.0,
+   "adj_close": 4760.0,
+   "volume": 527818
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-13",
+   "open": 4760.0,
+   "high": 4875.0,
+   "low": 4720.0,
+   "close": 4869.0,
+   "adj_close": 4869.0,
+   "volume": 607858
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-14",
+   "open": 4872.0,
+   "high": 4948.7001953125,
+   "low": 4872.0,
+   "close": 4933.0,
+   "adj_close": 4933.0,
+   "volume": 725704
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-15",
+   "open": 4910.0,
+   "high": 4951.0,
+   "low": 4862.0,
+   "close": 4910.0,
+   "adj_close": 4910.0,
+   "volume": 802602
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-16",
+   "open": 4920.0,
+   "high": 4989.0,
+   "low": 4906.60009765625,
+   "close": 4989.0,
+   "adj_close": 4989.0,
+   "volume": 942758
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-19",
+   "open": 4980.0,
+   "high": 5012.0,
+   "low": 4923.0,
+   "close": 4959.0,
+   "adj_close": 4959.0,
+   "volume": 583323
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-21",
+   "open": 4948.7998046875,
+   "high": 4969.2001953125,
+   "low": 4825.0,
+   "close": 4854.39990234375,
+   "adj_close": 4854.39990234375,
+   "volume": 694718
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-22",
+   "open": 4790.0,
+   "high": 4901.89990234375,
+   "low": 4765.2001953125,
+   "close": 4875.0,
+   "adj_close": 4875.0,
+   "volume": 907135
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-23",
+   "open": 4874.39990234375,
+   "high": 4894.7001953125,
+   "low": 4716.2998046875,
+   "close": 4725.0,
+   "adj_close": 4725.0,
+   "volume": 1043219
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-26",
+   "open": 4716.0,
+   "high": 4814.89990234375,
+   "low": 4642.0,
+   "close": 4775.0,
+   "adj_close": 4775.0,
+   "volume": 578319
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-27",
+   "open": 4799.7998046875,
+   "high": 4926.10009765625,
+   "low": 4793.0,
+   "close": 4855.0,
+   "adj_close": 4855.0,
+   "volume": 1046088
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-28",
+   "open": 4800.0,
+   "high": 4854.0,
+   "low": 4748.0,
+   "close": 4850.0,
+   "adj_close": 4850.0,
+   "volume": 443033
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-29",
+   "open": 4838.0,
+   "high": 4869.89990234375,
+   "low": 4777.10009765625,
+   "close": 4869.89990234375,
+   "adj_close": 4869.89990234375,
+   "volume": 509555
+  },
+  {
+   "symbol": "HAL",
+   "date": "2026-10-30",
+   "open": 4868.7998046875,
+   "high": 4868.7998046875,
+   "low": 4795.0,
+   "close": 4853.7001953125,
+   "adj_close": 4853.7001953125,
+   "volume": 699027
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-09-30",
+   "open": 711.5,
+   "high": 720.299987792969,
+   "low": 708.700012207031,
+   "close": 708.700012207031,
+   "adj_close": 708.700012207031,
+   "volume": 39365496
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-01",
+   "open": 708.400024414062,
+   "high": 721.299987792969,
+   "low": 707.099975585938,
+   "close": 721.200012207031,
+   "adj_close": 721.200012207031,
+   "volume": 37389857
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-05",
+   "open": 731.950012207031,
+   "high": 734.200012207031,
+   "low": 701.25,
+   "close": 704.799987792969,
+   "adj_close": 704.799987792969,
+   "volume": 66056690
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-06",
+   "open": 705.599975585938,
+   "high": 714.700012207031,
+   "low": 701.0,
+   "close": 711.450012207031,
+   "adj_close": 711.450012207031,
+   "volume": 26568270
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-07",
+   "open": 708.549987792969,
+   "high": 711.0,
+   "low": 701.700012207031,
+   "close": 702.75,
+   "adj_close": 702.75,
+   "volume": 29944008
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-08",
+   "open": 704.049987792969,
+   "high": 705.799987792969,
+   "low": 690.5,
+   "close": 692.25,
+   "adj_close": 692.25,
+   "volume": 26808765
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-09",
+   "open": 696.599975585938,
+   "high": 710.150024414062,
+   "low": 695.299987792969,
+   "close": 707.25,
+   "adj_close": 707.25,
+   "volume": 18397972
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-12",
+   "open": 707.5,
+   "high": 711.849975585938,
+   "low": 700.349975585938,
+   "close": 704.900024414062,
+   "adj_close": 704.900024414062,
+   "volume": 18197879
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-13",
+   "open": 707.0,
+   "high": 716.5,
+   "low": 705.099975585938,
+   "close": 714.0,
+   "adj_close": 714.0,
+   "volume": 18838639
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-14",
+   "open": 712.299987792969,
+   "high": 718.549987792969,
+   "low": 707.950012207031,
+   "close": 710.700012207031,
+   "adj_close": 710.700012207031,
+   "volume": 23945373
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-15",
+   "open": 715.0,
+   "high": 728.0,
+   "low": 710.700012207031,
+   "close": 726.849975585938,
+   "adj_close": 726.849975585938,
+   "volume": 37365177
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-16",
+   "open": 727.900024414062,
+   "high": 734.900024414062,
+   "low": 724.299987792969,
+   "close": 728.849975585938,
+   "adj_close": 728.849975585938,
+   "volume": 28936902
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-19",
+   "open": 733.400024414062,
+   "high": 733.400024414062,
+   "low": 707.150024414062,
+   "close": 712.0,
+   "adj_close": 712.0,
+   "volume": 33524133
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-21",
+   "open": 709.549987792969,
+   "high": 715.400024414062,
+   "low": 698.25,
+   "close": 706.950012207031,
+   "adj_close": 706.950012207031,
+   "volume": 26573703
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-22",
+   "open": 701.450012207031,
+   "high": 703.349975585938,
+   "low": 689.099975585938,
+   "close": 694.049987792969,
+   "adj_close": 694.049987792969,
+   "volume": 60280576
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-23",
+   "open": 692.549987792969,
+   "high": 696.799987792969,
+   "low": 686.849975585938,
+   "close": 692.799987792969,
+   "adj_close": 692.799987792969,
+   "volume": 18989022
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-26",
+   "open": 692.099975585938,
+   "high": 693.799987792969,
+   "low": 684.0,
+   "close": 688.049987792969,
+   "adj_close": 688.049987792969,
+   "volume": 23489755
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-27",
+   "open": 689.700012207031,
+   "high": 690.25,
+   "low": 678.650024414062,
+   "close": 680.200012207031,
+   "adj_close": 680.200012207031,
+   "volume": 40614930
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-28",
+   "open": 674.150024414062,
+   "high": 687.099975585938,
+   "low": 669.200012207031,
+   "close": 685.299987792969,
+   "adj_close": 685.299987792969,
+   "volume": 28534206
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-29",
+   "open": 681.200012207031,
+   "high": 686.799987792969,
+   "low": 678.099975585938,
+   "close": 683.299987792969,
+   "adj_close": 683.299987792969,
+   "volume": 31422790
+  },
+  {
+   "symbol": "HDFCBANK",
+   "date": "2026-10-30",
+   "open": 683.299987792969,
+   "high": 695.5,
+   "low": 680.849975585938,
+   "close": 692.799987792969,
+   "adj_close": 692.799987792969,
+   "volume": 21296902
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-09-30",
+   "open": 13.6000003814697,
+   "high": 13.6099996566772,
+   "low": 12.8400001525879,
+   "close": 12.9499998092651,
+   "adj_close": 12.9499998092651,
+   "volume": 640485531
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-01",
+   "open": 12.9499998092651,
+   "high": 13.1400003433228,
+   "low": 12.5,
+   "close": 12.6400003433228,
+   "adj_close": 12.6400003433228,
+   "volume": 612490273
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-05",
+   "open": 12.75,
+   "high": 12.8999996185303,
+   "low": 12.5600004196167,
+   "close": 12.7399997711182,
+   "adj_close": 12.7399997711182,
+   "volume": 460591162
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-06",
+   "open": 12.7700004577637,
+   "high": 13.2200002670288,
+   "low": 12.7600002288818,
+   "close": 13.210000038147,
+   "adj_close": 13.210000038147,
+   "volume": 337226121
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-07",
+   "open": 13.1800003051758,
+   "high": 13.3999996185303,
+   "low": 13.0900001525879,
+   "close": 13.1800003051758,
+   "adj_close": 13.1800003051758,
+   "volume": 377013597
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-08",
+   "open": 13.1700000762939,
+   "high": 13.289999961853,
+   "low": 12.8000001907349,
+   "close": 12.8000001907349,
+   "adj_close": 12.8000001907349,
+   "volume": 296467874
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-09",
+   "open": 12.8999996185303,
+   "high": 13.1099996566772,
+   "low": 12.8599996566772,
+   "close": 13.0,
+   "adj_close": 13.0,
+   "volume": 253450627
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-12",
+   "open": 13.0200004577637,
+   "high": 13.0799999237061,
+   "low": 12.6599998474121,
+   "close": 12.6700000762939,
+   "adj_close": 12.6700000762939,
+   "volume": 327681526
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-13",
+   "open": 12.6899995803833,
+   "high": 12.8699998855591,
+   "low": 12.5799999237061,
+   "close": 12.8000001907349,
+   "adj_close": 12.8000001907349,
+   "volume": 241878354
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-14",
+   "open": 12.7700004577637,
+   "high": 12.8400001525879,
+   "low": 12.6400003433228,
+   "close": 12.6700000762939,
+   "adj_close": 12.6700000762939,
+   "volume": 199192948
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-15",
+   "open": 12.6700000762939,
+   "high": 12.8999996185303,
+   "low": 12.5200004577637,
+   "close": 12.5200004577637,
+   "adj_close": 12.5200004577637,
+   "volume": 294006034
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-16",
+   "open": 12.6099996566772,
+   "high": 12.6800003051758,
+   "low": 12.4499998092651,
+   "close": 12.5900001525879,
+   "adj_close": 12.5900001525879,
+   "volume": 278231235
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-19",
+   "open": 12.6000003814697,
+   "high": 12.6899995803833,
+   "low": 12.2200002670288,
+   "close": 12.2799997329712,
+   "adj_close": 12.2799997329712,
+   "volume": 323539893
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-21",
+   "open": 12.3800001144409,
+   "high": 12.3800001144409,
+   "low": 11.6199998855591,
+   "close": 11.6400003433228,
+   "adj_close": 11.6400003433228,
+   "volume": 525750623
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-22",
+   "open": 11.5500001907349,
+   "high": 11.789999961853,
+   "low": 11.2299995422363,
+   "close": 11.5299997329712,
+   "adj_close": 11.5299997329712,
+   "volume": 502667591
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-23",
+   "open": 11.539999961853,
+   "high": 11.5900001525879,
+   "low": 11.0299997329712,
+   "close": 11.3599996566772,
+   "adj_close": 11.3599996566772,
+   "volume": 512914758
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-26",
+   "open": 11.3299999237061,
+   "high": 12.0100002288818,
+   "low": 11.210000038147,
+   "close": 11.9499998092651,
+   "adj_close": 11.9499998092651,
+   "volume": 492924258
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-27",
+   "open": 11.960000038147,
+   "high": 12.1999998092651,
+   "low": 11.9099998474121,
+   "close": 12.1099996566772,
+   "adj_close": 12.1099996566772,
+   "volume": 369589585
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-28",
+   "open": 12.0699996948242,
+   "high": 12.1700000762939,
+   "low": 11.8199996948242,
+   "close": 11.8599996566772,
+   "adj_close": 11.8599996566772,
+   "volume": 292320196
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-29",
+   "open": 11.8500003814697,
+   "high": 12.1300001144409,
+   "low": 11.7799997329712,
+   "close": 12.1199998855591,
+   "adj_close": 12.1199998855591,
+   "volume": 239834626
+  },
+  {
+   "symbol": "IDEA",
+   "date": "2026-10-30",
+   "open": 12.0699996948242,
+   "high": 12.0699996948242,
+   "low": 11.7299995422363,
+   "close": 11.8299999237061,
+   "adj_close": 11.8299999237061,
+   "volume": 219478054
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-09-30",
+   "open": 1004.0,
+   "high": 1024.0,
+   "low": 992.200012207031,
+   "close": 994.099975585938,
+   "adj_close": 971.837646484375,
+   "volume": 13508984
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-01",
+   "open": 1010.0,
+   "high": 1035.0,
+   "low": 999.150024414062,
+   "close": 1035.0,
+   "adj_close": 1011.82171630859,
+   "volume": 15166446
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-05",
+   "open": 1050.0,
+   "high": 1052.30004882812,
+   "low": 1010.0,
+   "close": 1020.5,
+   "adj_close": 997.646423339844,
+   "volume": 12126808
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-06",
+   "open": 1018.0,
+   "high": 1020.5,
+   "low": 1003.15002441406,
+   "close": 1013.84997558594,
+   "adj_close": 991.145324707031,
+   "volume": 8252213
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-07",
+   "open": 1006.0,
+   "high": 1009.0,
+   "low": 990.099975585938,
+   "close": 992.0,
+   "adj_close": 969.78466796875,
+   "volume": 7493993
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-08",
+   "open": 1002.0,
+   "high": 1012.65002441406,
+   "low": 992.900024414062,
+   "close": 997.0,
+   "adj_close": 974.672729492188,
+   "volume": 14847874
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-09",
+   "open": 1007.29998779297,
+   "high": 1030.90002441406,
+   "low": 1007.29998779297,
+   "close": 1023.40002441406,
+   "adj_close": 1000.48150634766,
+   "volume": 14094234
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-12",
+   "open": 1029.30004882812,
+   "high": 1033.80004882812,
+   "low": 1010.65002441406,
+   "close": 1020.0,
+   "adj_close": 997.157653808594,
+   "volume": 8429312
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-13",
+   "open": 1029.19995117188,
+   "high": 1065.0,
+   "low": 1027.0,
+   "close": 1062.09997558594,
+   "adj_close": 1038.31481933594,
+   "volume": 21781113
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-14",
+   "open": 1073.69995117188,
+   "high": 1096.40002441406,
+   "low": 1069.44995117188,
+   "close": 1088.0,
+   "adj_close": 1063.634765625,
+   "volume": 22113407
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-15",
+   "open": 1099.0,
+   "high": 1126.69995117188,
+   "low": 1095.80004882812,
+   "close": 1110.0,
+   "adj_close": 1085.14208984375,
+   "volume": 16012759
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-16",
+   "open": 1127.5,
+   "high": 1167.84997558594,
+   "low": 1122.0,
+   "close": 1161.19995117188,
+   "adj_close": 1135.19543457031,
+   "volume": 25566304
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-19",
+   "open": 1156.94995117188,
+   "high": 1156.94995117188,
+   "low": 1125.09997558594,
+   "close": 1130.69995117188,
+   "adj_close": 1105.37854003906,
+   "volume": 13258477
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-21",
+   "open": 1154.84997558594,
+   "high": 1170.90002441406,
+   "low": 1147.94995117188,
+   "close": 1168.0,
+   "adj_close": 1141.84326171875,
+   "volume": 18597997
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-22",
+   "open": 1167.0,
+   "high": 1174.5,
+   "low": 1144.05004882812,
+   "close": 1153.34997558594,
+   "adj_close": 1127.52136230469,
+   "volume": 17007168
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-23",
+   "open": 1187.0,
+   "high": 1197.80004882812,
+   "low": 1038.05004882812,
+   "close": 1153.80004882812,
+   "adj_close": 1127.96130371094,
+   "volume": 33044499
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-26",
+   "open": 1115.0,
+   "high": 1166.0,
+   "low": 1107.0,
+   "close": 1166.0,
+   "adj_close": 1139.88806152344,
+   "volume": 25964569
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-27",
+   "open": 1151.94995117188,
+   "high": 1165.80004882812,
+   "low": 1129.30004882812,
+   "close": 1163.0,
+   "adj_close": 1136.95520019531,
+   "volume": 20117848
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-28",
+   "open": 1130.0,
+   "high": 1133.80004882812,
+   "low": 1103.40002441406,
+   "close": 1123.15002441406,
+   "adj_close": 1097.99768066406,
+   "volume": 15636449
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-29",
+   "open": 1130.0,
+   "high": 1146.5,
+   "low": 1125.19995117188,
+   "close": 1146.5,
+   "adj_close": 1120.82470703125,
+   "volume": 14048472
+  },
+  {
+   "symbol": "INFY",
+   "date": "2026-10-30",
+   "open": 1149.09997558594,
+   "high": 1185.0,
+   "low": 1147.90002441406,
+   "close": 1185.0,
+   "adj_close": 1158.46252441406,
+   "volume": 13030713
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-09-30",
+   "open": 265.0,
+   "high": 266.899993896484,
+   "low": 261.399993896484,
+   "close": 262.75,
+   "adj_close": 262.75,
+   "volume": 14079098
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-01",
+   "open": 262.700012207031,
+   "high": 262.700012207031,
+   "low": 254.649993896484,
+   "close": 255.899993896484,
+   "adj_close": 255.899993896484,
+   "volume": 16447266
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-05",
+   "open": 260.950012207031,
+   "high": 269.799987792969,
+   "low": 259.0,
+   "close": 268.899993896484,
+   "adj_close": 268.899993896484,
+   "volume": 49020716
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-06",
+   "open": 269.0,
+   "high": 269.399993896484,
+   "low": 263.950012207031,
+   "close": 266.700012207031,
+   "adj_close": 266.700012207031,
+   "volume": 22132738
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-07",
+   "open": 265.700012207031,
+   "high": 267.149993896484,
+   "low": 262.450012207031,
+   "close": 265.700012207031,
+   "adj_close": 265.700012207031,
+   "volume": 50025295
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-08",
+   "open": 264.0,
+   "high": 264.649993896484,
+   "low": 253.149993896484,
+   "close": 255.0,
+   "adj_close": 255.0,
+   "volume": 53680318
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-09",
+   "open": 255.449996948242,
+   "high": 268.049987792969,
+   "low": 255.100006103516,
+   "close": 266.0,
+   "adj_close": 266.0,
+   "volume": 31030528
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-12",
+   "open": 267.200012207031,
+   "high": 267.399993896484,
+   "low": 256.950012207031,
+   "close": 257.899993896484,
+   "adj_close": 257.899993896484,
+   "volume": 14895734
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-13",
+   "open": 259.0,
+   "high": 261.850006103516,
+   "low": 257.200012207031,
+   "close": 261.0,
+   "adj_close": 261.0,
+   "volume": 13435481
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-14",
+   "open": 261.0,
+   "high": 263.0,
+   "low": 259.950012207031,
+   "close": 261.5,
+   "adj_close": 261.5,
+   "volume": 19299265
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-15",
+   "open": 261.649993896484,
+   "high": 265.450012207031,
+   "low": 261.600006103516,
+   "close": 263.899993896484,
+   "adj_close": 263.899993896484,
+   "volume": 22784367
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-16",
+   "open": 264.0,
+   "high": 264.850006103516,
+   "low": 261.149993896484,
+   "close": 263.5,
+   "adj_close": 263.5,
+   "volume": 12994056
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-19",
+   "open": 262.700012207031,
+   "high": 263.899993896484,
+   "low": 259.950012207031,
+   "close": 260.799987792969,
+   "adj_close": 260.799987792969,
+   "volume": 11528925
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-21",
+   "open": 261.0,
+   "high": 264.850006103516,
+   "low": 260.149993896484,
+   "close": 262.0,
+   "adj_close": 262.0,
+   "volume": 21000241
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-22",
+   "open": 260.0,
+   "high": 261.0,
+   "low": 256.350006103516,
+   "close": 258.899993896484,
+   "adj_close": 258.899993896484,
+   "volume": 15306749
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-23",
+   "open": 258.899993896484,
+   "high": 260.299987792969,
+   "low": 254.800003051758,
+   "close": 257.899993896484,
+   "adj_close": 257.899993896484,
+   "volume": 17560075
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-26",
+   "open": 257.899993896484,
+   "high": 260.5,
+   "low": 254.300003051758,
+   "close": 260.5,
+   "adj_close": 260.5,
+   "volume": 15094338
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-27",
+   "open": 259.399993896484,
+   "high": 260.149993896484,
+   "low": 255.399993896484,
+   "close": 260.0,
+   "adj_close": 260.0,
+   "volume": 27659894
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-28",
+   "open": 257.100006103516,
+   "high": 259.5,
+   "low": 252.800003051758,
+   "close": 259.5,
+   "adj_close": 259.5,
+   "volume": 15160025
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-29",
+   "open": 257.899993896484,
+   "high": 266.950012207031,
+   "low": 257.799987792969,
+   "close": 265.0,
+   "adj_close": 265.0,
+   "volume": 23257133
+  },
+  {
+   "symbol": "ITC",
+   "date": "2026-10-30",
+   "open": 265.0,
+   "high": 267.899993896484,
+   "low": 262.700012207031,
+   "close": 265.600006103516,
+   "adj_close": 265.600006103516,
+   "volume": 16297263
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-09-30",
+   "open": 463.399993896484,
+   "high": 466.25,
+   "low": 451.100006103516,
+   "close": 456.700012207031,
+   "adj_close": 456.700012207031,
+   "volume": 797358
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-01",
+   "open": 453.0,
+   "high": 453.649993896484,
+   "low": 437.950012207031,
+   "close": 443.399993896484,
+   "adj_close": 443.399993896484,
+   "volume": 1560787
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-05",
+   "open": 442.799987792969,
+   "high": 447.75,
+   "low": 438.799987792969,
+   "close": 445.700012207031,
+   "adj_close": 445.700012207031,
+   "volume": 949778
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-06",
+   "open": 445.549987792969,
+   "high": 462.100006103516,
+   "low": 444.450012207031,
+   "close": 449.75,
+   "adj_close": 449.75,
+   "volume": 1587592
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-07",
+   "open": 455.549987792969,
+   "high": 467.0,
+   "low": 455.549987792969,
+   "close": 460.600006103516,
+   "adj_close": 460.600006103516,
+   "volume": 2597754
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-08",
+   "open": 456.5,
+   "high": 456.700012207031,
+   "low": 426.200012207031,
+   "close": 427.600006103516,
+   "adj_close": 427.600006103516,
+   "volume": 4370870
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-09",
+   "open": 428.0,
+   "high": 431.649993896484,
+   "low": 421.25,
+   "close": 422.75,
+   "adj_close": 422.75,
+   "volume": 1804965
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-12",
+   "open": 425.0,
+   "high": 429.399993896484,
+   "low": 415.200012207031,
+   "close": 416.049987792969,
+   "adj_close": 416.049987792969,
+   "volume": 1564264
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-13",
+   "open": 420.25,
+   "high": 425.0,
+   "low": 416.100006103516,
+   "close": 425.0,
+   "adj_close": 425.0,
+   "volume": 1105889
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-14",
+   "open": 425.399993896484,
+   "high": 428.600006103516,
+   "low": 418.600006103516,
+   "close": 425.700012207031,
+   "adj_close": 425.700012207031,
+   "volume": 1180749
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-15",
+   "open": 425.700012207031,
+   "high": 427.0,
+   "low": 420.899993896484,
+   "close": 422.799987792969,
+   "adj_close": 422.799987792969,
+   "volume": 760204
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-16",
+   "open": 425.0,
+   "high": 425.75,
+   "low": 417.0,
+   "close": 417.950012207031,
+   "adj_close": 417.950012207031,
+   "volume": 1069500
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-19",
+   "open": 420.0,
+   "high": 420.0,
+   "low": 412.0,
+   "close": 413.5,
+   "adj_close": 413.5,
+   "volume": 795567
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-21",
+   "open": 413.5,
+   "high": 415.600006103516,
+   "low": 400.100006103516,
+   "close": 405.0,
+   "adj_close": 405.0,
+   "volume": 1303513
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-22",
+   "open": 404.0,
+   "high": 410.100006103516,
+   "low": 398.600006103516,
+   "close": 404.899993896484,
+   "adj_close": 404.899993896484,
+   "volume": 1175548
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-23",
+   "open": 403.899993896484,
+   "high": 407.0,
+   "low": 397.799987792969,
+   "close": 404.0,
+   "adj_close": 404.0,
+   "volume": 2210557
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-26",
+   "open": 404.0,
+   "high": 424.200012207031,
+   "low": 399.0,
+   "close": 422.899993896484,
+   "adj_close": 422.899993896484,
+   "volume": 3552168
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-27",
+   "open": 422.5,
+   "high": 429.5,
+   "low": 418.850006103516,
+   "close": 429.5,
+   "adj_close": 429.5,
+   "volume": 2059848
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-28",
+   "open": 425.0,
+   "high": 425.75,
+   "low": 415.5,
+   "close": 424.0,
+   "adj_close": 424.0,
+   "volume": 697395
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-29",
+   "open": 424.0,
+   "high": 424.549987792969,
+   "low": 419.899993896484,
+   "close": 421.350006103516,
+   "adj_close": 421.350006103516,
+   "volume": 1851096
+  },
+  {
+   "symbol": "JUBLFOOD",
+   "date": "2026-10-30",
+   "open": 423.0,
+   "high": 430.799987792969,
+   "low": 418.149993896484,
+   "close": 421.899993896484,
+   "adj_close": 421.899993896484,
+   "volume": 2606523
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-09-30",
+   "open": 572.0,
+   "high": 572.049987792969,
+   "low": 552.5,
+   "close": 553.150024414062,
+   "adj_close": 553.150024414062,
+   "volume": 5559899
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-01",
+   "open": 553.150024414062,
+   "high": 555.549987792969,
+   "low": 522.5,
+   "close": 528.5,
+   "adj_close": 528.5,
+   "volume": 7831270
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-05",
+   "open": 534.900024414062,
+   "high": 564.950012207031,
+   "low": 529.099975585938,
+   "close": 556.849975585938,
+   "adj_close": 556.849975585938,
+   "volume": 13447714
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-06",
+   "open": 557.0,
+   "high": 581.900024414062,
+   "low": 546.549987792969,
+   "close": 548.150024414062,
+   "adj_close": 548.150024414062,
+   "volume": 14873008
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-07",
+   "open": 547.400024414062,
+   "high": 581.200012207031,
+   "low": 542.549987792969,
+   "close": 569.0,
+   "adj_close": 569.0,
+   "volume": 18559247
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-08",
+   "open": 571.799987792969,
+   "high": 573.0,
+   "low": 552.700012207031,
+   "close": 553.5,
+   "adj_close": 553.5,
+   "volume": 6140158
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-09",
+   "open": 556.099975585938,
+   "high": 559.950012207031,
+   "low": 550.049987792969,
+   "close": 554.0,
+   "adj_close": 554.0,
+   "volume": 3811128
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-12",
+   "open": 558.0,
+   "high": 567.150024414062,
+   "low": 553.25,
+   "close": 567.150024414062,
+   "adj_close": 567.150024414062,
+   "volume": 5100358
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-13",
+   "open": 564.049987792969,
+   "high": 572.0,
+   "low": 558.349975585938,
+   "close": 571.0,
+   "adj_close": 571.0,
+   "volume": 3654800
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-14",
+   "open": 570.0,
+   "high": 572.400024414062,
+   "low": 561.299987792969,
+   "close": 564.0,
+   "adj_close": 564.0,
+   "volume": 3239469
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-15",
+   "open": 560.599975585938,
+   "high": 563.700012207031,
+   "low": 553.0,
+   "close": 558.849975585938,
+   "adj_close": 558.849975585938,
+   "volume": 2362896
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-16",
+   "open": 559.0,
+   "high": 562.799987792969,
+   "low": 555.599975585938,
+   "close": 558.0,
+   "adj_close": 558.0,
+   "volume": 2495515
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-19",
+   "open": 559.099975585938,
+   "high": 561.799987792969,
+   "low": 550.0,
+   "close": 551.299987792969,
+   "adj_close": 551.299987792969,
+   "volume": 2293449
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-21",
+   "open": 555.0,
+   "high": 572.799987792969,
+   "low": 553.700012207031,
+   "close": 557.0,
+   "adj_close": 557.0,
+   "volume": 13798697
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-22",
+   "open": 558.049987792969,
+   "high": 558.099975585938,
+   "low": 530.0,
+   "close": 530.400024414062,
+   "adj_close": 530.400024414062,
+   "volume": 4372536
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-23",
+   "open": 530.900024414062,
+   "high": 531.75,
+   "low": 500.450012207031,
+   "close": 512.0,
+   "adj_close": 512.0,
+   "volume": 5071367
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-26",
+   "open": 510.0,
+   "high": 518.0,
+   "low": 500.0,
+   "close": 504.799987792969,
+   "adj_close": 504.799987792969,
+   "volume": 3870653
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-27",
+   "open": 505.850006103516,
+   "high": 507.5,
+   "low": 490.600006103516,
+   "close": 500.0,
+   "adj_close": 500.0,
+   "volume": 5610843
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-28",
+   "open": 502.0,
+   "high": 515.150024414062,
+   "low": 492.649993896484,
+   "close": 510.0,
+   "adj_close": 510.0,
+   "volume": 3969692
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-29",
+   "open": 510.0,
+   "high": 522.900024414062,
+   "low": 502.5,
+   "close": 515.0,
+   "adj_close": 515.0,
+   "volume": 4392486
+  },
+  {
+   "symbol": "KALYANKJIL",
+   "date": "2026-10-30",
+   "open": 513.0,
+   "high": 513.900024414062,
+   "low": 498.0,
+   "close": 498.0,
+   "adj_close": 498.0,
+   "volume": 2976689
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-09-30",
+   "open": 1182.0,
+   "high": 1196.5,
+   "low": 1181.69995117188,
+   "close": 1187.0,
+   "adj_close": 1187.0,
+   "volume": 16376789
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-01",
+   "open": 1180.09997558594,
+   "high": 1183.90002441406,
+   "low": 1160.80004882812,
+   "close": 1167.69995117188,
+   "adj_close": 1167.69995117188,
+   "volume": 16771221
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-05",
+   "open": 1171.19995117188,
+   "high": 1193.0,
+   "low": 1171.19995117188,
+   "close": 1186.40002441406,
+   "adj_close": 1186.40002441406,
+   "volume": 14254907
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-06",
+   "open": 1188.09997558594,
+   "high": 1219.09997558594,
+   "low": 1188.09997558594,
+   "close": 1218.0,
+   "adj_close": 1218.0,
+   "volume": 18003127
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-07",
+   "open": 1212.0,
+   "high": 1220.80004882812,
+   "low": 1203.5,
+   "close": 1207.69995117188,
+   "adj_close": 1207.69995117188,
+   "volume": 11880731
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-08",
+   "open": 1207.69995117188,
+   "high": 1208.0,
+   "low": 1173.0,
+   "close": 1178.0,
+   "adj_close": 1178.0,
+   "volume": 13965493
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-09",
+   "open": 1179.0,
+   "high": 1179.0,
+   "low": 1160.19995117188,
+   "close": 1170.30004882812,
+   "adj_close": 1170.30004882812,
+   "volume": 12086708
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-12",
+   "open": 1180.30004882812,
+   "high": 1185.5,
+   "low": 1153.19995117188,
+   "close": 1158.90002441406,
+   "adj_close": 1158.90002441406,
+   "volume": 11338332
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-13",
+   "open": 1158.90002441406,
+   "high": 1168.30004882812,
+   "low": 1152.19995117188,
+   "close": 1166.69995117188,
+   "adj_close": 1166.69995117188,
+   "volume": 10988483
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-14",
+   "open": 1167.0,
+   "high": 1188.0,
+   "low": 1162.69995117188,
+   "close": 1174.59997558594,
+   "adj_close": 1174.59997558594,
+   "volume": 10938195
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-15",
+   "open": 1185.19995117188,
+   "high": 1218.80004882812,
+   "low": 1177.19995117188,
+   "close": 1215.0,
+   "adj_close": 1215.0,
+   "volume": 23456219
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-16",
+   "open": 1215.0,
+   "high": 1215.40002441406,
+   "low": 1193.0,
+   "close": 1211.19995117188,
+   "adj_close": 1211.19995117188,
+   "volume": 17225283
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-19",
+   "open": 1212.0,
+   "high": 1228.19995117188,
+   "low": 1201.0,
+   "close": 1202.0,
+   "adj_close": 1202.0,
+   "volume": 15572554
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-21",
+   "open": 1212.0,
+   "high": 1234.30004882812,
+   "low": 1199.30004882812,
+   "close": 1209.0,
+   "adj_close": 1209.0,
+   "volume": 17607823
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-22",
+   "open": 1206.19995117188,
+   "high": 1208.0,
+   "low": 1184.5,
+   "close": 1184.5,
+   "adj_close": 1184.5,
+   "volume": 14957042
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-23",
+   "open": 1184.0,
+   "high": 1201.90002441406,
+   "low": 1163.09997558594,
+   "close": 1190.0,
+   "adj_close": 1190.0,
+   "volume": 14905641
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-26",
+   "open": 1186.09997558594,
+   "high": 1204.5,
+   "low": 1174.5,
+   "close": 1201.80004882812,
+   "adj_close": 1201.80004882812,
+   "volume": 7490515
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-27",
+   "open": 1195.0,
+   "high": 1202.59997558594,
+   "low": 1184.0,
+   "close": 1196.19995117188,
+   "adj_close": 1196.19995117188,
+   "volume": 13067787
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-28",
+   "open": 1194.5,
+   "high": 1204.30004882812,
+   "low": 1156.40002441406,
+   "close": 1158.0,
+   "adj_close": 1158.0,
+   "volume": 21866598
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-29",
+   "open": 1159.0,
+   "high": 1182.09997558594,
+   "low": 1155.59997558594,
+   "close": 1167.40002441406,
+   "adj_close": 1167.40002441406,
+   "volume": 20939623
+  },
+  {
+   "symbol": "RELIANCE",
+   "date": "2026-10-30",
+   "open": 1170.40002441406,
+   "high": 1174.59997558594,
+   "low": 1152.5,
+   "close": 1164.90002441406,
+   "adj_close": 1164.90002441406,
+   "volume": 14753650
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-09-30",
+   "open": 357.950012207031,
+   "high": 362.049987792969,
+   "low": 356.549987792969,
+   "close": 359.0,
+   "adj_close": 359.0,
+   "volume": 5401745
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-01",
+   "open": 352.950012207031,
+   "high": 357.149993896484,
+   "low": 346.399993896484,
+   "close": 350.149993896484,
+   "adj_close": 350.149993896484,
+   "volume": 4222986
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-05",
+   "open": 350.149993896484,
+   "high": 353.950012207031,
+   "low": 348.0,
+   "close": 351.5,
+   "adj_close": 351.5,
+   "volume": 2763239
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-06",
+   "open": 352.100006103516,
+   "high": 356.75,
+   "low": 349.850006103516,
+   "close": 351.649993896484,
+   "adj_close": 351.649993896484,
+   "volume": 5741438
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-07",
+   "open": 350.899993896484,
+   "high": 350.899993896484,
+   "low": 341.0,
+   "close": 345.149993896484,
+   "adj_close": 345.149993896484,
+   "volume": 5227497
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-08",
+   "open": 347.0,
+   "high": 347.75,
+   "low": 334.0,
+   "close": 335.649993896484,
+   "adj_close": 335.649993896484,
+   "volume": 6295578
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-09",
+   "open": 335.549987792969,
+   "high": 342.149993896484,
+   "low": 333.600006103516,
+   "close": 342.149993896484,
+   "adj_close": 342.149993896484,
+   "volume": 4378116
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-12",
+   "open": 342.0,
+   "high": 345.5,
+   "low": 340.700012207031,
+   "close": 343.700012207031,
+   "adj_close": 343.700012207031,
+   "volume": 3408910
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-13",
+   "open": 343.0,
+   "high": 345.0,
+   "low": 340.75,
+   "close": 345.0,
+   "adj_close": 345.0,
+   "volume": 2372673
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-14",
+   "open": 345.0,
+   "high": 353.0,
+   "low": 342.950012207031,
+   "close": 353.0,
+   "adj_close": 353.0,
+   "volume": 4962004
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-15",
+   "open": 350.950012207031,
+   "high": 352.450012207031,
+   "low": 348.5,
+   "close": 349.799987792969,
+   "adj_close": 349.799987792969,
+   "volume": 3677028
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-16",
+   "open": 349.799987792969,
+   "high": 354.149993896484,
+   "low": 347.649993896484,
+   "close": 353.850006103516,
+   "adj_close": 353.850006103516,
+   "volume": 3463576
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-19",
+   "open": 352.600006103516,
+   "high": 355.350006103516,
+   "low": 350.25,
+   "close": 352.25,
+   "adj_close": 352.25,
+   "volume": 3247837
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-21",
+   "open": 351.25,
+   "high": 353.700012207031,
+   "low": 347.299987792969,
+   "close": 352.0,
+   "adj_close": 352.0,
+   "volume": 3778796
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-22",
+   "open": 350.0,
+   "high": 353.549987792969,
+   "low": 345.950012207031,
+   "close": 353.5,
+   "adj_close": 353.5,
+   "volume": 3071573
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-23",
+   "open": 353.0,
+   "high": 353.0,
+   "low": 340.299987792969,
+   "close": 348.100006103516,
+   "adj_close": 348.100006103516,
+   "volume": 4180666
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-26",
+   "open": 345.100006103516,
+   "high": 348.450012207031,
+   "low": 333.200012207031,
+   "close": 338.5,
+   "adj_close": 338.5,
+   "volume": 9489132
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-27",
+   "open": 337.899993896484,
+   "high": 341.75,
+   "low": 333.5,
+   "close": 339.100006103516,
+   "adj_close": 339.100006103516,
+   "volume": 6059999
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-28",
+   "open": 339.100006103516,
+   "high": 340.850006103516,
+   "low": 334.299987792969,
+   "close": 335.0,
+   "adj_close": 335.0,
+   "volume": 2324748
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-29",
+   "open": 335.600006103516,
+   "high": 345.799987792969,
+   "low": 334.0,
+   "close": 344.549987792969,
+   "adj_close": 344.549987792969,
+   "volume": 3441946
+  },
+  {
+   "symbol": "TATAPOWER",
+   "date": "2026-10-30",
+   "open": 344.549987792969,
+   "high": 348.200012207031,
+   "low": 341.299987792969,
+   "close": 345.049987792969,
+   "adj_close": 345.049987792969,
+   "volume": 3535796
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-09-30",
+   "open": 189.0,
+   "high": 189.550003051758,
+   "low": 184.300003051758,
+   "close": 184.300003051758,
+   "adj_close": 184.300003051758,
+   "volume": 32381754
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-01",
+   "open": 184.369995117188,
+   "high": 186.550003051758,
+   "low": 175.75,
+   "close": 178.0,
+   "adj_close": 178.0,
+   "volume": 47659952
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-05",
+   "open": 179.279998779297,
+   "high": 181.279998779297,
+   "low": 177.020004272461,
+   "close": 178.139999389648,
+   "adj_close": 178.139999389648,
+   "volume": 20426029
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-06",
+   "open": 178.25,
+   "high": 180.380004882812,
+   "low": 177.0,
+   "close": 178.690002441406,
+   "adj_close": 178.690002441406,
+   "volume": 17244259
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-07",
+   "open": 177.789993286133,
+   "high": 178.25,
+   "low": 174.600006103516,
+   "close": 175.639999389648,
+   "adj_close": 175.639999389648,
+   "volume": 18846203
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-08",
+   "open": 176.300003051758,
+   "high": 176.399993896484,
+   "low": 170.539993286133,
+   "close": 171.960006713867,
+   "adj_close": 171.960006713867,
+   "volume": 30689721
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-09",
+   "open": 171.0,
+   "high": 174.440002441406,
+   "low": 170.229995727539,
+   "close": 173.800003051758,
+   "adj_close": 173.800003051758,
+   "volume": 13053584
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-12",
+   "open": 174.800003051758,
+   "high": 177.25,
+   "low": 172.0,
+   "close": 172.240005493164,
+   "adj_close": 172.240005493164,
+   "volume": 27079930
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-13",
+   "open": 172.350006103516,
+   "high": 175.0,
+   "low": 171.660003662109,
+   "close": 175.0,
+   "adj_close": 175.0,
+   "volume": 20600621
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-14",
+   "open": 175.5,
+   "high": 175.839996337891,
+   "low": 173.5,
+   "close": 174.490005493164,
+   "adj_close": 174.490005493164,
+   "volume": 20350651
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-15",
+   "open": 174.550003051758,
+   "high": 176.850006103516,
+   "low": 172.639999389648,
+   "close": 176.399993896484,
+   "adj_close": 176.399993896484,
+   "volume": 17881415
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-16",
+   "open": 176.600006103516,
+   "high": 178.199996948242,
+   "low": 174.860000610352,
+   "close": 175.5,
+   "adj_close": 175.5,
+   "volume": 42868062
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-19",
+   "open": 175.5,
+   "high": 176.399993896484,
+   "low": 173.869995117188,
+   "close": 174.039993286133,
+   "adj_close": 174.039993286133,
+   "volume": 12638617
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-21",
+   "open": 175.0,
+   "high": 176.179992675781,
+   "low": 170.600006103516,
+   "close": 172.449996948242,
+   "adj_close": 172.449996948242,
+   "volume": 21577704
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-22",
+   "open": 170.5,
+   "high": 172.330001831055,
+   "low": 168.100006103516,
+   "close": 172.330001831055,
+   "adj_close": 172.330001831055,
+   "volume": 16694229
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-23",
+   "open": 170.899993896484,
+   "high": 171.350006103516,
+   "low": 163.410003662109,
+   "close": 167.669998168945,
+   "adj_close": 167.669998168945,
+   "volume": 30332375
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-26",
+   "open": 167.669998168945,
+   "high": 169.940002441406,
+   "low": 165.509994506836,
+   "close": 169.940002441406,
+   "adj_close": 169.940002441406,
+   "volume": 22624704
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-27",
+   "open": 169.190002441406,
+   "high": 172.449996948242,
+   "low": 168.199996948242,
+   "close": 171.419998168945,
+   "adj_close": 171.419998168945,
+   "volume": 27060892
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-28",
+   "open": 170.649993896484,
+   "high": 170.990005493164,
+   "low": 168.089996337891,
+   "close": 169.270004272461,
+   "adj_close": 169.270004272461,
+   "volume": 12894674
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-29",
+   "open": 168.710006713867,
+   "high": 169.649993896484,
+   "low": 167.910003662109,
+   "close": 169.460006713867,
+   "adj_close": 169.460006713867,
+   "volume": 13728789
+  },
+  {
+   "symbol": "TATASTEEL",
+   "date": "2026-10-30",
+   "open": 168.5,
+   "high": 168.690002441406,
+   "low": 167.210006713867,
+   "close": 167.600006103516,
+   "adj_close": 167.600006103516,
+   "volume": 15613622
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-09-30",
+   "open": 819.299987792969,
+   "high": 850.900024414062,
+   "low": 814.099975585938,
+   "close": 818.150024414062,
+   "adj_close": 818.150024414062,
+   "volume": 933675
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-01",
+   "open": 811.0,
+   "high": 813.900024414062,
+   "low": 792.200012207031,
+   "close": 805.099975585938,
+   "adj_close": 805.099975585938,
+   "volume": 373180
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-05",
+   "open": 809.0,
+   "high": 812.950012207031,
+   "low": 795.650024414062,
+   "close": 809.650024414062,
+   "adj_close": 809.650024414062,
+   "volume": 364258
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-06",
+   "open": 813.5,
+   "high": 813.5,
+   "low": 802.849975585938,
+   "close": 804.849975585938,
+   "adj_close": 804.849975585938,
+   "volume": 249996
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-07",
+   "open": 804.849975585938,
+   "high": 808.450012207031,
+   "low": 796.650024414062,
+   "close": 799.75,
+   "adj_close": 799.75,
+   "volume": 199471
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-08",
+   "open": 799.650024414062,
+   "high": 799.650024414062,
+   "low": 772.099975585938,
+   "close": 778.0,
+   "adj_close": 778.0,
+   "volume": 314209
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-09",
+   "open": 779.900024414062,
+   "high": 789.0,
+   "low": 770.200012207031,
+   "close": 777.200012207031,
+   "adj_close": 777.200012207031,
+   "volume": 196581
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-12",
+   "open": 777.200012207031,
+   "high": 789.700012207031,
+   "low": 761.049987792969,
+   "close": 763.75,
+   "adj_close": 763.75,
+   "volume": 272594
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-13",
+   "open": 770.0,
+   "high": 771.849975585938,
+   "low": 752.799987792969,
+   "close": 761.849975585938,
+   "adj_close": 761.849975585938,
+   "volume": 316522
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-14",
+   "open": 764.75,
+   "high": 769.799987792969,
+   "low": 757.5,
+   "close": 761.049987792969,
+   "adj_close": 761.049987792969,
+   "volume": 266145
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-15",
+   "open": 761.049987792969,
+   "high": 762.599975585938,
+   "low": 743.099975585938,
+   "close": 748.5,
+   "adj_close": 748.5,
+   "volume": 264325
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-16",
+   "open": 747.0,
+   "high": 760.599975585938,
+   "low": 735.650024414062,
+   "close": 749.150024414062,
+   "adj_close": 749.150024414062,
+   "volume": 500053
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-19",
+   "open": 749.150024414062,
+   "high": 755.849975585938,
+   "low": 739.0,
+   "close": 740.849975585938,
+   "adj_close": 740.849975585938,
+   "volume": 146388
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-21",
+   "open": 745.0,
+   "high": 745.099975585938,
+   "low": 705.299987792969,
+   "close": 709.549987792969,
+   "adj_close": 709.549987792969,
+   "volume": 350414
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-22",
+   "open": 710.5,
+   "high": 711.0,
+   "low": 687.5,
+   "close": 694.299987792969,
+   "adj_close": 694.299987792969,
+   "volume": 640030
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-23",
+   "open": 693.400024414062,
+   "high": 705.599975585938,
+   "low": 660.0,
+   "close": 663.349975585938,
+   "adj_close": 663.349975585938,
+   "volume": 1139440
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-26",
+   "open": 662.349975585938,
+   "high": 667.650024414062,
+   "low": 646.299987792969,
+   "close": 649.549987792969,
+   "adj_close": 649.549987792969,
+   "volume": 607495
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-27",
+   "open": 655.0,
+   "high": 672.0,
+   "low": 648.799987792969,
+   "close": 652.900024414062,
+   "adj_close": 652.900024414062,
+   "volume": 680666
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-28",
+   "open": 652.799987792969,
+   "high": 711.0,
+   "low": 647.549987792969,
+   "close": 692.5,
+   "adj_close": 692.5,
+   "volume": 4010480
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-29",
+   "open": 710.599975585938,
+   "high": 714.900024414062,
+   "low": 660.599975585938,
+   "close": 664.799987792969,
+   "adj_close": 664.799987792969,
+   "volume": 1776983
+  },
+  {
+   "symbol": "TITAGARH",
+   "date": "2026-10-30",
+   "open": 660.0,
+   "high": 661.400024414062,
+   "low": 637.5,
+   "close": 654.150024414062,
+   "adj_close": 654.150024414062,
+   "volume": 1084466
+  }
+ ],
+ "corporate_actions": [
+  {
+   "symbol": "INFY",
+   "ex_date": "2026-11-03",
+   "record_date": "2026-11-03",
+   "subject": "Interim Dividend - Rs 26 Per Share",
+   "kind": "dividend",
+   "ratio_new": null,
+   "ratio_held": null,
+   "amount_per_share": 26.0
+  }
+ ],
+ "deals": [],
+ "freshness": [
+  {
+   "source": "nse_block_deals",
+   "scope": "all",
+   "last_attempt_at": "2026-11-10T08:55:17.297569+00:00",
+   "last_success_at": "2026-11-10T08:55:17.297569+00:00",
+   "last_error": null,
+   "rows": 58
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "HAL",
+   "last_attempt_at": "2026-11-10T08:38:00.787982+00:00",
+   "last_success_at": "2026-11-10T08:38:00.787982+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "EICHERMOT",
+   "last_attempt_at": "2026-11-10T08:38:01.015289+00:00",
+   "last_success_at": "2026-11-10T08:38:01.015289+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "GRASIM",
+   "last_attempt_at": "2026-11-10T08:38:01.241879+00:00",
+   "last_success_at": "2026-11-10T08:38:01.241879+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "TATAPOWER",
+   "last_attempt_at": "2026-11-10T08:38:01.470352+00:00",
+   "last_success_at": "2026-11-10T08:38:01.470352+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "ALKEM",
+   "last_attempt_at": "2026-11-10T08:38:01.692992+00:00",
+   "last_success_at": "2026-11-10T08:38:01.692992+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "KALYANKJIL",
+   "last_attempt_at": "2026-11-10T08:38:01.912701+00:00",
+   "last_success_at": "2026-11-10T08:38:01.912701+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "COCHINSHIP",
+   "last_attempt_at": "2026-11-10T08:38:02.135093+00:00",
+   "last_success_at": "2026-11-10T08:38:02.135093+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "TITAGARH",
+   "last_attempt_at": "2026-11-10T08:38:02.357484+00:00",
+   "last_success_at": "2026-11-10T08:38:02.357484+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "IDEA",
+   "last_attempt_at": "2026-11-10T08:38:02.578457+00:00",
+   "last_success_at": "2026-11-10T08:38:02.578457+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "RELIANCE",
+   "last_attempt_at": "2026-11-10T08:38:02.800975+00:00",
+   "last_success_at": "2026-11-10T08:38:02.800975+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "HDFCBANK",
+   "last_attempt_at": "2026-11-10T08:38:03.023379+00:00",
+   "last_success_at": "2026-11-10T08:38:03.023379+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "BAJFINANCE",
+   "last_attempt_at": "2026-11-10T08:38:03.249887+00:00",
+   "last_success_at": "2026-11-10T08:38:03.249887+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "INFY",
+   "last_attempt_at": "2026-11-10T08:38:03.472327+00:00",
+   "last_success_at": "2026-11-10T08:38:03.472327+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "ITC",
+   "last_attempt_at": "2026-11-10T08:38:03.695776+00:00",
+   "last_success_at": "2026-11-10T08:38:03.695776+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "DIVISLAB",
+   "last_attempt_at": "2026-11-10T08:38:03.918863+00:00",
+   "last_success_at": "2026-11-10T08:38:03.918863+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "TATASTEEL",
+   "last_attempt_at": "2026-11-10T08:38:04.140736+00:00",
+   "last_success_at": "2026-11-10T08:38:04.140736+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "JUBLFOOD",
+   "last_attempt_at": "2026-11-10T08:38:04.362149+00:00",
+   "last_success_at": "2026-11-10T08:38:04.362149+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "yahoo_prices",
+   "scope": "DIXON",
+   "last_attempt_at": "2026-11-10T08:38:04.582272+00:00",
+   "last_success_at": "2026-11-10T08:38:04.582272+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "COCHINSHIP",
+   "last_attempt_at": "2026-11-10T08:52:10.428004+00:00",
+   "last_success_at": "2026-11-10T08:52:10.428004+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "TITAGARH",
+   "last_attempt_at": "2026-11-10T08:52:12.840925+00:00",
+   "last_success_at": "2026-11-10T08:52:12.840925+00:00",
+   "last_error": null,
+   "rows": 1
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "IDEA",
+   "last_attempt_at": "2026-11-10T08:52:15.308269+00:00",
+   "last_success_at": "2026-11-10T08:52:15.308269+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "RELIANCE",
+   "last_attempt_at": "2026-11-10T08:52:17.795812+00:00",
+   "last_success_at": "2026-11-10T08:52:17.795812+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "HDFCBANK",
+   "last_attempt_at": "2026-11-10T08:52:20.304398+00:00",
+   "last_success_at": "2026-11-10T08:52:20.304398+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "BAJFINANCE",
+   "last_attempt_at": "2026-11-10T08:52:22.823151+00:00",
+   "last_success_at": "2026-11-10T08:52:22.823151+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "DIXON",
+   "last_attempt_at": "2026-11-10T08:52:37.839047+00:00",
+   "last_success_at": "2026-11-10T08:52:37.839047+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_holidays",
+   "scope": "all",
+   "last_attempt_at": "2026-11-10T08:54:53.137697+00:00",
+   "last_success_at": "2026-11-10T08:54:53.137697+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_equity_list",
+   "scope": "all",
+   "last_attempt_at": "2026-11-10T08:54:53.897658+00:00",
+   "last_success_at": "2026-11-10T08:54:53.897658+00:00",
+   "last_error": null,
+   "rows": 2645
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "HAL",
+   "last_attempt_at": "2026-11-10T08:38:50.034577+00:00",
+   "last_success_at": "2026-11-10T08:38:50.034577+00:00",
+   "last_error": null,
+   "rows": 5
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "EICHERMOT",
+   "last_attempt_at": "2026-11-10T08:38:52.482038+00:00",
+   "last_success_at": "2026-11-10T08:38:52.482038+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "GRASIM",
+   "last_attempt_at": "2026-11-10T08:38:55.003767+00:00",
+   "last_success_at": "2026-11-10T08:38:55.003767+00:00",
+   "last_error": null,
+   "rows": 5
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "TATAPOWER",
+   "last_attempt_at": "2026-11-10T08:38:57.534309+00:00",
+   "last_success_at": "2026-11-10T08:38:57.534309+00:00",
+   "last_error": null,
+   "rows": 6
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "ALKEM",
+   "last_attempt_at": "2026-11-10T08:39:00.038162+00:00",
+   "last_success_at": "2026-11-10T08:39:00.038162+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "KALYANKJIL",
+   "last_attempt_at": "2026-11-10T08:39:02.533288+00:00",
+   "last_success_at": "2026-11-10T08:39:02.533288+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "COCHINSHIP",
+   "last_attempt_at": "2026-11-10T08:39:05.004606+00:00",
+   "last_success_at": "2026-11-10T08:39:05.004606+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "TITAGARH",
+   "last_attempt_at": "2026-11-10T08:39:07.529554+00:00",
+   "last_success_at": "2026-11-10T08:39:07.529554+00:00",
+   "last_error": null,
+   "rows": 9
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "IDEA",
+   "last_attempt_at": "2026-11-10T08:39:10.008282+00:00",
+   "last_success_at": "2026-11-10T08:39:10.008282+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "RELIANCE",
+   "last_attempt_at": "2026-11-10T08:39:12.512508+00:00",
+   "last_success_at": "2026-11-10T08:39:12.512508+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "HDFCBANK",
+   "last_attempt_at": "2026-11-10T08:39:14.924835+00:00",
+   "last_success_at": "2026-11-10T08:39:14.924835+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "BAJFINANCE",
+   "last_attempt_at": "2026-11-10T08:39:17.607875+00:00",
+   "last_success_at": "2026-11-10T08:39:17.607875+00:00",
+   "last_error": null,
+   "rows": 6
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "INFY",
+   "last_attempt_at": "2026-11-10T08:39:19.939203+00:00",
+   "last_success_at": "2026-11-10T08:39:19.939203+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "ITC",
+   "last_attempt_at": "2026-11-10T08:39:22.550279+00:00",
+   "last_success_at": "2026-11-10T08:39:22.550279+00:00",
+   "last_error": null,
+   "rows": 5
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "DIVISLAB",
+   "last_attempt_at": "2026-11-10T08:39:25.061239+00:00",
+   "last_success_at": "2026-11-10T08:39:25.061239+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "TATASTEEL",
+   "last_attempt_at": "2026-11-10T08:39:27.552871+00:00",
+   "last_success_at": "2026-11-10T08:39:27.552871+00:00",
+   "last_error": null,
+   "rows": 6
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "JUBLFOOD",
+   "last_attempt_at": "2026-11-10T08:39:30.103594+00:00",
+   "last_success_at": "2026-11-10T08:39:30.103594+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "DIXON",
+   "last_attempt_at": "2026-11-10T08:39:32.580242+00:00",
+   "last_success_at": "2026-11-10T08:39:32.580242+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "HAL",
+   "last_attempt_at": "2026-11-10T08:39:34.972508+00:00",
+   "last_success_at": "2026-11-10T08:39:34.972508+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "EICHERMOT",
+   "last_attempt_at": "2026-11-10T08:39:37.484832+00:00",
+   "last_success_at": "2026-11-10T08:39:37.484832+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "GRASIM",
+   "last_attempt_at": "2026-11-10T08:39:39.969267+00:00",
+   "last_success_at": "2026-11-10T08:39:39.969267+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "TATAPOWER",
+   "last_attempt_at": "2026-11-10T08:39:42.517735+00:00",
+   "last_success_at": "2026-11-10T08:39:42.517735+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "ALKEM",
+   "last_attempt_at": "2026-11-10T08:39:44.977658+00:00",
+   "last_success_at": "2026-11-10T08:39:44.977658+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "KALYANKJIL",
+   "last_attempt_at": "2026-11-10T08:39:47.482740+00:00",
+   "last_success_at": "2026-11-10T08:39:47.482740+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "COCHINSHIP",
+   "last_attempt_at": "2026-11-10T08:39:49.993760+00:00",
+   "last_success_at": "2026-11-10T08:39:49.993760+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "TITAGARH",
+   "last_attempt_at": "2026-11-10T08:39:52.490385+00:00",
+   "last_success_at": "2026-11-10T08:39:52.490385+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "IDEA",
+   "last_attempt_at": "2026-11-10T08:39:54.993815+00:00",
+   "last_success_at": "2026-11-10T08:39:54.993815+00:00",
+   "last_error": null,
+   "rows": 19
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "RELIANCE",
+   "last_attempt_at": "2026-11-10T08:39:57.483018+00:00",
+   "last_success_at": "2026-11-10T08:39:57.483018+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "HDFCBANK",
+   "last_attempt_at": "2026-11-10T08:40:00.052949+00:00",
+   "last_success_at": "2026-11-10T08:40:00.052949+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "BAJFINANCE",
+   "last_attempt_at": "2026-11-10T08:40:02.542147+00:00",
+   "last_success_at": "2026-11-10T08:40:02.542147+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "INFY",
+   "last_attempt_at": "2026-11-10T08:40:05.046872+00:00",
+   "last_success_at": "2026-11-10T08:40:05.046872+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "ITC",
+   "last_attempt_at": "2026-11-10T08:40:07.539896+00:00",
+   "last_success_at": "2026-11-10T08:40:07.539896+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "DIVISLAB",
+   "last_attempt_at": "2026-11-10T08:40:10.063027+00:00",
+   "last_success_at": "2026-11-10T08:40:10.063027+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "TATASTEEL",
+   "last_attempt_at": "2026-11-10T08:40:12.543323+00:00",
+   "last_success_at": "2026-11-10T08:40:12.543323+00:00",
+   "last_error": null,
+   "rows": 20
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "JUBLFOOD",
+   "last_attempt_at": "2026-11-10T08:40:15.032739+00:00",
+   "last_success_at": "2026-11-10T08:40:15.032739+00:00",
+   "last_error": null,
+   "rows": 19
+  },
+  {
+   "source": "nse_corporate_actions",
+   "scope": "DIXON",
+   "last_attempt_at": "2026-11-10T08:40:17.523157+00:00",
+   "last_success_at": "2026-11-10T08:40:17.523157+00:00",
+   "last_error": null,
+   "rows": 11
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "HAL",
+   "last_attempt_at": "2026-11-10T08:51:55.449562+00:00",
+   "last_success_at": "2026-11-10T08:51:55.449562+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "EICHERMOT",
+   "last_attempt_at": "2026-11-10T08:51:57.848780+00:00",
+   "last_success_at": "2026-11-10T08:51:57.848780+00:00",
+   "last_error": null,
+   "rows": 1
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "GRASIM",
+   "last_attempt_at": "2026-11-10T08:52:00.301709+00:00",
+   "last_success_at": "2026-11-10T08:52:00.301709+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "TATAPOWER",
+   "last_attempt_at": "2026-11-10T08:52:02.760958+00:00",
+   "last_success_at": "2026-11-10T08:52:02.760958+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "ALKEM",
+   "last_attempt_at": "2026-11-10T08:52:05.283424+00:00",
+   "last_success_at": "2026-11-10T08:52:05.283424+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "KALYANKJIL",
+   "last_attempt_at": "2026-11-10T08:52:07.772743+00:00",
+   "last_success_at": "2026-11-10T08:52:07.772743+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "INFY",
+   "last_attempt_at": "2026-11-10T08:52:25.325142+00:00",
+   "last_success_at": "2026-11-10T08:52:25.325142+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "ITC",
+   "last_attempt_at": "2026-11-10T08:52:27.803593+00:00",
+   "last_success_at": "2026-11-10T08:52:27.803593+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "DIVISLAB",
+   "last_attempt_at": "2026-11-10T08:52:30.338769+00:00",
+   "last_success_at": "2026-11-10T08:52:30.338769+00:00",
+   "last_error": null,
+   "rows": 1
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "TATASTEEL",
+   "last_attempt_at": "2026-11-10T08:52:32.846527+00:00",
+   "last_success_at": "2026-11-10T08:52:32.846527+00:00",
+   "last_error": null,
+   "rows": 1
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "JUBLFOOD",
+   "last_attempt_at": "2026-11-10T08:52:35.361003+00:00",
+   "last_success_at": "2026-11-10T08:52:35.361003+00:00",
+   "last_error": null,
+   "rows": 0
+  },
+  {
+   "source": "nse_bulk_deals",
+   "scope": "all",
+   "last_attempt_at": "2026-11-10T08:55:15.035897+00:00",
+   "last_success_at": "2026-11-10T08:55:15.035897+00:00",
+   "last_error": null,
+   "rows": 146
+  }
+ ]
+}

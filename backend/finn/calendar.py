@@ -112,13 +112,14 @@ def quarter_period(quarter_end: date) -> Period:
     return Period(kind="quarter", start=start, end=quarter_end, label=f"Q{q} FY{fy_of(quarter_end) % 100:02d}")
 
 
-def results_quarter_for(filed: date) -> date:
+def results_quarter_for(filed: date, *, forward_looking: bool = True) -> date:
     """Quarter whose results a filing on `filed` most likely concerns (when the text doesn't say).
 
-    Results season for a quarter runs from ~15 days before its end (board-meeting intimations) to ~75 days
-    after (Q4 audited results may be filed up to 60 days after year end, then the call and transcript).
+    Only a forward-looking filing (a board-meeting intimation or call schedule) can concern a quarter that has
+    not ended yet — when it is filed within 15 days of that quarter's end. Outcomes, decks, recordings and
+    transcripts always concern a quarter that has already ended.
     """
     upcoming = next_quarter_end(filed)
-    if (upcoming - filed).days <= 15:
+    if forward_looking and (upcoming - filed).days <= 15:
         return upcoming
     return quarter_end_on_or_before(filed)

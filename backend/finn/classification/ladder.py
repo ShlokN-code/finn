@@ -106,8 +106,16 @@ SYSTEM = (
     "document provided — never outside knowledge about the company. Pick exactly one category from the list. "
     "Choose 'routine' for compliance boilerplate. If the text does not allow a decision, choose 'unclassified' "
     "with low confidence. 'stage' applies only to results/earnings-call filings (intimation, outcome, "
-    "presentation, call, transcript) or newspaper ads; otherwise use 'other'. Categories:\n" + CATEGORY_GUIDE
+    "presentation, call, transcript) or newspaper ads; otherwise use 'other'. For 'routine', set hidden_reason "
+    "to the closest group. Categories:\n" + CATEGORY_GUIDE
 )
+
+# Hidden-drawer groups (PRODUCT.md §4). The model must pick one of these, never write its own.
+HIDDEN_GROUPS = [
+    "Newspaper ad", "Trading-window notice", "ESOP allotment / grant", "Compliance certificate",
+    "Compliance report", "Debt securities (NCD/CP)", "Shareholder administration", "Policy document",
+    "ESG rating", "Administrative change", "Guarantee / intra-group support", "Other routine filing",
+]  # fmt: skip
 
 SCHEMA = {
     "type": "object",
@@ -116,7 +124,7 @@ SCHEMA = {
         "stage": {"type": "string", "enum": [s.value for s in EventStage]},
         "confidence": {"type": "number"},
         "reason": {"type": "string"},
-        "hidden_reason": {"type": "string"},
+        "hidden_reason": {"type": "string", "enum": HIDDEN_GROUPS},
     },
     "required": ["category", "stage", "confidence", "reason"],
 }
@@ -204,6 +212,8 @@ class Classifier:
             stage = None
         conf = d.get("confidence")
         conf = max(0.0, min(1.0, float(conf))) if isinstance(conf, int | float) else None
-        hidden = (d.get("hidden_reason") or "Routine filing") if cat == Category.routine else None
+        hidden = None
+        if cat == Category.routine:
+            hidden = d.get("hidden_reason") if d.get("hidden_reason") in HIDDEN_GROUPS else "Other routine filing"
         return Classification(cat, "model", stage, hidden, conf, res.model,
                               note=(d.get("reason") or "")[:300] + (" [pdf]" if pdf else ""))  # fmt: skip

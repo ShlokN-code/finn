@@ -127,3 +127,10 @@ def test_uninformative_subjects():
     assert is_uninformative("HAL has informed the Exchange regarding 'General Updates'.")
     assert is_uninformative("Disclosure Under Regulation 30 Of The SEBI (LODR) Regulations, 2015")
     assert not is_uninformative("Appointment of Mr. Manoj Murali as Chief Operating Officer")
+
+
+def test_model_hidden_reason_restricted_to_drawer_groups():
+    g = FakeGemini({"category": "routine", "stage": "other", "confidence": 0.9, "reason": "x",
+                    "hidden_reason": "A long free-text explanation the model made up"})  # fmt: skip
+    c = Classifier(Router([g], MemoryLLMLog())).classify(filing("Agreements", "Agreements"))
+    assert c.hidden_reason == "Other routine filing"
