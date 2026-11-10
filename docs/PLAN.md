@@ -5,7 +5,7 @@ Product scope lives in PRODUCT.md; reasons live in DECISIONS.md. The phase break
 
 ## Start of next phase
 
-- [ ] **Fix `--font-sans`.** `web/app/globals.css` (written by `shadcn init`) sets `--font-sans: var(--font-sans)`, a self-reference, so text falls back to a serif font. Point it at the Geist variable from `app/layout.tsx` (`--font-geist-sans`) and check on a phone.
+- [ ] **Fix `--font-sans`.** `web/app/globals.css` (written by `shadcn init`) sets `--font-sans: var(--font-sans)`, a self-reference, so text falls back to a serif font. Point it at the Geist variable from `app/layout.tsx` (`--font-geist-sans`) and check on a phone. — CSS fixed in `a747b11`; phone check pending (not yet deployed).
 
 ## Research dossier — on-demand NSE data via GitHub Actions dispatch
 
@@ -20,3 +20,21 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [ ] **UI.** Dossier streams core sections immediately; NSE-backed sections show "Fetching exchange data… (~1–2 min)" while the run is in progress, then fill in. Freshness stamp per section.
 - [ ] **Tests.** Equity-list validation; once-per-day/reuse logic; fallback message on dispatch failure (mocked GitHub API).
 - [ ] **Verify** with a ticker outside the demo set (CLAUDE.md quality rule).
+
+## Phase 1 — ingestion + trust layer (10 Nov 2026)
+
+- [x] EOD prices (Yahoo, split/bonus-adjusted close + dividend-adjusted adj close), 1 year, restatement check — `f7cd26e`, verified live (≈248 sessions × 18 holdings + TRENT, POLYCAB)
+- [x] NSE announcements + board-meeting intimations; NSE↔BSE dedup logic + tests (BSE not wired, by decision) — `f7cd26e`, `d62aa65`
+- [x] Corporate actions (ex-dates, ratios, ₹/share) and bulk/block deals (API ∪ archive CSV) — `f7cd26e`, `22b9b35`
+- [x] Classification ladder with per-tier logging; Gemini free tier with Groq fallback — `cd5ada8`, `d62aa65`, `41c5d8b`
+- [x] Event threading — `d62aa65`, `41c5d8b`
+- [x] Trust layer: money parsing → ₹ Cr, NSE holidays, freshness (`source_status`, `fetched_at`) — `f7cd26e`, `07cf14a`
+- [x] Frozen snapshot 2026-10-30 (DB + `backend/data/snapshots/`) — `41c5d8b`
+- [x] Tests: dedup, threading, unit normalisation, classification rules, LLM router — 105 passing
+- [x] Run against tickers outside the demo set (TRENT, POLYCAB) — clean
+- [ ] **Push and verify on GitHub Actions:** dispatch `ingest` with job = daily, then job = filings; check the job summary and `source_status`. Needs repo secret `DATABASE_URL` (and `GEMINI_API_KEY`, already added).
+- [ ] **Review the eval labels** in `backend/evals/classification/labelled.jsonl` (written by Claude; `note` marks uncertain ones) and add a held-out set from other symbols/months.
+- [ ] **Re-capture the snapshot by Fri 13 Nov** if a heavier results day lands this week (`python -m jobs.snapshot --suggest`).
+- [ ] **Rules:** press releases announcing results or new facilities without the words "results"/"capacity" fall to `press_release` (2 eval misses, PERSISTENT).
+- [ ] **Backfill older filings** in daily slices if the Brief or calendar needs more than 120 days.
+

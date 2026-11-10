@@ -105,5 +105,8 @@ It picks the newest transcript for this repo in `~/.claude/projects/`, keeps mes
 | Mode | Accuracy on decided | Coverage | Overall |
 |---|---|---|---|
 | Rules only (exchange label + regex) | 96.5 % (55/57) | 95 % | 91.7 % |
+| Full ladder (+ Gemini Flash-Lite for the 3 leftovers) | 96.7 % (58/60) | 100 % | 96.7 % |
+
+Live tier split on the first backfill (824 portfolio filings, Jul–Nov 2026): 34 % exchange label · 52 % rules · 13 % model · 0 % failed after one retry pass (13 Gemini 503s on the first pass).
 
 Caveat: the rules were written from the same three months of filings, so this is optimistic; a held-out set comes next. Run with `python -m evals.classification.run [--model]` from `backend/`.
