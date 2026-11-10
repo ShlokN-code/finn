@@ -39,6 +39,7 @@ class Unit(StrEnum):
     bps = "BPS"  # basis points (margin changes)
     ratio = "X"  # 1.4x
     days = "DAYS"
+    years = "YEARS"
     count = "COUNT"
     shares = "SHARES"
 

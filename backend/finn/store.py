@@ -458,3 +458,45 @@ def upsert_synthetic_event(conn, event: Event) -> None:
         (event.id, event.key, event.symbol, event.category, event.title, event.started_at, event.updated_at,
          event.so_what, Jsonb(event.detail.model_dump(mode="json")) if event.detail else None),
     )  # fmt: skip
+
+
+def events_to_tag(conn, symbols: list[str], days: int, limit: int) -> list[dict]:
+    """Non-results, non-price events without Level-0 output yet (or whose model call failed), newest first;
+    plus management cards still waiting for web enrichment."""
+    return conn.execute(
+        "select id, symbol, category, title, started_at, updated_at, timeline, detail, impact_tier from public.events "
+        "where symbol = any(%s) and updated_at > now() - make_interval(days => %s) and category not in "
+        "('results', 'price_volume') and (impact_tier is null or impact_tier = 'failed' or "
+        "(category = 'management_change' and detail->>'web_enrichment' = 'unavailable')) "
+        "order by updated_at desc limit %s",
+        (symbols, days, limit),
+    ).fetchall()
+
+
+def filing_rows(conn, ids: list[str]) -> dict[str, dict]:
+    rows = conn.execute(
+        "select id, symbol, filed_at, exchange_category, subject, attachment_url, xbrl_url, stage from public.filings "
+        "where id = any(%s)",
+        (ids,),
+    ).fetchall()
+    return {r["id"]: r for r in rows}
+
+
+def actions_for(conn, symbol: str) -> list[dict]:
+    return conn.execute("select * from public.corporate_actions where symbol = %s", (symbol,)).fetchall()
+
+
+def save_impact(conn, event_id: str, impact: str | None, reason: dict | None, so_what: str | None,
+                tier: str) -> None:  # fmt: skip
+    conn.execute(
+        "update public.events set impact = %s, impact_reason = %s, so_what = coalesce(%s, so_what), "
+        "impact_tier = %s where id = %s",
+        (impact, Jsonb(reason) if reason is not None else None, so_what, tier, event_id),
+    )
+
+
+def save_detail(conn, event_id: str, detail: dict | None) -> None:
+    conn.execute(
+        "update public.events set detail = %s, detail_at = now() where id = %s",
+        (Jsonb(detail) if detail is not None else None, event_id),
+    )

@@ -54,6 +54,7 @@ def main() -> None:
         run.step("thread", p.step_thread, symbols)
         run.step("results_fetch", p.step_results_fetch, s, symbols)
         run.step("results_build", p.step_results_build, symbols)
+        run.step("tag", p.step_tag, s, symbols)
         if is_trading_day(today) and not args.skip_prices:
             settings = [subs.settings_of(x) for x in subs.all_subscriptions(conn)]
             run.step("signals", step_signals, symbols, today, settings)

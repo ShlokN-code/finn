@@ -44,6 +44,7 @@ def main() -> None:
         run.step("thread", p.step_thread, symbols)
         run.step("results_fetch", p.step_results_fetch, s, symbols)
         run.step("results_build", p.step_results_build, symbols)
+        run.step("tag", p.step_tag, s, symbols)
         run.step("alerts", step_alerts)
 
 

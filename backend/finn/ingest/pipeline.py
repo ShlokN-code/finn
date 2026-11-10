@@ -325,6 +325,81 @@ def step_results_build(run: Run, symbols: list[str], days: int = 45) -> None:
     run.stats["results"] = stats
 
 
+TAG_LIMIT = 25  # model calls per run for Level-0 tags (bounded: shares the free-tier daily budget)
+
+
+def primary_filing(event: dict, filings: dict[str, dict]) -> dict | None:
+    """The filing that best states the event: an outcome or unstaged filing, newest first; ads last."""
+    items = [filings[t["filing_id"]] for t in event["timeline"] if t["filing_id"] in filings]
+    rank = {"newspaper_ad": 2, "intimation": 1}
+    return min(items, key=lambda f: (rank.get(f.get("stage") or "", 0), -f["filed_at"].timestamp()), default=None)
+
+
+def step_tag(run: Run, s: NSESession | None, symbols: list[str], days: int = 45) -> None:
+    """Level-0 impact + one-liner facts (cheap model), management profiles (+ optional web), chips (code)."""
+    from finn.cards.chips import chip_for
+    from finn.citations import pdf_text
+    from finn.classification.ladder import first_pages
+    from finn.extraction import management
+    from finn.ranking.impact import SKIP, tag_event
+
+    router = Router.default(PostgresLLMLog(run.conn))
+    events = store.events_to_tag(run.conn, symbols, days, 200)
+    filings = store.filing_rows(run.conn, sorted({t["filing_id"] for e in events for t in e["timeline"]}))
+    names = store.company_names(run.conn, sorted({e["symbol"] for e in events}))
+    stats = {"candidates": len(events), "tagged": 0, "chips": 0, "management": 0, "failed": 0, "web": {}}
+    calls = 0
+    for e in events:
+        f = primary_filing(e, filings)
+        if f is None:
+            continue
+        if e["category"] in ("dividend", "bonus_split"):
+            chip = chip_for(e, store.actions_for(run.conn, e["symbol"]), f)
+            store.save_detail(run.conn, e["id"], chip.model_dump(mode="json") if chip else None)
+            store.save_impact(run.conn, e["id"], None, None, chip.text[:60] if chip else None, "code")
+            stats["chips"] += 1
+            continue
+        if e["category"] in SKIP or not router.providers or calls >= TAG_LIMIT:
+            continue
+        raw = None
+        if s is not None and f.get("attachment_url"):
+            raw = fetch_capped(s, f["attachment_url"], max_bytes=MAX_PDF_BYTES, deadline_s=60)
+            raw = raw if raw and raw.startswith(b"%PDF") else None
+        company = names.get(e["symbol"], e["symbol"])
+        is_mgmt = e["category"] == "management_change"
+        old = e.get("detail") or {}
+        if e["impact_tier"] in (None, "failed"):
+            calls += 1
+            tagged = tag_event(router, e, f, first_pages(raw) if raw else None, company)
+            store.save_impact(run.conn, e["id"], tagged.impact,
+                              tagged.reason.model_dump(mode="json") if tagged.reason else None, tagged.so_what,
+                              tagged.tier)  # fmt: skip
+            if tagged.tier == "failed":
+                stats["failed"] += 1
+                continue
+            stats["tagged"] += 1
+            if not is_mgmt and tagged.detail:
+                store.save_detail(run.conn, e["id"], tagged.detail.model_dump(mode="json"))
+        if is_mgmt:
+            from finn.models import ManagementDetail
+
+            detail = ManagementDetail.model_validate(old) if old.get("kind") == "management_change" else None
+            if detail is None:
+                text, pages = pdf_text(raw, max_pages=8)
+                calls += 1
+                detail = management.extract(router, e, f, text, pages, first_pages(raw, 8) if raw else None,
+                                            company)  # fmt: skip
+            if detail is not None:
+                detail = management.enrich(router, detail, company)
+                stats["web"][detail.web_enrichment] = stats["web"].get(detail.web_enrichment, 0) + 1
+                store.save_detail(run.conn, e["id"], detail.model_dump(mode="json"))
+                if sw := management.so_what(detail):
+                    run.conn.execute("update public.events set so_what = %s where id = %s", (sw, e["id"]))
+                stats["management"] += 1
+    run.stats["tag"] = stats
+    run.stats["llm"] = router.stats.as_dict()
+
+
 # --- reporting --------------------------------------------------------------------------------
 
 

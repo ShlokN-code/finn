@@ -11,7 +11,8 @@ export type SourceType =
   | "price_feed"
   | "web_profile";
 export type VerificationStatus = "verified" | "unverified" | "not_found";
-export type Unit = "INR_CR" | "INR" | "INR_PER_SHARE" | "PCT" | "BPS" | "X" | "DAYS" | "COUNT" | "SHARES";
+export type Unit =
+  "INR_CR" | "INR" | "INR_PER_SHARE" | "PCT" | "BPS" | "X" | "DAYS" | "YEARS" | "COUNT" | "SHARES";
 /**
  * FINN's filing taxonomy (PRODUCT.md §4 'Category treatment').
  */
@@ -278,6 +279,10 @@ export interface ResultsDetail {
    */
   source_path: "xbrl" | "pdf_table" | "pdf_model";
   template: "standard" | "bank" | "nbfc";
+  /**
+   * Mean PAT YoY % of the 4 prior quarters (screener, computed in code) — ranking 'surprise'
+   */
+  trend_pat_yoy_pct: number | null;
   /**
    * cross_checked: every line agrees with screener + sanity checks. pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify — open filing', no numbers.
    */

@@ -2411,6 +2411,19 @@
           "title": "Template",
           "type": "string"
         },
+        "trend_pat_yoy_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mean PAT YoY % of the 4 prior quarters (screener, computed in code) \u2014 ranking 'surprise'",
+          "title": "Trend Pat Yoy Pct"
+        },
         "verification": {
           "description": "cross_checked: every line agrees with screener + sanity checks. pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify \u2014 open filing', no numbers.",
           "enum": [
@@ -2445,7 +2458,8 @@
         "filing_url",
         "lines",
         "margin_series",
-        "ebitda_note"
+        "ebitda_note",
+        "trend_pat_yoy_pct"
       ],
       "title": "ResultsDetail",
       "type": "object"
@@ -2678,6 +2692,7 @@
         "BPS",
         "X",
         "DAYS",
+        "YEARS",
         "COUNT",
         "SHARES"
       ],
