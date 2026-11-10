@@ -66,3 +66,12 @@ Do the steps in this order (each needs a value from the previous one).
 ## Tell Claude
 
 Send back the **Render URL** and the **Vercel URL** (not the database string). Claude verifies the chain with curl and records the URLs in the README.
+
+## 4. Telegram bot (Phase 2) — ~5 min
+
+1. In Telegram, open **@BotFather** → `/newbot` → name `FINN` (any) → username ending in `bot` (e.g. `finn_alerts_bot`). BotFather replies with the **token** — a secret; don't paste it in chat or commit it.
+2. Make a webhook secret: `python -c "import secrets; print(secrets.token_urlsafe(32))"`.
+3. **Render** → `finn-api` → Environment → add `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` (without @), `TELEGRAM_WEBHOOK_SECRET`, `WEB_BASE_URL` (the Vercel URL) → Save (redeploys).
+4. **GitHub** → repo → Settings → Secrets and variables → Actions: secret `TELEGRAM_BOT_TOKEN`; variable `WEB_BASE_URL`.
+5. Local `.env` (repo root): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `API_PUBLIC_URL=https://<render-url>`. Then `cd backend && ../.venv/bin/python -m jobs.telegram_setup` → prints `bot: @…` and `webhook: https://<render-url>/telegram/webhook`.
+6. Send `/start` to the bot → "Connected to the demo portfolio" + a **Test alert**.
