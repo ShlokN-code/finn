@@ -115,15 +115,18 @@ class ResultsDetail(Model):
     source_path: Literal["xbrl", "pdf_table", "pdf_model"] = Field(
         description="Where the current quarter came from: XBRL → PDF table → multimodal model on the PDF"
     )
-    verification: Literal["cross_checked", "pending", "mismatch"] = Field(
-        description="cross_checked: every line agrees with screener + sanity checks. pending: screener has not "
+    verification: Literal["cross_checked", "partial", "pending", "mismatch"] = Field(
+        description="cross_checked: every line agrees with screener + sanity checks. partial: every comparable "
+        "line agrees, but some line has no screener counterpart (named in the note). pending: screener has not "
         "published the quarter yet. mismatch: show 'Couldn't verify — open filing', no numbers."
     )
     verification_note: str | None = None
     filing_url: str | None = Field(None, description="The results filing to open when unverified")
     lines: list[ResultsLine] = Field(default_factory=list)
     margin_series: Series | None = Field(None, description="8-quarter margin sparkline (screener table)")
-    ebitda_note: str | None = Field(None, description="How EBITDA is defined (shown on tap)")
+    ebitda_note: str | None = Field(
+        None, description="Methodology note shown on tap: how EBITDA is defined; for banks, the PAT basis"
+    )
     trend_pat_yoy_pct: float | None = Field(
         None, description="Mean PAT YoY % of the 4 prior quarters (screener, computed in code) — ranking 'surprise'"
     )

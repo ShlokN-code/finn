@@ -48,9 +48,9 @@ def instance(qe: date, values_cr: dict[str, float], decimals: str = "-7") -> byt
 </xbrli:xbrl>""".encode()
 
 
-def qfacts(qe: date, values: dict[str, float], basis: str = "consolidated") -> QuarterFacts:
+def qfacts(qe: date, values: dict[str, float], basis: str = "consolidated", decimals: str = "-7") -> QuarterFacts:
     row = {
-        "facts": parse_instance(instance(qe, values)),
+        "facts": parse_instance(instance(qe, values, decimals)),
         "basis": basis,
         "xbrl_url": f"https://nsearchives.nseindia.com/corporate/xbrl/{qe}.xml",
         "broadcast_at": NOW,
@@ -197,3 +197,78 @@ def test_impact_rules():
     impact, _ = impact_from_lines("standard", lines)
     assert impact == "mixed"  # revenue up, PAT down
     assert so_what_for("standard", lines, "pending")
+
+
+# --- found on the first real run (Q2 FY27): XBRL layout vs screener's derived rows ----------------------------
+
+ONLY = {"previous": None, "year_ago": None}
+
+
+def one_quarter_table(rows: dict[str, float]) -> QuarterTable:
+    return table([Q2], {k: [v] for k, v in rows.items()})
+
+
+def test_pbt_adds_back_associates_and_discontinued_ops():
+    # TRENT-like: SEBI's ProfitBeforeTax element sits before the share of JV loss
+    q = qfacts(Q2, {"ProfitBeforeTax": 640.12, "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquity"
+                    "Method": -21.06, "ProfitLossFromDiscontinuedOperationsBeforeTax": 0})  # fmt: skip
+    pbt = metric("PBT", q)
+    assert pbt.value == pytest.approx(619.06) and len(pbt.inputs) == 2  # zero discontinued ops left out
+    plain = metric("PBT", qfacts(Q2, {"ProfitBeforeTax": 500}))
+    assert plain.value == 500 and plain.formula is None and plain.label == "PBT"
+
+
+def test_screener_reconciliations_are_named_in_the_note():
+    vals = {"RevenueFromOperations": 5873.14, "OtherIncome": 26.11, "FinanceCosts": 100, "DepreciationDepletionAnd"
+            "AmortisationExpense": 364, "ProfitBeforeExceptionalItemsAndTax": 640.12, "ProfitBeforeTax": 640.12,
+            "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": -21.06,
+            "ProfitLossFromDiscontinuedOperationsBeforeTax": -3.10, "ProfitLossForPeriod": 466.59,
+            "TaxExpense": 150.97}  # fmt: skip
+    q = qfacts(Q2, vals, decimals="2")
+    # screener: JV loss inside operating profit; PBT = PAT + tax
+    t = one_quarter_table({"Sales": 5873, "Operating Profit": 1057, "Profit before tax": 618, "Net Profit": 467})
+    d = build_from_quarters("standard", "consolidated", Q2, {"current": q} | ONLY, t, "xbrl", None).detail
+    assert d.verification == "cross_checked", d.verification_note
+    by = {x.metric: x.current for x in d.lines}
+    assert "matches as EBITDA + share of associates/JVs" in by["EBITDA"].check_note
+    assert by["EBITDA"].value == pytest.approx(1078.01)  # the card keeps operating EBITDA
+    assert by["PBT"].value == pytest.approx(615.96)
+    assert "matches as profit for the period + tax" in by["PBT"].check_note
+    # a genuinely different number still fails
+    bad = one_quarter_table({"Sales": 5873, "Operating Profit": 1000, "Profit before tax": 618, "Net Profit": 467})
+    assert build_from_quarters("standard", "consolidated", Q2, {"current": q} | ONLY, bad, "xbrl",
+                               None).detail.verification == "mismatch"  # fmt: skip
+
+
+BANK = {"InterestEarned": 95131.63, "InterestExpended": 50667.43, "OperatingProfitBeforeProvisionAndContingencies":
+        32871.54, "ProvisionsOtherThanTaxAndContingencies": 4209, "TaxExpense": 7125.45}  # fmt: skip
+
+
+def test_consolidated_bank_pat_is_before_minority_whatever_the_tagging():
+    # HDFCBANK Q2 FY27 put minority interest under ExceptionalItems; Q1 used the minority element
+    sep = qfacts(Q2, BANK | {"ExceptionalItems": -837.06, "ProfitLossForThePeriod": 20700.03})
+    jun = qfacts(Q1, BANK | {"ProfitLossOfMinorityInterest": 1137.98, "ProfitLossForThePeriod": 20382.69,
+                             "ProvisionsOtherThanTaxAndContingencies": 3802.84 + 2471.54})  # fmt: skip
+    a, b = metric("PAT", sep), metric("PAT", jun)
+    assert a.value == pytest.approx(21537.09) and "before minority interest" in a.formula
+    assert b.value == pytest.approx(32871.54 - 3802.84 - 2471.54 - 7125.45)
+    standalone = qfacts(Q2, BANK | {"ProfitLossForThePeriod": 19509.96}, basis="standalone")
+    assert metric("PAT", standalone).value == pytest.approx(19509.96) and metric("PAT", standalone).formula is None
+    d = build_from_quarters("bank", "consolidated", Q2, {"current": sep} | ONLY, None, "xbrl", None).detail
+    assert "minority" in (d.ebitda_note or "")
+
+
+def test_nbfc_that_tags_interest_earned_is_not_a_bank_and_is_partly_checked():
+    vals = {"InterestEarned": 21936.39, "FinanceCosts": 8601.73, "ImpairmentOnFinancialInstruments": 2166.09,
+            "ProfitBeforeTax": 8533.47, "ProfitLossForPeriod": 6366.57, "RevenueFromOperations": 24546.37}  # fmt: skip
+    q = qfacts(Q2, vals, decimals="2")
+    assert template_for(q, "Non Banking Financial Company (NBFC)") == "nbfc"
+    t = one_quarter_table({"Revenue": 24546, "Interest": 8602, "Profit before tax": 8533, "Net Profit": 6367})
+    d = build_from_quarters("nbfc", "consolidated", Q2, {"current": q} | ONLY, t, "xbrl", None).detail
+    by = {x.metric: x.current for x in d.lines}
+    assert by["NII"].value == pytest.approx(21936.39 - 8601.73)
+    # finance costs verified via screener 'Interest'; interest income has no screener row → line unverified
+    assert by["NII"].status == "unverified"
+    assert [i.status for i in by["NII"].inputs] == ["unverified", "verified"]
+    assert by["PAT"].status == "verified"
+    assert d.verification == "partial" and "NII" in d.verification_note and "PPOP" in d.verification_note

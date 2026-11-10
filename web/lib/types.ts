@@ -260,7 +260,7 @@ export interface Card {
 export interface ResultsDetail {
   basis: "consolidated" | "standalone";
   /**
-   * How EBITDA is defined (shown on tap)
+   * Methodology note shown on tap: how EBITDA is defined; for banks, the PAT basis
    */
   ebitda_note: string | null;
   /**
@@ -284,9 +284,9 @@ export interface ResultsDetail {
    */
   trend_pat_yoy_pct: number | null;
   /**
-   * cross_checked: every line agrees with screener + sanity checks. pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify — open filing', no numbers.
+   * cross_checked: every line agrees with screener + sanity checks. partial: every comparable line agrees, but some line has no screener counterpart (named in the note). pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify — open filing', no numbers.
    */
-  verification: "cross_checked" | "pending" | "mismatch";
+  verification: "cross_checked" | "partial" | "pending" | "mismatch";
   verification_note: string | null;
 }
 /**

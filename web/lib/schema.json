@@ -2348,7 +2348,7 @@
             }
           ],
           "default": null,
-          "description": "How EBITDA is defined (shown on tap)",
+          "description": "Methodology note shown on tap: how EBITDA is defined; for banks, the PAT basis",
           "title": "Ebitda Note"
         },
         "filing_url": {
@@ -2425,9 +2425,10 @@
           "title": "Trend Pat Yoy Pct"
         },
         "verification": {
-          "description": "cross_checked: every line agrees with screener + sanity checks. pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify \u2014 open filing', no numbers.",
+          "description": "cross_checked: every line agrees with screener + sanity checks. partial: every comparable line agrees, but some line has no screener counterpart (named in the note). pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify \u2014 open filing', no numbers.",
           "enum": [
             "cross_checked",
+            "partial",
             "pending",
             "mismatch"
           ],

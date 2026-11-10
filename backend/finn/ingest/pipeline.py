@@ -316,13 +316,16 @@ def _results_from_pdf(run: Run, s: NSESession, url: str, qe: date, ev: dict, sta
     return None, None
 
 
-def step_results_build(run: Run, symbols: list[str], days: int = 45, s: NSESession | None = None) -> None:
-    """Build/refresh results cards from stored XBRL + screener. Final cards (XBRL, cross-checked) are left
-    alone; pending and unverified ones are re-checked every run (screener publishes hours after results)."""
-    stats = {"built": 0, "cross_checked": 0, "pending": 0, "mismatch": 0, "no_xbrl_yet": [], "final": 0}
+def step_results_build(run: Run, symbols: list[str], days: int = 45, s: NSESession | None = None,
+                       rebuild: bool = False) -> None:  # fmt: skip
+    """Build/refresh results cards from stored XBRL + screener. Final cards (XBRL, cross-checked or partial)
+    are left alone unless `rebuild`; pending and unverified ones are re-checked every run (screener publishes
+    hours after results)."""
+    stats = {"built": 0, "cross_checked": 0, "partial": 0, "pending": 0, "mismatch": 0, "no_xbrl_yet": [],
+             "final": 0}  # fmt: skip
     for ev in store.recent_results_events(run.conn, symbols, days):
         old = ev["detail"] or {}
-        if old.get("source_path") == "xbrl" and old.get("verification") == "cross_checked":
+        if not rebuild and old.get("source_path") == "xbrl" and old.get("verification") in ("cross_checked", "partial"):
             stats["final"] += 1
             continue
         sym, qe = ev["symbol"], date.fromisoformat(ev["period"]["end"]) if ev["period"] else None

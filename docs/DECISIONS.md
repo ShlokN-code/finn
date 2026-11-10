@@ -184,3 +184,25 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
 ## 2026-11-10 · Level-0 tags and one-liners
 - One cheap-model call per non-results, non-price event (≤ 25 per run): impact, ≤ 20-word reason with a verbatim quote, ≤ 10-word so-what, category facts as printed. Code checks the quote against the PDF text (unverified if absent), parses amounts (no unit → no figure), and decides rating up/down on a coded scale and pledge increase/decrease. Dividend/bonus/split chips come from NSE corporate actions with no model.
+
+## 2026-11-10 · Results: reconciling the XBRL layout with screener (first real run)
+- **Context:** the first `results` run (12 symbols, Q2 FY27) gave 4 ✓, 1 pending and 5 "Couldn't verify". None were extraction errors; each was a difference in where a line sits:
+  - SEBI's Ind AS XBRL tags `ProfitBeforeTax` *before* the share of associates/JVs and discontinued operations (DIXON, TATASTEEL, TRENT, JUBLFOOD).
+  - Screener counts a JV *loss* inside operating expenses (TRENT).
+  - HDFCBANK tagged minority interest under `ProfitLossOfMinorityInterest` in Q1 but as `ExceptionalItems` above PBT in Q2 and in the year-ago quarter, so its reported PAT mixes pre- and post-minority figures.
+  - BAJFINANCE tags `InterestEarned`, so it had been treated as a bank and lost its NII line.
+- **Decision:**
+  - **PBT on the card** = XBRL PBT + share of associates/JVs + discontinued ops before tax (the printed consolidated PBT).
+  - **Consolidated bank PAT** = PPOP − provisions − tax (+ share of associates), labelled "before minority interest", so every quarter is on the same basis.
+  - **Bank template** only when the banking format's own lines exist (interest expended or PPOP).
+  - **Cross-check reconciliations:** a figure that doesn't match screener directly may match through one documented reconciliation built only from sourced facts. The check note names it.
+    - PBT = PAT + tax.
+    - EBITDA + share of associates/JVs.
+    - PAT attributable to owners.
+  - **New state `partial`:** every comparable line agrees, but some line has no screener counterpart. Example: NBFC interest income and impairment, which make NII and PPOP unverifiable. The badge says "✓ Partly cross-checked" and the note names the lines. "✓ Cross-checked" now means every current figure is verified.
+- **Alternatives:**
+  - Widening tolerances: rejected; it would hide real errors.
+  - Showing reported bank PAT: rejected; its QoQ would be wrong whenever the bank moves the minority line.
+  - Defaulting banks to standalone: rejected; it contradicts the consolidated default.
+- **Why:** each fix makes the card match what's printed or comparable over time. A genuinely wrong number still fails, and the tests cover that.
+- **Known limit:** a consolidated bank's genuine exceptional item would be left out of PAT. The formula on tap says so.

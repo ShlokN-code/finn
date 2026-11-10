@@ -12,6 +12,7 @@ from datetime import date
 
 from finn.calendar import previous_quarter_end, quarter_period, year_ago_quarter_end
 from finn.extraction.results.compute import (
+    BANK_PAT_NOTE,
     EBITDA_NOTE,
     QuarterFacts,
     build_lines,
@@ -167,7 +168,8 @@ def build_from_quarters(
         verification=chk.verification if table_ok is not None or chk.verification == "mismatch" else "pending",
         verification_note=note, filing_url=filing_url, lines=chk.lines,
         margin_series=margin_series(table_ok) if template == "standard" else None,
-        ebitda_note=EBITDA_NOTE if template == "standard" else None,
+        ebitda_note=EBITDA_NOTE if template == "standard"
+        else BANK_PAT_NOTE if template == "bank" and basis == "consolidated" else None,
         trend_pat_yoy_pct=trend_pat_yoy(table_ok, quarter_end),
     )  # fmt: skip
     impact, pairs = impact_from_lines(template, chk.lines)

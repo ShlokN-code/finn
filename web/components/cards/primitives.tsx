@@ -20,11 +20,12 @@ export function ImpactTag({ impact, title }: { impact: Impact | null; title?: st
   );
 }
 
-export type Verification = "cross_checked" | "pending" | "mismatch";
+export type Verification = "cross_checked" | "partial" | "pending" | "mismatch";
 
 export function VerificationBadge({ state, note }: { state: Verification; note?: string | null }) {
   const map = {
     cross_checked: { text: "✓ Cross-checked", cls: "text-emerald-700 dark:text-emerald-300" },
+    partial: { text: "✓ Partly cross-checked", cls: "text-emerald-700 dark:text-emerald-300" },
     pending: { text: "Cross-check pending", cls: "text-amber-700 dark:text-amber-300" },
     mismatch: { text: "Couldn't verify — open filing", cls: "text-red-700 dark:text-red-300" },
   }[state];

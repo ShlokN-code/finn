@@ -38,6 +38,13 @@ ELEMENTS: dict[str, tuple[str, ...]] = {
     "pat": ("ProfitLossForPeriod", "ProfitLossForThePeriod", "NetProfitLossForThePeriod"),
     "pat_owners": ("ProfitOrLossAttributableToOwnersOfParent", "ProfitLossAttributableToOwnersOfParent"),
     "expenses": ("Expenses",),
+    # SEBI's Ind AS layout puts these after its ProfitBeforeTax element, so PBT adds them back.
+    "share_assoc": (
+        "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod",
+        "ShareOfProfitLossOfAssociates",
+    ),
+    "discontinued_pbt": ("ProfitLossFromDiscontinuedOperationsBeforeTax",),
+    "tax": ("TaxExpense",),
     # banks
     "interest_earned": ("InterestEarned",),
     "interest_expended": ("InterestExpended",),
@@ -56,6 +63,8 @@ LABELS = {
     "interest_expended": "Interest expended", "ppop": "Operating profit before provisions",
     "provisions": "Provisions and contingencies", "interest_income": "Interest income",
     "impairment": "Impairment on financial instruments", "expenses": "Total expenses",
+    "share_assoc": "Share of profit/(loss) of associates & JVs",
+    "discontinued_pbt": "Discontinued operations before tax", "tax": "Tax expense",
 }  # fmt: skip
 
 
@@ -115,12 +124,36 @@ def facts_from_xbrl(row: dict, quarter_end: date) -> QuarterFacts:
 
 
 def template_for(q: QuarterFacts, industry: str | None = None) -> str:
-    if q.get("interest_earned"):
+    """Bank = the banking format's own lines (interest expended, PPOP). Some NBFCs tag 'InterestEarned' too,
+    so that alone doesn't make a bank."""
+    if q.get("interest_expended") or q.get("ppop"):
         return "bank"
     ind = (industry or "").lower()
-    if q.get("impairment") or q.get("interest_income") and any(w in ind for w in ("finance", "nbfc", "financial")):
+    interest = q.get("interest_income") or q.get("interest_earned")
+    if q.get("impairment") or interest and any(w in ind for w in ("finance", "nbfc", "financial")):
         return "nbfc"
     return "standard"
+
+
+BANK_PAT_NOTE = (
+    "Consolidated bank PAT is shown before minority interest: PPOP − provisions − tax (+ share of associates). "
+    "Banks' XBRL places minority interest inconsistently between quarters (sometimes as an exceptional item), "
+    "so the reported 'profit for the period' isn't comparable quarter to quarter; this is."
+)
+
+
+def bank_pat_pre_minority(q: QuarterFacts) -> Figure | None:
+    ins = _inputs(q, ["ppop", "provisions", "tax"])
+    if not ins:
+        return _sourced("PAT", q, "pat")
+    v = ins[0].value - ins[1].value - ins[2].value
+    formula = "PPOP − provisions & contingencies − tax"
+    sa = _sourced(LABELS["share_assoc"], q, "share_assoc")
+    if sa is not None and abs(sa.value) >= 0.005:
+        v += sa.value
+        ins.append(sa)
+        formula += " + share of associates"
+    return _computed("PAT", v, "INR_CR", q, formula + " (before minority interest)", ins)
 
 
 # --- figures --------------------------------------------------------------------------------------------
@@ -155,8 +188,20 @@ def metric(name: str, q: QuarterFacts | None) -> Figure | None:
     if name == "Revenue":
         return _sourced("Revenue", q, "revenue")
     if name == "PBT":
-        return _sourced("PBT", q, "pbt")
+        # XBRL ProfitBeforeTax is before the share of associates/JVs and discontinued operations; the printed
+        # consolidated "Profit before tax" (and screener) include them.
+        base = _sourced(LABELS["pbt"], q, "pbt")
+        if base is None:
+            return None
+        extras = [f for k in ("share_assoc", "discontinued_pbt")
+                  if (f := _sourced(LABELS[k], q, k)) is not None and abs(f.value) >= 0.005]  # fmt: skip
+        if not extras:
+            return base.model_copy(update={"label": "PBT"})
+        formula = " + ".join([LABELS["pbt"]] + [e.label for e in extras])
+        return _computed("PBT", base.value + sum(e.value for e in extras), "INR_CR", q, formula, [base, *extras])
     if name == "PAT":
+        if q.basis == "consolidated" and q.get("interest_expended") and q.get("ppop"):
+            return bank_pat_pre_minority(q)
         return _sourced("PAT", q, "pat")
     if name == "PPOP" and q.get("ppop"):
         return _sourced("PPOP", q, "ppop")
@@ -180,12 +225,13 @@ def metric(name: str, q: QuarterFacts | None) -> Figure | None:
             return None
         return _computed("EBITDA margin", e.value / r.value * 100, "PCT", q, "EBITDA ÷ revenue × 100", [e, r])
     if name == "NII":
-        if q.get("interest_earned"):
+        if q.get("interest_expended"):
             ins = _inputs(q, ["interest_earned", "interest_expended"])
             formula = "Interest earned − interest expended"
         else:
-            ins = _inputs(q, ["interest_income", "finance_costs"])
-            formula = "Interest income − finance costs"
+            key = "interest_income" if q.get("interest_income") else "interest_earned"
+            ins = _inputs(q, [key, "finance_costs"])
+            formula = f"{LABELS[key]} − finance costs"
         if not ins:
             return None
         return _computed("NII", ins[0].value - ins[1].value, "INR_CR", q, formula, ins)

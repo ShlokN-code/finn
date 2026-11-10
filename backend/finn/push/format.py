@@ -11,7 +11,7 @@ from finn.format import figure_text
 from finn.models import Card
 
 IMPACT_DOT = {"positive": "🟢", "negative": "🔴", "mixed": "🟡", "neutral": "⚪"}
-VERIFY = {"cross_checked": "✓ Cross-checked", "pending": "Cross-check pending",
+VERIFY = {"cross_checked": "✓ Cross-checked", "partial": "✓ Partly cross-checked", "pending": "Cross-check pending",
           "mismatch": "⚠️ Couldn't verify — open filing"}  # fmt: skip
 
 

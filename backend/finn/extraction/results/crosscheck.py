@@ -1,7 +1,14 @@
 """Cross-check results lines against screener's quarterly table, plus sanity checks (trust layer §10.3).
 
-Outcomes: every checked value agrees → cross_checked; screener hasn't published the quarter → pending;
-any disagreement or failed sanity check → mismatch ("Couldn't verify — open filing", no numbers shown).
+Outcomes: every current figure agrees → cross_checked; all comparable ones agree but some line has no
+screener counterpart (NBFC interest income, impairment) → partial; screener hasn't published the quarter →
+pending; any disagreement or failed sanity check → mismatch ("Couldn't verify — open filing", no numbers).
+
+Screener derives some rows differently from the statement. A value that doesn't match directly may match
+through one documented reconciliation (each uses only sourced facts, and the check note names it):
+  PBT    = profit for the period + tax expense (screener's PBT; differs when there are discontinued ops)
+  EBITDA + share of associates/JVs (screener counts a JV loss inside operating expenses)
+  PAT    = profit attributable to owners
 """
 
 from __future__ import annotations
@@ -9,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 
-from finn.extraction.results.compute import QuarterFacts, metric, tolerance_cr
+from finn.extraction.results.compute import LABELS, QuarterFacts, metric, tolerance_cr
 from finn.models import Figure, ResultsLine
 from finn.numbers import approx_equal
 from finn.sources.screener import QuarterTable
@@ -43,6 +50,28 @@ def _screener_value(template: str, m: str, t: QuarterTable, qe: date) -> tuple[f
         if m == "PPOP":
             return _row(t, qe, "Profit before tax"), "Profit before tax (PPOP input)"
     return None, ""
+
+
+def _reconciliations(template: str, m: str, fig: Figure, q: QuarterFacts) -> list[tuple[float, float, str]]:
+    """(value, extra tolerance, name) alternatives for screener's way of deriving row `m`."""
+    out = []
+    pat, tax, share, own = q.get("pat"), q.get("tax"), q.get("share_assoc"), q.get("pat_owners")
+    if template != "bank" and m == "PBT" and pat and tax:
+        out.append((pat.value_cr + tax.value_cr, pat.half_unit_cr + tax.half_unit_cr, "profit for the period + tax"))
+    if m == "EBITDA" and share and abs(share.value_cr) >= 0.005:
+        out.append((fig.value + share.value_cr, share.half_unit_cr, "EBITDA + share of associates/JVs"))
+    if m == "PAT" and own:
+        out.append((own.value_cr, own.half_unit_cr, "profit attributable to owners"))
+    return out
+
+
+def _component(template: str, m: str) -> str | None:
+    """For lines screener can only check in part: the label of the input that its row verifies."""
+    if template == "nbfc" and m == "NII":
+        return LABELS["finance_costs"]
+    if template == "nbfc" and m == "PPOP":
+        return LABELS["pbt"]
+    return None
 
 
 def _ours(template: str, m: str, fig: Figure, q: QuarterFacts) -> tuple[float | None, Figure | None]:
@@ -95,11 +124,22 @@ def crosscheck(
                 continue
             tol = tolerance_cr(tol_fig, all_q) + (0.5 if "−" in rows else 0.0)
             ok = approx_equal(ours, theirs, abs_tol=tol, rel_tol=0.001)
-            if not ok and line.metric == "PAT":  # screener may show the owners' share
-                own = q.get("pat_owners")
-                ok = own is not None and approx_equal(own.value_cr, theirs, abs_tol=tol, rel_tol=0.001)
             note = f"screener {rows} {q.quarter_end:%b %Y}: {theirs:,.0f} (ours {ours:,.2f}, tolerance {tol:.1f})"
-            upd[slot] = _mark(fig, "verified" if ok else "unverified", note)
+            if not ok:
+                for alt, extra, name in _reconciliations(template, line.metric, fig, q):
+                    if approx_equal(alt, theirs, abs_tol=tol + extra, rel_tol=0.001):
+                        ok = True
+                        note += f"; matches as {name} = {alt:,.2f}"
+                        break
+            comp = _component(template, line.metric)
+            if comp and fig.inputs:
+                ins = [_mark(i, "verified" if ok else "unverified", note) if i.label == comp else i
+                       for i in fig.inputs]  # fmt: skip
+                whole = all(i.status == "verified" for i in ins)
+                upd[slot] = fig.model_copy(update={"inputs": ins, "status": "verified" if whole else "unverified",
+                                                   "check_note": note})  # fmt: skip
+            else:
+                upd[slot] = _mark(fig, "verified" if ok else "unverified", note)
             if not ok:
                 problems.append(f"{line.metric} {q.quarter_end:%b %Y}: {note}")
                 if slot == "current":
@@ -112,6 +152,10 @@ def crosscheck(
         return CheckResult("mismatch", "; ".join(problems)[:900], out)
     if pending:
         return CheckResult("pending", "screener has not published this quarter yet; re-checked each run", out)
+    unchecked = [ln.metric for ln in out if ln.current is not None and ln.current.status != "verified"]
+    if unchecked:
+        return CheckResult("partial", f"Not checkable against screener (shown from the filing): "
+                           f"{', '.join(unchecked)}", out)  # fmt: skip
     return CheckResult("cross_checked", None, out)
 
 
