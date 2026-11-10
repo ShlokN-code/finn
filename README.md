@@ -100,12 +100,14 @@ It picks the newest transcript for this repo in `~/.claude/projects/`, keeps mes
 
 ## Evals
 
-**Announcement classification** (`backend/evals/classification/`, 60 real NSE filings from the demo portfolio, Aug–Nov 2026; labels written by Claude, pending human review):
+**Announcement classification** (`backend/evals/classification/`, 60 real NSE filings from the demo portfolio, Aug–Nov 2026; labels written by Claude and reviewed by the product owner, uncertain ones checked against the filing PDF):
 
 | Mode | Accuracy on decided | Coverage | Overall |
 |---|---|---|---|
-| Rules only (exchange label + regex) | 96.5 % (55/57) | 95 % | 91.7 % |
-| Full ladder (+ Gemini Flash-Lite for the 3 leftovers) | 96.7 % (58/60) | 100 % | 96.7 % |
+| Rules only (exchange label + regex) | 94.7 % (54/57) | 95 % | 90.0 % |
+| Full ladder (+ Gemini Flash-Lite for the 3 leftovers) | 95.0 % (57/60) | 100 % | 95.0 % |
+
+The 3 misses: two newspaper ads whose subject says nothing (a results ad and the Jio Platforms IPO ad; only the PDF tells) and one results press release titled without the word "results". Caveat: the rules were written from the same three months of filings, so this is optimistic; a held-out set comes next. Run with `python -m evals.classification.run [--model]` from `backend/`.
 
 Live tier split on the first backfill (824 portfolio filings, Jul–Nov 2026): 34 % exchange label · 52 % rules · 13 % model · 0 % failed after one retry pass (13 Gemini 503s on the first pass).
 
