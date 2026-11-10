@@ -269,7 +269,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
   Evaluators can't rely on that. GitHub also disables scheduled workflows on public repos after 60 days without commits.
 - **Decision (approved by the product owner 10 Nov 2026; accounts set up by them):**
-  - **Keepalive:** cron-job.org (free) pings `GET /health/db` every 10 min. That wakes Render and queries Supabase.
+  - **Keepalive:** cron-job.org (free) pings `GET /ping` every 10 min. That wakes Render and runs `SELECT 1` on Supabase. *Update 11 Nov:* `/health/db` failed cron-job.org's test ("output too large"): the edge Brotli-compresses and chunk-streams it, and `HEAD` returned 405. `/ping` returns plain `ok` with `Content-Length: 2`, `Cache-Control: no-transform` (no edge compression) and GET+HEAD.
   - **Ingest:** cron-job.org calls GitHub's `workflow_dispatch` API for three jobs, all in Asia/Kolkata:
     - filings: every 30 min, 08:00–22:30, Mon–Fri;
     - daily: 16:30, Mon–Fri;

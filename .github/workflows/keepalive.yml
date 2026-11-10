@@ -1,5 +1,5 @@
 # Keeps the free tiers awake: Render sleeps after ~15 min idle; Supabase pauses after 7 days idle.
-# Primary: cron-job.org pings /health/db every 10 min (docs/DEPLOY.md §6). This GitHub cron is the backup —
+# Primary: cron-job.org pings /ping every 10 min (docs/DEPLOY.md §6). This GitHub cron is the backup —
 # it fires far less often than scheduled.
 # Set repository variable API_BASE_URL (Settings → Secrets and variables → Actions → Variables).
 name: keepalive

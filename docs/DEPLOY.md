@@ -96,7 +96,7 @@ GitHub's cron fires too rarely to rely on (10 Nov 2026: keepalive ran 3 times in
 in ~6 h). cron-job.org (free) triggers everything instead; the GitHub cron entries stay as a backup, and a slot that
 already ran is skipped (`backend/finn/ingest/schedule.py`), so the two never double the work.
 
-Four jobs: **keepalive** (pings the API + DB), **filings** (every 30 min), **daily** (post-close), **alerts** (07:00).
+Four jobs: **keepalive** (`/ping`: API + DB), **filings** (every 30 min), **daily** (post-close), **alerts** (07:00).
 
 ### 6a. GitHub token (fine-grained, this repo, Actions only)
 
@@ -136,14 +136,18 @@ zone, request method, headers, body, timeout); exact labels may differ slightly.
 | Field | Value |
 |---|---|
 | Title | `FINN keepalive` |
-| URL | `https://finn-api-4ejm.onrender.com/health/db` |
+| URL | `https://finn-api-4ejm.onrender.com/ping` |
 | Enable job | on |
 | Execution schedule | **Every 10 minutes** |
-| Advanced → Request method | `GET` |
+| Advanced → Request method | `GET` (or `HEAD`) |
 | Advanced → Timeout | the maximum offered (a cold Render start takes ~50 s; the ping still wakes it) |
 
-`/health/db` wakes Render *and* runs a query on Supabase, so one ping covers both free tiers. **Test run** at the
-bottom → expect HTTP 200. **Save**.
+`/ping` wakes Render *and* runs `SELECT 1` on Supabase, so one ping covers both free tiers. It replies with the
+2-byte plain text `ok` (`Content-Length: 2`, never compressed); a database problem returns HTTP 503 `db down`.
+**Test run** at the bottom → expect HTTP 200 and `ok`. **Save**.
+
+Don't use `/health/db` here: Render's Cloudflare edge Brotli-compresses and chunk-streams that JSON for clients that
+accept `br`, which cron-job.org rejects as "output too large" (and `HEAD` on it returns 405).
 
 ### 6d. Jobs 2–4 — ingest dispatches
 
