@@ -48,6 +48,7 @@ def main() -> None:
         run.step("deals", p.step_deals, s, symbols, today - timedelta(days=min(days, 30)), today)
         run.step("classify", p.step_classify, s, symbols)
         run.step("thread", p.step_thread, symbols)
+        run.step("results_fetch", p.step_results_fetch, s, symbols)
 
 
 if __name__ == "__main__":

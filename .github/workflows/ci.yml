@@ -22,7 +22,7 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: backend/pyproject.toml
-      - run: pip install ".[api,dev]"
+      - run: pip install ".[api,jobs,dev]"
       - run: ruff check .
       - run: ruff format --check .
       - run: pytest -q
