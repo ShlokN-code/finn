@@ -32,6 +32,7 @@ export type Category =
   | "agm_egm"
   | "postal_ballot"
   | "investor_meetings"
+  | "routine"
   | "unclassified";
 /**
  * Level-0 relevance: effect on the company's business — not a stock call.
@@ -408,7 +409,14 @@ export interface Filing {
    */
   category: Category | null;
   category_confidence: number | null;
-  category_source: ("rule" | "model") | null;
+  /**
+   * Model id when category_source == 'model'
+   */
+  category_model: string | null;
+  /**
+   * Classification ladder tier: exchange's own label → keyword rules → cheap model. Null with category 'unclassified' means every tier failed.
+   */
+  category_source: ("exchange" | "rule" | "model") | null;
   /**
    * Filing.id of the same document on the other exchange
    */
@@ -423,6 +431,10 @@ export interface Filing {
    * NSE seq_id / BSE NEWSID
    */
   exchange_id: string;
+  /**
+   * When FINN fetched it (UTC) — freshness
+   */
+  fetched_at: string | null;
   /**
    * Exchange dissemination time (UTC)
    */

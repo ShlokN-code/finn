@@ -136,7 +136,8 @@ class Category(StrEnum):
     agm_egm = "agm_egm"
     postal_ballot = "postal_ballot"
     investor_meetings = "investor_meetings"
-    unclassified = "unclassified"
+    routine = "routine"  # known-boring compliance filings; always hidden, grouped by Filing.hidden_reason
+    unclassified = "unclassified"  # nothing (exchange label, rules, model) could classify it
 
 
 class Impact(StrEnum):

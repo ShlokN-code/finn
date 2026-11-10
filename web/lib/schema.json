@@ -362,6 +362,7 @@
         "agm_egm",
         "postal_ballot",
         "investor_meetings",
+        "routine",
         "unclassified"
       ],
       "title": "Category",
@@ -1093,10 +1094,24 @@
           "default": null,
           "title": "Category Confidence"
         },
+        "category_model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Model id when category_source == 'model'",
+          "title": "Category Model"
+        },
         "category_source": {
           "anyOf": [
             {
               "enum": [
+                "exchange",
                 "rule",
                 "model"
               ],
@@ -1107,6 +1122,7 @@
             }
           ],
           "default": null,
+          "description": "Classification ladder tier: exchange's own label \u2192 keyword rules \u2192 cheap model. Null with category 'unclassified' means every tier failed.",
           "title": "Category Source"
         },
         "duplicate_of": {
@@ -1151,6 +1167,20 @@
           "description": "NSE seq_id / BSE NEWSID",
           "title": "Exchange Id",
           "type": "string"
+        },
+        "fetched_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When FINN fetched it (UTC) \u2014 freshness",
+          "title": "Fetched At"
         },
         "filed_at": {
           "description": "Exchange dissemination time (UTC)",
@@ -1236,11 +1266,13 @@
         "xbrl_url",
         "category",
         "category_source",
+        "category_model",
         "category_confidence",
         "stage",
         "hidden_reason",
         "duplicate_of",
-        "event_id"
+        "event_id",
+        "fetched_at"
       ],
       "title": "Filing",
       "type": "object"

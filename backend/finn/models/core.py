@@ -55,12 +55,18 @@ class Filing(Model):
     attachment_url: str | None = None
     xbrl_url: str | None = None
     category: Category | None = Field(None, description="FINN category; null until classified")
-    category_source: Literal["rule", "model"] | None = None
+    category_source: Literal["exchange", "rule", "model"] | None = Field(
+        None,
+        description="Classification ladder tier: exchange's own label → keyword rules → cheap model. "
+        "Null with category 'unclassified' means every tier failed.",
+    )
+    category_model: str | None = Field(None, description="Model id when category_source == 'model'")
     category_confidence: float | None = Field(None, ge=0, le=1)
     stage: EventStage | None = None
     hidden_reason: str | None = Field(None, description="Set when routine, e.g. 'Trading-window notice'")
     duplicate_of: str | None = Field(None, description="Filing.id of the same document on the other exchange")
     event_id: str | None = None
+    fetched_at: AwareDatetime | None = Field(None, description="When FINN fetched it (UTC) — freshness")
 
 
 class TimelineItem(Model):
