@@ -78,3 +78,40 @@ def test_dividend_chip_from_corporate_actions():
              "ratio_held": None}]  # fmt: skip
     chip = chip_for(ev, acts, FILING)
     assert chip.text == "₹8 dividend · record 21 Nov" and chip.amount.value == 8
+
+
+def test_web_enrichment_skips_what_the_filing_says_and_unquotable_items(monkeypatch):
+    # IDEA, Oct 2026: the only web item was the filing's own degrees, restated by a news article
+    det = mg.build_detail({"people": [{"name": "Manoj Murali", "role": "Chief Operating Officer",
+        "change": "appointed", "qualifications": [
+            {"text": "Master of Business Administration from SIBM Pune",
+             "quote": "Mr. Murali holds a Master of Business Administration from SIBM Pune"}]}]},
+        {"symbol": "IDEA"}, FILING, "Mr. Murali holds a Master of Business Administration from SIBM Pune", [],
+        "Vodafone Idea Limited")  # fmt: skip
+    snippet = ("He holds an MBA from Symbiosis Institute of Business Management (SIBM), Pune. Earlier he was "
+               "Vice President, Sales at Vodafone Essar from 2008 to 2012.")  # fmt: skip
+    monkeypatch.setattr(mg.tavily, "available", lambda: True)
+    monkeypatch.setattr(mg.tavily, "search", lambda q, max_results=5: [
+        {"title": "Profile", "url": "https://example.com/p", "content": snippet}])  # fmt: skip
+    items = [
+        {"kind": "qualification", "text": "MBA from Symbiosis Institute of Business Management (SIBM), Pune",
+         "snippet": 0, "quote": "He holds an MBA from Symbiosis Institute of Business Management (SIBM), Pune"},
+        {"kind": "role", "company": "Vodafone Essar", "role": "Vice President, Sales", "period": "2008 to 2012",
+         "snippet": 0, "quote": "Earlier he was Vice President, Sales at Vodafone Essar from 2008 to 2012"},
+        {"kind": "role", "company": "Nokia", "snippet": 0, "quote": "He led Nokia India"},  # not in the snippet
+    ]  # fmt: skip
+    prompts = []
+
+    class Router:
+        def run(self, tier, req):
+            prompts.append(req.prompt)
+            return type("R", (), {"data": {"items": items}})()
+
+    out = mg.enrich(Router(), det, "Vodafone Idea Limited")
+    p = out.people[0]
+    assert "Already known" in prompts[0] and "SIBM Pune" in prompts[0]
+    assert len(p.qualifications) == 1  # the restated degree is not added again
+    assert [(r.company, r.source, r.start_year, r.end_year) for r in p.prior_roles] == [
+        ("Vodafone Essar", "web", 2008, 2012)]  # fmt: skip
+    assert p.prior_roles[0].citation.url == "https://example.com/p"
+    assert out.web_enrichment == "done"

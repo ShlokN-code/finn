@@ -462,12 +462,12 @@ def upsert_synthetic_event(conn, event: Event) -> None:
 
 def events_to_tag(conn, symbols: list[str], days: int, limit: int) -> list[dict]:
     """Non-results, non-price events without Level-0 output yet (or whose model call failed), newest first;
-    plus management cards still waiting for web enrichment."""
+    plus management cards whose profile failed (no detail yet) or is still waiting for web enrichment."""
     return conn.execute(
         "select id, symbol, category, title, started_at, updated_at, timeline, detail, impact_tier from public.events "
         "where symbol = any(%s) and updated_at > now() - make_interval(days => %s) and category not in "
         "('results', 'price_volume') and (impact_tier is null or impact_tier = 'failed' or "
-        "(category = 'management_change' and detail->>'web_enrichment' = 'unavailable')) "
+        "(category = 'management_change' and (detail is null or detail->>'web_enrichment' = 'unavailable'))) "
         "order by updated_at desc limit %s",
         (symbols, days, limit),
     ).fetchall()

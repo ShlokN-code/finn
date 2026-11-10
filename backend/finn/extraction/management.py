@@ -52,7 +52,8 @@ SCHEMA = {"type": "object", "properties": {"people": {"type": "array", "items": 
 WEB_SYSTEM = (
     "You extract a person's prior roles and qualifications from web search snippets. Use ONLY the snippets. "
     "Each item must cite the snippet number it came from and a verbatim quote from that snippet (≤ 30 words). "
-    "Ignore snippets about a different person with the same name. Return nothing you cannot quote."
+    "Ignore snippets about a different person with the same name. Return nothing you cannot quote. Skip "
+    "anything the filing already states (listed under 'Already known'): only new roles or qualifications."
 )
 WEB_SCHEMA = {
     "type": "object",
@@ -73,6 +74,19 @@ def company_key(name: str) -> str:
 def same_company(a: str, b: str) -> bool:
     ka, kb = company_key(a), company_key(b)
     return bool(ka and kb) and (ka in kb or kb in ka)
+
+
+_QWORDS = re.compile(r"[a-z]{3,}")
+_QSTOP = {"from", "the", "and", "degree", "holds", "bachelor", "master", "university", "institute", "college",
+          "with", "his", "her", "has", "also", "school", "management", "business", "administration"}  # fmt: skip
+
+
+def same_qualification(a: str, b: str) -> bool:
+    """Same qualification restated (e.g. 'MBA from SIBM Pune' vs 'MBA from Symbiosis … (SIBM), Pune'): the
+    distinctive words of the shorter one (institution, place) all appear in the longer one."""
+    wa, wb = (set(_QWORDS.findall(x.lower())) - _QSTOP for x in (a, b))
+    short, long_ = (wa, wb) if len(wa) <= len(wb) else (wb, wa)
+    return bool(short) and short <= long_
 
 
 def years(period: str | None) -> tuple[int | None, int | None]:
@@ -190,8 +204,12 @@ def enrich(router: Router, detail: ManagementDetail, company: str) -> Management
             body = "\n\n".join(
                 f"[{i}] {s['title']} — {s['url']}\n{s['content'][:1200]}" for i, s in enumerate(snippets)
             )
-            req = LLMRequest(purpose="management_web", system=WEB_SYSTEM,
-                             prompt=f"Person: {p.name}, {p.role} at {company}\n\nSnippets:\n{body}",
+            known = [f"role: {r.role or ''} at {r.company}" for r in p.prior_roles] + [
+                f"qualification: {q.text}" for q in p.qualifications
+            ]
+            prompt = (f"Person: {p.name}, {p.role} at {company}\n\nAlready known (from the filing):\n"
+                      + ("\n".join(known) or "(nothing)") + f"\n\nSnippets:\n{body}")  # fmt: skip
+            req = LLMRequest(purpose="management_web", system=WEB_SYSTEM, prompt=prompt,
                              schema=WEB_SCHEMA, max_output_tokens=800)  # fmt: skip
             items = router.run("cheap", req).data.get("items") or []
             roles, quals = list(p.prior_roles), list(p.qualifications)
@@ -212,6 +230,8 @@ def enrich(router: Router, detail: ManagementDetail, company: str) -> Management
                                            end_year=e, source="web", citation=c))  # fmt: skip
                     found += 1
                 elif it["kind"] == "qualification" and it.get("text"):
+                    if any(same_qualification(q.text, it["text"]) for q in quals):
+                        continue  # the filing already says it
                     quals.append(Claim(text=it["text"][:160], status="unverified", citations=[c]))
                     found += 1
             ins, why = insider(
