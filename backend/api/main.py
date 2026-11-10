@@ -2,6 +2,7 @@
 
 GET /health     — liveness (no DB), used by keep-alive pings.
 GET /health/db  — reads one row from Supabase Postgres to prove web → API → DB.
+GET|HEAD /ping  — keepalive: SELECT 1 on Supabase, plain-text 'ok', never compressed (cron-job.org).
 GET /health/sources — can this server reach NSE/BSE/screener? (cached 15 min)
 """
 
@@ -14,7 +15,7 @@ import time
 import psycopg
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 from api.diagnostics import get_probes
 from api.push import router as push_router
@@ -63,6 +64,26 @@ def health_db():
         "row": {"id": row[0], "message": row[1], "created_at": row[2].isoformat()},
         "db_ms": ms,
     }
+
+
+# Keepalive for uptime pingers (cron-job.org): the smallest possible reply. Render's Cloudflare edge Brotli-
+# compresses and chunk-streams normal responses for clients that accept it, which strict pingers reject
+# ("output too large"); `no-transform` stops edge compression and Content-Length is explicit. HEAD works too.
+_PING_HEADERS = {"Cache-Control": "no-store, no-transform", "Content-Encoding": "identity"}
+
+
+@app.api_route("/ping", methods=["GET", "HEAD"], include_in_schema=False)
+def ping() -> PlainTextResponse:
+    dsn = os.environ.get("DATABASE_URL")
+    if not dsn:
+        return PlainTextResponse("no db", status_code=503, headers=_PING_HEADERS)
+    try:
+        with psycopg.connect(dsn, connect_timeout=10) as conn:
+            conn.execute("select 1").fetchone()
+    except psycopg.Error:
+        log.exception("ping: DB check failed")
+        return PlainTextResponse("db down", status_code=503, headers=_PING_HEADERS)
+    return PlainTextResponse("ok", headers=_PING_HEADERS)
 
 
 @app.get("/health/sources")
