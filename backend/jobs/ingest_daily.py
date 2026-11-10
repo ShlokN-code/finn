@@ -53,7 +53,7 @@ def main() -> None:
         run.step("classify", p.step_classify, s, symbols)
         run.step("thread", p.step_thread, symbols)
         run.step("results_fetch", p.step_results_fetch, s, symbols)
-        run.step("results_build", p.step_results_build, symbols)
+        run.step("results_build", p.step_results_build, symbols, s=s)
         run.step("tag", p.step_tag, s, symbols)
         if is_trading_day(today) and not args.skip_prices:
             settings = [subs.settings_of(x) for x in subs.all_subscriptions(conn)]

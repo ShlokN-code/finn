@@ -26,10 +26,10 @@ def main() -> None:
     with connect() as conn, p.Run("results", conn) as run:
         symbols = tracked_symbols(args.symbols or None, conn)
         run.stats["symbols"] = symbols
-        if not args.no_fetch:
-            s = nse.session()
+        s = None if args.no_fetch else nse.session()
+        if s is not None:
             run.step("results_fetch", p.step_results_fetch, s, symbols, args.days)
-        run.step("results_build", p.step_results_build, symbols, args.days)
+        run.step("results_build", p.step_results_build, symbols, args.days, s=s)
 
 
 if __name__ == "__main__":

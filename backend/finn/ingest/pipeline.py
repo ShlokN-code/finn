@@ -288,7 +288,35 @@ def step_results_fetch(run: Run, s: NSESession, symbols: list[str], days: int = 
     run.stats["results_fetch"] = stats
 
 
-def step_results_build(run: Run, symbols: list[str], days: int = 45) -> None:
+def _results_from_pdf(run: Run, s: NSESession, url: str, qe: date, ev: dict, stats: dict):
+    """XBRL not filed yet: the results PDF's table (text layer), else the multimodal model (scanned)."""
+    from finn.citations import pdf_text
+    from finn.classification.ladder import first_pages
+    from finn.extraction.results import pdf_model, pdf_table
+
+    raw = fetch_capped(s, url, max_bytes=MAX_PDF_BYTES, deadline_s=60)
+    if not raw or not raw.startswith(b"%PDF"):
+        return None, None
+    filed = next((datetime.fromisoformat(t["at"]) for t in ev["timeline"] if t["stage"] == "outcome"), None)
+    _, pages = pdf_text(raw, max_pages=12)
+    if any(p.strip() for p in pages):
+        got = pdf_table.quarters_from_pdf(pages, qe, url, filed)
+        if got:
+            stats.setdefault("pdf_table", 0)
+            stats["pdf_table"] += 1
+            return got, "pdf_table"
+    router = Router.default(PostgresLLMLog(run.conn))
+    if not router.providers:
+        return None, None
+    got = pdf_model.quarters_from_model(router, first_pages(raw, 6) or raw, qe, url, filed)
+    if got:
+        stats.setdefault("pdf_model", 0)
+        stats["pdf_model"] += 1
+        return got, "pdf_model"
+    return None, None
+
+
+def step_results_build(run: Run, symbols: list[str], days: int = 45, s: NSESession | None = None) -> None:
     """Build/refresh results cards from stored XBRL + screener. Final cards (XBRL, cross-checked) are left
     alone; pending and unverified ones are re-checked every run (screener publishes hours after results)."""
     stats = {"built": 0, "cross_checked": 0, "pending": 0, "mismatch": 0, "no_xbrl_yet": [], "final": 0}
@@ -303,9 +331,14 @@ def step_results_build(run: Run, symbols: list[str], days: int = 45) -> None:
         outcome_ids = [t["filing_id"] for t in ev["timeline"] if t["stage"] == "outcome"]
         filing_url = next((u for u in store.filing_urls(run.conn, outcome_ids).values() if u), None)
         got = results_build.quarters_from_xbrl(store.results_filings(run.conn, sym), qe)
+        source_path = "xbrl"
         if got is None:
             stats["no_xbrl_yet"].append(f"{sym} {qe}")
-            continue  # PDF fallback runs on Actions only (NSE archive PDFs)
+            if s is None or not filing_url:
+                continue  # the PDF lives on NSE archives: Actions only
+            got, source_path = _results_from_pdf(run, s, filing_url, qe, ev, stats)
+            if got is None:
+                continue
         basis, quarters = got
         template = compute.template_for(quarters["current"], store.symbol_industry(run.conn, sym))
         try:
@@ -313,7 +346,7 @@ def step_results_build(run: Run, symbols: list[str], days: int = 45) -> None:
         except Exception as err:  # screener down → pending, retried next run (rule 7)
             run.fail("results_build", sym, f"screener: {err}")
             table = None
-        b = results_build.build_from_quarters(template, basis, qe, quarters, table, "xbrl", filing_url)
+        b = results_build.build_from_quarters(template, basis, qe, quarters, table, source_path, filing_url)
         store.save_event_detail(
             run.conn, ev["id"], b.detail.model_dump(mode="json"), b.so_what, b.impact,
             b.impact_reason.model_dump(mode="json") if b.impact_reason else None, "code",
