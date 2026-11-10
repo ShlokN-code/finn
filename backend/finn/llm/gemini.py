@@ -20,6 +20,10 @@ from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, T
 BASE = "https://generativelanguage.googleapis.com/v1beta"
 DEFAULT_CHEAP = "gemini-3.5-flash-lite"
 DEFAULT_STRONG = "gemini-3.8-flash"
+# Strong fallbacks, each with its own free daily quota (never Flash-Lite: product owner, 11 Nov 2026).
+# gemini-2.5-flash was also approved but returns 404 "no longer available to new users" on this key (11 Nov).
+# Flash-Lite rejects thinkingBudget=0 (HTTP 400): leave thinking_budget unset for the cheap tier.
+DEFAULT_STRONG_FALLBACKS = "gemini-3-flash-preview"
 # Paid-tier list prices (USD / 1M tokens) — used only for the cost estimate in the log; free tier bills nothing.
 PRICES = {"flash-lite": (0.30, 2.50), "flash": (0.75, 3.75)}
 
@@ -38,6 +42,15 @@ class Gemini:
             return os.environ.get("GEMINI_MODEL_CHEAP") or DEFAULT_CHEAP
         return os.environ.get("GEMINI_MODEL_STRONG") or DEFAULT_STRONG
 
+    def models_for(self, tier: Tier) -> list[str]:
+        """The tier's chain: cheap = [Flash-Lite]; strong = GEMINI_MODEL_STRONG then GEMINI_MODEL_STRONG_FALLBACKS."""
+        first = self.model_for(tier)
+        if tier == "cheap":
+            return [first] if first else []
+        rest = os.environ.get("GEMINI_MODEL_STRONG_FALLBACKS", DEFAULT_STRONG_FALLBACKS)
+        chain = [first, *[m.strip() for m in rest.split(",") if m.strip()]]
+        return [m for i, m in enumerate(chain) if m and "lite" not in m and m not in chain[:i]]
+
     def supports_pdf(self) -> bool:
         return True
 
@@ -48,16 +61,19 @@ class Gemini:
         parts: list[dict] = []
         if req.pdf:
             parts.append({"inline_data": {"mime_type": "application/pdf", "data": base64.b64encode(req.pdf).decode()}})
-        parts.append({"text": req.prompt})
+        parts.append({"text": req.full_prompt()})
+        config = {
+            "temperature": 0,
+            "maxOutputTokens": req.max_output_tokens,
+            "responseMimeType": "application/json",
+            "responseSchema": req.schema,
+        }
+        if req.thinking_budget is not None:
+            config["thinkingConfig"] = {"thinkingBudget": req.thinking_budget}
         body = {
             "system_instruction": {"parts": [{"text": req.system}]},
             "contents": [{"role": "user", "parts": parts}],
-            "generationConfig": {
-                "temperature": 0,
-                "maxOutputTokens": req.max_output_tokens,
-                "responseMimeType": "application/json",
-                "responseSchema": req.schema,
-            },
+            "generationConfig": config,
         }
         t0 = time.perf_counter()
         try:
@@ -65,7 +81,7 @@ class Gemini:
                 f"{BASE}/models/{model}:generateContent",
                 headers={"x-goog-api-key": self.api_key or "", "Content-Type": "application/json"},
                 json=body,
-                timeout=60,
+                timeout=req.timeout_s,
             )
         except requests.RequestException as e:
             raise TransientError(f"gemini network error: {type(e).__name__}") from e
@@ -77,6 +93,9 @@ class Gemini:
         if not r.ok:
             raise ProviderError(f"gemini HTTP {r.status_code}: {_short(r.text)}")
         payload = r.json()
+        finish = ((payload.get("candidates") or [{}])[0]).get("finishReason")
+        if finish == "MAX_TOKENS":  # cut-off JSON — never parse a partial answer
+            raise ProviderError(f"gemini output truncated at {req.max_output_tokens} tokens")
         try:
             text = "".join(p.get("text", "") for p in payload["candidates"][0]["content"]["parts"])
             data = json.loads(text)

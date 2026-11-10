@@ -22,7 +22,13 @@ class LLMRequest:
     schema: dict  # JSON schema of the expected object (OpenAPI-subset: type/properties/enum/required)
     pdf: bytes | None = None  # sent natively where supported; text-only providers skip requests that need it
     pdf_required: bool = False
-    max_output_tokens: int = 512
+    max_output_tokens: int = 512  # up to 8192 (research MAP); thinking tokens count against it on Gemini 3.x
+    # Long text (a transcript) sent after the prompt. Only its sha256 is logged and hashed into the cache key,
+    # so llm_calls never duplicates document text that research_doc_text already stores.
+    document_text: str | None = None
+    tags: dict = field(default_factory=dict)  # e.g. {"symbol": "INFY", "job_id": 12} — logged, not in the cache key
+    timeout_s: float = 60
+    thinking_budget: int | None = None  # Gemini thinkingConfig.thinkingBudget (0 = off); None = model default
 
     def content_hash(self, model: str) -> str:
         h = hashlib.sha256()
@@ -31,7 +37,23 @@ class LLMRequest:
             h.update(b"\x00")
         if self.pdf:
             h.update(hashlib.sha256(self.pdf).digest())
+        if self.document_text:
+            h.update(b"doc:" + self.document_sha().encode())
         return h.hexdigest()
+
+    def document_sha(self) -> str | None:
+        return hashlib.sha256(self.document_text.encode()).hexdigest() if self.document_text else None
+
+    def full_prompt(self) -> str:
+        """Prompt as sent: the instructions, then the document (if any) in a fenced block."""
+        if not self.document_text:
+            return self.prompt
+        return f"{self.prompt}\n\n<document>\n{self.document_text}\n</document>"
+
+    def est_tokens(self) -> int:
+        """Rough input + output token estimate (≈3.5 chars/token for English filings) for TPM budgeting."""
+        chars = len(self.system) + len(self.prompt) + len(self.document_text or "")
+        return int(chars / 3.5) + (258 * 20 if self.pdf else 0) + self.max_output_tokens
 
 
 @dataclass
@@ -68,6 +90,10 @@ class Provider(Protocol):
     name: str
 
     def model_for(self, tier: Tier) -> str | None: ...
+
+    # Optional: an ordered fallback chain for the tier (Gemini strong: 3.8 Flash → 3 Flash → 2.5 Flash).
+    # Providers without it serve [model_for(tier)].
+    # def models_for(self, tier: Tier) -> list[str]: ...
 
     def supports_pdf(self) -> bool: ...
 

@@ -42,7 +42,7 @@ class Groq:
             "response_format": {"type": "json_object"},
             "messages": [
                 {"role": "system", "content": f"{req.system}\nReply with one JSON object matching: {schema_hint}"},
-                {"role": "user", "content": req.prompt},
+                {"role": "user", "content": req.full_prompt()},
             ],
         }
         t0 = time.perf_counter()
@@ -51,7 +51,7 @@ class Groq:
                 f"{BASE}/chat/completions",
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 json=body,
-                timeout=60,
+                timeout=req.timeout_s,
             )
         except requests.RequestException as e:
             raise TransientError(f"groq network error: {type(e).__name__}") from e

@@ -194,7 +194,7 @@ Dossier builds run in a background thread inside the API process, so Render need
    | `GEMINI_API_KEY` | same as the GitHub secret |
    | `GEMINI_MODEL_CHEAP` | `gemini-3.5-flash-lite` |
    | `GEMINI_MODEL_STRONG` | `gemini-3.8-flash` |
-   | `GEMINI_MODEL_STRONG_FALLBACKS` | the Gemini 3 Flash and 2.5 Flash ids, comma-separated (`python -m finn.llm.check` lists them) |
+   | `GEMINI_MODEL_STRONG_FALLBACKS` | `gemini-3-flash-preview` (comma-separated chain; `gemini-2.5-flash` returns 404 for this key) |
    | `GROQ_API_KEY` | same as the GitHub secret (Ask fallback only) |
 3. **Save, rebuild and deploy**. Check: `https://<render-url>/research/POLYCAB` returns JSON with `"symbol": "POLYCAB"`.
 
