@@ -80,27 +80,45 @@ def test_dividend_chip_from_corporate_actions():
     assert chip.text == "₹8 dividend · record 21 Nov" and chip.amount.value == 8
 
 
-def test_web_enrichment_skips_what_the_filing_says_and_unquotable_items(monkeypatch):
-    # IDEA, Oct 2026: the only web item was the filing's own degrees, restated by a news article
+def test_web_enrichment_keeps_only_new_facts_ranked_and_labelled(monkeypatch):
+    # IDEA, Oct 2026: a news article restated the filing's degrees; that must not come back as a web fact
     det = mg.build_detail({"people": [{"name": "Manoj Murali", "role": "Chief Operating Officer",
-        "change": "appointed", "qualifications": [
-            {"text": "Master of Business Administration from SIBM Pune",
-             "quote": "Mr. Murali holds a Master of Business Administration from SIBM Pune"}]}]},
-        {"symbol": "IDEA"}, FILING, "Mr. Murali holds a Master of Business Administration from SIBM Pune", [],
-        "Vodafone Idea Limited")  # fmt: skip
-    snippet = ("He holds an MBA from Symbiosis Institute of Business Management (SIBM), Pune. Earlier he was "
-               "Vice President, Sales at Vodafone Essar from 2008 to 2012.")  # fmt: skip
+        "change": "appointed",
+        "prior_roles": [{"company": "Bharti Airtel", "quote": "has earlier worked with Bharti Airtel"}],
+        "qualifications": [{"text": "Master of Business Administration from SIBM Pune",
+                            "quote": "Mr. Murali holds a Master of Business Administration from SIBM Pune"}]}]},
+        {"symbol": "IDEA"}, FILING,
+        "Mr. Murali has earlier worked with Bharti Airtel. Mr. Murali holds a Master of Business Administration "
+        "from SIBM Pune", [], "Vodafone Idea Limited")  # fmt: skip
+    news = ("Vodafone Idea appoints Manoj Murali as COO. He holds an MBA from Symbiosis Institute of Business "
+            "Management (SIBM), Pune.")  # fmt: skip
+    linkedin = ("Manoj Murali · Bharti Airtel 2009 - 2016 · Zonal Business Head · Vodafone Essar 2004 - 2009 · "
+                "Led the turnaround of the Kenya circle to profitability in 2018.")  # fmt: skip
+    calls = []
+
+    def search(q, max_results=5, include_domains=None):
+        calls.append(include_domains)
+        if include_domains == ["linkedin.com"]:
+            return [
+                {"title": "Manoj Murali - COO", "url": "https://in.linkedin.com/in/manoj-murali", "content": linkedin}
+            ]
+        return [{"title": "Vodafone Idea appoints COO", "url": "https://www.thehindubusinessline.com/a.ece",
+                 "content": news}]  # fmt: skip
+
     monkeypatch.setattr(mg.tavily, "available", lambda: True)
-    monkeypatch.setattr(mg.tavily, "search", lambda q, max_results=5: [
-        {"title": "Profile", "url": "https://example.com/p", "content": snippet}])  # fmt: skip
-    items = [
+    monkeypatch.setattr(mg.tavily, "search", search)
+    prompts = []
+    items = [  # snippet 0 = LinkedIn (ranked first), 1 = news
         {"kind": "qualification", "text": "MBA from Symbiosis Institute of Business Management (SIBM), Pune",
-         "snippet": 0, "quote": "He holds an MBA from Symbiosis Institute of Business Management (SIBM), Pune"},
-        {"kind": "role", "company": "Vodafone Essar", "role": "Vice President, Sales", "period": "2008 to 2012",
-         "snippet": 0, "quote": "Earlier he was Vice President, Sales at Vodafone Essar from 2008 to 2012"},
+         "snippet": 1, "quote": "He holds an MBA from Symbiosis Institute of Business Management (SIBM), Pune"},
+        {"kind": "role", "company": "Bharti Airtel", "role": "Zonal Business Head", "period": "2009 - 2016",
+         "snippet": 0, "quote": "Bharti Airtel 2009 - 2016 · Zonal Business Head"},
+        {"kind": "role", "company": "Vodafone Essar", "period": "2004 - 2009", "snippet": 0,
+         "quote": "Vodafone Essar 2004 - 2009"},
+        {"kind": "achievement", "text": "Turned the Kenya circle profitable (2018)", "snippet": 0,
+         "quote": "Led the turnaround of the Kenya circle to profitability in 2018."},
         {"kind": "role", "company": "Nokia", "snippet": 0, "quote": "He led Nokia India"},  # not in the snippet
     ]  # fmt: skip
-    prompts = []
 
     class Router:
         def run(self, tier, req):
@@ -109,9 +127,52 @@ def test_web_enrichment_skips_what_the_filing_says_and_unquotable_items(monkeypa
 
     out = mg.enrich(Router(), det, "Vodafone Idea Limited")
     p = out.people[0]
-    assert "Already known" in prompts[0] and "SIBM Pune" in prompts[0]
+    assert ["linkedin.com"] in calls  # LinkedIn snippets via search only
+    assert prompts[0].index("(Professional profile)") < prompts[0].index("(News)")  # best source first
+    assert "Already known" in prompts[0] and "SIBM Pune" in prompts[0] and "(no dates)" in prompts[0]
     assert len(p.qualifications) == 1  # the restated degree is not added again
-    assert [(r.company, r.source, r.start_year, r.end_year) for r in p.prior_roles] == [
-        ("Vodafone Essar", "web", 2008, 2012)]  # fmt: skip
-    assert p.prior_roles[0].citation.url == "https://example.com/p"
-    assert out.web_enrichment == "done"
+    airtel, essar = p.prior_roles
+    assert airtel.source == "filing" and (airtel.start_year, airtel.end_year) == (2009, 2016)
+    assert airtel.period_citation.url.startswith("https://in.linkedin.com") and airtel.citation.url == FILING[
+        "attachment_url"]  # fmt: skip
+    assert (essar.source, essar.start_year, essar.end_year) == ("web", 2004, 2009)
+    assert essar.citation.title.startswith("Professional profile")
+    assert [a.text for a in p.achievements] == ["Turned the Kenya circle profitable (2018)"]
+    assert p.achievements[0].status == "unverified" and p.achievements[0].citations[0].quote
+    assert out.web_enrichment == "done" and "3 web item(s)" in out.web_note
+
+
+def test_web_search_that_only_restates_the_filing_finds_nothing(monkeypatch):
+    det = mg.build_detail({"people": [{"name": "A", "role": "CFO", "change": "appointed", "qualifications": [
+        {"text": "Chartered Accountant", "quote": "is a Chartered Accountant"}]}]}, {"symbol": "X"}, FILING,
+        "Ms A is a Chartered Accountant", [], "X Ltd")  # fmt: skip
+    monkeypatch.setattr(mg.tavily, "available", lambda: True)
+    monkeypatch.setattr(
+        mg.tavily,
+        "search",
+        lambda q, max_results=5, include_domains=None: [
+            {"title": "X appoints CFO", "url": "https://economictimes.com/x", "content": "A, a Chartered Accountant."}
+        ],
+    )
+
+    class Router:
+        def run(self, tier, req):
+            return type(
+                "R",
+                (),
+                {
+                    "data": {
+                        "items": [
+                            {
+                                "kind": "qualification",
+                                "text": "Chartered Accountant",
+                                "snippet": 0,
+                                "quote": "A, a Chartered Accountant.",
+                            }
+                        ]
+                    }
+                },
+            )()
+
+    out = mg.enrich(Router(), det, "X Ltd")
+    assert out.web_enrichment == "nothing_found" and out.people == det.people

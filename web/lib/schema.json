@@ -1842,6 +1842,14 @@
     "PersonProfile": {
       "additionalProperties": false,
       "properties": {
+        "achievements": {
+          "description": "Notable achievements from web snippets the filing doesn't state (unverified)",
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "title": "Achievements",
+          "type": "array"
+        },
         "change": {
           "enum": [
             "appointed",
@@ -1949,7 +1957,8 @@
         "insider",
         "insider_reason",
         "tenure_years",
-        "profile"
+        "profile",
+        "achievements"
       ],
       "title": "PersonProfile",
       "type": "object"
@@ -2117,6 +2126,18 @@
           "description": "Null = to date / not stated",
           "title": "End Year"
         },
+        "period_citation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Citation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When the filing names the role without dates and a web snippet supplies them (web \u00b7 unverified)"
+        },
         "role": {
           "anyOf": [
             {
@@ -2156,7 +2177,8 @@
         "start_year",
         "end_year",
         "source",
-        "citation"
+        "citation",
+        "period_citation"
       ],
       "title": "PriorRole",
       "type": "object"

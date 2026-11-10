@@ -180,7 +180,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
 ## 2026-11-10 · Management-change profiles; Tavily optional
 - The cheap model copies the profile as printed (roles, periods, qualifications, quotes); code parses years, decides insider (an earlier role at this company or "associated with the company since…"), computes the outgoing person's tenure, and drops anything whose quote isn't in the filing text.
-- Web enrichment via Tavily (product owner): snippets only, LinkedIn and social sites excluded, items must quote a snippet, shown as "web · unverified". Without `TAVILY_API_KEY`, or on quota/errors, the card ships from the filing alone (`web_enrichment = unavailable`) and a later run retries.
+- Web enrichment via Tavily (product owner): snippets only, social feeds excluded, items must quote a snippet, shown as "web · unverified". *Superseded 2026-11-10 — see "Management web background" below.* Without `TAVILY_API_KEY`, or on quota/errors, the card ships from the filing alone (`web_enrichment = unavailable`) and a later run retries.
 
 ## 2026-11-10 · Level-0 tags and one-liners
 - One cheap-model call per non-results, non-price event (≤ 25 per run): impact, ≤ 20-word reason with a verbatim quote, ≤ 10-word so-what, category facts as printed. Code checks the quote against the PDF text (unverified if absent), parses amounts (no unit → no figure), and decides rating up/down on a coded scale and pledge increase/decrease. Dividend/bonus/split chips come from NSE corporate actions with no model.
@@ -218,3 +218,30 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Alternatives:**
   - Installing all extras on Render: rejected. It is slower to build, and yfinance and pandas aren't needed there.
   - Lazy imports only: rejected, because they are easy to regress. CI catches it either way.
+
+## 2026-11-10 · Management web background: what counts, and in what order
+- **Context:** the first live card (IDEA, Manoj Murali COO) got its only web fact from a news article that restated the filing (the same degrees). That raised whether news may be used at all.
+- **Decision (product owner):** the primary-sources rule governs research (pull). Push-side enrichment of a person's professional background may use web snippets, news included. The scope is now spelled out in CLAUDE.md rule 2. Web facts must also earn their place:
+  - **Source order:** code classifies each URL and ranks the snippets in this order before the model sees them. The kind is shown on the fact ("web · unverified · Professional profile").
+    1. Professional profiles: LinkedIn, theorg, crunchbase snippets. A second Tavily search scoped to linkedin.com finds them, and result pages are never fetched.
+    2. Company leadership and bio pages.
+    3. Prior employers' sites.
+    4. News.
+  - **New facts only:**
+    - The prompt lists what the filing already states.
+    - Code drops restated qualifications and achievements (distinctive-word overlap) and roles at companies the filing already names.
+    - Web dates for a filing role are kept only when the filing gives none (`period_citation`).
+    - Achievements are a new kind (`PersonProfile.achievements`).
+    - A search that only restates the filing ends as `nothing_found`.
+  - **Labels:** every web fact keeps "web · unverified", its snippet URL and its verbatim quote, and the quote is checked against the snippet text.
+- **Cost:** 2 Tavily credits per appointee (general + LinkedIn-scoped), within the free tier at FINN's volume.
+
+## 2026-11-10 · LLM calls: backoff, then Groq on locally extracted text
+- **Context:** Gopika Pant's (IDEA) profile came back empty after Gemini returned 503 "high demand" through its two built-in retries. The Groq fallback has never run (no `GROQ_API_KEY` in any environment yet).
+- **Decision:**
+  - **Retries:** 5xx, network errors and per-minute 429s are retried by the router with exponential backoff (2, 4, 8, 16 s), and every attempt is logged. A per-day 429 or our own daily budget marks the provider exhausted for the run. The retry loop moved out of the Gemini provider so all providers behave the same.
+  - **Text-only providers:** when a provider (Groq) can't take a PDF, the router extracts the PDF's text locally (pypdf, first 12 pages) and sends that. Only a scanned PDF with no text layer stays Gemini-only.
+  - **Retrying empty cards:** management events without a profile are re-selected every run until one is built.
+- **Alternatives:**
+  - More Gemini retries only: rejected, because one busy model would still leave cards empty.
+  - OCR for scanned PDFs: deferred; it isn't needed for the filings seen so far.

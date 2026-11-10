@@ -332,6 +332,10 @@ export interface ManagementDetail {
   web_note: string | null;
 }
 export interface PersonProfile {
+  /**
+   * Notable achievements from web snippets the filing doesn't state (unverified)
+   */
+  achievements: Claim[];
   change: "appointed" | "resigned" | "re_designated" | "retired" | "other";
   effective: string | null;
   /**
@@ -355,17 +359,6 @@ export interface PersonProfile {
    */
   tenure_years: Figure | null;
 }
-export interface PriorRole {
-  citation: Citation;
-  company: string;
-  /**
-   * Null = to date / not stated
-   */
-  end_year: number | null;
-  role: string | null;
-  source: "filing" | "web";
-  start_year: number | null;
-}
 /**
  * A sentence of text with provenance (snapshot lines, red flags, bull/bear bullets, impact reasons).
  */
@@ -373,6 +366,21 @@ export interface Claim {
   citations: Citation[];
   status: VerificationStatus;
   text: string;
+}
+export interface PriorRole {
+  citation: Citation;
+  company: string;
+  /**
+   * Null = to date / not stated
+   */
+  end_year: number | null;
+  /**
+   * When the filing names the role without dates and a web snippet supplies them (web · unverified)
+   */
+  period_citation: Citation | null;
+  role: string | null;
+  source: "filing" | "web";
+  start_year: number | null;
 }
 export interface OneLinerDetail {
   /**

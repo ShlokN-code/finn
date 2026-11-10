@@ -17,6 +17,7 @@ FINN is a mobile-first financial investment agent for Indian equities (NSE/BSE).
 
 1. **The LLM reads, code calculates.** No arithmetic, ratios, growth rates or comparisons done by a model. Models extract; Python computes.
 2. **Primary sources only for research** (annual reports, concall transcripts, investor decks, exchange filings, screener.in standardised tables). Never news, broker notes, or the model's own knowledge of a company. Prompts must say so, and outputs must carry citations.
+   - *Scope:* this governs **research (pull)** — dossiers, Ask, anything about a company's business or numbers. **Push-side enrichment of a person's professional background** (the management-change card) may use web snippets, news included, ranked profiles → leadership/bio pages → prior employers → news. Each such fact must add something the filing doesn't say, carry its snippet URL and quote, and be labelled "web · unverified". It never feeds research.
 3. **Every number and claim carries provenance** (source URL, document, page, quote where applicable). If something can't be verified, return an explicit "unverified/not found" state — never a guess.
 4. **Secrets never in code or git.** Use environment variables / GitHub Secrets. Keep `.env.example` updated.
 5. **Cost discipline.** Rules before models. Cheap model for bulk classification/extraction; strong model only for synthesis. Cache every LLM call by content hash. Log tokens and estimated cost per call.

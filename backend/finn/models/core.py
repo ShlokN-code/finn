@@ -141,6 +141,10 @@ class PriorRole(Model):
     end_year: int | None = Field(None, description="Null = to date / not stated")
     source: Literal["filing", "web"]
     citation: Citation
+    period_citation: Citation | None = Field(
+        None,
+        description="When the filing names the role without dates and a web snippet supplies them (web · unverified)",
+    )
 
 
 class PersonProfile(Model):
@@ -154,6 +158,9 @@ class PersonProfile(Model):
     insider_reason: str | None = None
     tenure_years: Figure | None = Field(None, description="Outgoing person's tenure, computed in code")
     profile: Claim | None = Field(None, description="Verbatim profile paragraph from the filing")
+    achievements: list[Claim] = Field(
+        default_factory=list, description="Notable achievements from web snippets the filing doesn't state (unverified)"
+    )
 
 
 class ManagementDetail(Model):

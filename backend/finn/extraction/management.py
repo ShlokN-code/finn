@@ -50,19 +50,99 @@ PERSON = {
 SCHEMA = {"type": "object", "properties": {"people": {"type": "array", "items": PERSON}}, "required": ["people"]}
 
 WEB_SYSTEM = (
-    "You extract a person's prior roles and qualifications from web search snippets. Use ONLY the snippets. "
-    "Each item must cite the snippet number it came from and a verbatim quote from that snippet (≤ 30 words). "
-    "Ignore snippets about a different person with the same name. Return nothing you cannot quote. Skip "
-    "anything the filing already states (listed under 'Already known'): only new roles or qualifications."
+    "You add to an executive's professional background from web search snippets. Use ONLY the snippets. "
+    "Extract only what the filing does NOT already say (listed under 'Already known'): earlier roles, the years "
+    "of a role the filing names without dates, qualifications, notable achievements (awards, turnarounds, "
+    "launches, boards). Skip snippets that merely report this appointment or restate the filing. Prefer, in "
+    "order: professional profiles, company leadership/bio pages, prior employers' pages, then news. Each item "
+    "cites its snippet number and a verbatim quote from that snippet (≤ 30 words). Copy years as printed; do "
+    "not calculate. Ignore snippets about a different person with the same name. Return nothing you cannot quote."
 )
 WEB_SCHEMA = {
     "type": "object",
     "properties": {"items": {"type": "array", "items": {"type": "object", "properties": {
-        "kind": {"type": "string", "enum": ["role", "qualification"]}, "company": {"type": "string"},
-        "role": {"type": "string"}, "period": {"type": "string"}, "text": {"type": "string"},
+        "kind": {"type": "string", "enum": ["role", "qualification", "achievement"]},
+        "company": {"type": "string"}, "role": {"type": "string"},
+        "period": {"type": "string", "description": "As printed, e.g. '2012–2018'"},
+        "text": {"type": "string", "description": "qualification or achievement, short"},
         "snippet": {"type": "integer"}, "quote": {"type": "string"}}, "required": ["kind", "snippet", "quote"]}}},
     "required": ["items"],
 }  # fmt: skip
+
+# Web source kinds, in order of preference (the product owner's ranking). Decided in code from the URL.
+KIND_LABEL = {"profile": "Professional profile", "bio": "Leadership/bio page", "prior_employer": "Prior employer",
+              "news": "News"}  # fmt: skip
+PROFILE_HOSTS = ("linkedin.com", "theorg.com", "crunchbase.com")
+NEWS_HOSTS = ("economictimes", "moneycontrol", "livemint", "thehindubusinessline", "thehindu", "business-standard",
+              "financialexpress", "ndtv", "reuters", "bloomberg", "cnbc", "zeebiz", "indianexpress",
+              "hindustantimes", "businesstoday", "timesofindia", "forbesindia", "fortuneindia", "telecomtalk",
+              "medianama", "inc42", "yourstory", "news")  # fmt: skip
+_BIO_PATH = re.compile(r"/(leadership|board|management|team|people|our-team|directors?|about|bio|profile|"
+                       r"executives?|governance)\b", re.I)  # fmt: skip
+
+
+_GENERIC = {
+    "electric",
+    "power",
+    "steel",
+    "motors",
+    "finance",
+    "financial",
+    "energy",
+    "industries",
+    "holdings",
+    "capital",
+    "services",
+    "technologies",
+    "systems",
+    "global",
+    "group",
+    "international",
+    "solutions",
+    "foods",
+    "pharma",
+    "pharmaceuticals",
+    "chemicals",
+    "cement",
+    "electronics",
+    "engineering",
+    "consumer",
+    "products",
+    "retail",
+    "networks",
+    "communications",
+    "telecom",
+    "infra",
+    "infrastructure",
+    "bank",
+}
+
+
+def _owns(host: str, name: str) -> bool:
+    """Does this host look like `name`'s own website? (joined name, or a distinctive word ≥ 5 letters — so
+    'airtel.in' is Bharti Airtel's, but 'jswsteel.in' isn't Tata Steel's)"""
+    key = company_key(name)
+    if not key:
+        return False
+    h = re.sub(r"[^a-z0-9]", "", host.rsplit(".", 1)[0])
+    return key.replace(" ", "") in h or any(len(w) >= 5 and w not in _GENERIC and w in h for w in key.split())
+
+
+def source_kind(url: str, company: str, prior_companies: list[str]) -> str:
+    from urllib.parse import urlparse
+
+    u = urlparse(url)
+    host, path = u.netloc.lower().removeprefix("www."), u.path.lower()
+    if any(host == d or host.endswith("." + d) for d in PROFILE_HOSTS):
+        return "profile"
+    if any(n in host for n in NEWS_HOSTS):
+        return "news"
+    if _owns(host, company) and _BIO_PATH.search(path):
+        return "bio"
+    if any(_owns(host, c) for c in prior_companies):
+        return "prior_employer"
+    return "bio" if _BIO_PATH.search(path) else "news"
+
 
 _SUFFIX = re.compile(r"\b(limited|ltd|private|pvt|india|the|co|company|corporation|corp|inc|plc)\b\.?", re.I)
 
@@ -79,6 +159,16 @@ def same_company(a: str, b: str) -> bool:
 _QWORDS = re.compile(r"[a-z]{3,}")
 _QSTOP = {"from", "the", "and", "degree", "holds", "bachelor", "master", "university", "institute", "college",
           "with", "his", "her", "has", "also", "school", "management", "business", "administration"}  # fmt: skip
+
+
+def _words(x: str) -> set[str]:
+    return set(_QWORDS.findall(x.lower())) - _QSTOP
+
+
+def restates(fact: str, known: str) -> bool:
+    """Every distinctive word of `fact` is already in `known` — it adds nothing."""
+    w = _words(fact)
+    return bool(w) and w <= _words(known)
 
 
 def same_qualification(a: str, b: str) -> bool:
@@ -187,61 +277,104 @@ def build_detail(d: dict, event: dict, filing: dict, source: str, pages: list[st
     return ManagementDetail(people=people, web_enrichment="not_run")
 
 
+def _snippets(p: PersonProfile, company: str) -> list[dict]:
+    """General search + a LinkedIn-scoped one (snippets only), merged by URL, best source kind first."""
+    general = tavily.search(f'"{p.name}" {company} {p.role}', max_results=5)
+    profiles = tavily.search(f'"{p.name}" {company_key(company)}', max_results=3, include_domains=["linkedin.com"])
+    seen, out = set(), []
+    prior = [r.company for r in p.prior_roles]
+    for sn in profiles + general:
+        if sn["url"] in seen or not sn.get("content"):
+            continue
+        seen.add(sn["url"])
+        out.append({**sn, "kind": source_kind(sn["url"], company, prior)})
+    order = list(KIND_LABEL)
+    return sorted(out, key=lambda x: order.index(x["kind"]))[:7]
+
+
 def enrich(router: Router, detail: ManagementDetail, company: str) -> ManagementDetail:
-    """Add web-snippet roles/qualifications for appointees. Never fails the card: any problem → 'unavailable'."""
+    """Add web background for appointees — only what the filing doesn't already say, each fact labelled
+    'web · unverified' with its snippet URL. Never fails the card: any problem → 'unavailable'."""
     if not tavily.available():
         return detail.model_copy(update={"web_enrichment": "unavailable", "web_note": "TAVILY_API_KEY not set"})
-    people, found = [], 0
+    people, kinds = [], {}
     try:
         for p in detail.people:
             if p.change not in ("appointed", "re_designated"):
                 people.append(p)
                 continue
-            snippets = tavily.search(f'"{p.name}" {company} {p.role}', max_results=5)
+            snippets = _snippets(p, company)
             if not snippets:
                 people.append(p)
                 continue
-            body = "\n\n".join(
-                f"[{i}] {s['title']} — {s['url']}\n{s['content'][:1200]}" for i, s in enumerate(snippets)
-            )
-            known = [f"role: {r.role or ''} at {r.company}" for r in p.prior_roles] + [
-                f"qualification: {q.text}" for q in p.qualifications
-            ]
+            body = "\n\n".join(f"[{i}] ({KIND_LABEL[s['kind']]}) {s['title']} — {s['url']}\n{s['content'][:1200]}"
+                                for i, s in enumerate(snippets))  # fmt: skip
+            known = [f"role: {r.role or ''} at {r.company}" + (f" ({r.start_year}–{r.end_year or ''})"
+                                                                 if r.start_year else " (no dates)")
+                     for r in p.prior_roles] + [f"qualification: {q.text}" for q in p.qualifications]  # fmt: skip
+            if p.profile:
+                known.append(f"profile: {p.profile.text}")
             prompt = (f"Person: {p.name}, {p.role} at {company}\n\nAlready known (from the filing):\n"
                       + ("\n".join(known) or "(nothing)") + f"\n\nSnippets:\n{body}")  # fmt: skip
-            req = LLMRequest(purpose="management_web", system=WEB_SYSTEM, prompt=prompt,
-                             schema=WEB_SCHEMA, max_output_tokens=800)  # fmt: skip
+            req = LLMRequest(purpose="management_web", system=WEB_SYSTEM, prompt=prompt, schema=WEB_SCHEMA,
+                             max_output_tokens=900)  # fmt: skip
             items = router.run("cheap", req).data.get("items") or []
-            roles, quals = list(p.prior_roles), list(p.qualifications)
-            for it in items:
-                i = it.get("snippet")
-                if not isinstance(i, int) or not 0 <= i < len(snippets):
-                    continue
-                sn = snippets[i]
-                if not quote_in_text(it.get("quote"), sn["content"]):
-                    continue
-                c = Citation(source_type="web_profile", url=sn["url"], title=sn["title"][:120],
-                             quote=it["quote"][:300], retrieved_at=datetime.now(UTC))  # fmt: skip
-                if it["kind"] == "role" and it.get("company"):
-                    if any(same_company(r.company, it["company"]) for r in roles):
-                        continue  # the filing already says it
-                    s, e = years(it.get("period"))
-                    roles.append(PriorRole(company=it["company"][:120], role=it.get("role") or None, start_year=s,
-                                           end_year=e, source="web", citation=c))  # fmt: skip
-                    found += 1
-                elif it["kind"] == "qualification" and it.get("text"):
-                    if any(same_qualification(q.text, it["text"]) for q in quals):
-                        continue  # the filing already says it
-                    quals.append(Claim(text=it["text"][:160], status="unverified", citations=[c]))
-                    found += 1
-            ins, why = insider(
-                company, [r for r in roles if r.source == "filing"], p.profile.text if p.profile else None
-            )
-            people.append(p.model_copy(update={"prior_roles": roles, "qualifications": quals}))
+            p2, added = _apply_web(p, items, snippets)
+            for k in added:
+                kinds[k] = kinds.get(k, 0) + 1
+            people.append(p2)
     except (tavily.TavilyUnavailable, LLMUnavailable) as e:
         return detail.model_copy(update={"web_enrichment": "unavailable", "web_note": str(e)[:200]})
+    found = sum(kinds.values())
+    note = ", ".join(f"{n} from {KIND_LABEL[k].lower()}" for k, n in kinds.items())
+    web_note = (
+        (f"{found} web item(s), unverified" + (f": {note}" if note else ""))
+        if found
+        else ("Web search found nothing the filing doesn't already say")
+    )
     return detail.model_copy(update={"people": people, "web_enrichment": "done" if found else "nothing_found",
-                                     "web_note": f"{found} item(s) from web snippets (unverified)"})  # fmt: skip
+                                     "web_note": web_note})  # fmt: skip
+
+
+def _apply_web(p: PersonProfile, items: list[dict], snippets: list[dict]) -> tuple[PersonProfile, list[str]]:
+    """Code-side checks on the model's web items: quote must be in its snippet; drop anything the filing (or an
+    earlier web item) already says; dates for a filing role only fill a gap."""
+    roles, quals, achievements = list(p.prior_roles), list(p.qualifications), list(p.achievements)
+    profile_text = p.profile.text if p.profile else ""
+    added: list[str] = []
+    for it in items:
+        i = it.get("snippet")
+        if not isinstance(i, int) or not 0 <= i < len(snippets):
+            continue
+        sn = snippets[i]
+        if not quote_in_text(it.get("quote"), sn["content"]):
+            continue  # citation checker: unquotable → dropped
+        c = Citation(source_type="web_profile", url=sn["url"], title=f"{KIND_LABEL[sn['kind']]} · {sn['title']}"[:120],
+                     quote=it["quote"][:300], retrieved_at=datetime.now(UTC))  # fmt: skip
+        kind = it.get("kind")
+        if kind == "role" and it.get("company"):
+            s, e = years(it.get("period"))
+            hit = next((k for k, r in enumerate(roles) if same_company(r.company, it["company"])), None)
+            if hit is not None:
+                r = roles[hit]
+                if r.start_year is None and s is not None:  # the web supplies the tenure the filing omits
+                    roles[hit] = r.model_copy(update={"start_year": s, "end_year": e, "period_citation": c})
+                    added.append(sn["kind"])
+                continue
+            roles.append(PriorRole(company=it["company"][:120], role=it.get("role") or None, start_year=s,
+                                   end_year=e, source="web", citation=c))  # fmt: skip
+            added.append(sn["kind"])
+        elif kind == "qualification" and it.get("text"):
+            if any(same_qualification(q.text, it["text"]) for q in quals) or restates(it["text"], profile_text):
+                continue
+            quals.append(Claim(text=it["text"][:160], status="unverified", citations=[c]))
+            added.append(sn["kind"])
+        elif kind == "achievement" and it.get("text"):
+            if restates(it["text"], profile_text) or any(restates(it["text"], a.text) for a in achievements):
+                continue
+            achievements.append(Claim(text=it["text"][:200], status="unverified", citations=[c]))
+            added.append(sn["kind"])
+    return p.model_copy(update={"prior_roles": roles, "qualifications": quals, "achievements": achievements}), added
 
 
 def so_what(detail: ManagementDetail) -> str | None:
