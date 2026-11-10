@@ -11,7 +11,8 @@ import requests
 from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, Tier, TransientError
 
 BASE = "https://api.groq.com/openai/v1"
-DEFAULT_MODEL = "llama-3.1-8b-instant"
+# llama-3.1-8b-instant was retired (404 model_not_found, Nov 2026). Override with GROQ_MODEL.
+DEFAULT_MODEL = "qwen/qwen3.8-27b"
 
 
 class Groq:

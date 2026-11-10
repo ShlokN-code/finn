@@ -96,7 +96,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
 ## 2026-11-10 · Cheap LLM tier: Gemini free tier, Groq as text-only fallback
 - **Context:** Classification leftovers (and later bulk extraction) need a cheap model. Product owner chose Google AI Studio's free tier (no billing).
-- **Decision:** `finn/llm/` routes `cheap` → Gemini Flash-Lite, `strong` → Gemini Flash; model ids come from env (`GEMINI_MODEL_CHEAP/STRONG`) and are checked against the key's live model list with `python -m finn.llm.check` (verified 10 Nov 2026: `gemini-3.5-flash-lite`, `gemini-3.8-flash`). PDFs go inline (first 2 pages only, cut with pypdf) when a subject is boilerplate. Every call is cached by content hash in `llm_calls`, which is also the token/cost log (USD estimate at paid list price, even though the free tier bills nothing). Router enforces requests/minute (sleeps) and requests/day (counted from the log, Pacific-midnight day like Gemini's), defaults 10 RPM / 400 RPD — conservative because per-model free limits are only shown in the AI Studio dashboard. On quota/error: Groq (`llama-3.1-8b-instant`, text only, optional key) → `LLMUnavailable` → filing stays `unclassified` with tier `failed` and is retried next run.
+- **Decision:** `finn/llm/` routes `cheap` → Gemini Flash-Lite, `strong` → Gemini Flash; model ids come from env (`GEMINI_MODEL_CHEAP/STRONG`) and are checked against the key's live model list with `python -m finn.llm.check` (verified 10 Nov 2026: `gemini-3.5-flash-lite`, `gemini-3.8-flash`). PDFs go inline (first 2 pages only, cut with pypdf) when a subject is boilerplate. Every call is cached by content hash in `llm_calls`, which is also the token/cost log (USD estimate at paid list price, even though the free tier bills nothing). Router enforces requests/minute (sleeps) and requests/day (counted from the log, Pacific-midnight day like Gemini's), defaults 10 RPM / 400 RPD — conservative because per-model free limits are only shown in the AI Studio dashboard. On quota/error: Groq (`llama-3.1-8b-instant`, text only, optional key — *replaced by `qwen/qwen3.8-27b` on 10 Nov 2026, see below*) → `LLMUnavailable` → filing stays `unclassified` with tier `failed` and is retried next run.
 - **Privacy:** free-tier inputs may be used by Google to improve its products. Acceptable: FINN only sends public exchange filings (no holdings, no user data).
 - **Alternatives:** Claude Haiku (paid; offered first); no model tier (leftovers stay unclassified).
 
@@ -245,3 +245,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Alternatives:**
   - More Gemini retries only: rejected, because one busy model would still leave cards empty.
   - OCR for scanned PDFs: deferred; it isn't needed for the filings seen so far.
+
+## 2026-11-10 · Groq fallback model
+- **Context:** the first smoke test with the product owner's Groq key returned 404 `model_not_found` for `llama-3.1-8b-instant`, which Groq has retired. The fallback had never actually run.
+- **Decision:** the default is now `qwen/qwen3.8-27b`, with `GROQ_MODEL` as an override. On a real-shaped management-profile extraction it gave the same answer as `openai/gpt-oss-20b` with 48 output tokens instead of 221 (gpt-oss spends tokens reasoning), which stretches Groq's free-tier token limits.
