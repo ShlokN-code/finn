@@ -193,7 +193,7 @@ def _mk_deal(kind: str, d: date, symbol: str, client: str, side: str, qty, price
         qty_i,
         px,
         deal_value_cr(qty_i, px),
-        (remarks or "").strip() or None,
+        (remarks or "").strip().strip("-").strip() or None,
         raw,
     )
 

@@ -181,19 +181,26 @@ def step_corporate_actions(run: Run, s: NSESession, symbols: list[str]) -> None:
 
 
 def step_deals(run: Run, s: NSESession, symbols: list[str], frm: date, to: date) -> None:
+    """API for the window, plus the archive CSV (the API lags the latest session by a day or more)."""
     tracked = set(symbols)
     out = {}
     for kind in ("bulk", "block"):
+        deals, errors = {}, []
         try:
-            deals = nse.fetch_deals(s, kind, frm, to)
-            src = "api"
+            deals.update({d.id: d for d in nse.fetch_deals(s, kind, frm, to)})
         except (FetchError, ValueError) as e:
-            run.fail("deals", kind, f"API failed ({e}); using archive CSV")
-            deals, src = nse.fetch_deals_archive(s, kind), "archive"
-        mine = [d for d in deals if d.symbol in tracked]
+            errors.append(f"api: {e}")
+        try:
+            deals.update({d.id: d for d in nse.fetch_deals_archive(s, kind)})
+        except (FetchError, ValueError) as e:
+            errors.append(f"archive: {e}")
+        mine = [d for d in deals.values() if d.symbol in tracked]
         store.upsert_deals(run.conn, mine)
-        store.mark_source(run.conn, f"nse_{kind}_deals", "all", ok=True, rows=len(deals))
-        out[kind] = {"market_rows": len(deals), "tracked": len(mine), "source": src}
+        ok = bool(deals) or not errors
+        store.mark_source(run.conn, f"nse_{kind}_deals", "all", ok=ok, rows=len(deals), error="; ".join(errors))
+        if errors:
+            run.fail("deals", kind, "; ".join(errors))
+        out[kind] = {"market_rows": len(deals), "tracked": len(mine)}
     run.stats["deals"] = out
 
 
