@@ -137,7 +137,7 @@ def get_document(conn, symbol: str, link, now: datetime | None = None) -> Doc:
             pages, _ = extract_pages(path)
             if is_scanned(pages):
                 store.upsert_document(conn, link.url, symbol, link.kind, sha256=sha, pages=len(pages), bytes=size,
-                                      status="scanned", status_note="Scanned — no text layer", fetched_at=now)  # fmt: skip
+                                      status="scanned", status_note="Scanned", fetched_at=now)  # fmt: skip
                 return Doc(ref("scanned", "Scanned — not read", len(pages), sha), sha, None)
             store.save_text(conn, sha, pages, EXTRACTOR)
     finally:
