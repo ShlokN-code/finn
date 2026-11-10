@@ -108,3 +108,11 @@ def test_results_newspaper_ad_threads_into_its_quarter():
                 category="results", stage="newspaper_ad")  # fmt: skip
     events, assign = thread([ad])
     assert assign["NSE:9"] == "X:results:Q1 FY27" and events[0].timeline[0].stage == "newspaper_ad"
+
+
+def test_ad_in_the_last_days_of_a_quarter_points_forward():
+    # INFY 16 Sep: newspaper notice of the board meeting for Q2 results
+    ad = Filing(id="NSE:10", exchange="NSE", exchange_id="10", symbol="X", exchange_category="Newspaper",
+                subject="Copy of Newspaper Publication", filed_at=datetime(2026, 9, 16, 10, tzinfo=UTC),
+                category="results", stage="newspaper_ad")  # fmt: skip
+    assert thread([ad])[1]["NSE:10"] == "X:results:Q2 FY27"

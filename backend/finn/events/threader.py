@@ -143,7 +143,9 @@ def thread(filings: list[Filing]) -> tuple[list[Event], dict[str, str | None]]:
             if cat in UNTHREADED:
                 continue
             if cat in RESULTS_THREAD:
-                forward = st in (S.intimation, None) or (st == S.call and not _PAST_CALL.search(f.subject))
+                forward = st in (S.intimation, S.newspaper_ad, None) or (
+                    st == S.call and not _PAST_CALL.search(f.subject)
+                )
                 qe = quarter_from_text(f.subject) or results_quarter_for(
                     to_ist(f.filed_at).date(), forward_looking=forward
                 )

@@ -182,3 +182,73 @@ def test_audio_visual_means_is_not_a_call_recording():
                                          "Shareholders regarding the 33rd Annual General Meeting to be held through "
                                          "Video Conference/ Other Audio Visual Means"))  # fmt: skip
     assert (c.category, c.stage) == ("agm_egm", "newspaper_ad")
+
+
+# --- content-free newspaper ads are read from their PDF ---
+def _pdf() -> bytes:
+    import io
+
+    from pypdf import PdfWriter
+
+    w = PdfWriter()
+    w.add_blank_page(width=200, height=200)
+    buf = io.BytesIO()
+    w.write(buf)
+    return buf.getvalue()
+
+
+AD = ("Copy of Newspaper Publication", "Persistent Systems Limited has informed the Exchange about Copy of Newspaper "
+      "Publication")  # fmt: skip
+
+
+def test_blind_ad_read_from_pdf_becomes_material():
+    g = FakeGemini({"category": "results", "stage": "outcome", "confidence": 0.9, "reason": "results ad"})
+    clf = Classifier(Router([g], MemoryLLMLog()), pdf_fetcher=lambda url: _pdf())
+    c = clf.classify(filing(*AD))
+    assert (c.category, c.stage, c.tier, c.hidden_reason) == ("results", "newspaper_ad", "model", None)
+    assert g.reqs[0].pdf and g.reqs[0].pdf_required
+
+
+def test_blind_ad_that_is_really_routine_stays_hidden():
+    g = FakeGemini({"category": "routine", "stage": "other", "confidence": 0.9, "reason": "share certificate notice",
+                    "hidden_reason": "Shareholder administration"})  # fmt: skip
+    c = Classifier(Router([g], MemoryLLMLog()), pdf_fetcher=lambda url: _pdf()).classify(filing(*AD))
+    assert (c.category, c.stage, c.tier, c.hidden_reason) == ("routine", "newspaper_ad", "model", "Newspaper ad")
+
+
+def test_blind_ad_model_down_is_marked_for_retry():
+    g = FakeGemini(fail=QuotaExceeded("429"))
+    c = Classifier(Router([g], MemoryLLMLog()), pdf_fetcher=lambda url: _pdf()).classify(filing(*AD))
+    assert (c.category, c.tier, c.hidden_reason) == ("routine", "failed", "Newspaper ad")
+    assert c.note.startswith("llm unavailable")  # store.filings_to_classify retries these
+
+
+def test_blind_ad_without_pdf_or_model_keeps_routine():
+    assert Classifier(None).classify(filing(*AD)).tier == "exchange"
+    g = FakeGemini({"category": "results", "stage": "outcome", "confidence": 1, "reason": ""})
+    c = Classifier(Router([g], MemoryLLMLog()), pdf_fetcher=lambda url: None).classify(filing(*AD))
+    assert c.category == "routine" and not g.reqs
+
+
+def test_ads_that_name_their_content_never_call_the_model():
+    g = FakeGemini({"category": "results", "stage": "outcome", "confidence": 1, "reason": ""})
+    clf = Classifier(Router([g], MemoryLLMLog()), pdf_fetcher=lambda url: _pdf())
+    c = clf.classify(filing("General Updates", "Newspaper Advertisement - Public Notice regarding loss of Share "
+                            "Certificates"))  # fmt: skip
+    assert c.category == "routine" and not g.reqs
+
+
+@pytest.mark.parametrize(
+    "subject,blind",
+    [
+        ("X Limited has informed the Exchange about Copy of Newspaper Publication", True),
+        ("The newspaper clippings of the advertisement on the captioned subject published today are enclosed", True),
+        ("Newspaper Publication", True),
+        ("Newspaper publication regarding special window for transfer of physical shares", False),
+    ],
+)
+def test_content_free_ad_pattern(subject, blind):
+    from finn.classification.ladder import CONTENT_FREE_AD
+    from finn.sources.nse import subject_core
+
+    assert bool(CONTENT_FREE_AD.search(subject_core(subject))) is blind

@@ -25,6 +25,12 @@ Tier = Literal["exchange", "rule", "model", "failed"]
 
 # Exchange-label routine groups that are containers for other content (an ad can carry results or an IPO).
 WEAK_ROUTINE_REASONS = {"Newspaper ad"}
+# Ad subjects that say nothing about the ad's content: the PDF is the only way to know.
+CONTENT_FREE_AD = re.compile(
+    r"^(?:submission of )?(?:the )?(?:copy|copies) of (?:the )?news ?paper (?:publications?|advertisements?|ads?)\.?$"
+    r"|^news ?paper (?:publications?|advertisements?|ads?|clippings?)\.?$|captioned subject",
+    re.I,
+)
 
 
 @dataclass
@@ -176,8 +182,9 @@ class Classifier:
                     rule, lab = better
                     note = f"rule={rule.name} (material over desc={f.exchange_category})"
                     return Classification(lab.category, "rule", lab.stage, None, note=note)
-            return Classification(label_a.category, "exchange", label_a.stage, label_a.hidden_reason,
-                                  note=f"desc={f.exchange_category}")  # fmt: skip
+            c = Classification(label_a.category, "exchange", label_a.stage, label_a.hidden_reason,
+                               note=f"desc={f.exchange_category}")  # fmt: skip
+            return self._read_ad_if_blind(f, core, c)
         if rules.CLARIFICATION.search(core) or rules.CLARIFICATION.search(f.exchange_category):
             c = self._model(f, core)
             c.stage = EventStage.clarification
@@ -185,10 +192,35 @@ class Classifier:
         hit = rules.match(f.exchange_category, core)
         if hit:
             rule, lab = hit
-            return Classification(lab.category, "rule", lab.stage, lab.hidden_reason, note=f"rule={rule.name}")
+            c = Classification(lab.category, "rule", lab.stage, lab.hidden_reason, note=f"rule={rule.name}")
+            return self._read_ad_if_blind(f, core, c)
         return self._model(f, core)
 
-    def _model(self, f: Filing, core: str) -> Classification:
+    def _read_ad_if_blind(self, f: Filing, core: str, routine_ad: Classification) -> Classification:
+        """A newspaper ad whose subject names nothing ('Copy of Newspaper Publication') can carry results or an
+        IPO notice: read its first PDF pages with the model (material over routine). Keeps the routine label
+        when there's no model or no readable PDF; if the model is unavailable the filing is marked for retry."""
+        if not (routine_ad.category == Category.routine and routine_ad.stage == EventStage.newspaper_ad):
+            return routine_ad
+        if not CONTENT_FREE_AD.search(core) or self.router is None or not (f.attachment_url and self.pdf_fetcher):
+            return routine_ad
+        raw = self.pdf_fetcher(f.attachment_url)
+        pdf = first_pages(raw) if raw else None
+        if not pdf:
+            return routine_ad
+        c = self._model(f, core, pdf=pdf, hint="This is a newspaper advertisement whose subject names nothing. "
+                        "Classify by what the advertisement is about (e.g. financial results, an AGM notice, a "
+                        "subsidiary's IPO); choose 'routine' only if it carries no material information.")  # fmt: skip
+        if c.tier == "failed":
+            # Hidden for now, but recorded as a model failure so the next run retries it.
+            return Classification(Category.routine, "failed", EventStage.newspaper_ad, routine_ad.hidden_reason,
+                                  note=c.note)  # fmt: skip
+        c.stage = EventStage.newspaper_ad
+        if c.category == Category.routine:
+            c.hidden_reason = routine_ad.hidden_reason
+        return c
+
+    def _model(self, f: Filing, core: str, pdf: bytes | None = None, hint: str | None = None) -> Classification:
         if self.router is None:
             return Classification(Category.unclassified, "failed", note="model tier disabled")
         name = self.names.get(f.symbol, f.symbol)
@@ -196,13 +228,16 @@ class Classifier:
             f"Company: {name} (NSE: {f.symbol})\nExchange category: {f.exchange_category}\n"
             f"Subject: {f.subject}\nFiled: {f.filed_at.date().isoformat()}"
         )
-        pdf = None
-        if is_uninformative(f.subject) and f.attachment_url and self.pdf_fetcher:
+        pdf_required = pdf is not None
+        if pdf is None and is_uninformative(f.subject) and f.attachment_url and self.pdf_fetcher:
             raw = self.pdf_fetcher(f.attachment_url)
             pdf = first_pages(raw) if raw else None
             if pdf:
                 prompt += "\nThe subject is uninformative: classify from the attached first pages of the filing."
-        req = LLMRequest(purpose="classify_filing", system=SYSTEM, prompt=prompt, schema=SCHEMA, pdf=pdf)
+        if hint:
+            prompt += "\n" + hint
+        req = LLMRequest(purpose="classify_filing", system=SYSTEM, prompt=prompt, schema=SCHEMA, pdf=pdf,
+                         pdf_required=pdf_required)  # fmt: skip
         try:
             res = self.router.run("cheap", req)
         except LLMUnavailable as e:

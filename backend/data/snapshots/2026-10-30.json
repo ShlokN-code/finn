@@ -1,7 +1,7 @@
 {
  "label": "showcase-2026-10-30",
  "trading_date": "2026-10-30",
- "frozen_at": "2026-11-10T12:12:54.186116+00:00",
+ "frozen_at": "2026-11-10T12:26:34.652510+00:00",
  "symbols": [
   "HAL",
   "EICHERMOT",
@@ -458,7 +458,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "DIXON:results:Q2 FY27",
@@ -522,7 +522,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "GRASIM:results:Q2 FY27",
@@ -562,7 +562,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "RELIANCE:results:Q2 FY27",
@@ -644,7 +644,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "GRASIM:mna:2026-10-30",
@@ -667,7 +667,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "INFY:capex:2026-10-30",
@@ -690,7 +690,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "DIXON:management_change:2026-10-30",
@@ -713,7 +713,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   },
   {
    "id": "ALKEM:litigation:2026-10-30",
@@ -736,7 +736,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+   "refreshed_at": "2026-11-10T12:26:32.236771+00:00"
   }
  ],
  "prices": [

@@ -1,10 +1,11 @@
 """Classification eval: accuracy of the ladder on a labelled set of real NSE filings.
 
 python -m evals.classification.run            # rules only (tiers a+b); model-tier items count as abstained
-python -m evals.classification.run --model    # full ladder with the cheap model (uses the LLM cache/log)
+python -m evals.classification.run --model    # full ladder: cheap model + first PDF pages where the subject
+                                              # says nothing (uses the LLM cache/log and the PDF disk cache)
 
-Labels in labelled.jsonl were written by Claude from the subject + exchange label and are marked
-'needs review' until a human checks them (see `note` for the uncertain ones).
+Labels in labelled.jsonl were written by Claude and reviewed by the product owner (10 Nov 2026); uncertain
+ones were checked against the filing PDF (see `note`).
 """
 
 from __future__ import annotations
@@ -38,7 +39,11 @@ def main() -> None:
 
         r = _R()
         r.conn = conn
-        clf, router = make_classifier(r, None)  # no PDF fetcher: subject-only (cheaper, deterministic)
+        from finn.sources.http import NSESession
+
+        # Same path as the jobs: boilerplate subjects and content-free ads are read from the filing's first
+        # pages (NSE archive PDFs need no cookies; downloads are cached on disk).
+        clf, router = make_classifier(r, NSESession())
     else:
         clf = Classifier(None)
 
