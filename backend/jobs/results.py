@@ -29,6 +29,7 @@ def main() -> None:
         if not args.no_fetch:
             s = nse.session()
             run.step("results_fetch", p.step_results_fetch, s, symbols, args.days)
+        run.step("results_build", p.step_results_build, symbols, args.days)
 
 
 if __name__ == "__main__":

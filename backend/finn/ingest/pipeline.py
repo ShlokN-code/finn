@@ -15,9 +15,10 @@ from finn import store
 from finn.calendar import ist_today, previous_quarter_end, set_holidays, year_ago_quarter_end
 from finn.classification.ladder import Classifier
 from finn.events.threader import thread
-from finn.extraction.results import xbrl
+from finn.extraction.results import build as results_build
+from finn.extraction.results import compute, xbrl
 from finn.llm import PostgresLLMLog, Router
-from finn.sources import nse
+from finn.sources import nse, screener
 from finn.sources.http import FetchError, NSESession, fetch_capped
 from finn.sources.prices import fetch_bars, needs_restatement
 
@@ -285,6 +286,43 @@ def step_results_fetch(run: Run, s: NSESession, symbols: list[str], days: int = 
                 stats["downloaded"] += 1
         store.mark_source(run.conn, "nse_results_xbrl", sym, ok=True, rows=len(refs))
     run.stats["results_fetch"] = stats
+
+
+def step_results_build(run: Run, symbols: list[str], days: int = 45) -> None:
+    """Build/refresh results cards from stored XBRL + screener. Final cards (XBRL, cross-checked) are left
+    alone; pending and unverified ones are re-checked every run (screener publishes hours after results)."""
+    stats = {"built": 0, "cross_checked": 0, "pending": 0, "mismatch": 0, "no_xbrl_yet": [], "final": 0}
+    for ev in store.recent_results_events(run.conn, symbols, days):
+        old = ev["detail"] or {}
+        if old.get("source_path") == "xbrl" and old.get("verification") == "cross_checked":
+            stats["final"] += 1
+            continue
+        sym, qe = ev["symbol"], date.fromisoformat(ev["period"]["end"]) if ev["period"] else None
+        if qe is None:
+            continue
+        outcome_ids = [t["filing_id"] for t in ev["timeline"] if t["stage"] == "outcome"]
+        filing_url = next((u for u in store.filing_urls(run.conn, outcome_ids).values() if u), None)
+        got = results_build.quarters_from_xbrl(store.results_filings(run.conn, sym), qe)
+        if got is None:
+            stats["no_xbrl_yet"].append(f"{sym} {qe}")
+            continue  # PDF fallback runs on Actions only (NSE archive PDFs)
+        basis, quarters = got
+        template = compute.template_for(quarters["current"], store.symbol_industry(run.conn, sym))
+        try:
+            table = screener.fetch_quarters(sym, basis)
+        except Exception as err:  # screener down → pending, retried next run (rule 7)
+            run.fail("results_build", sym, f"screener: {err}")
+            table = None
+        b = results_build.build_from_quarters(template, basis, qe, quarters, table, "xbrl", filing_url)
+        store.save_event_detail(
+            run.conn, ev["id"], b.detail.model_dump(mode="json"), b.so_what, b.impact,
+            b.impact_reason.model_dump(mode="json") if b.impact_reason else None, "code",
+        )  # fmt: skip
+        stats["built"] += 1
+        stats[b.detail.verification] += 1
+        if b.detail.verification == "mismatch":
+            run.fail("results_build", sym, f"couldn't verify: {b.detail.verification_note}")
+    run.stats["results"] = stats
 
 
 # --- reporting --------------------------------------------------------------------------------

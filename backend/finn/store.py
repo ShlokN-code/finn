@@ -356,3 +356,17 @@ def save_event_detail(conn, event_id: str, detail: dict | None, so_what: str | N
         (Jsonb(detail) if detail is not None else None, so_what, impact,
          Jsonb(impact_reason) if impact_reason is not None else None, impact_tier, event_id),
     )  # fmt: skip
+
+
+def symbol_industry(conn, symbol: str) -> str | None:
+    r = conn.execute(
+        "select raw->>'smIndustry' as ind from public.filings where symbol = %s and raw ? 'smIndustry' "
+        "order by filed_at desc limit 1",
+        (symbol,),
+    ).fetchone()
+    return r["ind"] if r else None
+
+
+def filing_urls(conn, ids: list[str]) -> dict[str, str | None]:
+    rows = conn.execute("select id, attachment_url from public.filings where id = any(%s)", (ids,)).fetchall()
+    return {r["id"]: r["attachment_url"] for r in rows}
