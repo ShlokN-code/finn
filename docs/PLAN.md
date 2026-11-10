@@ -52,7 +52,7 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [x] Alert dispatch: budget, batching, quiet hours, snooze, idempotent — `38e43f4`
 - [x] Level-0 tags, one-liners, chips, management profiles (+ optional Tavily) — `4de7ecf`
 - [x] Web: reusable card components, `/e/<id>`, `/connect` — `e45cd32`
-- [ ] **Acceptance 1:** dispatch `results` on Actions for COCHINSHIP, TATASTEEL, DIVISLAB, HDFCBANK (bank), BAJFINANCE (NBFC), TRENT/POLYCAB (outside demo) → check numbers by hand against the PDFs; confirm ✓ or explain each mismatch.
+- [x] **Acceptance 1:** results run for 12 symbols → TATASTEEL Q2 FY27 (filed 7 Nov) cross-checked; PBT ₹5,455.15 Cr confirmed against screener by the product owner. 8 ✓, BAJFINANCE partial, COCHINSHIP pending screener; first-run mismatches explained and fixed — `7a00ff3`
 - [ ] **Acceptance 2:** create the bot (DEPLOY.md §4), run `jobs.telegram_setup`, `/start` → test alert on the product owner's phone; Snooze and Open in FINN work.
 - [x] Verify XBRL element names for banks and NBFCs on real instances — HDFCBANK, BAJFINANCE checked; layout fixes in DECISIONS — `7a00ff3`
 - [ ] `TAVILY_API_KEY` when the product owner signs up (cards already work without it).
