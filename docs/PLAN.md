@@ -5,7 +5,7 @@ Product scope lives in PRODUCT.md; reasons live in DECISIONS.md. The phase break
 
 ## Start of next phase
 
-- [ ] **Fix `--font-sans`.** `web/app/globals.css` (written by `shadcn init`) sets `--font-sans: var(--font-sans)`, a self-reference, so text falls back to a serif font. Point it at the Geist variable from `app/layout.tsx` (`--font-geist-sans`) and check on a phone. — CSS fixed in `a747b11`; phone check pending (not yet deployed).
+- [x] **Fix `--font-sans`.** `web/app/globals.css` (written by `shadcn init`) sets `--font-sans: var(--font-sans)`, a self-reference, so text falls back to a serif font. Point it at the Geist variable from `app/layout.tsx` (`--font-geist-sans`) and check on a phone. — `a747b11`; verified on the deployed app at 375 px: body font resolves to Geist.
 
 ## Research dossier — on-demand NSE data via GitHub Actions dispatch
 
@@ -32,7 +32,8 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [x] Frozen snapshot 2026-10-30 (DB + `backend/data/snapshots/`) — `41c5d8b`
 - [x] Tests: dedup, threading, unit normalisation, classification rules, LLM router — 105 passing
 - [x] Run against tickers outside the demo set (TRENT, POLYCAB) — clean
-- [ ] **Push and verify on GitHub Actions:** dispatch `ingest` with job = daily, then job = filings; check the job summary and `source_status`. Needs repo secret `DATABASE_URL` (and `GEMINI_API_KEY`, already added).
+- [x] **Daily job verified on GitHub Actions** — run 42804318441 (dispatched 10 Nov 16:33 IST, commit `85ccaa4`): success in 2 m 54 s; `ingest_runs` #5 status ok, 0 failures; NSE reachable from the runner for every source; prices skipped (exchange holiday).
+- [ ] **Confirm the schedule fires.** No scheduled `ingest` run had started by 16:40 IST on 10 Nov (new crons can take a while to register on GitHub). Check on 11 Nov that the 30-min filing checks (`check_filings`) and the 16:30 daily run appear in `ingest_runs` with trigger `schedule`.
 - [ ] **Review the eval labels** in `backend/evals/classification/labelled.jsonl` (written by Claude; `note` marks uncertain ones) and add a held-out set from other symbols/months.
 - [ ] **Re-capture the snapshot by Fri 13 Nov** if a heavier results day lands this week (`python -m jobs.snapshot --suggest`).
 - [ ] **Rules:** press releases announcing results or new facilities without the words "results"/"capacity" fall to `press_release` (2 eval misses, PERSISTENT).
