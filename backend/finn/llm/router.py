@@ -6,8 +6,11 @@
 - Cache: by content hash (purpose + model + prompt + schema + PDF hash). A hit costs nothing and skips limits.
 - Limits: per-provider requests/minute (sleeps) and requests/day (counted from the log, so separate job runs
   share one budget). Defaults are conservative for free tiers; override with <PROVIDER>_RPM / <PROVIDER>_RPD.
-- Fallback chain per tier: Gemini → Groq (text only; skipped when the request needs the PDF) → LLMUnavailable,
-  which callers turn into an honest "unclassified"/"not found" state — never a guess.
+- Retries: a 5xx/network error or a per-minute 429 is retried with exponential backoff (2, 4, 8, 16 s) before
+  moving on; a per-day 429 or our own daily budget marks the provider exhausted for the run.
+- Fallback chain per tier: Gemini → Groq (text only: a PDF is replaced by its text, extracted locally; a
+  scanned PDF with no text layer can't go to Groq) → LLMUnavailable, which callers turn into an honest
+  "unclassified"/"not found" state — never a guess.
 - Every call (ok or not) is logged with tokens, latency and an estimated USD cost.
 """
 
@@ -21,11 +24,13 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from finn.llm.base import LLMRequest, LLMResult, Provider, ProviderError, QuotaExceeded, Tier
+from finn.llm.base import LLMRequest, LLMResult, Provider, ProviderError, QuotaExceeded, Tier, TransientError
 
 log = logging.getLogger("finn.llm")
 
 DEFAULT_LIMITS = {"gemini": (10, 400), "groq": (20, 800)}  # (requests/min, requests/day) — conservative
+BACKOFF_S = (2.0, 4.0, 8.0, 16.0)  # pauses between attempts on one provider (~30 s worst case)
+PDF_TEXT_PAGES = 12
 
 
 class LLMUnavailable(RuntimeError):
@@ -124,8 +129,11 @@ class Stats:
 
 
 class Router:
-    def __init__(self, providers: list[Provider], log: LLMLog, limits: dict[str, tuple[int, int]] | None = None):
+    def __init__(self, providers: list[Provider], log: LLMLog, limits: dict[str, tuple[int, int]] | None = None,
+                 sleep=time.sleep):  # fmt: skip
         self.providers = providers
+        self._sleep = sleep
+        self._pdf_text: dict[str | None, str] = {}
         self.log = log
         self.stats = Stats()
         self._limiters: dict[str, _Limiter] = {}
@@ -151,10 +159,10 @@ class Router:
             model = p.model_for(tier)
             if model is None:
                 continue
-            if req.pdf_required and not p.supports_pdf():
-                errors.append(f"{p.name}: needs PDF")
+            sendable = req if (p.supports_pdf() or not req.pdf) else self._as_text(req)
+            if sendable is None:
+                errors.append(f"{p.name}: needs the PDF and it has no text layer")
                 continue
-            sendable = req if (p.supports_pdf() or not req.pdf) else _without_pdf(req)
             key = sendable.content_hash(model)
             hit = self.log.get_cached(key)
             if hit:
@@ -177,20 +185,8 @@ class Router:
                 "content_hash": key, "provider": p.name, "model": model, "tier": tier, "purpose": req.purpose,
                 "request": {"system": req.system, "prompt": req.prompt, "pdf_sha256": _pdf_hash(sendable.pdf)},
             }  # fmt: skip
-            self.stats.calls += 1
-            log.info("llm call %s/%s %s pdf=%s", p.name, model, req.purpose, bool(sendable.pdf))
-            try:
-                res = p.generate(sendable, model)
-            except QuotaExceeded as e:
-                self._exhausted.add(p.name)
-                self.stats.failures += 1
-                self.log.record({**row, "ok": False, "error": str(e)[:500]})
-                errors.append(f"{p.name}: {e}")
-                continue
-            except ProviderError as e:
-                self.stats.failures += 1
-                self.log.record({**row, "ok": False, "error": str(e)[:500]})
-                errors.append(f"{p.name}: {e}")
+            res = self._attempt(p, model, sendable, row, errors)
+            if res is None:
                 continue
             pin, pout = p.price(model)
             cost = ((res.tokens_in or 0) * pin + (res.tokens_out or 0) * pout) / 1e6
@@ -221,6 +217,44 @@ class Router:
             )
             return res
         raise LLMUnavailable("; ".join(errors) or "no LLM provider configured")
+
+    def _attempt(self, p: Provider, model: str, req: LLMRequest, row: dict, errors: list[str]) -> LLMResult | None:
+        """One provider, with exponential backoff on transient errors and per-minute 429s."""
+        for attempt, pause in enumerate((*BACKOFF_S, None), start=1):
+            self.stats.calls += 1
+            log.info("llm call %s/%s %s pdf=%s attempt %d", p.name, model, req.purpose, bool(req.pdf), attempt)
+            try:
+                return p.generate(req, model)
+            except (QuotaExceeded, TransientError) as e:
+                self.stats.failures += 1
+                self.log.record({**row, "ok": False, "error": f"attempt {attempt}: {e}"[:500]})
+                daily = isinstance(e, QuotaExceeded) and e.daily
+                if daily or pause is None:
+                    if daily:
+                        self._exhausted.add(p.name)
+                    errors.append(f"{p.name}: {e}" + ("" if daily else f" (after {attempt} attempts)"))
+                    return None
+                self._sleep(pause)
+            except ProviderError as e:  # bad JSON, 4xx: retrying the same request won't help
+                self.stats.failures += 1
+                self.log.record({**row, "ok": False, "error": str(e)[:500]})
+                errors.append(f"{p.name}: {e}")
+                return None
+        return None
+
+    def _as_text(self, req: LLMRequest) -> LLMRequest | None:
+        """The request for a text-only provider: the PDF replaced by its text layer, extracted locally. None when
+        the PDF is required and has no text (scanned) — that request can only go to a PDF-capable model."""
+        from finn.citations import pdf_text
+
+        key = _pdf_hash(req.pdf)
+        if key not in self._pdf_text:
+            self._pdf_text[key] = pdf_text(req.pdf, max_pages=PDF_TEXT_PAGES)[0].strip()
+        text = self._pdf_text[key]
+        if not text:
+            return None if req.pdf_required else _without_pdf(req)
+        prompt = f"{req.prompt}\n\nDocument text (extracted from the attached PDF):\n{text[:24000]}"
+        return LLMRequest(req.purpose, req.system, prompt, req.schema, None, False, req.max_output_tokens)
 
 
 def _without_pdf(req: LLMRequest) -> LLMRequest:

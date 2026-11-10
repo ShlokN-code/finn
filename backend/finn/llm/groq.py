@@ -8,7 +8,7 @@ import time
 
 import requests
 
-from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, Tier
+from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, Tier, TransientError
 
 BASE = "https://api.groq.com/openai/v1"
 DEFAULT_MODEL = "llama-3.1-8b-instant"
@@ -53,10 +53,12 @@ class Groq:
                 timeout=60,
             )
         except requests.RequestException as e:
-            raise ProviderError(f"groq network error: {type(e).__name__}") from e
+            raise TransientError(f"groq network error: {type(e).__name__}") from e
         ms = round((time.perf_counter() - t0) * 1000)
-        if r.status_code == 429:
-            raise QuotaExceeded(f"groq 429: {r.text[:200]}")
+        if r.status_code == 429:  # Groq's free-tier limits are mostly per minute / per day of tokens
+            raise QuotaExceeded(f"groq 429: {r.text[:200]}", daily="per day" in r.text.lower())
+        if r.status_code >= 500:
+            raise TransientError(f"groq HTTP {r.status_code}: {r.text[:300]}")
         if not r.ok:
             raise ProviderError(f"groq HTTP {r.status_code}: {r.text[:300]}")
         payload = r.json()

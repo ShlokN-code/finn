@@ -15,12 +15,11 @@ import time
 
 import requests
 
-from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, Tier
+from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, Tier, TransientError
 
 BASE = "https://generativelanguage.googleapis.com/v1beta"
 DEFAULT_CHEAP = "gemini-3.5-flash-lite"
 DEFAULT_STRONG = "gemini-3.8-flash"
-RETRY_PAUSES_S = (5.0, 20.0)  # backoff before retrying a 5xx / network error
 # Paid-tier list prices (USD / 1M tokens) — used only for the cost estimate in the log; free tier bills nothing.
 PRICES = {"flash-lite": (0.30, 2.50), "flash": (0.75, 3.75)}
 
@@ -61,28 +60,20 @@ class Gemini:
             },
         }
         t0 = time.perf_counter()
-        r = None
-        for pause in (*RETRY_PAUSES_S, None):
-            try:
-                r = requests.post(
-                    f"{BASE}/models/{model}:generateContent",
-                    headers={"x-goog-api-key": self.api_key or "", "Content-Type": "application/json"},
-                    json=body,
-                    timeout=60,
-                )
-            except requests.RequestException as e:
-                if pause is None:
-                    raise ProviderError(f"gemini network error: {type(e).__name__}") from e
-                time.sleep(pause)
-                continue
-            # 500/503 ("model is experiencing high demand") are transient: back off and retry.
-            if r.status_code in (500, 502, 503, 504) and pause is not None:
-                time.sleep(pause)
-                continue
-            break
+        try:
+            r = requests.post(
+                f"{BASE}/models/{model}:generateContent",
+                headers={"x-goog-api-key": self.api_key or "", "Content-Type": "application/json"},
+                json=body,
+                timeout=60,
+            )
+        except requests.RequestException as e:
+            raise TransientError(f"gemini network error: {type(e).__name__}") from e
         ms = round((time.perf_counter() - t0) * 1000)
-        if r.status_code == 429:
-            raise QuotaExceeded(f"gemini 429: {_short(r.text)}")
+        if r.status_code == 429:  # per-day quotas name it ("PerDay"); otherwise a per-minute limit
+            raise QuotaExceeded(f"gemini 429: {_short(r.text)}", daily="perday" in r.text.lower().replace("_", ""))
+        if r.status_code >= 500:  # 503 "model is experiencing high demand" is transient; the router retries
+            raise TransientError(f"gemini HTTP {r.status_code}: {_short(r.text)}")
         if not r.ok:
             raise ProviderError(f"gemini HTTP {r.status_code}: {_short(r.text)}")
         payload = r.json()

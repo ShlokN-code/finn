@@ -48,11 +48,20 @@ class LLMResult:
 
 
 class QuotaExceeded(RuntimeError):
-    """Provider rate/quota limit hit (HTTP 429 or our own per-day budget). Router moves to the next provider."""
+    """Provider rate/quota limit hit (HTTP 429). `daily` = the day's quota is gone (router stops using the
+    provider for the run); otherwise it's a per-minute limit and the router backs off and retries."""
+
+    def __init__(self, msg: str, daily: bool = True):
+        super().__init__(msg)
+        self.daily = daily
 
 
 class ProviderError(RuntimeError):
-    """Any other provider failure (bad JSON, 5xx, network)."""
+    """Any other provider failure (bad JSON, 4xx)."""
+
+
+class TransientError(ProviderError):
+    """5xx ("model is experiencing high demand") or a network error: worth retrying after a pause."""
 
 
 class Provider(Protocol):
