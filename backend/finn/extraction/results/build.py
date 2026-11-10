@@ -20,7 +20,7 @@ from finn.extraction.results.compute import (
 )
 from finn.extraction.results.crosscheck import crosscheck
 from finn.models import Citation, Claim, Figure, ResultsDetail, ResultsLine, Series
-from finn.numbers import round_display
+from finn.numbers import pct_change, round_display
 from finn.sources.screener import QuarterTable
 
 log = logging.getLogger("finn.results")
@@ -91,6 +91,22 @@ def margin_series(table: QuarterTable | None, n: int = 8) -> Series | None:
     return Series(metric="EBITDA margin (screener)", unit="PCT", basis=table.basis, points=pts)
 
 
+def trend_pat_yoy(table: QuarterTable | None, quarter_end: date) -> float | None:
+    """Mean PAT YoY % over the four quarters before `quarter_end` (needs 8 earlier quarters on screener)."""
+    if table is None or "Net Profit" not in table.rows:
+        return None
+    ps = [p for p in table.periods if p < quarter_end]
+    vals = table.rows["Net Profit"]
+    yoys = []
+    for p in ps[-4:]:
+        i = table.periods.index(p)
+        if i >= 4 and vals[i] is not None and vals[i - 4] is not None:
+            y = pct_change(vals[i], vals[i - 4])
+            if y is not None:
+                yoys.append(y)
+    return sum(yoys) / len(yoys) if len(yoys) >= 2 else None
+
+
 def _fmt_pct(fig: Figure | None, unit_word: str = "") -> str | None:
     if fig is None or fig.value is None:
         return None
@@ -152,6 +168,7 @@ def build_from_quarters(
         verification_note=note, filing_url=filing_url, lines=chk.lines,
         margin_series=margin_series(table_ok) if template == "standard" else None,
         ebitda_note=EBITDA_NOTE if template == "standard" else None,
+        trend_pat_yoy_pct=trend_pat_yoy(table_ok, quarter_end),
     )  # fmt: skip
     impact, pairs = impact_from_lines(template, chk.lines)
     reason = None

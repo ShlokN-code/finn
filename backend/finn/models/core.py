@@ -124,6 +124,9 @@ class ResultsDetail(Model):
     lines: list[ResultsLine] = Field(default_factory=list)
     margin_series: Series | None = Field(None, description="8-quarter margin sparkline (screener table)")
     ebitda_note: str | None = Field(None, description="How EBITDA is defined (shown on tap)")
+    trend_pat_yoy_pct: float | None = Field(
+        None, description="Mean PAT YoY % of the 4 prior quarters (screener, computed in code) — ranking 'surprise'"
+    )
 
 
 class PriorRole(Model):

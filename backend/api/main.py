@@ -17,14 +17,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from api.diagnostics import get_probes
+from api.push import router as push_router
 from finn import __version__
 
 log = logging.getLogger("finn.api")
 app = FastAPI(title="FINN API", version=__version__)
+app.include_router(push_router)
 
 _origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()]
 if _origins:
-    app.add_middleware(CORSMiddleware, allow_origins=_origins, allow_methods=["GET"], allow_headers=["*"])
+    app.add_middleware(CORSMiddleware, allow_origins=_origins, allow_methods=["GET", "POST", "PUT", "DELETE"],
+                       allow_headers=["*"])  # fmt: skip
 
 
 @app.get("/health")
