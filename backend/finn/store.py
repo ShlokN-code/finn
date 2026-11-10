@@ -199,7 +199,12 @@ def save_events(conn, symbols: list[str], events: list[Event], assignment: dict[
                     for e in events
                 ],  # fmt: skip
             )
-            conn.execute("delete from public.events where symbol = any(%s) and not (id = any(%s))", (symbols, keys))
+            # price_volume events are synthetic (not from filings): threading must never delete them.
+            conn.execute(
+                "delete from public.events where symbol = any(%s) and not (id = any(%s)) "
+                "and category <> 'price_volume'",
+                (symbols, keys),
+            )
             cur.executemany(
                 "update public.filings set event_id = %s where id = %s and event_id is distinct from %s",
                 [(ev, fid, ev) for fid, ev in assignment.items()],
@@ -370,3 +375,86 @@ def symbol_industry(conn, symbol: str) -> str | None:
 def filing_urls(conn, ids: list[str]) -> dict[str, str | None]:
     rows = conn.execute("select id, attachment_url from public.filings where id = any(%s)", (ids,)).fetchall()
     return {r["id"]: r["attachment_url"] for r in rows}
+
+
+# --- price/volume signals ---------------------------------------------------------------------
+
+
+def load_bars(conn, symbols: list[str], since: date) -> dict[str, list]:
+    from finn.signals.price_volume import Bar as SigBar
+
+    rows = conn.execute(
+        "select symbol, date, close, adj_close, volume from public.prices_daily where symbol = any(%s) and "
+        "date >= %s and close is not null order by symbol, date",
+        (symbols, since),
+    ).fetchall()
+    out: dict[str, list] = {}
+    for r in rows:
+        out.setdefault(r["symbol"], []).append(SigBar(r["date"], r["close"], r["adj_close"] or r["close"], r["volume"]))
+    return out
+
+
+def actions_on(conn, symbols: list[str], day: date) -> dict[str, list]:
+    from finn.signals.price_volume import Action
+
+    rows = conn.execute(
+        "select symbol, ex_date, kind, subject, ratio_new, ratio_held, amount_per_share from public.corporate_actions "
+        "where symbol = any(%s) and ex_date = %s",
+        (symbols, day),
+    ).fetchall()
+    out: dict[str, list] = {}
+    for r in rows:
+        out.setdefault(r["symbol"], []).append(
+            Action(r["ex_date"], r["kind"], r["subject"], r["ratio_new"], r["ratio_held"], r["amount_per_share"])
+        )
+    return out
+
+
+def material_filings(conn, symbols: list[str], lo: datetime, hi: datetime) -> dict[str, list[dict]]:
+    rows = conn.execute(
+        "select id, symbol, filed_at, category, stage, subject, attachment_url from public.filings where "
+        "symbol = any(%s) and filed_at > %s and filed_at <= %s and category is not null and category not in "
+        "('routine', 'unclassified', 'investor_meetings')",
+        (symbols, lo, hi),
+    ).fetchall()
+    out: dict[str, list[dict]] = {}
+    for r in rows:
+        out.setdefault(r["symbol"], []).append(r)
+    return out
+
+
+def deals_on(conn, symbols: list[str], day: date) -> dict[str, list[dict]]:
+    rows = conn.execute(
+        "select symbol, kind, client, side, value_cr from public.deals where symbol = any(%s) and date = %s",
+        (symbols, day),
+    ).fetchall()
+    out: dict[str, list[dict]] = {}
+    for r in rows:
+        out.setdefault(r["symbol"], []).append(r)
+    return out
+
+
+def upsert_price_signal(conn, sig, detail: dict) -> None:
+    conn.execute(
+        "insert into public.price_signals (symbol, date, move_pct, raw_move_pct, mechanical_pct, z_score, "
+        "volume_ratio, sector_index, sector_move_pct, day_label, detail) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+        "on conflict (symbol, date) do update set move_pct = excluded.move_pct, raw_move_pct = excluded.raw_move_pct, "
+        "mechanical_pct = excluded.mechanical_pct, z_score = excluded.z_score, volume_ratio = excluded.volume_ratio, "
+        "sector_index = excluded.sector_index, sector_move_pct = excluded.sector_move_pct, "
+        "day_label = excluded.day_label, detail = excluded.detail, computed_at = now()",
+        (sig.symbol, sig.date, sig.move_pct, sig.raw_move_pct, sig.mechanical_pct, sig.z, sig.volume_ratio,
+         sig.sector_index, sig.sector_move_pct, sig.day_label, Jsonb(detail)),
+    )  # fmt: skip
+
+
+def upsert_synthetic_event(conn, event: Event) -> None:
+    """Price/volume events (no filings). detail/so_what are part of the event itself."""
+    conn.execute(
+        "insert into public.events (id, key, symbol, category, title, period, started_at, updated_at, timeline, "
+        "figures, impact, impact_reason, driver_ids, so_what, detail, detail_at, impact_tier, refreshed_at) values "
+        "(%s,%s,%s,%s,%s,null,%s,%s,'[]','[]',null,null,'[]',%s,%s,now(),'code',now()) on conflict (id) do update set "
+        "title = excluded.title, updated_at = excluded.updated_at, so_what = excluded.so_what, "
+        "detail = excluded.detail, detail_at = now(), refreshed_at = now()",
+        (event.id, event.key, event.symbol, event.category, event.title, event.started_at, event.updated_at,
+         event.so_what, Jsonb(event.detail.model_dump(mode="json")) if event.detail else None),
+    )  # fmt: skip

@@ -332,7 +332,16 @@ def write_summary(run: Run, status: str) -> None:
     """Human summary to stdout and, in GitHub Actions, to the job summary page."""
     cls = run.stats.get("classification", {})
     lines = [f"## {run.job}: {status}", "", f"- duration: {run.stats.get('duration_s')} s"]
-    for k in ("securities", "announcements", "board_meetings", "corporate_actions", "results_fetch", "results"):
+    for k in (
+        "securities",
+        "announcements",
+        "board_meetings",
+        "corporate_actions",
+        "results_fetch",
+        "results",
+        "signals",
+        "alerts",
+    ):
         if k in run.stats:
             lines.append(f"- {k}: {run.stats[k]}")
     if "prices" in run.stats:

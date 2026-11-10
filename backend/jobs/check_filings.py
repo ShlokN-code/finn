@@ -33,9 +33,9 @@ def main() -> None:
         print(f"outside filing-check window ({now:%a %H:%M} IST); nothing to do")
         return
 
-    symbols = tracked_symbols(args.symbols or None)
     today = ist_today()
     with connect() as conn, p.Run("check_filings", conn) as run:
+        symbols = tracked_symbols(args.symbols or None, conn)
         run.stats["symbols"] = symbols
         s = nse.session()
         run.step("announcements", p.step_announcements, s, symbols, today - timedelta(days=1), today)

@@ -39,6 +39,11 @@ def _f(x) -> float | None:
     return None if math.isnan(v) else v
 
 
+def yahoo_ticker(symbol: str) -> str:
+    """NSE symbol → Yahoo ticker; index tickers ('^NSEI', 'NIFTY_FIN_SERVICE.NS') pass through."""
+    return symbol if symbol.startswith("^") or symbol.endswith(".NS") else f"{symbol}.NS"
+
+
 def fetch_bars(symbols: list[str], *, period: str | None = None, start: date | None = None) -> dict[str, list[Bar]]:
     """Daily bars per NSE symbol (Yahoo '<SYM>.NS'). Pass `period` ('1y', '1mo') or `start`.
     Returns only symbols that came back with data; callers record the rest as failed."""
@@ -51,7 +56,7 @@ def fetch_bars(symbols: list[str], *, period: str | None = None, start: date | N
             chunk = batch[i : i + CHUNK]
             try:
                 df = yf.download(
-                    [f"{t}.NS" for t in chunk],
+                    [yahoo_ticker(t) for t in chunk],
                     period=period,
                     start=start,
                     auto_adjust=False,
@@ -66,7 +71,7 @@ def fetch_bars(symbols: list[str], *, period: str | None = None, start: date | N
                 continue
             for t in chunk:
                 try:
-                    sub = df[f"{t}.NS"].dropna(how="all")
+                    sub = df[yahoo_ticker(t)].dropna(how="all")
                 except KeyError:
                     continue
                 bars = [

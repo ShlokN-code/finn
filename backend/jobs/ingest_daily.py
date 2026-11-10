@@ -16,6 +16,9 @@ from finn.calendar import is_trading_day, ist_today
 from finn.db import connect
 from finn.ingest import pipeline as p
 from finn.portfolio import tracked_symbols
+from finn.push import subscriptions as subs
+from finn.signals.price_volume import INDEX_TICKERS
+from finn.signals.run import step_signals
 from finn.sources import nse
 
 
@@ -27,10 +30,10 @@ def main() -> None:
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
-    symbols = tracked_symbols(args.symbols or None)
     today = ist_today()
     days = max(args.backfill_days, 3)
     with connect() as conn, p.Run("ingest_daily", conn) as run:
+        symbols = tracked_symbols(args.symbols or None, conn)
         run.stats["symbols"] = symbols
         s = nse.session()
         run.step("holidays", p.step_holidays, s)
@@ -38,7 +41,7 @@ def main() -> None:
         if args.skip_prices:
             pass
         elif is_trading_day(today) or args.backfill_days:
-            run.step("prices", p.step_prices, symbols, backfill=args.backfill_days >= 365)
+            run.step("prices", p.step_prices, symbols + INDEX_TICKERS, backfill=args.backfill_days >= 365)
         else:
             run.stats["prices"] = f"skipped: {today} is not a trading day"
         # Filings are disseminated on exchange holidays too (board meetings happen), so always fetch them.
@@ -50,6 +53,9 @@ def main() -> None:
         run.step("thread", p.step_thread, symbols)
         run.step("results_fetch", p.step_results_fetch, s, symbols)
         run.step("results_build", p.step_results_build, symbols)
+        if is_trading_day(today) and not args.skip_prices:
+            settings = [subs.settings_of(x) for x in subs.all_subscriptions(conn)]
+            run.step("signals", step_signals, symbols, today, settings)
 
 
 if __name__ == "__main__":

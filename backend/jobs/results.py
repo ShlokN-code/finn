@@ -23,8 +23,8 @@ def main() -> None:
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
-    symbols = tracked_symbols(args.symbols or None)
     with connect() as conn, p.Run("results", conn) as run:
+        symbols = tracked_symbols(args.symbols or None, conn)
         run.stats["symbols"] = symbols
         if not args.no_fetch:
             s = nse.session()
