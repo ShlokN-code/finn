@@ -1,0 +1,270 @@
+"""Ingest pipeline steps shared by the jobs. Each step is independent: a failing source records its error in
+source_status / the run's failures and the run continues — readers keep serving the last good data (rule 7).
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+import time
+import traceback
+from dataclasses import dataclass, field
+from datetime import UTC, date, datetime, timedelta
+
+from finn import store
+from finn.calendar import ist_today, set_holidays
+from finn.classification.ladder import Classifier
+from finn.events.threader import thread
+from finn.llm import PostgresLLMLog, Router
+from finn.sources import nse
+from finn.sources.http import FetchError, NSESession, polite_get
+from finn.sources.prices import fetch_bars, needs_restatement
+
+log = logging.getLogger("finn.ingest")
+
+BACKFILL_PERIOD = "1y"
+INCREMENTAL_DAYS = 15  # calendar days ≈ 10 sessions
+MAX_PDF_BYTES = 25 * 1024 * 1024
+
+
+@dataclass
+class Run:
+    job: str
+    conn: object
+    stats: dict = field(default_factory=dict)
+    failures: list = field(default_factory=list)
+    run_id: int | None = None
+    t0: float = field(default_factory=time.monotonic)
+
+    def __enter__(self):
+        trigger = os.environ.get("GITHUB_EVENT_NAME", "local")
+        self.run_id = store.start_run(self.conn, self.job, trigger)
+        return self
+
+    def fail(self, step: str, scope: str, err: BaseException | str) -> None:
+        msg = err if isinstance(err, str) else f"{type(err).__name__}: {err}"
+        log.warning("[%s] %s failed: %s", step, scope, msg)
+        self.failures.append({"step": step, "scope": scope, "error": str(msg)[:500]})
+
+    def step(self, name: str, fn, *args, **kw):
+        t = time.monotonic()
+        try:
+            out = fn(self, *args, **kw)
+        except Exception as e:  # a step crashing must not stop the others
+            self.fail(name, "all", e)
+            log.error(traceback.format_exc())
+            out = None
+        self.stats.setdefault("timings_s", {})[name] = round(time.monotonic() - t, 1)
+        return out
+
+    def __exit__(self, exc_type, exc, tb):
+        if exc:
+            self.fail("job", "all", exc)
+        status = "failed" if exc else ("partial" if self.failures else "ok")
+        self.stats["duration_s"] = round(time.monotonic() - self.t0, 1)
+        store.finish_run(self.conn, self.run_id, status, self.stats, self.failures)
+        write_summary(self, status)
+        return False
+
+
+# --- steps ------------------------------------------------------------------------------------
+
+
+def step_holidays(run: Run, s: NSESession) -> None:
+    try:
+        days = nse.fetch_holidays(s)
+        store.upsert_holidays(run.conn, days, "nse_holiday_master")
+        store.mark_source(run.conn, "nse_holidays", "all", ok=True, rows=len(days))
+    except Exception as e:
+        store.mark_source(run.conn, "nse_holidays", "all", ok=False, error=str(e)[:300])
+        run.fail("holidays", "all", e)
+    set_holidays(store.load_holidays(run.conn))
+
+
+def step_securities(run: Run, s: NSESession) -> None:
+    rows = nse.fetch_equity_list(s)
+    if not rows:
+        store.mark_source(run.conn, "nse_equity_list", "all", ok=False, error="empty or blocked")
+        run.fail("securities", "all", "equity list empty or blocked")
+        return
+    n = store.upsert_securities(run.conn, rows)
+    store.mark_source(run.conn, "nse_equity_list", "all", ok=True, rows=n)
+    run.stats["securities"] = n
+
+
+def step_prices(run: Run, symbols: list[str], backfill: bool = False) -> None:
+    counts = store.price_row_counts(run.conn, symbols)
+    full = [s for s in symbols if backfill or counts.get(s, 0) < 200]
+    incr = [s for s in symbols if s not in full]
+    written, restated, ok = 0, [], set()
+    if incr:
+        start = ist_today() - timedelta(days=INCREMENTAL_DAYS)
+        bars = fetch_bars(incr, start=start)
+        for sym in incr:
+            if sym not in bars:
+                continue
+            stored = store.stored_closes(run.conn, sym, start)
+            if needs_restatement(stored, bars[sym]):
+                restated.append(sym)
+            else:
+                written += store.upsert_prices(run.conn, bars[sym])
+                ok.add(sym)
+                store.mark_source(run.conn, "yahoo_prices", sym, ok=True, rows=len(bars[sym]))
+        full += restated
+    if full:
+        bars = fetch_bars(full, period=BACKFILL_PERIOD)
+        for sym in full:
+            if sym in bars:
+                store.replace_prices(run.conn, sym, bars[sym])
+                written += len(bars[sym])
+                ok.add(sym)
+                store.mark_source(run.conn, "yahoo_prices", sym, ok=True, rows=len(bars[sym]))
+    for sym in symbols:
+        if sym not in ok:
+            store.mark_source(run.conn, "yahoo_prices", sym, ok=False, error="no data from Yahoo")
+            run.fail("prices", sym, "no data from Yahoo (rate limit?)")
+    run.stats["prices"] = {"rows_written": written, "backfilled": sorted(set(full) - set(restated)),
+                           "restated": restated}  # fmt: skip
+
+
+def step_announcements(run: Run, s: NSESession, symbols: list[str], frm: date, to: date) -> None:
+    now = datetime.now(UTC)
+    total = 0
+    for sym in symbols:
+        try:
+            rows = nse.fetch_announcements(s, sym, frm, to)
+            items = []
+            for r in rows:
+                try:
+                    items.append((nse.announcement_to_filing(r, now), r, r.get("fileSize")))
+                except Exception as e:
+                    run.fail("announcements.parse", sym, e)
+            total += store.upsert_filings(run.conn, items)
+            store.mark_source(run.conn, "nse_announcements", sym, ok=True, rows=len(items))
+        except Exception as e:
+            store.mark_source(run.conn, "nse_announcements", sym, ok=False, error=str(e)[:300])
+            run.fail("announcements", sym, e)
+    run.stats["announcements"] = total
+
+
+def step_board_meetings(run: Run, s: NSESession, symbols: list[str], since: date) -> None:
+    now = datetime.now(UTC)
+    total = 0
+    for sym in symbols:
+        try:
+            rows = nse.fetch_board_meetings(s, sym)
+            items = []
+            for r in rows:
+                f = nse.board_meeting_to_filing(r, now)
+                if f and f.filed_at.date() >= since:
+                    items.append((f, r, r.get("attFileSize")))
+            total += store.upsert_filings(run.conn, items)
+            store.mark_source(run.conn, "nse_board_meetings", sym, ok=True, rows=len(items))
+        except Exception as e:
+            store.mark_source(run.conn, "nse_board_meetings", sym, ok=False, error=str(e)[:300])
+            run.fail("board_meetings", sym, e)
+    run.stats["board_meetings"] = total
+
+
+def step_corporate_actions(run: Run, s: NSESession, symbols: list[str]) -> None:
+    total = 0
+    for sym in symbols:
+        try:
+            rows = nse.fetch_corporate_actions(s, sym)
+            items = [(a, r) for r in rows if (a := nse.to_corporate_action(r))]
+            total += store.upsert_actions(run.conn, items)
+            store.mark_source(run.conn, "nse_corporate_actions", sym, ok=True, rows=len(items))
+        except Exception as e:
+            store.mark_source(run.conn, "nse_corporate_actions", sym, ok=False, error=str(e)[:300])
+            run.fail("corporate_actions", sym, e)
+    run.stats["corporate_actions"] = total
+
+
+def step_deals(run: Run, s: NSESession, symbols: list[str], frm: date, to: date) -> None:
+    tracked = set(symbols)
+    out = {}
+    for kind in ("bulk", "block"):
+        try:
+            deals = nse.fetch_deals(s, kind, frm, to)
+            src = "api"
+        except (FetchError, ValueError) as e:
+            run.fail("deals", kind, f"API failed ({e}); using archive CSV")
+            deals, src = nse.fetch_deals_archive(s, kind), "archive"
+        mine = [d for d in deals if d.symbol in tracked]
+        store.upsert_deals(run.conn, mine)
+        store.mark_source(run.conn, f"nse_{kind}_deals", "all", ok=True, rows=len(deals))
+        out[kind] = {"market_rows": len(deals), "tracked": len(mine), "source": src}
+    run.stats["deals"] = out
+
+
+def make_classifier(run: Run, s: NSESession | None) -> tuple[Classifier, Router]:
+    router = Router.default(PostgresLLMLog(run.conn))
+    if not router.providers:
+        log.warning("no LLM key configured — tier (c) disabled; leftovers stay unclassified")
+
+    def pdf_fetcher(url: str) -> bytes | None:
+        if s is None:
+            return None
+        try:
+            r = polite_get(s, url, ttl=None, headers={"Accept": "application/pdf,*/*"})
+        except FetchError:
+            return None
+        if not r.ok or not r.content.startswith(b"%PDF") or len(r.content) > MAX_PDF_BYTES:
+            return None
+        return r.content
+
+    return Classifier(router if router.providers else None, pdf_fetcher), router
+
+
+def step_classify(run: Run, s: NSESession | None, symbols: list[str] | None) -> None:
+    clf, router = make_classifier(run, s)
+    todo = store.filings_to_classify(run.conn, symbols)
+    clf.names.update(store.company_names(run.conn, sorted({f.symbol for f in todo})))
+    for f in todo:
+        c = clf.classify(f)
+        c.apply(f)
+        store.save_classification(run.conn, f, c.tier, c.note)
+    run.stats["classification"] = clf.stats.as_dict()
+    run.stats["llm"] = router.stats.as_dict()
+    for msg in clf.stats.failures[:50]:
+        run.failures.append({"step": "classify", "scope": msg.split(" ")[1] if " " in msg else "?", "error": msg})
+
+
+def step_thread(run: Run, symbols: list[str]) -> None:
+    filings = store.filings_for_symbols(run.conn, symbols)
+    events, assignment = thread(filings)
+    n = store.save_events(run.conn, symbols, events, assignment)
+    run.stats["events"] = {"events": n, "threaded_filings": sum(1 for v in assignment.values() if v),
+                           "filings": len(filings)}  # fmt: skip
+
+
+# --- reporting --------------------------------------------------------------------------------
+
+
+def write_summary(run: Run, status: str) -> None:
+    """Human summary to stdout and, in GitHub Actions, to the job summary page."""
+    cls = run.stats.get("classification", {})
+    lines = [f"## {run.job}: {status}", "", f"- duration: {run.stats.get('duration_s')} s"]
+    for k in ("securities", "announcements", "board_meetings", "corporate_actions"):
+        if k in run.stats:
+            lines.append(f"- {k}: {run.stats[k]}")
+    if "prices" in run.stats:
+        lines.append(f"- prices: {run.stats['prices']}")
+    if "deals" in run.stats:
+        lines.append(f"- deals: {run.stats['deals']}")
+    if cls:
+        lines += ["", "### Classification tier split", "", "| tier | filings | % |", "|---|---|---|"]
+        for tier in ("exchange", "rule", "model", "failed"):
+            lines.append(f"| {tier} | {cls['tiers'].get(tier, 0)} | {cls['tier_pct'].get(tier, 0)} |")
+        lines.append(f"\nLLM: {run.stats.get('llm')}")
+    if "events" in run.stats:
+        lines.append(f"- events: {run.stats['events']}")
+    if run.failures:
+        lines += ["", f"### Failures ({len(run.failures)})", ""]
+        lines += [f"- `{f['step']}` {f['scope']}: {f['error'][:200]}" for f in run.failures[:40]]
+    text = "\n".join(lines) + "\n"
+    print(text, flush=True)
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        with open(path, "a") as fh:
+            fh.write(text)
