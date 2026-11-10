@@ -14,3 +14,4 @@ backend/spikes/.cache/
 .vercel
 .env.*.local
 backend/spikes/samples/_result_*.json
+backend/.cache/

@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import math
+import re
 from decimal import ROUND_HALF_UP, Decimal
 
 LAKH_PER_CRORE = 100.0
@@ -48,3 +49,73 @@ def round_display(x: float, places: int = 1) -> Decimal:
     """Half-up rounding for display, matching what a reader computes by hand (2.675 → 2.68)."""
     q = Decimal(1).scaleb(-places)
     return Decimal(repr(x)).quantize(q, rounding=ROUND_HALF_UP)
+
+
+# --- parsing printed numbers (trust layer: unit normalisation) -------------------------------------
+
+_NUM_RE = re.compile(r"[-−]?\(?\d[\d,]*(?:\.\d+)?\)?")
+_UNIT_WORDS = {
+    "crore": "crore",
+    "crores": "crore",
+    "cr": "crore",
+    "cr.": "crore",
+    "lakh": "lakh",
+    "lakhs": "lakh",
+    "lac": "lakh",
+    "lacs": "lakh",
+    "million": "million",
+    "millions": "million",
+    "mn": "million",
+    "mln": "million",
+    "billion": "billion",
+    "billions": "billion",
+    "bn": "billion",
+}
+_UNIT_RE = re.compile(r"\b(crores?|cr\.?|lakhs?|lacs?|millions?|mn|mln|billions?|bn)(?![a-z])", re.I)
+
+
+def parse_indian_number(text: str) -> float:
+    """'1,23,456.78' → 123456.78; '(1,234)' and '−5' → negative. Raises ValueError if no number."""
+    m = _NUM_RE.search(text.replace(" ", " "))
+    if not m:
+        raise ValueError(f"no number in {text!r}")
+    s = m.group(0)
+    neg = s.startswith(("-", "−")) or (s.startswith("(") and s.endswith(")"))
+    v = float(s.strip("-−()").replace(",", ""))
+    return -v if neg else v
+
+
+def to_crore_any(value: float, unit: str) -> float:
+    """to_crore plus 'billion' (1 bn = 100 Cr)."""
+    if unit.strip().lower() in ("billion", "billions", "bn"):
+        return value * 100.0
+    return to_crore(value, unit)
+
+
+def parse_money(text: str, default_unit: str | None = None) -> tuple[float, str, str]:
+    """Parse a printed money amount into ₹ crore.
+
+    Returns (value_cr, raw_number_text, raw_unit). The unit is read from the text ('Rs 450 million',
+    '₹12.5 lakh', '1,234 Cr') or, failing that, from `default_unit` (e.g. a table header 'Rs. in lakhs').
+    Raises ValueError when no unit can be determined — never guess a unit.
+    """
+    raw = text.strip()
+    m = _NUM_RE.search(raw.replace(" ", " "))
+    if not m:
+        raise ValueError(f"no number in {text!r}")
+    value = parse_indian_number(m.group(0))
+    um = _UNIT_RE.search(raw[m.end() :]) or _UNIT_RE.search(raw)
+    if um:
+        unit = _UNIT_WORDS[um.group(1).lower()]
+    elif default_unit:
+        unit = default_unit
+    elif re.search(r"(₹|\bRs\.?|\bINR)", raw, re.I):
+        unit = "rupees"
+    else:
+        raise ValueError(f"no unit in {text!r} and no default_unit")
+    return to_crore_any(value, unit), m.group(0), unit
+
+
+def deal_value_cr(quantity: float, price_inr: float) -> float:
+    """Bulk/block deal value: shares × ₹ price, in ₹ crore."""
+    return quantity * price_inr / 1e7
