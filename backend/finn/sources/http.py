@@ -14,6 +14,8 @@ import hashlib
 import json
 import logging
 import os
+import tempfile
+import threading
 import time
 from pathlib import Path
 from urllib.parse import urlparse
@@ -40,6 +42,7 @@ DEFAULT_INTERVAL = 1.0
 RETRY_STATUS = {401, 403, 429}
 
 _last_hit: dict[str, float] = {}
+_throttle_lock = threading.Lock()  # the API's research worker and request threads share this module
 
 
 def cache_dir() -> Path:
@@ -57,10 +60,12 @@ class FetchError(RuntimeError):
 def _throttle(url: str) -> None:
     host = urlparse(url).netloc
     gap = MIN_INTERVAL.get(host, DEFAULT_INTERVAL)
-    wait = _last_hit.get(host, 0.0) + gap - time.monotonic()
+    with _throttle_lock:  # reserve the next slot for this host, then sleep outside the lock
+        slot = max(time.monotonic(), _last_hit.get(host, 0.0) + gap)
+        _last_hit[host] = slot
+    wait = slot - time.monotonic()
     if wait > 0:
         time.sleep(wait)
-    _last_hit[host] = time.monotonic()
 
 
 def _key(url: str, params: dict | None) -> str:
@@ -168,6 +173,47 @@ def fetch_capped(session: requests.Session, url: str, *, max_bytes: int, deadlin
         return None
     body_f.write_bytes(bytes(buf))
     return bytes(buf)
+
+
+def fetch_to_file(url: str, *, max_bytes: int, deadline_s: float = 120, headers: dict | None = None,
+                  session: requests.Session | None = None) -> tuple[Path | None, str]:  # fmt: skip
+    """Stream a document to a temp file (never held in RAM; the caller deletes it). Returns (path, status) with
+    status 'ok' | 'too_large' | 'failed:<reason>'. Nothing is cached on disk: Render's disk is wiped anyway, and
+    research keeps only extracted text (in Supabase)."""
+    s = session or requests.Session()
+    _throttle(url)
+    t0 = time.monotonic()
+    fd, name = tempfile.mkstemp(prefix="finn-doc-", suffix=".pdf")
+    path = Path(name)
+    try:
+        with os.fdopen(fd, "wb") as f, s.get(url, stream=True, timeout=30, headers=headers) as r:
+            if not r.ok:
+                path.unlink(missing_ok=True)
+                return None, f"failed:HTTP {r.status_code}"
+            if int(r.headers.get("content-length") or 0) > max_bytes:
+                path.unlink(missing_ok=True)
+                return None, "too_large"
+            n = 0
+            for chunk in r.iter_content(256 * 1024):
+                n += len(chunk)
+                if n > max_bytes:
+                    path.unlink(missing_ok=True)
+                    return None, "too_large"
+                if time.monotonic() - t0 > deadline_s:
+                    path.unlink(missing_ok=True)
+                    return None, "failed:timeout"
+                f.write(chunk)
+    except requests.RequestException as e:
+        path.unlink(missing_ok=True)
+        return None, f"failed:{type(e).__name__}"
+    return path, "ok"
+
+
+def exchange_pdf_headers(url: str) -> dict:
+    """BSE serves PDFs to a browser UA with its own Referer; everything else gets FINN's identifying UA."""
+    if "bseindia.com" in url:
+        return {"User-Agent": BROWSER_UA, "Referer": "https://www.bseindia.com/", "Accept": "application/pdf,*/*"}
+    return {"User-Agent": FINN_UA, "Accept": "application/pdf,*/*"}
 
 
 def get_json(session: requests.Session, url: str, **kw):

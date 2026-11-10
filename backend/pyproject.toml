@@ -20,6 +20,8 @@ api = [
   # screener parsing (cross-checks now; Phase 3 research runs on Render)
   "beautifulsoup4>=4.12",
   "lxml>=5.0",
+  # research: transcript / annual-report text, page by page (AGPL-3.0; this repo is public — DECISIONS.md)
+  "pymupdf>=1.24",
 ]
 jobs = [
   "requests>=2.32",
@@ -29,6 +31,7 @@ jobs = [
   "pandas>=2.2",
   "psycopg[binary]>=3.2",
   "pypdf>=5",
+  "pymupdf>=1.24",
 ]
 dev = [
   "pytest>=8",
