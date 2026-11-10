@@ -280,7 +280,7 @@ export interface ResultsDetail {
   source_path: "xbrl" | "pdf_table" | "pdf_model";
   template: "standard" | "bank" | "nbfc";
   /**
-   * Mean PAT YoY % of the 4 prior quarters (screener, computed in code) — ranking 'surprise'
+   * Median PAT YoY % of the 4 prior quarters, YoYs above +100% (low-base effects) left out (screener, computed in code) — ranking 'surprise'
    */
   trend_pat_yoy_pct: number | null;
   /**

@@ -128,7 +128,9 @@ class ResultsDetail(Model):
         None, description="Methodology note shown on tap: how EBITDA is defined; for banks, the PAT basis"
     )
     trend_pat_yoy_pct: float | None = Field(
-        None, description="Mean PAT YoY % of the 4 prior quarters (screener, computed in code) — ranking 'surprise'"
+        None,
+        description="Median PAT YoY % of the 4 prior quarters, YoYs above +100% (low-base effects) left out "
+        "(screener, computed in code) — ranking 'surprise'",
     )
 
 

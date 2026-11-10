@@ -7,6 +7,7 @@ year-ago quarters come from their own XBRL filings (the PDF fallback carries the
 from __future__ import annotations
 
 import logging
+import statistics
 from dataclasses import dataclass
 from datetime import date
 
@@ -92,8 +93,13 @@ def margin_series(table: QuarterTable | None, n: int = 8) -> Series | None:
     return Series(metric="EBITDA margin (screener)", unit="PCT", basis=table.basis, points=pts)
 
 
+BASE_EFFECT_PCT = 100.0  # YoY above this ⇒ the base was under half the quarter: a base effect, not a trend
+
+
 def trend_pat_yoy(table: QuarterTable | None, quarter_end: date) -> float | None:
-    """Mean PAT YoY % over the four quarters before `quarter_end` (needs 8 earlier quarters on screener)."""
+    """Median PAT YoY % over the four quarters before `quarter_end` (needs 8 earlier quarters on screener).
+    YoYs above +100% are left out (low-base effects, e.g. a steelmaker recovering from a weak year); fewer than
+    two comparable quarters → None (no surprise factor)."""
     if table is None or "Net Profit" not in table.rows:
         return None
     ps = [p for p in table.periods if p < quarter_end]
@@ -103,9 +109,9 @@ def trend_pat_yoy(table: QuarterTable | None, quarter_end: date) -> float | None
         i = table.periods.index(p)
         if i >= 4 and vals[i] is not None and vals[i - 4] is not None:
             y = pct_change(vals[i], vals[i - 4])
-            if y is not None:
+            if y is not None and y <= BASE_EFFECT_PCT:
                 yoys.append(y)
-    return sum(yoys) / len(yoys) if len(yoys) >= 2 else None
+    return statistics.median(yoys) if len(yoys) >= 2 else None
 
 
 def _fmt_pct(fig: Figure | None, unit_word: str = "") -> str | None:

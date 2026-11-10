@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 from datetime import datetime, timedelta
 
+from finn.extraction.results.build import BASE_EFFECT_PCT
 from finn.models import Category, ScoreBreakdown, WeightRule
 from finn.ranking.feedback import effective_multiplier
 
@@ -101,9 +102,11 @@ def surprise(event: dict) -> tuple[float, list[str]]:
         pat = next((ln for ln in d.get("lines", []) if ln["metric"] == "PAT"), None)
         yoy = (pat or {}).get("yoy") or {}
         if trend is not None and yoy.get("value") is not None:
+            if yoy["value"] > BASE_EFFECT_PCT:  # low base: growth % says little about surprise
+                return 1.0, [f"PAT YoY {yoy['value']:+.0f}% is off a low base — no surprise factor"]
             gap = abs(yoy["value"] - trend)
             s = 1 + min(1.0, gap / 20.0)
-            return s, [f"PAT YoY {yoy['value']:+.1f}% vs {trend:+.1f}% trailing average (×{s:.2f})"]
+            return s, [f"PAT YoY {yoy['value']:+.1f}% vs {trend:+.1f}% trailing median (×{s:.2f})"]
     if d.get("kind") == "price_volume" and d.get("z_score") is not None:
         s = min(2.0, max(1.0, abs(d["z_score"]) / 2))
         return s, [f"Move is {abs(d['z_score']):.1f}σ for this stock (×{s:.2f})"]

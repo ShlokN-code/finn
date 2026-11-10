@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
 
@@ -91,3 +91,24 @@ def test_surprise_results_and_price():
     assert score(ev(detail=d), 5, []).surprise == pytest.approx(1.25)
     pv = {"kind": "price_volume", "z_score": -3.0}
     assert score(ev("price_volume", detail=pv), 5, []).surprise == pytest.approx(1.5)
+
+
+def test_surprise_ignores_low_base_effects():
+    from finn.extraction.results.build import trend_pat_yoy
+    from finn.sources.screener import QuarterTable
+
+    # TATASTEEL's screener Net Profit, Sep 2024 … Sep 2026
+    ends = [date(2024, 9, 30), date(2024, 12, 31), date(2025, 3, 31), date(2025, 6, 30), date(2025, 9, 30),
+            date(2025, 12, 31), date(2026, 3, 31), date(2026, 6, 30), date(2026, 9, 30)]  # fmt: skip
+    np_ = [759, 295, 1201, 2007, 3183, 2730, 2965, 2385, 3700]
+    t = QuarterTable("TATASTEEL", "consolidated", "u", "Rs. Crores", ends, {"Net Profit": np_})
+    assert trend_pat_yoy(t, ends[-1]) is None  # only one comparable YoY (+18.8%) left → no surprise factor
+    d = {"kind": "results", "verification": "cross_checked", "trend_pat_yoy_pct": None,
+         "lines": [{"metric": "PAT", "yoy": {"value": 16.2}}]}  # fmt: skip
+    assert score(ev(detail=d), 5, []).surprise == 1.0
+    # median, not mean: one outlier doesn't swing the trend
+    t2 = QuarterTable("X", "consolidated", "u", "Rs. Crores", ends, {"Net Profit": [100, 100, 100, 100, 110, 112,
+                                                                                    195, 115, 120]})  # fmt: skip
+    assert trend_pat_yoy(t2, ends[-1]) == pytest.approx(13.5)  # median of 10, 12, 95, 15
+    d["trend_pat_yoy_pct"], d["lines"][0]["yoy"]["value"] = 10.0, 150.0
+    assert score(ev(detail=d), 5, []).surprise == 1.0  # current YoY off a low base

@@ -2421,7 +2421,7 @@
             }
           ],
           "default": null,
-          "description": "Mean PAT YoY % of the 4 prior quarters (screener, computed in code) \u2014 ranking 'surprise'",
+          "description": "Median PAT YoY % of the 4 prior quarters, YoYs above +100% (low-base effects) left out (screener, computed in code) \u2014 ranking 'surprise'",
           "title": "Trend Pat Yoy Pct"
         },
         "verification": {
