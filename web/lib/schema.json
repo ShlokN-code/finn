@@ -185,6 +185,88 @@
       "title": "Alert",
       "type": "object"
     },
+    "AlertSettings": {
+      "additionalProperties": false,
+      "description": "Notification rules (PRODUCT \u00a76). Defaults are the spec's.",
+      "properties": {
+        "batching": {
+          "default": true,
+          "title": "Batching",
+          "type": "boolean"
+        },
+        "daily_budget": {
+          "default": 5,
+          "minimum": 1,
+          "title": "Daily Budget",
+          "type": "integer"
+        },
+        "per_stock_pct": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Per-symbol override of \u00b1%",
+          "title": "Per Stock Pct",
+          "type": "object"
+        },
+        "price_move_pct": {
+          "default": 4.0,
+          "exclusiveMinimum": 0,
+          "title": "Price Move Pct",
+          "type": "number"
+        },
+        "push_categories": {
+          "items": {
+            "$ref": "#/$defs/Category"
+          },
+          "title": "Push Categories",
+          "type": "array"
+        },
+        "quiet_end": {
+          "default": "07:00",
+          "description": "IST",
+          "pattern": "^\\d{2}:\\d{2}$",
+          "title": "Quiet End",
+          "type": "string"
+        },
+        "quiet_start": {
+          "default": "22:00",
+          "description": "IST",
+          "pattern": "^\\d{2}:\\d{2}$",
+          "title": "Quiet Start",
+          "type": "string"
+        },
+        "sector_relative": {
+          "default": true,
+          "title": "Sector Relative",
+          "type": "boolean"
+        },
+        "volatility_aware": {
+          "default": true,
+          "title": "Volatility Aware",
+          "type": "boolean"
+        },
+        "volume_multiple": {
+          "default": 2.0,
+          "exclusiveMinimum": 1,
+          "title": "Volume Multiple",
+          "type": "number"
+        }
+      },
+      "required": [
+        "price_move_pct",
+        "per_stock_pct",
+        "volume_multiple",
+        "volatility_aware",
+        "sector_relative",
+        "push_categories",
+        "daily_budget",
+        "batching",
+        "quiet_start",
+        "quiet_end"
+      ],
+      "title": "AlertSettings",
+      "type": "object"
+    },
     "Card": {
       "additionalProperties": false,
       "description": "A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.",
@@ -225,6 +307,44 @@
         },
         "category": {
           "$ref": "#/$defs/Category"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "chip": "#/$defs/ChipDetail",
+                  "management_change": "#/$defs/ManagementDetail",
+                  "one_liner": "#/$defs/OneLinerDetail",
+                  "price_volume": "#/$defs/PriceVolumeDetail",
+                  "results": "#/$defs/ResultsDetail"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/ResultsDetail"
+                },
+                {
+                  "$ref": "#/$defs/ManagementDetail"
+                },
+                {
+                  "$ref": "#/$defs/OneLinerDetail"
+                },
+                {
+                  "$ref": "#/$defs/ChipDetail"
+                },
+                {
+                  "$ref": "#/$defs/PriceVolumeDetail"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
         },
         "event_id": {
           "title": "Event Id",
@@ -337,6 +457,7 @@
         "next_action",
         "ask_chips",
         "affects_drivers",
+        "detail",
         "score",
         "as_of"
       ],
@@ -362,11 +483,86 @@
         "agm_egm",
         "postal_ballot",
         "investor_meetings",
+        "price_volume",
         "routine",
         "unclassified"
       ],
       "title": "Category",
       "type": "string"
+    },
+    "ChipDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "citation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Citation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ex_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ex Date"
+        },
+        "kind": {
+          "const": "chip",
+          "default": "chip",
+          "title": "Kind",
+          "type": "string"
+        },
+        "record_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Record Date"
+        },
+        "text": {
+          "description": "e.g. '\u20b98 dividend \u00b7 record 21 Nov'",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "ex_date",
+        "record_date",
+        "amount",
+        "citation"
+      ],
+      "title": "ChipDetail",
+      "type": "object"
     },
     "Citation": {
       "additionalProperties": false,
@@ -778,6 +974,45 @@
         "category": {
           "$ref": "#/$defs/Category"
         },
+        "detail": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "chip": "#/$defs/ChipDetail",
+                  "management_change": "#/$defs/ManagementDetail",
+                  "one_liner": "#/$defs/OneLinerDetail",
+                  "price_volume": "#/$defs/PriceVolumeDetail",
+                  "results": "#/$defs/ResultsDetail"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/ResultsDetail"
+                },
+                {
+                  "$ref": "#/$defs/ManagementDetail"
+                },
+                {
+                  "$ref": "#/$defs/OneLinerDetail"
+                },
+                {
+                  "$ref": "#/$defs/ChipDetail"
+                },
+                {
+                  "$ref": "#/$defs/PriceVolumeDetail"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Card-type specific payload",
+          "title": "Detail"
+        },
         "driver_ids": {
           "description": "Drivers this event touches",
           "items": {
@@ -837,6 +1072,19 @@
           "default": null,
           "description": "For results events"
         },
+        "so_what": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "\u226410 words, written in code or by the Level-0 tagger",
+          "title": "So What"
+        },
         "started_at": {
           "format": "date-time",
           "title": "Started At",
@@ -876,7 +1124,9 @@
         "figures",
         "impact",
         "impact_reason",
-        "driver_ids"
+        "driver_ids",
+        "so_what",
+        "detail"
       ],
       "title": "Event",
       "type": "object"
@@ -1279,7 +1529,7 @@
     },
     "Holding": {
       "additionalProperties": false,
-      "description": "One portfolio position. Lives in the browser (localStorage); the server only sees it transiently.",
+      "description": "One portfolio position. Lives in the browser (localStorage). Symbols + weights are sent with each /brief\nrequest and used only to rank it \u2014 never stored unless the user turns on Telegram alerts. `quantity` never\nleaves the phone.",
       "properties": {
         "added_at": {
           "format": "date-time",
@@ -1391,6 +1641,55 @@
       "title": "Impact",
       "type": "string"
     },
+    "ManagementDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "management_change",
+          "default": "management_change",
+          "title": "Kind",
+          "type": "string"
+        },
+        "people": {
+          "items": {
+            "$ref": "#/$defs/PersonProfile"
+          },
+          "title": "People",
+          "type": "array"
+        },
+        "web_enrichment": {
+          "description": "The card is complete from the filing alone; web snippets only add to it",
+          "enum": [
+            "done",
+            "unavailable",
+            "not_run",
+            "nothing_found"
+          ],
+          "title": "Web Enrichment",
+          "type": "string"
+        },
+        "web_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Web Note"
+        }
+      },
+      "required": [
+        "kind",
+        "people",
+        "web_enrichment",
+        "web_note"
+      ],
+      "title": "ManagementDetail",
+      "type": "object"
+    },
     "MoveExplanation": {
       "additionalProperties": false,
       "properties": {
@@ -1428,6 +1727,67 @@
         "citation"
       ],
       "title": "MoveExplanation",
+      "type": "object"
+    },
+    "OneLinerDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "anyOf": [
+            {
+              "enum": [
+                "up",
+                "down",
+                "new",
+                "unchanged"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Rating upgrade/downgrade, pledge increase/decrease \u2014 decided in code",
+          "title": "Direction"
+        },
+        "facts": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Extracted fields as printed",
+          "title": "Facts",
+          "type": "object"
+        },
+        "key_figure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "const": "one_liner",
+          "default": "one_liner",
+          "title": "Kind",
+          "type": "string"
+        },
+        "line": {
+          "$ref": "#/$defs/Claim"
+        }
+      },
+      "required": [
+        "kind",
+        "line",
+        "key_figure",
+        "direction",
+        "facts"
+      ],
+      "title": "OneLinerDetail",
       "type": "object"
     },
     "Period": {
@@ -1477,6 +1837,328 @@
         "label"
       ],
       "title": "Period",
+      "type": "object"
+    },
+    "PersonProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "change": {
+          "enum": [
+            "appointed",
+            "resigned",
+            "re_designated",
+            "retired",
+            "other"
+          ],
+          "title": "Change",
+          "type": "string"
+        },
+        "effective": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective"
+        },
+        "insider": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Decided in code: a prior role at this company/group",
+          "title": "Insider"
+        },
+        "insider_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Insider Reason"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "prior_roles": {
+          "items": {
+            "$ref": "#/$defs/PriorRole"
+          },
+          "title": "Prior Roles",
+          "type": "array"
+        },
+        "profile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Claim"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Verbatim profile paragraph from the filing"
+        },
+        "qualifications": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "title": "Qualifications",
+          "type": "array"
+        },
+        "role": {
+          "description": "Position named in the filing, e.g. 'Chief Financial Officer'",
+          "title": "Role",
+          "type": "string"
+        },
+        "tenure_years": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Outgoing person's tenure, computed in code"
+        }
+      },
+      "required": [
+        "name",
+        "role",
+        "change",
+        "effective",
+        "prior_roles",
+        "qualifications",
+        "insider",
+        "insider_reason",
+        "tenure_years",
+        "profile"
+      ],
+      "title": "PersonProfile",
+      "type": "object"
+    },
+    "PriceVolumeDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "day_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'Ex-dividend today'",
+          "title": "Day Label"
+        },
+        "explanations": {
+          "description": "In priority order",
+          "items": {
+            "$ref": "#/$defs/MoveExplanation"
+          },
+          "title": "Explanations",
+          "type": "array"
+        },
+        "kind": {
+          "const": "price_volume",
+          "default": "price_volume",
+          "title": "Kind",
+          "type": "string"
+        },
+        "mechanical_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ex-date mechanical move removed before testing",
+          "title": "Mechanical Pct"
+        },
+        "move_pct": {
+          "$ref": "#/$defs/Figure",
+          "description": "Adjusted close-to-close move"
+        },
+        "relative_move_pct": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Stock minus sector (sector-relative mode)"
+        },
+        "sector_index": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sector Index"
+        },
+        "sector_move_pct": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "trading_date": {
+          "format": "date",
+          "title": "Trading Date",
+          "type": "string"
+        },
+        "triggers": {
+          "items": {
+            "enum": [
+              "price",
+              "volume"
+            ],
+            "type": "string"
+          },
+          "title": "Triggers",
+          "type": "array"
+        },
+        "volume_ratio": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Volume \u00f7 20-session average"
+        },
+        "z_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Z Score"
+        }
+      },
+      "required": [
+        "kind",
+        "trading_date",
+        "move_pct",
+        "sector_move_pct",
+        "sector_index",
+        "relative_move_pct",
+        "z_score",
+        "volume_ratio",
+        "day_label",
+        "mechanical_pct",
+        "triggers",
+        "explanations"
+      ],
+      "title": "PriceVolumeDetail",
+      "type": "object"
+    },
+    "PriorRole": {
+      "additionalProperties": false,
+      "properties": {
+        "citation": {
+          "$ref": "#/$defs/Citation"
+        },
+        "company": {
+          "title": "Company",
+          "type": "string"
+        },
+        "end_year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Null = to date / not stated",
+          "title": "End Year"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        },
+        "source": {
+          "enum": [
+            "filing",
+            "web"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "start_year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Year"
+        }
+      },
+      "required": [
+        "company",
+        "role",
+        "start_year",
+        "end_year",
+        "source",
+        "citation"
+      ],
+      "title": "PriorRole",
       "type": "object"
     },
     "Promise": {
@@ -1645,6 +2327,212 @@
       "title": "MgmtPromise",
       "type": "object"
     },
+    "ResultsDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "enum": [
+            "consolidated",
+            "standalone"
+          ],
+          "title": "Basis",
+          "type": "string"
+        },
+        "ebitda_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How EBITDA is defined (shown on tap)",
+          "title": "Ebitda Note"
+        },
+        "filing_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The results filing to open when unverified",
+          "title": "Filing Url"
+        },
+        "kind": {
+          "const": "results",
+          "default": "results",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/ResultsLine"
+          },
+          "title": "Lines",
+          "type": "array"
+        },
+        "margin_series": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Series"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "8-quarter margin sparkline (screener table)"
+        },
+        "quarter": {
+          "$ref": "#/$defs/Period"
+        },
+        "source_path": {
+          "description": "Where the current quarter came from: XBRL \u2192 PDF table \u2192 multimodal model on the PDF",
+          "enum": [
+            "xbrl",
+            "pdf_table",
+            "pdf_model"
+          ],
+          "title": "Source Path",
+          "type": "string"
+        },
+        "template": {
+          "enum": [
+            "standard",
+            "bank",
+            "nbfc"
+          ],
+          "title": "Template",
+          "type": "string"
+        },
+        "verification": {
+          "description": "cross_checked: every line agrees with screener + sanity checks. pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify \u2014 open filing', no numbers.",
+          "enum": [
+            "cross_checked",
+            "pending",
+            "mismatch"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "verification_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verification Note"
+        }
+      },
+      "required": [
+        "kind",
+        "template",
+        "basis",
+        "quarter",
+        "source_path",
+        "verification",
+        "verification_note",
+        "filing_url",
+        "lines",
+        "margin_series",
+        "ebitda_note"
+      ],
+      "title": "ResultsDetail",
+      "type": "object"
+    },
+    "ResultsLine": {
+      "additionalProperties": false,
+      "description": "One results metric: three sourced quarters plus QoQ/YoY computed in code.",
+      "properties": {
+        "check": {
+          "description": "Cross-check of the current value against screener's quarterly table",
+          "enum": [
+            "match",
+            "mismatch",
+            "not_in_screener",
+            "not_checked"
+          ],
+          "title": "Check",
+          "type": "string"
+        },
+        "current": {
+          "$ref": "#/$defs/Figure"
+        },
+        "metric": {
+          "description": "e.g. 'Revenue', 'EBITDA', 'EBITDA margin', 'PAT', 'NII', 'PPOP'",
+          "title": "Metric",
+          "type": "string"
+        },
+        "previous": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Previous quarter (same basis)"
+        },
+        "qoq": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "% change (bps for margins); null value = not meaningful"
+        },
+        "year_ago": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Same quarter last year (same basis)"
+        },
+        "yoy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "metric",
+        "current",
+        "previous",
+        "year_ago",
+        "qoq",
+        "yoy",
+        "check"
+      ],
+      "title": "ResultsLine",
+      "type": "object"
+    },
     "ScoreBreakdown": {
       "additionalProperties": false,
       "description": "score = category_weight \u00d7 position_weight \u00d7 relevance \u00d7 novelty \u00d7 surprise ('Why is this #1?').",
@@ -1787,6 +2675,7 @@
         "INR",
         "INR_PER_SHARE",
         "PCT",
+        "BPS",
         "X",
         "DAYS",
         "COUNT",
@@ -1803,6 +2692,96 @@
       ],
       "title": "VerificationStatus",
       "type": "string"
+    },
+    "WeightRule": {
+      "additionalProperties": false,
+      "description": "A visible feedback adjustment (PRODUCT \u00a75). Listed on the Rules screen; Reset deletes it.",
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Category"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "id": {
+          "description": "Deterministic from scope, e.g. 'stock:IDEA', 'category:fund_raise', 'stock_category:BAJFINANCE:fund_raise', 'event:<event id>'",
+          "title": "Id",
+          "type": "string"
+        },
+        "multiplier": {
+          "description": "Product of \u00d70.8 (not useful) and \u00d71.25 (useful) taps, bounded",
+          "exclusiveMinimum": 0,
+          "title": "Multiplier",
+          "type": "number"
+        },
+        "not_useful_count": {
+          "default": 0,
+          "title": "Not Useful Count",
+          "type": "integer"
+        },
+        "scope": {
+          "enum": [
+            "stock",
+            "category",
+            "stock_category",
+            "event"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "symbol": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Symbol"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        },
+        "useful_count": {
+          "default": 0,
+          "title": "Useful Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "scope",
+        "symbol",
+        "category",
+        "event_id",
+        "multiplier",
+        "not_useful_count",
+        "useful_count",
+        "updated_at"
+      ],
+      "title": "WeightRule",
+      "type": "object"
     }
   },
   "title": "FinnContracts"

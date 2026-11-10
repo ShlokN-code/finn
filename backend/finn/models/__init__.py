@@ -14,7 +14,9 @@ from finn.models.common import (
 )
 from finn.models.core import (
     Alert,
+    AlertSettings,
     Card,
+    ChipDetail,
     Dossier,
     DossierSection,
     Driver,
@@ -22,17 +24,38 @@ from finn.models.core import (
     EventStage,
     Filing,
     Holding,
+    ManagementDetail,
     MoveExplanation,
+    OneLinerDetail,
+    PersonProfile,
+    PriceVolumeDetail,
+    PriorRole,
     Promise,
+    ResultsDetail,
+    ResultsLine,
     ScoreBreakdown,
     Series,
     TimelineItem,
+    WeightRule,
 )
 
 # Top-level contracts exported to TypeScript (nested types come along via $defs).
-EXPORTED = [Citation, Figure, Claim, Period, Filing, Event, Card, Alert, Holding, Driver, Promise, Dossier]
+EXPORTED = [
+    Citation, Figure, Claim, Period, Filing, Event, Card, Alert, Holding, Driver, Promise, Dossier,
+    WeightRule, AlertSettings,
+]  # fmt: skip
 
 __all__ = [
+    "AlertSettings",
+    "ChipDetail",
+    "ManagementDetail",
+    "OneLinerDetail",
+    "PersonProfile",
+    "PriceVolumeDetail",
+    "PriorRole",
+    "ResultsDetail",
+    "ResultsLine",
+    "WeightRule",
     "Alert",
     "Basis",
     "Card",

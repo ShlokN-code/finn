@@ -11,7 +11,7 @@ export type SourceType =
   | "price_feed"
   | "web_profile";
 export type VerificationStatus = "verified" | "unverified" | "not_found";
-export type Unit = "INR_CR" | "INR" | "INR_PER_SHARE" | "PCT" | "X" | "DAYS" | "COUNT" | "SHARES";
+export type Unit = "INR_CR" | "INR" | "INR_PER_SHARE" | "PCT" | "BPS" | "X" | "DAYS" | "COUNT" | "SHARES";
 /**
  * FINN's filing taxonomy (PRODUCT.md §4 'Category treatment').
  */
@@ -32,6 +32,7 @@ export type Category =
   | "agm_egm"
   | "postal_ballot"
   | "investor_meetings"
+  | "price_volume"
   | "routine"
   | "unclassified";
 /**
@@ -185,6 +186,32 @@ export interface Period {
   start: string | null;
 }
 /**
+ * Notification rules (PRODUCT §6). Defaults are the spec's.
+ */
+export interface AlertSettings {
+  batching: boolean;
+  daily_budget: number;
+  /**
+   * Per-symbol override of ±%
+   */
+  per_stock_pct: {
+    [k: string]: number | undefined;
+  };
+  price_move_pct: number;
+  push_categories: Category[];
+  /**
+   * IST
+   */
+  quiet_end: string;
+  /**
+   * IST
+   */
+  quiet_start: string;
+  sector_relative: boolean;
+  volatility_aware: boolean;
+  volume_multiple: number;
+}
+/**
  * A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.
  */
 export interface Card {
@@ -202,6 +229,7 @@ export interface Card {
   ask_chips: [] | [string] | [string, string] | [string, string, string];
   card_type: "results" | "management_change" | "price_volume" | "what_to_watch" | "one_liner" | "inline_chip";
   category: Category;
+  detail: (ResultsDetail | ManagementDetail | OneLinerDetail | ChipDetail | PriceVolumeDetail) | null;
   event_id: string;
   headline: string;
   /**
@@ -228,6 +256,111 @@ export interface Card {
   symbol: string;
   timeline: TimelineItem[];
 }
+export interface ResultsDetail {
+  basis: "consolidated" | "standalone";
+  /**
+   * How EBITDA is defined (shown on tap)
+   */
+  ebitda_note: string | null;
+  /**
+   * The results filing to open when unverified
+   */
+  filing_url: string | null;
+  kind: "results";
+  lines: ResultsLine[];
+  /**
+   * 8-quarter margin sparkline (screener table)
+   */
+  margin_series: Series | null;
+  quarter: Period;
+  /**
+   * Where the current quarter came from: XBRL → PDF table → multimodal model on the PDF
+   */
+  source_path: "xbrl" | "pdf_table" | "pdf_model";
+  template: "standard" | "bank" | "nbfc";
+  /**
+   * cross_checked: every line agrees with screener + sanity checks. pending: screener has not published the quarter yet. mismatch: show 'Couldn't verify — open filing', no numbers.
+   */
+  verification: "cross_checked" | "pending" | "mismatch";
+  verification_note: string | null;
+}
+/**
+ * One results metric: three sourced quarters plus QoQ/YoY computed in code.
+ */
+export interface ResultsLine {
+  /**
+   * Cross-check of the current value against screener's quarterly table
+   */
+  check: "match" | "mismatch" | "not_in_screener" | "not_checked";
+  current: Figure;
+  /**
+   * e.g. 'Revenue', 'EBITDA', 'EBITDA margin', 'PAT', 'NII', 'PPOP'
+   */
+  metric: string;
+  /**
+   * Previous quarter (same basis)
+   */
+  previous: Figure | null;
+  /**
+   * % change (bps for margins); null value = not meaningful
+   */
+  qoq: Figure | null;
+  /**
+   * Same quarter last year (same basis)
+   */
+  year_ago: Figure | null;
+  yoy: Figure | null;
+}
+export interface Series {
+  basis: ("consolidated" | "standalone") | null;
+  metric: string;
+  points: Figure[];
+  unit: string;
+}
+export interface ManagementDetail {
+  kind: "management_change";
+  people: PersonProfile[];
+  /**
+   * The card is complete from the filing alone; web snippets only add to it
+   */
+  web_enrichment: "done" | "unavailable" | "not_run" | "nothing_found";
+  web_note: string | null;
+}
+export interface PersonProfile {
+  change: "appointed" | "resigned" | "re_designated" | "retired" | "other";
+  effective: string | null;
+  /**
+   * Decided in code: a prior role at this company/group
+   */
+  insider: boolean | null;
+  insider_reason: string | null;
+  name: string;
+  prior_roles: PriorRole[];
+  /**
+   * Verbatim profile paragraph from the filing
+   */
+  profile: Claim | null;
+  qualifications: Claim[];
+  /**
+   * Position named in the filing, e.g. 'Chief Financial Officer'
+   */
+  role: string;
+  /**
+   * Outgoing person's tenure, computed in code
+   */
+  tenure_years: Figure | null;
+}
+export interface PriorRole {
+  citation: Citation;
+  company: string;
+  /**
+   * Null = to date / not stated
+   */
+  end_year: number | null;
+  role: string | null;
+  source: "filing" | "web";
+  start_year: number | null;
+}
 /**
  * A sentence of text with provenance (snapshot lines, red flags, bull/bear bullets, impact reasons).
  */
@@ -235,6 +368,61 @@ export interface Claim {
   citations: Citation[];
   status: VerificationStatus;
   text: string;
+}
+export interface OneLinerDetail {
+  /**
+   * Rating upgrade/downgrade, pledge increase/decrease — decided in code
+   */
+  direction: ("up" | "down" | "new" | "unchanged") | null;
+  /**
+   * Extracted fields as printed
+   */
+  facts: {
+    [k: string]: string | undefined;
+  };
+  key_figure: Figure | null;
+  kind: "one_liner";
+  line: Claim;
+}
+export interface ChipDetail {
+  amount: Figure | null;
+  citation: Citation | null;
+  ex_date: string | null;
+  kind: "chip";
+  record_date: string | null;
+  /**
+   * e.g. '₹8 dividend · record 21 Nov'
+   */
+  text: string;
+}
+export interface PriceVolumeDetail {
+  /**
+   * e.g. 'Ex-dividend today'
+   */
+  day_label: string | null;
+  /**
+   * In priority order
+   */
+  explanations: MoveExplanation[];
+  kind: "price_volume";
+  /**
+   * Ex-date mechanical move removed before testing
+   */
+  mechanical_pct: number | null;
+  move_pct: Figure;
+  /**
+   * Stock minus sector (sector-relative mode)
+   */
+  relative_move_pct: Figure | null;
+  sector_index: string | null;
+  sector_move_pct: Figure | null;
+  trading_date: string;
+  triggers: ("price" | "volume")[];
+  /**
+   * Volume ÷ 20-session average
+   */
+  volume_ratio: Figure | null;
+  z_score: number | null;
 }
 /**
  * score = category_weight × position_weight × relevance × novelty × surprise ('Why is this #1?').
@@ -299,12 +487,6 @@ export interface Dossier {
   template: "standard" | "bank" | "nbfc";
   trajectory: Series[];
   trajectory_note: Claim | null;
-}
-export interface Series {
-  basis: ("consolidated" | "standalone") | null;
-  metric: string;
-  points: Figure[];
-  unit: string;
 }
 /**
  * A forward-looking management statement and what happened to it (Promise Ledger).
@@ -373,6 +555,10 @@ export interface Driver {
 export interface Event {
   category: Category;
   /**
+   * Card-type specific payload
+   */
+  detail: (ResultsDetail | ManagementDetail | OneLinerDetail | ChipDetail | PriceVolumeDetail) | null;
+  /**
    * Drivers this event touches
    */
   driver_ids: string[];
@@ -391,6 +577,10 @@ export interface Event {
    * For results events
    */
   period: Period | null;
+  /**
+   * ≤10 words, written in code or by the Level-0 tagger
+   */
+  so_what: string | null;
   started_at: string;
   symbol: string;
   timeline: TimelineItem[];
@@ -460,7 +650,9 @@ export interface Filing {
   xbrl_url: string | null;
 }
 /**
- * One portfolio position. Lives in the browser (localStorage); the server only sees it transiently.
+ * One portfolio position. Lives in the browser (localStorage). Symbols + weights are sent with each /brief
+ * request and used only to rank it — never stored unless the user turns on Telegram alerts. `quantity` never
+ * leaves the phone.
  */
 export interface Holding {
   added_at: string;
@@ -483,4 +675,24 @@ export interface Holding {
    * If the user pasted weights instead
    */
   weight_pct: number | null;
+}
+/**
+ * A visible feedback adjustment (PRODUCT §5). Listed on the Rules screen; Reset deletes it.
+ */
+export interface WeightRule {
+  category: Category | null;
+  event_id: string | null;
+  /**
+   * Deterministic from scope, e.g. 'stock:IDEA', 'category:fund_raise', 'stock_category:BAJFINANCE:fund_raise', 'event:<event id>'
+   */
+  id: string;
+  /**
+   * Product of ×0.8 (not useful) and ×1.25 (useful) taps, bounded
+   */
+  multiplier: number;
+  not_useful_count: number;
+  scope: "stock" | "category" | "stock_category" | "event";
+  symbol: string | null;
+  updated_at: string;
+  useful_count: number;
 }

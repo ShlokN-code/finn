@@ -44,6 +44,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Context:** The spec says holdings never leave the phone, but personalised Telegram/web-push alerts need the server to know what the user holds.
 - **Decision (product owner):** Holdings live in localStorage by default. Connecting Telegram (or web push) uploads a server copy of **symbols + weights only** (no quantities or cost), keyed to that chat/subscription. The connect screen says so; "Disconnect & delete" removes it. The in-app Brief still ranks on the phone.
 - **Alternatives:** browser-only (push limited to generic or watchlist-free alerts); full accounts/login (rejected in the spec — friction for evaluators).
+- **Update (Phase 2, product owner):** ranking now runs only on the server (see "Ranking lives only in Python"), so the phone sends symbols + weights with each `/brief` request. Wording everywhere: **"Holdings are used only to rank your Brief and are never stored, unless you turn on Telegram alerts."** `/brief` never logs request bodies; share quantities still never leave the phone.
 - **Implications:** a `push_subscriptions` table (chat id, symbols, weights, created_at) with RLS; a delete endpoint; `Holding.quantity` never leaves the device.
 
 ## 2026-11-10 · Corporate actions: NSE feed is the source of truth

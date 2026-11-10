@@ -132,7 +132,8 @@ HIDDEN_GROUPS = [
 SCHEMA = {
     "type": "object",
     "properties": {
-        "category": {"type": "string", "enum": [c.value for c in Category]},
+        # price_volume is synthetic (never a filing); excluding it also keeps cached classification calls valid.
+        "category": {"type": "string", "enum": [c.value for c in Category if c != Category.price_volume]},
         "stage": {"type": "string", "enum": [s.value for s in EventStage]},
         "confidence": {"type": "number"},
         "reason": {"type": "string"},

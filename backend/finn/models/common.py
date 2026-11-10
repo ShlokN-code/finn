@@ -36,6 +36,7 @@ class Unit(StrEnum):
     inr = "INR"  # per-share prices, small amounts
     inr_per_share = "INR_PER_SHARE"
     pct = "PCT"  # 12.3 means 12.3 %
+    bps = "BPS"  # basis points (margin changes)
     ratio = "X"  # 1.4x
     days = "DAYS"
     count = "COUNT"
@@ -136,6 +137,7 @@ class Category(StrEnum):
     agm_egm = "agm_egm"
     postal_ballot = "postal_ballot"
     investor_meetings = "investor_meetings"
+    price_volume = "price_volume"  # synthetic: one per stock per IST trading day (not from a filing)
     routine = "routine"  # known-boring compliance filings; always hidden, grouped by Filing.hidden_reason
     unclassified = "unclassified"  # nothing (exchange label, rules, model) could classify it
 

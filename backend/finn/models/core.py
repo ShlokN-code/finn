@@ -7,11 +7,12 @@ from __future__ import annotations
 
 from datetime import date
 from enum import StrEnum
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, ConfigDict, Field, field_validator
 
 from finn.models.common import (
+    Basis,
     Category,
     Citation,
     Claim,
@@ -76,6 +77,126 @@ class TimelineItem(Model):
     label: str
 
 
+class Series(Model):
+    metric: str
+    unit: str
+    basis: Literal["consolidated", "standalone"] | None = None
+    points: list[Figure]
+
+
+class MoveExplanation(Model):
+    kind: Literal["filing", "bulk_block_deal", "sector_move", "index_move", "none"]
+    text: str = Field(description="e.g. 'Q2 results filed 16:05' or '⚠️ No disclosure explains this move'")
+    citation: Citation | None = None
+
+
+# --- Card-type details (stored on the Event, copied onto the Card) ------------------------------------------
+
+
+class ResultsLine(Model):
+    """One results metric: three sourced quarters plus QoQ/YoY computed in code."""
+
+    metric: str = Field(description="e.g. 'Revenue', 'EBITDA', 'EBITDA margin', 'PAT', 'NII', 'PPOP'")
+    current: Figure
+    previous: Figure | None = Field(None, description="Previous quarter (same basis)")
+    year_ago: Figure | None = Field(None, description="Same quarter last year (same basis)")
+    qoq: Figure | None = Field(None, description="% change (bps for margins); null value = not meaningful")
+    yoy: Figure | None = None
+    check: Literal["match", "mismatch", "not_in_screener", "not_checked"] = Field(
+        description="Cross-check of the current value against screener's quarterly table"
+    )
+
+
+class ResultsDetail(Model):
+    kind: Literal["results"] = "results"
+    template: Literal["standard", "bank", "nbfc"]
+    basis: Basis
+    quarter: Period
+    source_path: Literal["xbrl", "pdf_table", "pdf_model"] = Field(
+        description="Where the current quarter came from: XBRL → PDF table → multimodal model on the PDF"
+    )
+    verification: Literal["cross_checked", "pending", "mismatch"] = Field(
+        description="cross_checked: every line agrees with screener + sanity checks. pending: screener has not "
+        "published the quarter yet. mismatch: show 'Couldn't verify — open filing', no numbers."
+    )
+    verification_note: str | None = None
+    filing_url: str | None = Field(None, description="The results filing to open when unverified")
+    lines: list[ResultsLine] = Field(default_factory=list)
+    margin_series: Series | None = Field(None, description="8-quarter margin sparkline (screener table)")
+    ebitda_note: str | None = Field(None, description="How EBITDA is defined (shown on tap)")
+
+
+class PriorRole(Model):
+    company: str
+    role: str | None = None
+    start_year: int | None = None
+    end_year: int | None = Field(None, description="Null = to date / not stated")
+    source: Literal["filing", "web"]
+    citation: Citation
+
+
+class PersonProfile(Model):
+    name: str
+    role: str = Field(description="Position named in the filing, e.g. 'Chief Financial Officer'")
+    change: Literal["appointed", "resigned", "re_designated", "retired", "other"]
+    effective: date | None = None
+    prior_roles: list[PriorRole] = Field(default_factory=list)
+    qualifications: list[Claim] = Field(default_factory=list)
+    insider: bool | None = Field(None, description="Decided in code: a prior role at this company/group")
+    insider_reason: str | None = None
+    tenure_years: Figure | None = Field(None, description="Outgoing person's tenure, computed in code")
+    profile: Claim | None = Field(None, description="Verbatim profile paragraph from the filing")
+
+
+class ManagementDetail(Model):
+    kind: Literal["management_change"] = "management_change"
+    people: list[PersonProfile] = Field(default_factory=list)
+    web_enrichment: Literal["done", "unavailable", "not_run", "nothing_found"] = Field(
+        description="The card is complete from the filing alone; web snippets only add to it"
+    )
+    web_note: str | None = None
+
+
+class OneLinerDetail(Model):
+    kind: Literal["one_liner"] = "one_liner"
+    line: Claim
+    key_figure: Figure | None = None
+    direction: Literal["up", "down", "new", "unchanged"] | None = Field(
+        None, description="Rating upgrade/downgrade, pledge increase/decrease — decided in code"
+    )
+    facts: dict[str, str] = Field(default_factory=dict, description="Extracted fields as printed")
+
+
+class ChipDetail(Model):
+    kind: Literal["chip"] = "chip"
+    text: str = Field(description="e.g. '₹8 dividend · record 21 Nov'")
+    ex_date: date | None = None
+    record_date: date | None = None
+    amount: Figure | None = None
+    citation: Citation | None = None
+
+
+class PriceVolumeDetail(Model):
+    kind: Literal["price_volume"] = "price_volume"
+    trading_date: date
+    move_pct: Figure = Field(description="Adjusted close-to-close move")
+    sector_move_pct: Figure | None = None
+    sector_index: str | None = None
+    relative_move_pct: Figure | None = Field(None, description="Stock minus sector (sector-relative mode)")
+    z_score: float | None = None
+    volume_ratio: Figure | None = Field(None, description="Volume ÷ 20-session average")
+    day_label: str | None = Field(None, description="e.g. 'Ex-dividend today'")
+    mechanical_pct: float | None = Field(None, description="Ex-date mechanical move removed before testing")
+    triggers: list[Literal["price", "volume"]] = Field(default_factory=list)
+    explanations: list[MoveExplanation] = Field(default_factory=list, description="In priority order")
+
+
+EventDetail = Annotated[
+    ResultsDetail | ManagementDetail | OneLinerDetail | ChipDetail | PriceVolumeDetail,
+    Field(discriminator="kind"),
+]
+
+
 class Event(Model):
     """Filings about one real-world event, threaded into a single unit (one card in the Brief)."""
 
@@ -94,6 +215,8 @@ class Event(Model):
     impact: Impact | None = None
     impact_reason: Claim | None = None
     driver_ids: list[str] = Field(default_factory=list, description="Drivers this event touches")
+    so_what: str | None = Field(None, description="≤10 words, written in code or by the Level-0 tagger")
+    detail: EventDetail | None = Field(None, description="Card-type specific payload")
 
 
 class ScoreBreakdown(Model):
@@ -127,6 +250,7 @@ class Card(Model):
     next_action: str | None = None
     ask_chips: list[str] = Field(default_factory=list, max_length=3)
     affects_drivers: list[str] = Field(default_factory=list, description="Driver labels for the 👁 tag")
+    detail: EventDetail | None = None
     score: ScoreBreakdown
     as_of: AwareDatetime = Field(description="Freshness of the underlying data")
 
@@ -136,12 +260,6 @@ class Card(Model):
         if len(v.split()) > 10:
             raise ValueError("so_what must be 10 words or fewer")
         return v
-
-
-class MoveExplanation(Model):
-    kind: Literal["filing", "bulk_block_deal", "sector_move", "index_move", "none"]
-    text: str = Field(description="e.g. 'Q2 results filed 16:05' or '⚠️ No disclosure explains this move'")
-    citation: Citation | None = None
 
 
 class Alert(Model):
@@ -184,7 +302,9 @@ class Driver(Model):
 
 
 class Holding(Model):
-    """One portfolio position. Lives in the browser (localStorage); the server only sees it transiently."""
+    """One portfolio position. Lives in the browser (localStorage). Symbols + weights are sent with each /brief
+    request and used only to rank it — never stored unless the user turns on Telegram alerts. `quantity` never
+    leaves the phone."""
 
     symbol: str
     quantity: float | None = Field(None, gt=0, description="Shares; used for weight and ₹ impact")
@@ -194,6 +314,43 @@ class Holding(Model):
     price_alert_pct: float | None = Field(None, gt=0, description="Per-stock override of the ±4% default")
     snoozed_until: AwareDatetime | None = None
     added_at: AwareDatetime
+
+
+class WeightRule(Model):
+    """A visible feedback adjustment (PRODUCT §5). Listed on the Rules screen; Reset deletes it."""
+
+    id: str = Field(
+        description="Deterministic from scope, e.g. 'stock:IDEA', 'category:fund_raise', "
+        "'stock_category:BAJFINANCE:fund_raise', 'event:<event id>'"
+    )
+    scope: Literal["stock", "category", "stock_category", "event"]
+    symbol: str | None = None
+    category: Category | None = None
+    event_id: str | None = None
+    multiplier: float = Field(gt=0, description="Product of ×0.8 (not useful) and ×1.25 (useful) taps, bounded")
+    not_useful_count: int = 0
+    useful_count: int = 0
+    updated_at: AwareDatetime
+
+
+class AlertSettings(Model):
+    """Notification rules (PRODUCT §6). Defaults are the spec's."""
+
+    price_move_pct: float = Field(4.0, gt=0)
+    per_stock_pct: dict[str, float] = Field(default_factory=dict, description="Per-symbol override of ±%")
+    volume_multiple: float = Field(2.0, gt=1)
+    volatility_aware: bool = True
+    sector_relative: bool = True
+    push_categories: list[Category] = Field(
+        default_factory=lambda: [
+            Category.results, Category.mna, Category.management_change, Category.litigation,
+            Category.credit_rating, Category.pledging, Category.price_volume,
+        ]
+    )  # fmt: skip
+    daily_budget: int = Field(5, ge=1)
+    batching: bool = True
+    quiet_start: str = Field("22:00", pattern=r"^\d{2}:\d{2}$", description="IST")
+    quiet_end: str = Field("07:00", pattern=r"^\d{2}:\d{2}$", description="IST")
 
 
 # ---------------------------------------------------------------------------------------------
@@ -222,13 +379,6 @@ class Promise(Model):
     verdict_reason: Claim | None = None
     delivered: Figure | None = None
     superseded_by: str | None = Field(None, description="Promise.id that moved the goalposts")
-
-
-class Series(Model):
-    metric: str
-    unit: str
-    basis: Literal["consolidated", "standalone"] | None = None
-    points: list[Figure]
 
 
 class DossierSection(Model):
