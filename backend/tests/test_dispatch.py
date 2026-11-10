@@ -18,7 +18,7 @@ def ev(sym, cat, detail=None, stage="outcome", at=DAY - timedelta(hours=1)):
 
 def card(e, total=1.0):
     s = ScoreBreakdown(category_weight=1, position_weight=1, relevance=1, novelty=1, surprise=1, total=total)
-    return build_card(e, {}, s)
+    return build_card({**e, "detail": None}, {}, s)  # decide() reads details from the events map, not the card
 
 
 def sub(**settings):
@@ -57,10 +57,27 @@ def test_single_normal_is_sent_and_budget():
     assert sorted(s for s, _ in out.values()) == ["over_budget", "sent"]
 
 
-def test_quiet_hours_hold_normal_but_not_critical():
+def test_quiet_hours_only_mna_ceo_exit_and_downgrade_break_through():
     assert in_quiet_hours(NIGHT, AlertSettings()) and not in_quiet_hours(DAY, AlertSettings())
-    out = run([LIT, MGMT], now=NIGHT)
-    assert out["TATAPOWER:litigation"][0] == "held_quiet_hours" and out["TATASTEEL:management_change"][0] == "sent"
+    late = datetime(2026, 11, 10, 19, 10, tzinfo=UTC)  # 00:40 IST — when KALYANKJIL's results alert went out
+    results = ev("KALYANKJIL", "results", detail={"kind": "results"}, at=late - timedelta(hours=7))
+    mna = ev("DIXON", "mna")
+    downgrade = ev("IDEA", "credit_rating", detail={"kind": "one_liner", "direction": "down"})
+    upgrade = ev("TATAPOWER", "credit_rating", detail={"kind": "one_liner", "direction": "up"})
+    cfo_in = ev("TRENT", "management_change", detail={"kind": "management_change", "people": [
+        {"name": "A", "role": "Chief Financial Officer", "change": "appointed"}]})  # fmt: skip
+    ceo_out = ev("INFY", "management_change", detail={"kind": "management_change", "people": [
+        {"name": "B", "role": "Managing Director & CEO", "change": "resigned"}]})  # fmt: skip
+    ceo_out_title = ev("HAL", "management_change") | {"title": "Resignation of Mr. X as Chief Executive Officer"}
+    out = run([LIT, MGMT, results, mna, downgrade, upgrade, cfo_in, ceo_out, ceo_out_title], now=late)
+    held = {k for k, (st, _) in out.items() if st == "held_quiet_hours"}
+    assert held == {"TATAPOWER:litigation", "TATASTEEL:management_change", "KALYANKJIL:results",
+                    "TATAPOWER:credit_rating", "TRENT:management_change"}  # fmt: skip
+    for k in ("DIXON:mna", "IDEA:credit_rating", "INFY:management_change", "HAL:management_change"):
+        assert out[k][0] == "sent", k
+    # by day, results are still critical: sent on their own and not counted against the budget
+    day = run([ev("KALYANKJIL", "results", detail={"kind": "results"})], sent_today=5)
+    assert day["KALYANKJIL:results"] == ("sent", "critical")
 
 
 def test_snooze_and_feedback_floor_and_idempotency():

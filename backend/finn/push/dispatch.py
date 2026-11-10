@@ -1,22 +1,26 @@
 """Alert dispatch (PRODUCT §6): which new events reach which Telegram subscriber, and how.
 
 For each subscriber and each event on their holdings updated since the last runs (and after they connected):
-  push category? → snoozed? → feedback (score too low after "not useful") → quiet hours (critical breaks
-  through) → budget (5 messages / IST day; critical not counted against it) → batching (≥ 2 normal alerts in
-  one run → one "N updates on your holdings" message) → send → one `alerts` row per (subscriber, event).
+  push category? → snoozed? → feedback (score too low after "not useful") → quiet hours (only M&A, a CEO/MD
+  exit and a rating downgrade break through; everything else, results included, waits for the 07:00 IST run)
+  → budget (5 messages / IST day; critical categories not counted against it) → batching (≥ 2 normal alerts
+  in one run → one "N updates on your holdings" message) → send → one `alerts` row per (subscriber, event).
+"Critical" (results, M&A, management change, rating downgrade: feedback floor, budget-exempt) is broader than
+"breaks quiet hours" — a results card at 00:40 is important, but not wake-you-up urgent.
 The unique row makes reruns idempotent; quiet-hours holds are re-evaluated by the 07:00 IST run.
 """
 
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, time, timedelta
 
 from finn.calendar import IST, to_ist
 from finn.cards.brief import load_events, load_filings, rank
-from finn.models import AlertSettings, Card
+from finn.models import AlertSettings, Card, Category
 from finn.push import subscriptions as subs
 from finn.push.format import batch_buttons, batch_text, buttons, card_text
 from finn.push.telegram import Telegram, TelegramError
@@ -44,6 +48,32 @@ class SubResult:
     chat_id: int
     decisions: list[Decision] = field(default_factory=list)
     messages: int = 0
+
+
+_CEO = re.compile(r"\b(chief executive|ceo|managing director|md)\b", re.I)
+_EXIT = re.compile(r"\b(resign\w*|cessation|ceas(?:e|ed|es|ing)|retire\w*|superannuat\w*|step(?:s|ped|ping)? down|"
+                   r"demise|passed away|remov(?:al|ed)|terminat\w*|vacat\w*)\b", re.I)  # fmt: skip
+
+
+def ceo_exit(event: dict) -> bool:
+    """The CEO / MD is leaving. From the built management card (role + change) when there is one; before it is
+    built, from the event title (e.g. 'Resignation of Mr X as Managing Director & CEO')."""
+    d = event.get("detail") or {}
+    if d.get("kind") == "management_change" and d.get("people"):
+        return any(_CEO.search(p.get("role") or "") and p.get("change") in ("resigned", "retired") for p in d["people"])
+    title = event.get("title") or ""
+    return bool(_CEO.search(title) and _EXIT.search(title))
+
+
+def breaks_quiet_hours(category: str, event: dict) -> bool:
+    """Wake-you-up urgent (product owner, 11 Nov 2026): M&A, a CEO/MD exit, a credit-rating downgrade."""
+    if category == Category.mna:
+        return True
+    if category == Category.credit_rating:
+        return is_critical(category, event)  # downgrades only
+    if category == Category.management_change:
+        return ceo_exit(event)
+    return False
 
 
 def in_quiet_hours(now: datetime, s: AlertSettings) -> bool:
@@ -102,6 +132,7 @@ def decide(sub: dict, cards: list[Card], events: dict[str, dict], sent_today: in
         if c.event_id in done or not ready(ev, now) or c.category not in s.push_categories:
             continue
         crit = is_critical(c.category, ev)
+        urgent = breaks_quiet_hours(c.category, ev)
         d = Decision(c, "critical" if crit else "normal", "queued")
         if c.category == "price_volume":
             fired = price_triggers(ev.get("detail") or {}, c.symbol, s)
@@ -112,8 +143,9 @@ def decide(sub: dict, cards: list[Card], events: dict[str, dict], sent_today: in
             d.status, d.reason = "suppressed", f"snoozed until {snoozed[c.symbol]:%Y-%m-%d %H:%M} UTC"
         elif not crit and c.score.total < MIN_PUSH_SCORE:
             d.status, d.reason = "suppressed", f"score {c.score.total:.2f} < {MIN_PUSH_SCORE} after your feedback"
-        elif quiet and not crit:
-            d.status, d.reason = "held_quiet_hours", f"quiet hours {s.quiet_start}–{s.quiet_end} IST"
+        elif quiet and not urgent:
+            d.status, d.reason = "held_quiet_hours", (f"quiet hours {s.quiet_start}–{s.quiet_end} IST (only M&A, "
+                                                      "CEO exits and rating downgrades break through)")  # fmt: skip
         elif crit:
             d.status = "sent"
         else:

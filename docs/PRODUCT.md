@@ -100,7 +100,7 @@ Built for the ENAM Holdings AI Engineer Build Challenge (deadline 15 Nov 2026). 
 | Push categories | results, M&A, management_change, litigation, credit_rating, pledging |
 | Notification budget | 5/day; overflow goes to the next Brief |
 | Batching | On ("3 updates on your holdings") |
-| Quiet hours | 10 pm–7 am; only critical items break through |
+| Quiet hours | 10 pm–7 am; only M&A, a CEO/MD exit and a credit-rating downgrade break through. Everything else (results included) waits for 7 am |
 | Snooze | Per stock, 1 day / 1 week |
 
 **Corporate actions:** use adjusted prices/volumes; on ex-dates (dividend, bonus, split) the mechanical drop never triggers an alert, but a genuine move beyond it still does. Label the day ("Ex-dividend today"). Ex-dates and action labels come from NSE's corporate-actions feed — it is the source of truth; price-feed action records are not trusted (Yahoo shows BAJFINANCE's split + bonus as one 2:1 split).

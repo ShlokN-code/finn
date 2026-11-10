@@ -170,7 +170,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - One synthetic `price_volume` event per stock per day; re-threading never deletes them.
 
 ## 2026-11-10 · Alerts: dispatch rules
-- Per subscriber, per new event on their holdings (and only events after they connected): push category → snooze → feedback (non-critical events scoring < 0.2 after "not useful" stay in the Brief) → quiet hours 22:00–07:00 IST (critical = results, M&A, management change, rating downgrade break through) → budget 5 messages / IST day (critical not counted; overflow `over_budget`, stays in the Brief) → batching (≥ 2 normal alerts in one run → one "N updates on your holdings" message counting once).
+- Per subscriber, per new event on their holdings (and only events after they connected): push category → snooze → feedback (non-critical events scoring < 0.2 after "not useful" stay in the Brief) → quiet hours 22:00–07:00 IST (critical = results, M&A, management change, rating downgrade break through — *corrected 11 Nov 2026, see "Quiet hours: what breaks through"*) → budget 5 messages / IST day (critical not counted; overflow `over_budget`, stays in the Brief) → batching (≥ 2 normal alerts in one run → one "N updates on your holdings" message counting once).
 - Results are pushed once their numbers are built, or 6 h after the outcome regardless.
 - One `alerts` row per (subscriber, event): reruns never resend; quiet-hours holds are reconsidered by the 07:00 IST cron.
 
@@ -288,3 +288,11 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - Self-hosted cron: there's no always-on machine.
 - **Risk:** the token sits in cron-job.org's job headers. If leaked, it can start, cancel, re-run or delete this repo's workflow runs and read their logs (secrets masked). It cannot read secrets or change code. It also expires; the failure emails (after 3 failures) surface that.
 - **Cost:** free. Public repo, so Actions minutes are free. About 160 short runs a week.
+
+## 2026-11-11 · Quiet hours: what breaks through
+- **Context:** a KALYANKJIL results alert reached the product owner's Telegram at 00:43 IST, from the scheduler's test dispatch of the daily run. The code did what DECISIONS said: it used the feedback-floor "critical" list (results, M&A, any management change, rating downgrade) for quiet hours as well. PRODUCT.md only said "only critical items break through".
+- **Decision (product owner):** only **M&A**, a **CEO/MD exit** and a **credit-rating downgrade** break quiet hours. Everything else, results included, is held and goes out with the 07:00 IST run.
+  - "CEO exit" means a person whose role names CEO, chief executive or managing director, with change resigned or retired. It's read from the management card, or from the event title before the card is built.
+  - Appointments, CFO changes and other management changes are held.
+  - The broader "critical" list is unchanged for the feedback floor and the budget exemption: results still go out on their own and don't count against the 5-a-day budget.
+- **Check:** none of the 49 stored management events match as an exit. The three titles mentioning a CEO/MD are appointments or an extended charge, so there are no false positives.
