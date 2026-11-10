@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 
 from finn.calendar import parse_ist
+from finn.extraction.results.xbrl import ResultsFilingRef
 from finn.models import Filing
 from finn.numbers import deal_value_cr
 from finn.sources.http import NSESession, get_json, polite_get
@@ -326,3 +327,43 @@ def board_meeting_to_filing(row: dict, fetched_at: datetime | None = None) -> Fi
         xbrl_url=attachment if attachment and attachment.endswith(".xml") else None,
         fetched_at=fetched_at or datetime.now(UTC),
     )
+
+
+# --- financial results XBRL (integrated filings, Mar-2025 quarter onward) ---------------------
+
+
+def fetch_integrated_results(s: NSESession, symbol: str) -> list[ResultsFilingRef]:
+    """NSE's list of integrated-filing financials for a symbol: one row per (quarter, basis, version), each
+    with an XBRL instance link. Older quarters (≤ Dec-2024) live in corporates-financial-results (not needed
+    for current/previous/year-ago until the Dec-2026 quarter's year-ago, which is Dec-2025)."""
+    data = _get(
+        s,
+        "integrated-filing-results",
+        {"index": "equities", "symbol": symbol, "period_ended": "all", "type": "Integrated Filing- Financials"},
+    )
+    rows = data.get("data", []) if isinstance(data, dict) else data
+    out: list[ResultsFilingRef] = []
+    for r in rows or []:
+        if not isinstance(r, dict):
+            continue
+        url, qe = (r.get("xbrl") or "").strip(), (r.get("qe_Date") or "").strip()
+        if not url.endswith(".xml") or not qe:
+            continue
+        try:
+            period_end = datetime.strptime(qe.title(), "%d-%b-%Y").date()
+        except ValueError:
+            continue
+        stamp = r.get("broadcast_Date")
+        out.append(
+            ResultsFilingRef(
+                symbol=symbol,
+                period_end=period_end,
+                basis="consolidated" if (r.get("consolidated") or "").lower().startswith("consol") else "standalone",
+                type_sub=r.get("type_Sub"),
+                audited=r.get("audited"),
+                xbrl_url=url,
+                broadcast_at=parse_ist(stamp, "%d-%b-%Y %H:%M:%S") if stamp else None,
+                raw=r,
+            )
+        )
+    return out

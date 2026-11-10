@@ -9,17 +9,17 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: "daily | filings | snapshot | migrate"
+        description: "daily | filings | results | snapshot | migrate"
         required: true
         default: daily
         type: choice
-        options: [daily, filings, snapshot, migrate]
+        options: [daily, filings, results, snapshot, migrate]
       symbols:
         description: "Comma-separated NSE symbols (default: demo portfolio)"
         required: false
         default: ""
       backfill_days:
-        description: "daily: days of filings to (re)fetch; 365 also backfills 1y prices"
+        description: "daily: days of filings to (re)fetch (365 also backfills 1y prices); results: event age in days"
         required: false
         default: "0"
       date:
@@ -88,6 +88,11 @@ jobs:
         run: |
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then force=--force; else force=; fi
           python -m jobs.check_filings --symbols "$IN_SYMBOLS" $force
+      - name: results cards
+        if: steps.pick.outputs.job == 'results'
+        run: |
+          days="$IN_BACKFILL"; if [ "$days" = "0" ]; then days=45; fi
+          python -m jobs.results --symbols "$IN_SYMBOLS" --days "$days"
       - name: snapshot
         if: steps.pick.outputs.job == 'snapshot'
         run: python -m jobs.snapshot --date "$IN_DATE" --symbols "$IN_SYMBOLS"

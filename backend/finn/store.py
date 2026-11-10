@@ -306,3 +306,53 @@ def jsonable(x):
     if isinstance(x, list | tuple):
         return [jsonable(v) for v in x]
     return x
+
+
+# --- results XBRL -----------------------------------------------------------------------------
+
+
+def stored_xbrl_urls(conn, symbol: str) -> set[str]:
+    rows = conn.execute("select xbrl_url from public.results_filings where symbol = %s", (symbol,)).fetchall()
+    return {r["xbrl_url"] for r in rows}
+
+
+def upsert_results_filing(conn, ref, parsed: dict, xml_gz: bytes | None) -> None:
+    conn.execute(
+        "insert into public.results_filings (symbol, period_end, basis, type_sub, audited, xbrl_url, broadcast_at, "
+        "facts, xml_gz) values (%s,%s,%s,%s,%s,%s,%s,%s,%s) on conflict (symbol, period_end, basis, xbrl_url) do "
+        "update set facts = excluded.facts, type_sub = excluded.type_sub, broadcast_at = excluded.broadcast_at, "
+        "xml_gz = coalesce(excluded.xml_gz, results_filings.xml_gz), fetched_at = now()",
+        (ref.symbol, ref.period_end, ref.basis, ref.type_sub, ref.audited, ref.xbrl_url, ref.broadcast_at,
+         Jsonb(parsed), xml_gz),
+    )  # fmt: skip
+
+
+def results_filings(conn, symbol: str) -> list[dict]:
+    """Stored XBRL instances for a symbol (no raw XML), newest version first within a quarter/basis."""
+    return conn.execute(
+        "select symbol, period_end, basis, type_sub, audited, xbrl_url, broadcast_at, facts, fetched_at "
+        "from public.results_filings where symbol = %s order by period_end desc, basis, "
+        "(type_sub = 'Revised') desc, broadcast_at desc nulls last",
+        (symbol,),
+    ).fetchall()
+
+
+def recent_results_events(conn, symbols: list[str], days: int) -> list[dict]:
+    """Results events with an outcome filing, updated in the last `days` days."""
+    return conn.execute(
+        "select id, symbol, period, timeline, detail, updated_at from public.events where category = 'results' "
+        "and symbol = any(%s) and updated_at > now() - make_interval(days => %s) "
+        "and exists (select 1 from jsonb_array_elements(timeline) t where t->>'stage' = 'outcome') "
+        "order by updated_at desc",
+        (symbols, days),
+    ).fetchall()
+
+
+def save_event_detail(conn, event_id: str, detail: dict | None, so_what: str | None, impact: str | None,
+                      impact_reason: dict | None, impact_tier: str | None) -> None:  # fmt: skip
+    conn.execute(
+        "update public.events set detail = %s, so_what = %s, impact = %s, impact_reason = %s, impact_tier = %s, "
+        "detail_at = now() where id = %s",
+        (Jsonb(detail) if detail is not None else None, so_what, impact,
+         Jsonb(impact_reason) if impact_reason is not None else None, impact_tier, event_id),
+    )  # fmt: skip

@@ -102,6 +102,14 @@ def next_quarter_end(d: date) -> date:
     return date(d.year + 1, 3, 31)
 
 
+def previous_quarter_end(quarter_end: date) -> date:
+    return quarter_end_on_or_before(quarter_end - timedelta(days=1))
+
+
+def year_ago_quarter_end(quarter_end: date) -> date:
+    return date(quarter_end.year - 1, quarter_end.month, quarter_end.day)
+
+
 def quarter_period(quarter_end: date) -> Period:
     """Period for the quarter ending on `quarter_end` (must be a quarter end). Label like 'Q2 FY27'."""
     if (quarter_end.month, quarter_end.day) not in ((3, 31), (6, 30), (9, 30), (12, 31)):

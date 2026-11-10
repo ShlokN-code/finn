@@ -12,9 +12,10 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 
 from finn import store
-from finn.calendar import ist_today, set_holidays
+from finn.calendar import ist_today, previous_quarter_end, set_holidays, year_ago_quarter_end
 from finn.classification.ladder import Classifier
 from finn.events.threader import thread
+from finn.extraction.results import xbrl
 from finn.llm import PostgresLLMLog, Router
 from finn.sources import nse
 from finn.sources.http import FetchError, NSESession, fetch_capped
@@ -25,6 +26,7 @@ log = logging.getLogger("finn.ingest")
 BACKFILL_PERIOD = "1y"
 INCREMENTAL_DAYS = 15  # calendar days ≈ 10 sessions
 MAX_PDF_BYTES = 12 * 1024 * 1024
+MAX_XBRL_BYTES = 8 * 1024 * 1024
 
 
 @dataclass
@@ -241,6 +243,50 @@ def step_thread(run: Run, symbols: list[str]) -> None:
                            "filings": len(filings)}  # fmt: skip
 
 
+def results_quarters(period_end: date) -> list[date]:
+    """Current, previous and year-ago quarter ends for a results event."""
+    return [period_end, previous_quarter_end(period_end), year_ago_quarter_end(period_end)]
+
+
+def step_results_fetch(run: Run, s: NSESession, symbols: list[str], days: int = 45) -> None:
+    """XBRL for every recent results event: current, previous and year-ago quarter, both bases.
+    Already-stored instances are skipped (they never change; a revision has its own URL)."""
+    events = store.recent_results_events(run.conn, symbols, days)
+    stats = {"events": len(events), "downloaded": 0, "already_stored": 0, "missing": []}
+    for sym in sorted({e["symbol"] for e in events}):
+        need: set[date] = set()
+        for e in (e for e in events if e["symbol"] == sym and e["period"]):
+            need.update(results_quarters(date.fromisoformat(e["period"]["end"])))
+        try:
+            refs = nse.fetch_integrated_results(s, sym)
+        except FetchError as err:
+            store.mark_source(run.conn, "nse_results_xbrl", sym, ok=False, error=str(err)[:300])
+            run.fail("results_fetch", sym, err)
+            continue
+        have = store.stored_xbrl_urls(run.conn, sym)
+        for q in sorted(need):
+            mine = [r for r in refs if r.period_end == q]
+            if not mine:
+                stats["missing"].append(f"{sym} {q}")
+            for ref in mine:
+                if ref.xbrl_url in have:
+                    stats["already_stored"] += 1
+                    continue
+                xml = fetch_capped(s, ref.xbrl_url, max_bytes=MAX_XBRL_BYTES, deadline_s=60)
+                if not xml or b"<" not in xml[:200]:
+                    run.fail("results_fetch", sym, f"XBRL download failed: {ref.xbrl_url}")
+                    continue
+                try:
+                    parsed = xbrl.parse_instance(xml)
+                except Exception as err:  # malformed instance: record, keep going
+                    run.fail("results_fetch", sym, f"XBRL parse failed {ref.xbrl_url}: {err}")
+                    continue
+                store.upsert_results_filing(run.conn, ref, parsed, xbrl.gz(xml))
+                stats["downloaded"] += 1
+        store.mark_source(run.conn, "nse_results_xbrl", sym, ok=True, rows=len(refs))
+    run.stats["results_fetch"] = stats
+
+
 # --- reporting --------------------------------------------------------------------------------
 
 
@@ -248,7 +294,7 @@ def write_summary(run: Run, status: str) -> None:
     """Human summary to stdout and, in GitHub Actions, to the job summary page."""
     cls = run.stats.get("classification", {})
     lines = [f"## {run.job}: {status}", "", f"- duration: {run.stats.get('duration_s')} s"]
-    for k in ("securities", "announcements", "board_meetings", "corporate_actions"):
+    for k in ("securities", "announcements", "board_meetings", "corporate_actions", "results_fetch", "results"):
         if k in run.stats:
             lines.append(f"- {k}: {run.stats[k]}")
     if "prices" in run.stats:
