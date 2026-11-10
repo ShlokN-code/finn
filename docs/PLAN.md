@@ -35,9 +35,18 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [x] **Daily job verified on GitHub Actions** — run 42804318441 (dispatched 10 Nov 16:33 IST, commit `85ccaa4`): success in 2 m 54 s; `ingest_runs` #5 status ok, 0 failures; NSE reachable from the runner for every source; prices skipped (exchange holiday).
 - [ ] **Confirm the schedule fires.** No scheduled `ingest` run had started by 16:40 IST on 10 Nov (new crons can take a while to register on GitHub). Check on 11 Nov that the 30-min filing checks (`check_filings`) and the 16:30 daily run appear in `ingest_runs` with trigger `schedule`.
 - [x] **Review the eval labels** — reviewed 10 Nov: 4 corrected, 7 checked against the PDF and confirmed; material-over-routine rule added (`05536be`).
-- [ ] **Held-out eval set** from other symbols/months (the current set overlaps the filings the rules were written from).
+- [ ] **Held-out eval set** — moved to Phase 5 (below).
 - [x] **Content-free newspaper ads** read by the model from their first PDF pages — full-ladder eval 98.3 %; 20 of 49 stored ads turned out material (see DECISIONS, "Ambiguous between routine and material").
 - [ ] **Re-capture the snapshot by Fri 13 Nov** if a heavier results day lands this week (`python -m jobs.snapshot --suggest`).
 - [ ] **Rules:** press releases announcing results or new facilities without the words "results"/"capacity" fall to `press_release` (2 eval misses, PERSISTENT).
 - [ ] **Backfill older filings** in daily slices if the Brief or calendar needs more than 120 days.
+
+## Phase 5
+
+- [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.
+  - Pick ~20 new NSE filings that were not in the dev set or the ~750-filing pull used to write the rules: other symbols and/or later dates, stratified across NSE categories, including a few content-free subjects.
+  - **Blind labelling:** the product owner labels them before anyone runs the classifier on them. Store as `backend/evals/classification/heldout.jsonl` (same format, `labelled_by: reviewer (blind)`), committed before the first run.
+  - Freeze it: no rule or prompt changes based on held-out misses. Fixes go through the dev set, and the held-out number is reported as measured.
+  - `run.py --set heldout|dev` reports each separately (rules only and full ladder).
+  - **README reports both numbers:** dev set and held-out, side by side.
 

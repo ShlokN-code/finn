@@ -100,15 +100,19 @@ It picks the newest transcript for this repo in `~/.claude/projects/`, keeps mes
 
 ## Evals
 
-**Announcement classification** (`backend/evals/classification/`, 60 real NSE filings from the demo portfolio, Aug–Nov 2026; labels written by Claude and reviewed by the product owner, uncertain ones checked against the filing PDF):
+**Announcement classification — dev set** (`backend/evals/classification/`, 60 real NSE filings from the demo portfolio, Aug–Nov 2026; labels written by Claude and reviewed by the product owner, uncertain ones checked against the filing PDF):
 
 | Mode | Accuracy on decided | Coverage | Overall |
 |---|---|---|---|
 | Rules only (exchange label + regex) | 94.7 % (54/57) | 95 % | 90.0 % |
 | Full ladder (+ Gemini Flash-Lite, reading the first PDF pages when the subject says nothing) | 98.3 % (59/60) | 100 % | 98.3 % |
 
-Rules alone miss three: two newspaper ads whose subject says nothing (a results ad and the Jio Platforms IPO ad), which the full ladder reads from their PDFs and gets right, and a results press release titled without the word "results", which both modes miss. Caveat: the rules were written from the same three months of filings, so this is optimistic; a held-out set comes next. Run with `python -m evals.classification.run [--model]` from `backend/`.
+Rules alone miss three: two newspaper ads whose subject says nothing (a results ad and the Jio Platforms IPO ad), which the full ladder reads from their PDFs and gets right, and a results press release titled without the word "results", which both modes miss. Caveat: the rules were written from the same three months of filings, so the dev-set score is optimistic.
+
+**Held-out set:** not built yet (Phase 5): ~20 new filings, labelled blind by the product owner before the classifier sees them, never used for tuning. Both numbers will be reported here side by side. Run with `python -m evals.classification.run [--model]` from `backend/`.
 
 Live tier split on the first backfill (824 portfolio filings, Jul–Nov 2026): 34 % exchange label · 52 % rules · 13 % model · 0 % failed after one retry pass (13 Gemini 503s on the first pass).
 
-Caveat: the rules were written from the same three months of filings, so this is optimistic; a held-out set comes next. Run with `python -m evals.classification.run [--model]` from `backend/`.
+Caveat: the rules were written from the same three months of filings, so the dev-set score is optimistic.
+
+**Held-out set:** not built yet (Phase 5): ~20 new filings, labelled blind by the product owner before the classifier sees them, never used for tuning. Both numbers will be reported here side by side. Run with `python -m evals.classification.run [--model]` from `backend/`.
