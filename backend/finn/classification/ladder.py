@@ -105,7 +105,8 @@ SYSTEM = (
     "You classify Indian stock-exchange (NSE) corporate filings for an investor. Use ONLY the filing text or "
     "document provided — never outside knowledge about the company. Pick exactly one category from the list. "
     "Choose 'routine' for compliance boilerplate. If the text does not allow a decision, choose 'unclassified' "
-    "with low confidence. Categories:\n" + CATEGORY_GUIDE
+    "with low confidence. 'stage' applies only to results/earnings-call filings (intimation, outcome, "
+    "presentation, call, transcript) or newspaper ads; otherwise use 'other'. Categories:\n" + CATEGORY_GUIDE
 )
 
 SCHEMA = {
@@ -195,7 +196,11 @@ class Classifier:
             stage = EventStage(d["stage"]) if d.get("stage") else None
         except ValueError:
             stage = None
-        if stage == EventStage.other:
+        # Thread stages only mean something inside a results thread (plus newspaper ads / clarifications).
+        if stage == EventStage.other or (
+            cat not in (Category.results, Category.earnings_call)
+            and stage not in (EventStage.newspaper_ad, EventStage.clarification)
+        ):
             stage = None
         conf = d.get("confidence")
         conf = max(0.0, min(1.0, float(conf))) if isinstance(conf, int | float) else None

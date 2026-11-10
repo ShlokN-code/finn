@@ -73,6 +73,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 ## 2026-11-10 · Filing.duplicate_of kept, low priority
 - **Context:** NSE↔BSE dedup was planned, but BSE's APIs are blocked from GitHub runners, so scheduled ingest only sees NSE.
 - **Decision:** Keep the field (BSE may be used locally or later), but don't build dedup until BSE ingest is actually running.
+- **Update (Phase 1, product owner):** dedup logic + tests are built (`finn/ingest/dedup.py`, BSE parser in `finn/sources/bse.py`) against the saved BSE samples; BSE is still not wired into the jobs. See "NSE↔BSE dedup" below.
 
 ## 2026-11-10 · NSE is fetched only by GitHub Actions; the API never calls NSE
 - **Context:** `GET /health/sources` on Render (AWS Singapore) shows NSE returns 403 for everything — APIs, archive PDFs, XBRL, equity list. GitHub-hosted runners (Azure US) are not blocked. BSE PDFs and screener work from both.
@@ -91,3 +92,36 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - The dossier's core sections (snapshot, trajectory, Promise Ledger, cash, balance sheet) run on screener + BSE PDFs alone; NSE data only enriches and never blocks.
 - **Alternatives:** wait for the nightly job (simpler, but a curious evaluator sees gaps for hours); fetch NSE via a residential proxy (fragile, impolite).
 - **Plan:** docs/PLAN.md, "Research dossier — on-demand NSE data".
+
+## 2026-11-10 · Cheap LLM tier: Gemini free tier, Groq as text-only fallback
+- **Context:** Classification leftovers (and later bulk extraction) need a cheap model. Product owner chose Google AI Studio's free tier (no billing).
+- **Decision:** `finn/llm/` routes `cheap` → Gemini Flash-Lite, `strong` → Gemini Flash; model ids come from env (`GEMINI_MODEL_CHEAP/STRONG`) and are checked against the key's live model list with `python -m finn.llm.check` (verified 10 Nov 2026: `gemini-3.5-flash-lite`, `gemini-3.8-flash`). PDFs go inline (first 2 pages only, cut with pypdf) when a subject is boilerplate. Every call is cached by content hash in `llm_calls`, which is also the token/cost log (USD estimate at paid list price, even though the free tier bills nothing). Router enforces requests/minute (sleeps) and requests/day (counted from the log, Pacific-midnight day like Gemini's), defaults 10 RPM / 400 RPD — conservative because per-model free limits are only shown in the AI Studio dashboard. On quota/error: Groq (`llama-3.1-8b-instant`, text only, optional key) → `LLMUnavailable` → filing stays `unclassified` with tier `failed` and is retried next run.
+- **Privacy:** free-tier inputs may be used by Google to improve its products. Acceptable: FINN only sends public exchange filings (no holdings, no user data).
+- **Alternatives:** Claude Haiku (paid; offered first); no model tier (leftovers stay unclassified).
+
+## 2026-11-10 · `Category.routine` and a three-tier `category_source`
+- **Context:** PRODUCT.md had only `unclassified` for the hidden drawer, mixing "known boring" with "couldn't tell", which hides how well classification works.
+- **Decision (product owner):** add `routine` (always hidden; `hidden_reason` names the drawer group: Newspaper ad, Trading-window notice, ESOP allotment / grant, Compliance certificate, Debt securities, …). `unclassified` now means every tier failed. `Filing.category_source` = `exchange | rule | model` (the ladder tier) plus `category_model`; the DB also keeps `classify_tier = failed` and a `classify_note` (rule name / model reason / failure).
+
+## 2026-11-10 · Classification ladder order and scope
+- **Decision:** (a) NSE `desc` only when the label alone is unambiguous ("Change in Management", "Credit Rating", "ESOP/ESOS/ESPS", …); (b) ordered regex rules on the subject with NSE boilerplate stripped ("X Limited has informed the Exchange regarding …"), then weak fallbacks on coarse labels; (c) the model. Exchange-sought clarifications ("news item captioned …") always go to the model — keyword rules would classify the quoted headline, not the filing.
+- **Measured** on 757 real portfolio filings (Aug–Nov 2026) before the model: 33 % exchange, 49 % rule, 17 % left for the model.
+
+## 2026-11-10 · Event threading heuristics
+- **Decision:** results threads keyed `SYM:results:<Q label>`; the quarter is read from the text ("quarter ended 30th June 2026", "Q1 FY2027", "period ended Jun 30, 2026") or inferred from the filing date (season = quarter end − 15 d to + 75 d). Investor presentations within 2 days of a results outcome and newspaper ads within 3 days of an event's last filing attach as satellites. Other material categories cluster per symbol+category when filings are ≤ 7 days apart. Routine / investor-meeting / unclassified filings are not threaded (hidden drawer). Event id = its key, and each run re-threads a symbol's full history in one transaction, so threading is idempotent.
+- **Board-meeting intimations** come from NSE's `corporate-board-meetings` feed (they rarely appear in the announcements feed) and are stored as filings with exchange id `BM-<hash>`, so the results thread starts at the intimation.
+- **Known limits:** two unrelated filings of one category within 7 days merge (e.g. two separate appointments); a subsidiary's results intimation can land in the parent's thread.
+
+## 2026-11-10 · Filing checks run 08:30–22:00 IST, holidays included
+- **Context:** The phase brief said "30-minute filing checks during market hours". Most results land after the close (RELIANCE 19:40, INFY 16:08), and companies file on exchange holidays (COCHINSHIP and KALYANKJIL hold results board meetings on 10 Nov, a trading holiday).
+- **Decision:** `*/30 3-16 * * 1-5` UTC (08:30–22:00 IST, weekdays); the script gates the window and does not skip exchange holidays. Prices are skipped on non-trading days. The repo is public, so Actions minutes are free.
+
+## 2026-11-10 · Migrations applied by a job
+- **Decision:** `python -m jobs.migrate` applies `backend/db/migrations/*.sql` in order and records them in `schema_migrations`; the daily workflow runs it first. Replaces the manual SQL-editor step (0001 is idempotent and was re-recorded).
+
+## 2026-11-10 · Showcase snapshot stored twice
+- **Decision:** `jobs/snapshot.py` freezes the portfolio's filings, events, prices (+20 prior sessions), nearby corporate actions, deals and freshness for one IST day into the `snapshots` table **and** `backend/data/snapshots/<date>.json` in git, so the replay survives a Supabase pause. PDFs are referenced by NSE archive URL, not mirrored.
+
+## 2026-11-10 · Backfill depth
+- **Decision:** prices 1 year (spec); filings 120 days for the first backfill. A full year of filings would need ~400 model calls for leftovers — the whole conservative daily budget. Older filings can be backfilled in daily slices later; research uses screener/BSE documents, not this feed.
+

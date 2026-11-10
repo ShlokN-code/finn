@@ -178,6 +178,7 @@ class Router:
                 "request": {"system": req.system, "prompt": req.prompt, "pdf_sha256": _pdf_hash(sendable.pdf)},
             }  # fmt: skip
             self.stats.calls += 1
+            log.info("llm call %s/%s %s pdf=%s", p.name, model, req.purpose, bool(sendable.pdf))
             try:
                 res = p.generate(sendable, model)
             except QuotaExceeded as e:

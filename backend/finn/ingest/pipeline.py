@@ -17,14 +17,14 @@ from finn.classification.ladder import Classifier
 from finn.events.threader import thread
 from finn.llm import PostgresLLMLog, Router
 from finn.sources import nse
-from finn.sources.http import FetchError, NSESession, polite_get
+from finn.sources.http import FetchError, NSESession, fetch_capped
 from finn.sources.prices import fetch_bars, needs_restatement
 
 log = logging.getLogger("finn.ingest")
 
 BACKFILL_PERIOD = "1y"
 INCREMENTAL_DAYS = 15  # calendar days ≈ 10 sessions
-MAX_PDF_BYTES = 25 * 1024 * 1024
+MAX_PDF_BYTES = 12 * 1024 * 1024
 
 
 @dataclass
@@ -212,13 +212,8 @@ def make_classifier(run: Run, s: NSESession | None) -> tuple[Classifier, Router]
     def pdf_fetcher(url: str) -> bytes | None:
         if s is None:
             return None
-        try:
-            r = polite_get(s, url, ttl=None, headers={"Accept": "application/pdf,*/*"})
-        except FetchError:
-            return None
-        if not r.ok or not r.content.startswith(b"%PDF") or len(r.content) > MAX_PDF_BYTES:
-            return None
-        return r.content
+        data = fetch_capped(s, url, max_bytes=MAX_PDF_BYTES, deadline_s=60)
+        return data if data and data.startswith(b"%PDF") else None
 
     return Classifier(router if router.providers else None, pdf_fetcher), router
 

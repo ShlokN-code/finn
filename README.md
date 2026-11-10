@@ -4,7 +4,7 @@ Your portfolio's editor for Indian equities (NSE/BSE): it reads every filing, pr
 
 Built for the ENAM AI Engineer Build Challenge. Product spec: [docs/PRODUCT.md](docs/PRODUCT.md) · Decisions: [docs/DECISIONS.md](docs/DECISIONS.md) · Data sources: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) · Deploy: [docs/DEPLOY.md](docs/DEPLOY.md) · Plan: [docs/PLAN.md](docs/PLAN.md)
 
-> Status: skeleton. Data sources verified, contracts defined, web → API → database deployed. No product features yet.
+> Status: Phase 1 — ingestion + trust layer. NSE filings, prices, corporate actions and deals flow into Supabase, classified and threaded into events, on a GitHub Actions schedule. No Brief UI yet.
 
 ## Live
 
@@ -26,8 +26,9 @@ The free Render instance can take up to ~50 s to wake; `keepalive` pings it ever
 | `backend/jobs/` | Scheduled jobs (GitHub Actions cron) |
 | `backend/evals/` | Labelled eval sets |
 | `backend/spikes/` | Standalone data-source probes (see DATA_SOURCES.md) |
-| `backend/db/migrations/` | SQL run in Supabase |
-| `.github/workflows/` | `ci` · `keepalive` · `spike-ci` |
+| `backend/db/migrations/` | SQL migrations (`python -m jobs.migrate`) |
+| `backend/data/snapshots/` | Frozen showcase day(s) for replay mode |
+| `.github/workflows/` | `ci` · `ingest` · `keepalive` · `spike-ci` |
 | `scripts/` | Dev utilities (`transcript_to_md.py` for AI logs) |
 
 ## Run locally
@@ -56,6 +57,26 @@ cd backend && ../.venv/bin/pytest -q && ../.venv/bin/ruff check .
 cd web && npm run lint && npm run typecheck
 ```
 
+## Ingestion
+
+All NSE data is fetched by GitHub Actions (NSE blocks Render) and written to Supabase. Schedule (IST): daily ingest at 16:30, filing checks every 30 min 08:30–22:00 on weekdays (exchange holidays included). Every workflow run can also be started by hand (`ingest` → Run workflow → job = daily / filings / snapshot / migrate).
+
+Locally, with `DATABASE_URL` and `GEMINI_API_KEY` in a root `.env` (see `.env.example`):
+
+```bash
+cd backend && ../.venv/bin/pip install -e ".[jobs,dev]" && ../.venv/bin/python -m jobs.migrate
+```
+
+```bash
+cd backend && ../.venv/bin/python -m jobs.ingest_daily --backfill-days 120
+```
+
+```bash
+cd backend && ../.venv/bin/python -m jobs.snapshot --suggest
+```
+
+Pipeline: prices (Yahoo, adjusted) · announcements + board-meeting intimations · corporate actions · bulk/block deals → classification ladder (NSE label → rules → Gemini Flash-Lite for leftovers) → event threads → `source_status` freshness and an `ingest_runs` row with the tier split.
+
 ## Contracts
 
 Pydantic models in `backend/finn/models/` are the source of truth. After changing them:
@@ -79,4 +100,10 @@ It picks the newest transcript for this repo in `~/.claude/projects/`, keeps mes
 
 ## Evals
 
-None yet — accuracy will be reported here once classification/extraction land.
+**Announcement classification** (`backend/evals/classification/`, 60 real NSE filings from the demo portfolio, Aug–Nov 2026; labels written by Claude, pending human review):
+
+| Mode | Accuracy on decided | Coverage | Overall |
+|---|---|---|---|
+| Rules only (exchange label + regex) | 96.5 % (55/57) | 95 % | 91.7 % |
+
+Caveat: the rules were written from the same three months of filings, so this is optimistic; a held-out set comes next. Run with `python -m evals.classification.run [--model]` from `backend/`.

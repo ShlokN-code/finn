@@ -142,6 +142,34 @@ def polite_get(
     return resp
 
 
+def fetch_capped(session: requests.Session, url: str, *, max_bytes: int, deadline_s: float = 60) -> bytes | None:
+    """Download a document with a hard size cap and overall deadline (requests' timeout is per read, so a
+    slow server can otherwise hold a job for many minutes). Cached forever on disk — documents don't change."""
+    key = _key(url, None)
+    body_f = cache_dir() / f"{key}.doc"
+    if body_f.exists():
+        return body_f.read_bytes()
+    _throttle(url)
+    t0 = time.monotonic()
+    try:
+        with session.get(url, stream=True, timeout=20) as r:
+            if not r.ok:
+                return None
+            if int(r.headers.get("content-length") or 0) > max_bytes:
+                return None
+            buf = bytearray()
+            for chunk in r.iter_content(65536):
+                buf.extend(chunk)
+                if len(buf) > max_bytes or time.monotonic() - t0 > deadline_s:
+                    log.warning("abandoned %s (%d bytes, %.0fs)", url, len(buf), time.monotonic() - t0)
+                    return None
+    except requests.RequestException as e:
+        log.warning("document fetch failed %s: %s", url, type(e).__name__)
+        return None
+    body_f.write_bytes(bytes(buf))
+    return bytes(buf)
+
+
 def get_json(session: requests.Session, url: str, **kw):
     """polite_get + require a JSON body (NSE answers blocks with HTML)."""
     r = polite_get(session, url, **kw)

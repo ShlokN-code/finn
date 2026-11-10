@@ -80,7 +80,10 @@ All 18 portfolio + 4 research tickers resolve on NSE (`EQ` series) and on Yahoo 
 | `/api/corporate-board-meetings?index=equities&symbol=…` | Per company: `bm_date, bm_purpose, bm_desc, attachment`, **`ixbrl`** (prior-intimation XBRL) |
 | `/api/corporates-corporateActions?index=equities&symbol=…` | `exDate, recDate, subject` ("Bonus 1:1", "Dividend - Rs 13 Per Share", "Face Value Split…"), `faceVal`, book closure dates |
 | `/api/historicalOR/bulk-block-short-deals?optionType=bulk_deals\|block_deals&from=…&to=…` | `BD_DT_DATE, BD_SYMBOL, BD_CLIENT_NAME, BD_BUY_SELL, BD_QTY_TRD, BD_TP_WATP, BD_REMARKS` |
-| `nsearchives.nseindia.com/content/equities/bulk.csv`, `block.csv` | Latest session's deals (CSV) — fallback |
+| `nsearchives.nseindia.com/content/equities/bulk.csv`, `block.csv` | Latest session's deals (CSV). The API lags the latest session by a day or more (10 Nov: API's newest bulk deal 5 Nov, CSV 9 Nov), so ingest unions both |
+| `/api/holiday-master?type=trading` | Trading holidays per segment (`CM` = equities): `tradingDate, weekDay, description`. 20 for 2026, incl. 10 Nov (Diwali-Balipratipada); "Diwali Laxmi Pujan*" (8 Nov) marks the Muhurat session. Committed copy: `backend/finn/data/nse_holidays.json` |
+
+Phase 1 notes (10 Nov 2026, local): results **intimations** are mostly absent from the announcements feed. They come from `corporate-board-meetings` (`bm_timestamp` = filed, `bm_date` = meeting, `bm_purpose` e.g. "Financial Results", "Board Meeting Intimation"). NSE's announcement `fileSize` ("228.94 KB") equals BSE's `Fld_Attachsize` bytes at that precision, and the two exchanges disseminate up to ~1 h apart (RELIANCE 31 Oct). Companies file on trading holidays.
 
 ## (d) screener.in — **works** (polite use)
 
