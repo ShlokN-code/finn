@@ -268,7 +268,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - ingest (30-min filing checks, 16:30 daily, 07:00 alerts) ran once since going live around 16:30 IST, at 22:43 IST, which was outside the filing window, so it did nothing.
 
   Evaluators can't rely on that. GitHub also disables scheduled workflows on public repos after 60 days without commits.
-- **Decision (status: proposed; the product owner creates the accounts after approving):**
+- **Decision (approved by the product owner 10 Nov 2026; accounts set up by them):**
   - **Keepalive:** cron-job.org (free) pings `GET /health/db` every 10 min. That wakes Render and queries Supabase.
   - **Ingest:** cron-job.org calls GitHub's `workflow_dispatch` API for three jobs, all in Asia/Kolkata:
     - filings: every 30 min, 08:00–22:30, Mon–Fri;
