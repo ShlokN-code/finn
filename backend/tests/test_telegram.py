@@ -103,7 +103,7 @@ def test_message_escapes_html_and_links_source(monkeypatch):
     card = build_card(e, FILINGS, NEUTRAL_SCORE)
     text = card_text(card)
     assert "&lt;b&gt;" in text and "Source filing" in text
-    assert buttons(card)[0][0]["url"] == "https://finn.example/e/COCHINSHIP:results:Q2 FY27"
+    assert buttons(card)[0][0]["url"] == "https://finn.example/e/COCHINSHIP%3Aresults%3AQ2%20FY27"
 
 
 def test_webhook_rejects_wrong_secret(monkeypatch):

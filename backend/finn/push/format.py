@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from html import escape
+from urllib.parse import quote
 
 from finn.cards.build import CATEGORY_LABEL
 from finn.format import figure_text
@@ -20,7 +21,9 @@ def web_base() -> str:
 
 def card_url(card: Card) -> str | None:
     base = web_base()
-    return f"{base}/e/{card.event_id}" if base else (card.sources[0].url if card.sources else None)
+    if base:
+        return f"{base}/e/{quote(card.event_id, safe='')}"
+    return card.sources[0].url if card.sources else None
 
 
 def buttons(card: Card) -> list[list[dict]]:

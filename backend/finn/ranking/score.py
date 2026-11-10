@@ -80,10 +80,12 @@ def novelty(event: dict, since: datetime | None, repeats: int) -> tuple[float, l
     if since is None or started >= since:
         n, why = 1.0, "New event"
     else:
+        # The most substantive filing inside the window counts: results landing this week is news even if a
+        # newspaper ad followed it.
         items = [t for t in event.get("timeline", []) if _ts(t["at"]) >= since]
-        latest = max(items, key=lambda t: _ts(t["at"]), default=None)
-        n = NOVELTY_STAGE.get(latest["stage"], 0.5) if latest else 0.3
-        why = f"Update to an earlier event ({latest['stage'] if latest else 'no new filing'})"
+        best = max(items, key=lambda t: NOVELTY_STAGE.get(t["stage"], 0.5), default=None)
+        n = NOVELTY_STAGE.get(best["stage"], 0.5) if best else 0.3
+        why = f"Update to an earlier event ({best['stage'] if best else 'no new filing'})"
     notes = [f"{why} (×{n})"]
     if repeats:
         d = max(REPEAT_MIN, REPEAT_DECAY**repeats)

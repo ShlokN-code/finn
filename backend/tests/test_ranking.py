@@ -70,7 +70,12 @@ def test_novelty_and_repeats():
     old = ev(started=NOW - timedelta(days=3), timeline=[
         {"stage": "outcome", "at": (NOW - timedelta(days=3)).isoformat()},
         {"stage": "newspaper_ad", "at": (NOW - timedelta(hours=2)).isoformat()}])  # fmt: skip
-    assert score(old, 5, [], since=since).novelty == 0.3
+    assert score(old, 5, [], since=since).novelty == 0.3  # only an ad is new
+    fresh_outcome = ev(started=NOW - timedelta(days=20), timeline=[
+        {"stage": "intimation", "at": (NOW - timedelta(days=20)).isoformat()},
+        {"stage": "outcome", "at": (NOW - timedelta(hours=10)).isoformat()},
+        {"stage": "newspaper_ad", "at": (NOW - timedelta(hours=2)).isoformat()}])  # fmt: skip
+    assert score(fresh_outcome, 5, [], since=since).novelty == 1.0
     assert score(ev(), 5, [], since=since).novelty == 1.0
     ncds = [ev("fund_raise", "BAJFINANCE", NOW - timedelta(days=d), eid=f"n{d}") for d in (21, 14, 7, 0)]
     reps = repeat_counts(ncds)
