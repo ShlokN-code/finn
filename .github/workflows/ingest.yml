@@ -20,7 +20,7 @@ on:
         required: false
         default: ""
       backfill_days:
-        description: "daily: days of filings to (re)fetch (365 also backfills 1y prices); results: event age in days"
+        description: "daily: days of filings to (re)fetch (365 also backfills 1y prices); results / filings: event age in days to build or tag"
         required: false
         default: "0"
       date:
@@ -92,7 +92,8 @@ jobs:
         if: steps.pick.outputs.job == 'filings'
         run: |
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then force=--force; else force=; fi
-          python -m jobs.check_filings --symbols "$IN_SYMBOLS" $force
+          days="$IN_BACKFILL"; if [ "$days" = "0" ]; then days=45; fi
+          python -m jobs.check_filings --symbols "$IN_SYMBOLS" $force --tag-days "$days"
       - name: results cards
         if: steps.pick.outputs.job == 'results'
         run: |
