@@ -40,7 +40,8 @@ class Run:
     t0: float = field(default_factory=time.monotonic)
 
     def __enter__(self):
-        trigger = os.environ.get("GITHUB_EVENT_NAME", "local")
+        # FINN_TRIGGER (set by the workflow) tells the external scheduler apart from a manual dispatch
+        trigger = os.environ.get("FINN_TRIGGER") or os.environ.get("GITHUB_EVENT_NAME", "local")
         self.run_id = store.start_run(self.conn, self.job, trigger)
         return self
 

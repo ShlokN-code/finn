@@ -261,3 +261,30 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - **Exchange filings:** search results on nseindia.com/bseindia.com are their own kind, "Exchange filing", ranked first.
   - **Passing mentions:** people only mentioned in passing (change "other" and nothing said about them, e.g. the company secretary who signs the letter) are dropped.
 - **Why:** a quote that doesn't name the person, or a date the quote doesn't print, is a guess with a URL attached.
+
+## 2026-11-10 · External scheduler: cron-job.org triggers keepalive and ingest; GitHub cron is the backup
+- **Context:** GitHub's scheduler fires far less often than the cron says.
+  - keepalive (every 10 min) ran on schedule 3 times in ~19 h (08:19, 16:03, 23:44 IST).
+  - ingest (30-min filing checks, 16:30 daily, 07:00 alerts) ran once since going live around 16:30 IST, at 22:43 IST, which was outside the filing window, so it did nothing.
+
+  Evaluators can't rely on that. GitHub also disables scheduled workflows on public repos after 60 days without commits.
+- **Decision (status: proposed; the product owner creates the accounts after approving):**
+  - **Keepalive:** cron-job.org (free) pings `GET /health/db` every 10 min. That wakes Render and queries Supabase.
+  - **Ingest:** cron-job.org calls GitHub's `workflow_dispatch` API for three jobs, all in Asia/Kolkata:
+    - filings: every 30 min, 08:00–22:30, Mon–Fri;
+    - daily: 16:30, Mon–Fri;
+    - alerts: 07:00, every day.
+  - **Token:** the call uses a fine-grained token limited to this repository with **Actions: Read and write** only (Metadata: Read-only is mandatory).
+  - **`scheduled` input:** scheduler dispatches send `scheduled: "true"`.
+    - A scheduled run respects the filing window, and is logged with `trigger = scheduler`.
+    - It skips a slot that already ran: filings within 20 min; daily, a successful run since 16:00 IST today.
+    - GitHub's own cron runs count as scheduled too.
+    - Manual dispatches from the UI still force-run and never skip.
+  - The GitHub cron entries stay as a backup; the slot check stops the two from doubling the work.
+  - Setup is click-by-click in DEPLOY.md §6.
+- **Alternatives:**
+  - UptimeRobot for keepalive: works, with a 5-min free interval, but it's a second account and can't send the POST with a body that dispatches need. cron-job.org does both.
+  - A Render endpoint that dispatches with a token held on Render: keeps the GitHub token off a third party, but a sleeping Render instance would delay or drop the trigger. That defeats the purpose.
+  - Self-hosted cron: there's no always-on machine.
+- **Risk:** the token sits in cron-job.org's job headers. If leaked, it can start, cancel, re-run or delete this repo's workflow runs and read their logs (secrets masked). It cannot read secrets or change code. It also expires; the failure emails (after 3 failures) surface that.
+- **Cost:** free. Public repo, so Actions minutes are free. About 160 short runs a week.

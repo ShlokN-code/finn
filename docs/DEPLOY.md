@@ -60,6 +60,8 @@ Do the steps in this order (each needs a value from the previous one).
 
 ## 4. GitHub (keep-alive) — ~1 min
 
+> Backup only since 10 Nov 2026 — the primary keepalive is cron-job.org (§6).
+
 1. github.com/ShlokN-code/finn → **Settings** → **Secrets and variables** → **Actions** → **Variables** tab → **New repository variable**: Name `API_BASE_URL`, Value `https://<your-render-url>` → **Add variable**.
 2. **Actions** tab → **keepalive** → **Run workflow** → **Run workflow**. It should go green in ~1 min. From then on it runs every 10 minutes.
 
@@ -87,3 +89,91 @@ scripts/check_deploy.sh
 
 It polls `GET /version` (commit from Render's `RENDER_GIT_COMMIT`) until it matches local `HEAD`, or fails after
 15 minutes — then read the Render deploy log; the previous deploy stays live.
+
+## 6. External scheduler (cron-job.org) — ~20 min
+
+GitHub's cron fires too rarely to rely on (10 Nov 2026: keepalive ran 3 times in ~19 h instead of ~110; ingest ran once
+in ~6 h). cron-job.org (free) triggers everything instead; the GitHub cron entries stay as a backup, and a slot that
+already ran is skipped (`backend/finn/ingest/schedule.py`), so the two never double the work.
+
+Four jobs: **keepalive** (pings the API + DB), **filings** (every 30 min), **daily** (post-close), **alerts** (07:00).
+
+### 6a. GitHub token (fine-grained, this repo, Actions only)
+
+1. github.com → your avatar (top right) → **Settings** → left sidebar, bottom: **Developer settings**.
+2. **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
+3. **Token name:** `finn-cron-job-org`. **Description:** `cron-job.org → workflow_dispatch on finn/ingest`.
+4. **Resource owner:** `ShlokN-code`.
+5. **Expiration:** the longest offered (e.g. 1 year / custom). Put the expiry date in your calendar — when it lapses,
+   cron-job.org's dispatch jobs start failing with HTTP 401 and you get the failure email.
+6. **Repository access:** **Only select repositories** → pick **ShlokN-code/finn**.
+7. **Permissions → Repository permissions:** set **Actions** to **Read and write**. (In the newer layout: **+ Add
+   permissions** → tick **Actions** → choose **Read and write**.) **Metadata: Read-only** is added automatically and is
+   required. Leave **everything else at "No access"** — no Contents, Secrets, Workflows, Administration, and no
+   account permissions.
+8. **Generate token** → copy it (starts with `github_pat_`); GitHub shows it once. Paste it only into cron-job.org's
+   header fields below — not in chat, not in the repo.
+
+What this token can do if it ever leaks: start, cancel, re-run or delete runs of this repo's workflows, enable/disable
+them, and read run logs (secrets are masked). It cannot read secrets, change code, or touch any other repository.
+Revoke it on the same page.
+
+### 6b. cron-job.org account
+
+1. cron-job.org → **Sign up** (free) → confirm the email → you land in the **Console**.
+2. Top-right menu → **Settings** → set your **time zone** to **Asia/Kolkata** (new jobs default to it).
+3. In each job below, **Notifications:** tick *notify on failure* with **after 3 failures** (one Render cold start
+   shouldn't email you) and *notify when the job is disabled automatically* (cron-job.org disables jobs that keep
+   failing).
+
+Field names below follow cron-job.org's job editor (**Common** tab: title, URL, schedule; **Advanced** tab: time
+zone, request method, headers, body, timeout); exact labels may differ slightly.
+
+### 6c. Job 1 — keepalive
+
+**Console → Cronjobs → Create cronjob**
+
+| Field | Value |
+|---|---|
+| Title | `FINN keepalive` |
+| URL | `https://finn-api-4ejm.onrender.com/health/db` |
+| Enable job | on |
+| Execution schedule | **Every 10 minutes** |
+| Advanced → Request method | `GET` |
+| Advanced → Timeout | the maximum offered (a cold Render start takes ~50 s; the ping still wakes it) |
+
+`/health/db` wakes Render *and* runs a query on Supabase, so one ping covers both free tiers. **Test run** at the
+bottom → expect HTTP 200. **Save**.
+
+### 6d. Jobs 2–4 — ingest dispatches
+
+All three call the same GitHub endpoint; only the title, schedule and body differ. **Create cronjob** for each:
+
+| Field | Value (same for all three) |
+|---|---|
+| URL | `https://api.github.com/repos/ShlokN-code/finn/actions/workflows/ingest.yml/dispatches` |
+| Advanced → Request method | `POST` |
+| Advanced → Headers (add 5) | `Authorization` = `Bearer github_pat_…` (your token) · `Accept` = `application/vnd.github+json` · `X-GitHub-Api-Version` = `2022-11-28` · `Content-Type` = `application/json` · `User-Agent` = `finn-scheduler` |
+| Advanced → Time zone | `Asia/Kolkata` |
+| Enable job | on |
+
+| Title | Execution schedule (**Custom**, Asia/Kolkata) | Advanced → Request body |
+|---|---|---|
+| `FINN filings` | Days of week **Mon–Fri** · Hours **8–22** · Minutes **0, 30** | `{"ref":"main","inputs":{"job":"filings","scheduled":"true"}}` |
+| `FINN daily` | Days of week **Mon–Fri** · Hour **16** · Minute **30** | `{"ref":"main","inputs":{"job":"daily","scheduled":"true"}}` |
+| `FINN alerts` | **Every day** · Hour **7** · Minute **0** | `{"ref":"main","inputs":{"job":"alerts","scheduled":"true"}}` |
+
+The 08:00 and 22:30 filing slots start and exit at once (the job's own window is 08:30–22:00 IST); listing hours
+8–22 is simpler than carving them out.
+
+**Test run** each → expect **HTTP 204** (GitHub accepted the dispatch). Then check
+https://github.com/ShlokN-code/finn/actions — a new `ingest` run appears within seconds. A 401 means the token is
+wrong or expired; 403 means the Actions permission isn't *Read and write*; 404 means the URL or repository access
+is off; 422 means the body is malformed.
+
+### 6e. Check it's working
+
+Tell Claude once the jobs are saved: the `ingest_runs` table records `trigger = scheduler` for these runs, and
+GitHub's run list shows them as `workflow_dispatch`. A plain manual **Run workflow** from GitHub's UI still forces a
+filings run outside the window and never skips; the scheduler's `"scheduled":"true"` makes a run respect the window
+and skip a slot that already ran.

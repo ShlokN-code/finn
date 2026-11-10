@@ -12,9 +12,10 @@ import argparse
 import logging
 from datetime import timedelta
 
-from finn.calendar import is_trading_day, ist_today
+from finn.calendar import is_trading_day, ist_today, now_utc, to_ist
 from finn.db import connect
 from finn.ingest import pipeline as p
+from finn.ingest.schedule import already_ran
 from finn.portfolio import tracked_symbols
 from finn.push import subscriptions as subs
 from finn.signals.price_volume import INDEX_TICKERS
@@ -28,11 +29,16 @@ def main() -> None:
     ap.add_argument("--symbols", default="")
     ap.add_argument("--backfill-days", type=int, default=0, help="also re-fetch this many days of filings")
     ap.add_argument("--skip-prices", action="store_true")
+    ap.add_argument("--scheduled", action="store_true", help="cron slot: skip if today's post-close run already ran")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
     today = ist_today()
     days = max(args.backfill_days, 3)
+    with connect() as conn:
+        if args.scheduled and (prev := already_ran(conn, "ingest_daily", now_utc())):
+            print(f"today's post-close run already ran at {to_ist(prev):%H:%M} IST; nothing to do")
+            return
     with connect() as conn, p.Run("ingest_daily", conn) as run:
         symbols = tracked_symbols(args.symbols or None, conn)
         run.stats["symbols"] = symbols

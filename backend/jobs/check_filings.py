@@ -3,7 +3,8 @@
 Runs on exchange holidays too: companies still file (board meetings, results) when the market is shut.
 Outside the window it exits at once, so a delayed GitHub cron run costs nothing.
 
-python -m jobs.check_filings [--symbols X,Y] [--force] [--tag-days 45]
+python -m jobs.check_filings [--symbols X,Y] [--force] [--scheduled] [--tag-days 45]
+  --scheduled: a cron slot (external scheduler or GitHub cron) — skip if this slot already ran (finn/ingest/schedule.py)
   --tag-days: how far back to tag/enrich events (e.g. to build an older management-change card)
 """
 
@@ -16,6 +17,7 @@ from datetime import time, timedelta
 from finn.calendar import ist_today, now_utc, to_ist
 from finn.db import connect
 from finn.ingest import pipeline as p
+from finn.ingest.schedule import already_ran
 from finn.portfolio import tracked_symbols
 from finn.sources import nse
 from jobs.alerts import step_alerts
@@ -28,6 +30,7 @@ def main() -> None:
     ap.add_argument("--symbols", default="")
     ap.add_argument("--force", action="store_true", help="run outside the IST window / on weekends")
     ap.add_argument("--tag-days", type=int, default=45, help="tag/enrich events updated in the last N days")
+    ap.add_argument("--scheduled", action="store_true", help="cron slot: skip if this slot already ran")
     args = ap.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -37,6 +40,10 @@ def main() -> None:
         return
 
     today = ist_today()
+    with connect() as conn:
+        if args.scheduled and (prev := already_ran(conn, "check_filings", now_utc())):
+            print(f"slot already ran at {to_ist(prev):%H:%M} IST; nothing to do")
+            return
     with connect() as conn, p.Run("check_filings", conn) as run:
         symbols = tracked_symbols(args.symbols or None, conn)
         run.stats["symbols"] = symbols

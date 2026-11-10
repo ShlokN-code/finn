@@ -1,5 +1,7 @@
 # Scheduled ingestion. NSE blocks Render, so all NSE data is fetched here (DECISIONS.md) and written to Supabase.
-# Cron times are UTC (IST = UTC+5:30). GitHub may start scheduled runs several minutes late.
+# Primary trigger: cron-job.org calls workflow_dispatch with scheduled=true (docs/DEPLOY.md §6) — GitHub's cron
+# fires too rarely to rely on. The cron entries below stay as a backup; a slot that already ran is skipped
+# (backend/finn/ingest/schedule.py). Cron times are UTC (IST = UTC+5:30).
 name: ingest
 
 on:
@@ -27,6 +29,11 @@ on:
         description: "snapshot: trading day YYYY-MM-DD (blank = suggest the richest recent day)"
         required: false
         default: ""
+      scheduled:
+        description: "Set by the external scheduler: respect the filing window, skip a slot that already ran"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -59,6 +66,9 @@ jobs:
       IN_DATE: ${{ inputs.date }}
       IN_JOB: ${{ inputs.job }}
       SCHEDULE: ${{ github.event.schedule }}
+      # schedule (GitHub cron) and scheduler dispatches are cron slots; plain manual dispatches are not
+      SCHEDULED: ${{ (github.event_name == 'schedule' || inputs.scheduled) && 'true' || 'false' }}
+      FINN_TRIGGER: ${{ inputs.scheduled && 'scheduler' || github.event_name }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -87,13 +97,16 @@ jobs:
         run: python -m jobs.migrate
       - name: daily ingest
         if: steps.pick.outputs.job == 'daily'
-        run: python -m jobs.ingest_daily --symbols "$IN_SYMBOLS" --backfill-days "$IN_BACKFILL"
+        run: |
+          if [ "$SCHEDULED" = "true" ]; then sched=--scheduled; else sched=; fi
+          python -m jobs.ingest_daily --symbols "$IN_SYMBOLS" --backfill-days "$IN_BACKFILL" $sched
       - name: filing check
         if: steps.pick.outputs.job == 'filings'
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then force=--force; else force=; fi
+          # A manual dispatch runs now (forced past the IST window); a cron slot respects the window and dedupes.
+          if [ "$SCHEDULED" = "true" ]; then flags=--scheduled; else flags=--force; fi
           days="$IN_BACKFILL"; if [ "$days" = "0" ]; then days=45; fi
-          python -m jobs.check_filings --symbols "$IN_SYMBOLS" $force --tag-days "$days"
+          python -m jobs.check_filings --symbols "$IN_SYMBOLS" $flags --tag-days "$days"
       - name: results cards
         if: steps.pick.outputs.job == 'results'
         run: |
