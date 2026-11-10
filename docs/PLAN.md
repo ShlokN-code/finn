@@ -54,7 +54,7 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [x] Web: reusable card components, `/e/<id>`, `/connect` — `e45cd32`
 - [ ] **Acceptance 1:** dispatch `results` on Actions for COCHINSHIP, TATASTEEL, DIVISLAB, HDFCBANK (bank), BAJFINANCE (NBFC), TRENT/POLYCAB (outside demo) → check numbers by hand against the PDFs; confirm ✓ or explain each mismatch.
 - [ ] **Acceptance 2:** create the bot (DEPLOY.md §4), run `jobs.telegram_setup`, `/start` → test alert on the product owner's phone; Snooze and Open in FINN work.
-- [ ] Verify XBRL element names for banks and NBFCs on real instances (PAT/PBT candidates in `compute.ELEMENTS`).
+- [x] Verify XBRL element names for banks and NBFCs on real instances — HDFCBANK, BAJFINANCE checked; layout fixes in DECISIONS — `7a00ff3`
 - [ ] `TAVILY_API_KEY` when the product owner signs up (cards already work without it).
 - [ ] Older results XBRL (≤ Dec-2024, `corporates-financial-results`) — only needed for year-ago comparisons before Mar-2025.
 
