@@ -32,7 +32,11 @@ RESULTS_WORDS = r"(financial results?|unaudited|audited|results for the (?:quart
 RULES: list[Rule] = [
     # --- results thread (order matters: transcript/audio before generic call/meet rules) ---
     r("transcript", r"\btranscript", Label(C.earnings_call, S.transcript)),
-    r("call_recording", r"audio|recording|video of the (?:call|meet)|webcast", Label(C.earnings_call, S.call)),
+    r(
+        "call_recording",
+        r"audio(?![ -]?visual)|recording|video of the (?:call|meet)|webcast",
+        Label(C.earnings_call, S.call),
+    ),
     r(
         "results_call_schedule",
         r"(earnings?|conference|analyst|investor)[^.]{0,40}call|call[^.]{0,80}(quarter|results|earnings)",
@@ -67,7 +71,9 @@ RULES: list[Rule] = [
         r"quarterly (?:report|update) for the (?:first|second|third|fourth) quarter",
         Label(C.results, S.presentation),
     ),  # fmt: skip
-    # --- routine first among the rest (cheap and frequent) ---
+    r("results_newspaper", r"regulations? 33 (?:and|&) 47|regulation 47\b", Label(C.results, S.newspaper_ad)),
+    # --- routine first among the rest (cheap and frequent). Only STRONG_ROUTINE rules are final; a weak
+    # routine match (e.g. a newspaper ad) gives way to any material rule that also matches. ---
     r("newspaper", r"newspaper|news ?paper clipping|advertisement", Label(C.routine, S.newspaper_ad, "Newspaper ad")),
     r("trading_window", r"trading window", Label(C.routine, None, "Trading-window notice")),
     r(
@@ -76,9 +82,9 @@ RULES: list[Rule] = [
         Label(C.routine, None, "ESOP allotment / grant"),
     ),  # fmt: skip
     r(
-        "debt_allotment",
+        "debt_raise",
         r"non[- ]convertible|\bncds?\b|debentures?|commercial paper",
-        Label(C.routine, None, "Debt securities (NCD/CP)"),
+        Label(C.fund_raise),
     ),  # fmt: skip
     r(
         "shareholder_admin",
@@ -127,7 +133,8 @@ RULES: list[Rule] = [
     r(
         "mna",
         r"acqui(?:re|sition)|merger|amalgamation|demerger|scheme of arrangement|divest|joint venture|"
-        r"\bstake\b|incorporation of (?:a )?(?:wholly owned )?subsidiary",
+        r"\bstake\b|incorporation of (?:a )?(?:wholly owned )?subsidiary|initial public offer|\bipo\b|"
+        r"offer for sale",
         Label(C.mna),
     ),  # fmt: skip
     r(
@@ -180,10 +187,41 @@ RULES: list[Rule] = [
 CLARIFICATION = re.compile(r"sought clarification|news item|rumou?r verification|news verification", re.I)
 
 
+# Routine rules whose match is final. Any other routine match is "weak": if a material rule also matches the
+# subject, the material category wins (wrongly hiding a material filing is worse than showing a routine one).
+STRONG_ROUTINE = {"trading_window", "esop", "shareholder_admin", "compliance_cert", "policy_update", "esg_rating"}
+NOT_MATERIAL = {C.routine, C.investor_meetings, C.unclassified}
+NEWSPAPER = re.compile(r"newspaper|news ?paper clipping|advertisement", re.I)
+
+
+def material_match(subject: str) -> tuple[Rule, Label] | None:
+    """First subject rule with a material category, if any."""
+    for rule in RULES:
+        if rule.on == "subject" and rule.label.category not in NOT_MATERIAL and rule.pattern.search(subject):
+            return rule, rule.label
+    return None
+
+
+def prefer_material(subject: str, routine: Label) -> tuple[Rule, Label] | None:
+    """For a weak routine label: the material rule that also matches, keeping a newspaper-ad stage."""
+    m = material_match(subject)
+    if m is None:
+        return None
+    rule, lab = m
+    stage = S.newspaper_ad if routine.stage == S.newspaper_ad else lab.stage
+    return rule, Label(lab.category, stage, None)
+
+
 def match(exchange_category: str, subject: str) -> tuple[Rule, Label] | None:
     desc = " ".join(exchange_category.lower().split())
     for rule in RULES:
         text = subject if rule.on == "subject" else desc
         if rule.pattern.search(text):
+            if rule.label.category == C.routine and rule.name not in STRONG_ROUTINE:
+                if better := prefer_material(subject, rule.label):
+                    return better
+            if rule.label.category not in NOT_MATERIAL and rule.on == "subject" and NEWSPAPER.search(subject):
+                # e.g. "Newspaper publication of the Financial Results…": the results, but as an ad
+                return rule, Label(rule.label.category, S.newspaper_ad, None)
             return rule, rule.label
     return None

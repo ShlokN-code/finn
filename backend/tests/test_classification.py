@@ -51,7 +51,7 @@ CASES = [
     ("Shareholders meeting", "Vodafone Idea Limited has enclosed Notice of Postal Ballot seeking approval of "
      "shareholders for appointment of", "postal_ballot", None, "rule"),
     ("Allotment of Securities", "allotment of 2,06,950 securities pursuant to Non Convertible Securities",
-     "routine", None, "rule"),
+     "fund_raise", None, "rule"),
     ("Allotment of Securities", "allotment of 7683981 securities pursuant to Qualified Institution Placement",
      "fund_raise", None, "rule"),
     ("Record Date", "Infosys Limited has informed the Exchange that Record date for the purpose of Dividend is 03-Nov",
@@ -134,3 +134,51 @@ def test_model_hidden_reason_restricted_to_drawer_groups():
                     "hidden_reason": "A long free-text explanation the model made up"})  # fmt: skip
     c = Classifier(Router([g], MemoryLLMLog())).classify(filing("Agreements", "Agreements"))
     assert c.hidden_reason == "Other routine filing"
+
+
+# --- material over routine (reviewer rule, 10 Nov 2026) ---
+@pytest.mark.parametrize(
+    "desc,subject,cat,stage",
+    [
+        # results newspaper publication (Reg 47) → results thread, not the hidden drawer
+        ("Copy of Newspaper Publication", "Intimation under Regulations 33 and 47 of SEBI (LODR) Regulations, 2015",
+         "results", "newspaper_ad"),
+        ("Updates", "Newspaper publication of the Financial Results for the quarter ended September 30, 2026",
+         "results", "newspaper_ad"),
+        # a subsidiary's IPO advertised in the paper → M&A (stake sale), still marked as an ad
+        ("Copy of Newspaper Publication", "Newspaper Clippings Proposed Initial Public Offer of Jio Platforms Limited",
+         "mna", "newspaper_ad"),
+        # NCD allotment = debt raise
+        ("Allotment of Securities", "We wish to inform that the Company has today allotted 13,00,000 Unsecured, "
+         "Redeemable, Non-Convertible Debentures", "fund_raise", None),
+    ],
+)  # fmt: skip
+def test_material_beats_weak_routine(desc, subject, cat, stage):
+    c = Classifier(None).classify(filing(desc, subject))
+    assert (c.category, c.stage, c.hidden_reason) == (cat, stage, None)
+
+
+@pytest.mark.parametrize(
+    "desc,subject,hidden",
+    [
+        # strong routine labels stay routine even when material words appear
+        ("General Updates", "the Trading Window closure pursuant to SEBI (Prohibition of Insider Trading) Regulations",
+         "Trading-window notice"),
+        ("General Updates", "Communication to Shareholders w.r.t. Tax Deduction at Source on Dividend Payout",
+         "Shareholder administration"),
+        # content-free ads stay hidden
+        ("Copy of Newspaper Publication", "Copy of Newspaper Publication", "Newspaper ad"),
+        ("General Updates", "Newspaper Advertisement - Public Notice regarding loss of Share Certificates",
+         "Newspaper ad"),
+    ],
+)  # fmt: skip
+def test_strong_routine_and_empty_ads_stay_hidden(desc, subject, hidden):
+    c = Classifier(None).classify(filing(desc, subject))
+    assert c.category == "routine" and c.hidden_reason == hidden
+
+
+def test_audio_visual_means_is_not_a_call_recording():
+    c = Classifier(None).classify(filing("General Updates", "copies of newspaper publication titled Notice to the "
+                                         "Shareholders regarding the 33rd Annual General Meeting to be held through "
+                                         "Video Conference/ Other Audio Visual Means"))  # fmt: skip
+    assert (c.category, c.stage) == ("agm_egm", "newspaper_ad")

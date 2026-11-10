@@ -101,7 +101,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
 ## 2026-11-10 · `Category.routine` and a three-tier `category_source`
 - **Context:** PRODUCT.md had only `unclassified` for the hidden drawer, mixing "known boring" with "couldn't tell", which hides how well classification works.
-- **Decision (product owner):** add `routine` (always hidden; `hidden_reason` names the drawer group: Newspaper ad, Trading-window notice, ESOP allotment / grant, Compliance certificate, Debt securities, …). `unclassified` now means every tier failed. `Filing.category_source` = `exchange | rule | model` (the ladder tier) plus `category_model`; the DB also keeps `classify_tier = failed` and a `classify_note` (rule name / model reason / failure).
+- **Decision (product owner):** add `routine` (always hidden; `hidden_reason` names the drawer group: Newspaper ad, Trading-window notice, ESOP allotment / grant, Compliance certificate, …). `unclassified` now means every tier failed. `Filing.category_source` = `exchange | rule | model` (the ladder tier) plus `category_model`; the DB also keeps `classify_tier = failed` and a `classify_note` (rule name / model reason / failure).
 
 ## 2026-11-10 · Classification ladder order and scope
 - **Decision:** (a) NSE `desc` only when the label alone is unambiguous ("Change in Management", "Credit Rating", "ESOP/ESOS/ESPS", …); (b) ordered regex rules on the subject with NSE boilerplate stripped ("X Limited has informed the Exchange regarding …"), then weak fallbacks on coarse labels; (c) the model. Exchange-sought clarifications ("news item captioned …") always go to the model — keyword rules would classify the quoted headline, not the filing.
@@ -124,4 +124,14 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
 ## 2026-11-10 · Backfill depth
 - **Decision:** prices 1 year (spec); filings 120 days for the first backfill. A full year of filings would need ~400 model calls for leftovers — the whole conservative daily budget. Older filings can be backfilled in daily slices later; research uses screener/BSE documents, not this feed.
+
+## 2026-11-10 · Ambiguous between routine and material → material
+- **Context:** Eval review (product owner). Hiding is FINN's core value, so a wrongly hidden material filing costs more than a routine one shown: the user can swipe the latter away, but never sees the former.
+- **Decision:** when a filing could be routine or material, it is classified material.
+  - Rules: only *strong* routine rules are final (trading window, ESOP, shareholder administration, compliance certificate, policy document, ESG rating). A *weak* routine match — today the newspaper-ad rule and NSE's "Copy of Newspaper Publication" label — yields to any material rule that also matches the subject, keeping the `newspaper_ad` stage (a results ad joins its results thread; an AGM-notice ad its AGM event).
+  - Model: the prompt says to choose the material category when torn.
+- **Related label decisions:** NCD/debenture/CP allotments are `fund_raise` (debt raise), not routine; a listed subsidiary's IPO (Jio Platforms for RELIANCE) is `mna` (stake sale); results newspaper publications under Reg 33/47 are `results`; opening a facility is `press_release`, not capex (no board-approved spend).
+- **Measured:** on ~750 real portfolio filings, 26 changed category: NCD allotments (10), results ads (6), AGM/postal-ballot notice ads (4), Jio IPO filings (5, four of which previously needed the model), 1 dividend ad. Stored filings were re-run through the rules (29 changed), re-threaded, and the 30 Oct snapshot refreshed.
+- **Cost:** NBFCs that issue NCDs weekly (BAJFINANCE) now produce a fund-raise one-liner each time; the Brief's ranking and feedback weights must keep these low.
+- **Alternatives:** keep routine-first ordering (cleaner Brief, but results ads and subsidiary IPOs vanish into the drawer).
 

@@ -58,7 +58,7 @@ _PATTERNS = [
     re.compile(_ENDED + _MON + r"\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})", re.I),  # September 30, 2026
     re.compile(_ENDED + _MON + r",?\s+(\d{4})", re.I),  # September 2026
 ]
-_PAST_CALL = re.compile(r"audio|recording|webcast|transcript|held on", re.I)
+_PAST_CALL = re.compile(r"audio(?![ -]?visual)|recording|webcast|transcript|held on", re.I)
 _QFY = re.compile(r"\bQ([1-4])\s*[- ]?\s*FY\s*'?(\d{2,4})\b", re.I)
 
 
@@ -100,7 +100,7 @@ def _stage(f: Filing) -> EventStage | None:
 def _item(f: Filing) -> TimelineItem:
     st = _stage(f) or S.other
     label = STAGE_LABELS.get(st) or subject_core(f.subject)[:90]
-    if st == S.call and re.search(r"audio|recording|webcast", f.subject, re.I):
+    if st == S.call and re.search(r"audio(?![ -]?visual)|recording|webcast", f.subject, re.I):
         label = "Call recording"
     if st == S.presentation and re.search(r"press release", f.subject, re.I):
         label = "Press release"
@@ -135,7 +135,9 @@ def thread(filings: list[Filing]) -> tuple[list[Event], dict[str, str | None]]:
         open_clusters: dict[Category, tuple[str, datetime]] = {}
         for f in fs:
             cat, st = _cat(f), _stage(f)
-            if st == S.newspaper_ad or (cat == C.investor_meetings and st == S.presentation):
+            # Content-free ads and investor decks attach to a nearby event; an ad whose content was classified
+            # as material (results ad, subsidiary IPO ad) threads by its own category like any other filing.
+            if (st == S.newspaper_ad and cat in UNTHREADED) or (cat == C.investor_meetings and st == S.presentation):
                 satellites.append(f)
                 continue
             if cat in UNTHREADED:

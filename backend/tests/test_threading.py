@@ -100,3 +100,11 @@ def test_post_results_filings_never_point_at_an_unfinished_quarter():
                         stage="intimation")  # fmt: skip
     keys = {e.key for e in thread([f, intimation])[0]}
     assert keys == {"X:results:Q1 FY27", "X:results:Q2 FY27"}
+
+
+def test_results_newspaper_ad_threads_into_its_quarter():
+    ad = Filing(id="NSE:9", exchange="NSE", exchange_id="9", symbol="X", exchange_category="Newspaper",
+                subject="Intimation under Regulations 33 and 47", filed_at=datetime(2026, 8, 3, 10, tzinfo=UTC),
+                category="results", stage="newspaper_ad")  # fmt: skip
+    events, assign = thread([ad])
+    assert assign["NSE:9"] == "X:results:Q1 FY27" and events[0].timeline[0].stage == "newspaper_ad"

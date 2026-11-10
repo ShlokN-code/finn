@@ -1,7 +1,7 @@
 {
  "label": "showcase-2026-10-30",
  "trading_date": "2026-10-30",
- "frozen_at": "2026-11-10T08:56:16.462749+00:00",
+ "frozen_at": "2026-11-10T12:12:54.186116+00:00",
  "symbols": [
   "HAL",
   "EICHERMOT",
@@ -24,8 +24,8 @@
  ],
  "summary": {
   "filings": 16,
-  "events": 7,
-  "hidden_filings": 3,
+  "events": 8,
+  "hidden_filings": 2,
   "tier_split": {
    "exchange": 3,
    "rule": 13
@@ -55,7 +55,7 @@
    "hidden_reason": null,
    "duplicate_of": null,
    "event_id": "GRASIM:results:Q2 FY27",
-   "fetched_at": "2026-11-10T08:38:47.452827+00:00"
+   "fetched_at": "2026-11-10T11:04:55.077889+00:00"
   },
   {
    "id": "NSE:BM-02b4f3c3056adab3",
@@ -79,7 +79,7 @@
    "hidden_reason": null,
    "duplicate_of": null,
    "event_id": "GRASIM:results:Q2 FY27",
-   "fetched_at": "2026-11-10T08:38:47.452827+00:00"
+   "fetched_at": "2026-11-10T11:04:55.077889+00:00"
   },
   {
    "id": "NSE:106836184",
@@ -117,16 +117,16 @@
    "attachment_url": "https://nsearchives.nseindia.com/corporate/BAJFINANCE_30102026145301_REG30_Allotment_intimation.pdf",
    "attachment_size": "261.29 KB",
    "xbrl_url": null,
-   "category": "routine",
+   "category": "fund_raise",
    "category_source": "rule",
    "category_model": null,
    "category_confidence": null,
    "classify_tier": "rule",
-   "classify_note": "rule=debt_allotment",
+   "classify_note": "rule=debt_raise",
    "stage": null,
-   "hidden_reason": "Debt securities (NCD/CP)",
+   "hidden_reason": null,
    "duplicate_of": null,
-   "event_id": null,
+   "event_id": "BAJFINANCE:fund_raise:2026-10-30",
    "fetched_at": "2026-11-10T08:38:04.586381+00:00"
   },
   {
@@ -420,6 +420,47 @@
  ],
  "events": [
   {
+   "id": "BAJFINANCE:fund_raise:2026-10-30",
+   "key": "BAJFINANCE:fund_raise:2026-10-30",
+   "symbol": "BAJFINANCE",
+   "category": "fund_raise",
+   "title": "Fund raise: allotment of 2,06,950 securities pursuant to Non Convertible Securities at its meeting held on Octob",
+   "period": null,
+   "started_at": "2026-10-30T09:23:39+00:00",
+   "updated_at": "2026-11-10T07:28:50+00:00",
+   "timeline": [
+    {
+     "at": "2026-10-30T09:23:39Z",
+     "label": "allotment of 2,06,950 securities pursuant to Non Convertible Securities at its meeting hel",
+     "stage": "other",
+     "filing_id": "NSE:106836343"
+    },
+    {
+     "at": "2026-11-05T12:21:52Z",
+     "label": "Board meeting on 10-Nov-2026: We wish to inform you that a meeting of the PI 2026- Special",
+     "stage": "other",
+     "filing_id": "NSE:BM-24b71caef9bbc0ed"
+    },
+    {
+     "at": "2026-11-10T06:45:59Z",
+     "label": "Outcome of PI 2026 - Special Committee Meeting held on November 10, 2026",
+     "stage": "other",
+     "filing_id": "NSE:106854034"
+    },
+    {
+     "at": "2026-11-10T07:28:50Z",
+     "label": "allotment of 5,74,25,740 securities pursuant to Preferential Issue at its meeting held on ",
+     "stage": "other",
+     "filing_id": "NSE:106854062"
+    }
+   ],
+   "figures": [],
+   "impact": null,
+   "impact_reason": null,
+   "driver_ids": [],
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
+  },
+  {
    "id": "DIXON:results:Q2 FY27",
    "key": "DIXON:results:Q2 FY27",
    "symbol": "DIXON",
@@ -481,7 +522,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   },
   {
    "id": "GRASIM:results:Q2 FY27",
@@ -521,7 +562,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   },
   {
    "id": "RELIANCE:results:Q2 FY27",
@@ -603,7 +644,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   },
   {
    "id": "GRASIM:mna:2026-10-30",
@@ -626,7 +667,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   },
   {
    "id": "INFY:capex:2026-10-30",
@@ -649,7 +690,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   },
   {
    "id": "DIXON:management_change:2026-10-30",
@@ -672,7 +713,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   },
   {
    "id": "ALKEM:litigation:2026-10-30",
@@ -695,7 +736,7 @@
    "impact": null,
    "impact_reason": null,
    "driver_ids": [],
-   "refreshed_at": "2026-11-10T08:54:43.947653+00:00"
+   "refreshed_at": "2026-11-10T12:12:51.837465+00:00"
   }
  ],
  "prices": [
@@ -4495,12 +4536,12 @@
  "deals": [],
  "freshness": [
   {
-   "source": "nse_block_deals",
+   "source": "nse_holidays",
    "scope": "all",
-   "last_attempt_at": "2026-11-10T08:55:17.297569+00:00",
-   "last_success_at": "2026-11-10T08:55:17.297569+00:00",
+   "last_attempt_at": "2026-11-10T11:04:09.187906+00:00",
+   "last_success_at": "2026-11-10T11:04:09.187906+00:00",
    "last_error": null,
-   "rows": 58
+   "rows": 20
   },
   {
    "source": "yahoo_prices",
@@ -4648,459 +4689,459 @@
   },
   {
    "source": "nse_announcements",
-   "scope": "COCHINSHIP",
-   "last_attempt_at": "2026-11-10T08:52:10.428004+00:00",
-   "last_success_at": "2026-11-10T08:52:10.428004+00:00",
-   "last_error": null,
-   "rows": 2
-  },
-  {
-   "source": "nse_announcements",
    "scope": "TITAGARH",
-   "last_attempt_at": "2026-11-10T08:52:12.840925+00:00",
-   "last_success_at": "2026-11-10T08:52:12.840925+00:00",
+   "last_attempt_at": "2026-11-10T11:04:30.211742+00:00",
+   "last_success_at": "2026-11-10T11:04:30.211742+00:00",
    "last_error": null,
    "rows": 1
   },
   {
    "source": "nse_announcements",
-   "scope": "IDEA",
-   "last_attempt_at": "2026-11-10T08:52:15.308269+00:00",
-   "last_success_at": "2026-11-10T08:52:15.308269+00:00",
-   "last_error": null,
-   "rows": 0
-  },
-  {
-   "source": "nse_announcements",
-   "scope": "RELIANCE",
-   "last_attempt_at": "2026-11-10T08:52:17.795812+00:00",
-   "last_success_at": "2026-11-10T08:52:17.795812+00:00",
-   "last_error": null,
-   "rows": 0
-  },
-  {
-   "source": "nse_announcements",
    "scope": "HDFCBANK",
-   "last_attempt_at": "2026-11-10T08:52:20.304398+00:00",
-   "last_success_at": "2026-11-10T08:52:20.304398+00:00",
+   "last_attempt_at": "2026-11-10T11:04:37.469233+00:00",
+   "last_success_at": "2026-11-10T11:04:37.469233+00:00",
    "last_error": null,
    "rows": 0
   },
   {
    "source": "nse_announcements",
    "scope": "BAJFINANCE",
-   "last_attempt_at": "2026-11-10T08:52:22.823151+00:00",
-   "last_success_at": "2026-11-10T08:52:22.823151+00:00",
+   "last_attempt_at": "2026-11-10T11:04:40.041877+00:00",
+   "last_success_at": "2026-11-10T11:04:40.041877+00:00",
    "last_error": null,
-   "rows": 2
+   "rows": 3
   },
   {
    "source": "nse_announcements",
-   "scope": "DIXON",
-   "last_attempt_at": "2026-11-10T08:52:37.839047+00:00",
-   "last_success_at": "2026-11-10T08:52:37.839047+00:00",
+   "scope": "INFY",
+   "last_attempt_at": "2026-11-10T11:04:42.484825+00:00",
+   "last_success_at": "2026-11-10T11:04:42.484825+00:00",
    "last_error": null,
    "rows": 0
   },
   {
-   "source": "nse_holidays",
-   "scope": "all",
-   "last_attempt_at": "2026-11-10T08:54:53.137697+00:00",
-   "last_success_at": "2026-11-10T08:54:53.137697+00:00",
+   "source": "nse_announcements",
+   "scope": "ITC",
+   "last_attempt_at": "2026-11-10T11:04:44.997837+00:00",
+   "last_success_at": "2026-11-10T11:04:44.997837+00:00",
    "last_error": null,
-   "rows": 20
+   "rows": 0
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "DIVISLAB",
+   "last_attempt_at": "2026-11-10T11:04:47.525065+00:00",
+   "last_success_at": "2026-11-10T11:04:47.525065+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "GRASIM",
+   "last_attempt_at": "2026-11-10T11:05:03.237974+00:00",
+   "last_success_at": "2026-11-10T11:05:03.237974+00:00",
+   "last_error": null,
+   "rows": 5
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "EICHERMOT",
+   "last_attempt_at": "2026-11-10T11:04:15.104709+00:00",
+   "last_success_at": "2026-11-10T11:04:15.104709+00:00",
+   "last_error": null,
+   "rows": 1
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "GRASIM",
+   "last_attempt_at": "2026-11-10T11:04:17.463515+00:00",
+   "last_success_at": "2026-11-10T11:04:17.463515+00:00",
+   "last_error": null,
+   "rows": 0
   },
   {
    "source": "nse_equity_list",
    "scope": "all",
-   "last_attempt_at": "2026-11-10T08:54:53.897658+00:00",
-   "last_success_at": "2026-11-10T08:54:53.897658+00:00",
+   "last_attempt_at": "2026-11-10T11:04:11.750699+00:00",
+   "last_success_at": "2026-11-10T11:04:11.750699+00:00",
    "last_error": null,
    "rows": 2645
   },
   {
    "source": "nse_board_meetings",
-   "scope": "HAL",
-   "last_attempt_at": "2026-11-10T08:38:50.034577+00:00",
-   "last_success_at": "2026-11-10T08:38:50.034577+00:00",
-   "last_error": null,
-   "rows": 5
-  },
-  {
-   "source": "nse_board_meetings",
-   "scope": "EICHERMOT",
-   "last_attempt_at": "2026-11-10T08:38:52.482038+00:00",
-   "last_success_at": "2026-11-10T08:38:52.482038+00:00",
-   "last_error": null,
-   "rows": 4
-  },
-  {
-   "source": "nse_board_meetings",
-   "scope": "GRASIM",
-   "last_attempt_at": "2026-11-10T08:38:55.003767+00:00",
-   "last_success_at": "2026-11-10T08:38:55.003767+00:00",
-   "last_error": null,
-   "rows": 5
-  },
-  {
-   "source": "nse_board_meetings",
    "scope": "TATAPOWER",
-   "last_attempt_at": "2026-11-10T08:38:57.534309+00:00",
-   "last_success_at": "2026-11-10T08:38:57.534309+00:00",
+   "last_attempt_at": "2026-11-10T11:05:05.268799+00:00",
+   "last_success_at": "2026-11-10T11:05:05.268799+00:00",
    "last_error": null,
    "rows": 6
   },
   {
    "source": "nse_board_meetings",
    "scope": "ALKEM",
-   "last_attempt_at": "2026-11-10T08:39:00.038162+00:00",
-   "last_success_at": "2026-11-10T08:39:00.038162+00:00",
+   "last_attempt_at": "2026-11-10T11:05:07.563213+00:00",
+   "last_success_at": "2026-11-10T11:05:07.563213+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_board_meetings",
    "scope": "KALYANKJIL",
-   "last_attempt_at": "2026-11-10T08:39:02.533288+00:00",
-   "last_success_at": "2026-11-10T08:39:02.533288+00:00",
+   "last_attempt_at": "2026-11-10T11:05:10.078455+00:00",
+   "last_success_at": "2026-11-10T11:05:10.078455+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_board_meetings",
    "scope": "COCHINSHIP",
-   "last_attempt_at": "2026-11-10T08:39:05.004606+00:00",
-   "last_success_at": "2026-11-10T08:39:05.004606+00:00",
+   "last_attempt_at": "2026-11-10T11:05:12.627889+00:00",
+   "last_success_at": "2026-11-10T11:05:12.627889+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_board_meetings",
    "scope": "TITAGARH",
-   "last_attempt_at": "2026-11-10T08:39:07.529554+00:00",
-   "last_success_at": "2026-11-10T08:39:07.529554+00:00",
+   "last_attempt_at": "2026-11-10T11:05:15.264807+00:00",
+   "last_success_at": "2026-11-10T11:05:15.264807+00:00",
    "last_error": null,
    "rows": 9
   },
   {
    "source": "nse_board_meetings",
    "scope": "IDEA",
-   "last_attempt_at": "2026-11-10T08:39:10.008282+00:00",
-   "last_success_at": "2026-11-10T08:39:10.008282+00:00",
+   "last_attempt_at": "2026-11-10T11:05:17.593336+00:00",
+   "last_success_at": "2026-11-10T11:05:17.593336+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_board_meetings",
    "scope": "RELIANCE",
-   "last_attempt_at": "2026-11-10T08:39:12.512508+00:00",
-   "last_success_at": "2026-11-10T08:39:12.512508+00:00",
+   "last_attempt_at": "2026-11-10T11:05:20.067031+00:00",
+   "last_success_at": "2026-11-10T11:05:20.067031+00:00",
    "last_error": null,
    "rows": 2
   },
   {
    "source": "nse_board_meetings",
    "scope": "HDFCBANK",
-   "last_attempt_at": "2026-11-10T08:39:14.924835+00:00",
-   "last_success_at": "2026-11-10T08:39:14.924835+00:00",
+   "last_attempt_at": "2026-11-10T11:05:22.579277+00:00",
+   "last_success_at": "2026-11-10T11:05:22.579277+00:00",
    "last_error": null,
    "rows": 2
   },
   {
    "source": "nse_board_meetings",
    "scope": "BAJFINANCE",
-   "last_attempt_at": "2026-11-10T08:39:17.607875+00:00",
-   "last_success_at": "2026-11-10T08:39:17.607875+00:00",
+   "last_attempt_at": "2026-11-10T11:05:25.279565+00:00",
+   "last_success_at": "2026-11-10T11:05:25.279565+00:00",
    "last_error": null,
    "rows": 6
   },
   {
    "source": "nse_board_meetings",
    "scope": "INFY",
-   "last_attempt_at": "2026-11-10T08:39:19.939203+00:00",
-   "last_success_at": "2026-11-10T08:39:19.939203+00:00",
+   "last_attempt_at": "2026-11-10T11:05:27.632398+00:00",
+   "last_success_at": "2026-11-10T11:05:27.632398+00:00",
    "last_error": null,
    "rows": 2
   },
   {
    "source": "nse_board_meetings",
    "scope": "ITC",
-   "last_attempt_at": "2026-11-10T08:39:22.550279+00:00",
-   "last_success_at": "2026-11-10T08:39:22.550279+00:00",
+   "last_attempt_at": "2026-11-10T11:05:30.264632+00:00",
+   "last_success_at": "2026-11-10T11:05:30.264632+00:00",
    "last_error": null,
    "rows": 5
   },
   {
    "source": "nse_board_meetings",
-   "scope": "DIVISLAB",
-   "last_attempt_at": "2026-11-10T08:39:25.061239+00:00",
-   "last_success_at": "2026-11-10T08:39:25.061239+00:00",
-   "last_error": null,
-   "rows": 4
-  },
-  {
-   "source": "nse_board_meetings",
    "scope": "TATASTEEL",
-   "last_attempt_at": "2026-11-10T08:39:27.552871+00:00",
-   "last_success_at": "2026-11-10T08:39:27.552871+00:00",
+   "last_attempt_at": "2026-11-10T11:05:35.261915+00:00",
+   "last_success_at": "2026-11-10T11:05:35.261915+00:00",
    "last_error": null,
    "rows": 6
   },
   {
    "source": "nse_board_meetings",
    "scope": "JUBLFOOD",
-   "last_attempt_at": "2026-11-10T08:39:30.103594+00:00",
-   "last_success_at": "2026-11-10T08:39:30.103594+00:00",
+   "last_attempt_at": "2026-11-10T11:05:37.605860+00:00",
+   "last_success_at": "2026-11-10T11:05:37.605860+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_board_meetings",
    "scope": "DIXON",
-   "last_attempt_at": "2026-11-10T08:39:32.580242+00:00",
-   "last_success_at": "2026-11-10T08:39:32.580242+00:00",
+   "last_attempt_at": "2026-11-10T11:05:40.071878+00:00",
+   "last_success_at": "2026-11-10T11:05:40.071878+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_corporate_actions",
    "scope": "HAL",
-   "last_attempt_at": "2026-11-10T08:39:34.972508+00:00",
-   "last_success_at": "2026-11-10T08:39:34.972508+00:00",
+   "last_attempt_at": "2026-11-10T11:05:42.755970+00:00",
+   "last_success_at": "2026-11-10T11:05:42.755970+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "EICHERMOT",
-   "last_attempt_at": "2026-11-10T08:39:37.484832+00:00",
-   "last_success_at": "2026-11-10T08:39:37.484832+00:00",
+   "last_attempt_at": "2026-11-10T11:05:45.165064+00:00",
+   "last_success_at": "2026-11-10T11:05:45.165064+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "GRASIM",
-   "last_attempt_at": "2026-11-10T08:39:39.969267+00:00",
-   "last_success_at": "2026-11-10T08:39:39.969267+00:00",
+   "last_attempt_at": "2026-11-10T11:05:47.707517+00:00",
+   "last_success_at": "2026-11-10T11:05:47.707517+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "TATAPOWER",
-   "last_attempt_at": "2026-11-10T08:39:42.517735+00:00",
-   "last_success_at": "2026-11-10T08:39:42.517735+00:00",
+   "last_attempt_at": "2026-11-10T11:05:50.694094+00:00",
+   "last_success_at": "2026-11-10T11:05:50.694094+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "ALKEM",
-   "last_attempt_at": "2026-11-10T08:39:44.977658+00:00",
-   "last_success_at": "2026-11-10T08:39:44.977658+00:00",
+   "last_attempt_at": "2026-11-10T11:05:52.680659+00:00",
+   "last_success_at": "2026-11-10T11:05:52.680659+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "KALYANKJIL",
-   "last_attempt_at": "2026-11-10T08:39:47.482740+00:00",
-   "last_success_at": "2026-11-10T08:39:47.482740+00:00",
+   "last_attempt_at": "2026-11-10T11:05:54.987850+00:00",
+   "last_success_at": "2026-11-10T11:05:54.987850+00:00",
    "last_error": null,
    "rows": 4
   },
   {
    "source": "nse_corporate_actions",
    "scope": "COCHINSHIP",
-   "last_attempt_at": "2026-11-10T08:39:49.993760+00:00",
-   "last_success_at": "2026-11-10T08:39:49.993760+00:00",
+   "last_attempt_at": "2026-11-10T11:05:57.688057+00:00",
+   "last_success_at": "2026-11-10T11:05:57.688057+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "TITAGARH",
-   "last_attempt_at": "2026-11-10T08:39:52.490385+00:00",
-   "last_success_at": "2026-11-10T08:39:52.490385+00:00",
+   "last_attempt_at": "2026-11-10T11:06:00.228602+00:00",
+   "last_success_at": "2026-11-10T11:06:00.228602+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "IDEA",
-   "last_attempt_at": "2026-11-10T08:39:54.993815+00:00",
-   "last_success_at": "2026-11-10T08:39:54.993815+00:00",
+   "last_attempt_at": "2026-11-10T11:06:02.689388+00:00",
+   "last_success_at": "2026-11-10T11:06:02.689388+00:00",
    "last_error": null,
    "rows": 19
   },
   {
    "source": "nse_corporate_actions",
    "scope": "RELIANCE",
-   "last_attempt_at": "2026-11-10T08:39:57.483018+00:00",
-   "last_success_at": "2026-11-10T08:39:57.483018+00:00",
+   "last_attempt_at": "2026-11-10T11:06:05.191914+00:00",
+   "last_success_at": "2026-11-10T11:06:05.191914+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "HDFCBANK",
-   "last_attempt_at": "2026-11-10T08:40:00.052949+00:00",
-   "last_success_at": "2026-11-10T08:40:00.052949+00:00",
+   "last_attempt_at": "2026-11-10T11:06:07.703959+00:00",
+   "last_success_at": "2026-11-10T11:06:07.703959+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "BAJFINANCE",
-   "last_attempt_at": "2026-11-10T08:40:02.542147+00:00",
-   "last_success_at": "2026-11-10T08:40:02.542147+00:00",
+   "last_attempt_at": "2026-11-10T11:06:10.124180+00:00",
+   "last_success_at": "2026-11-10T11:06:10.124180+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "INFY",
-   "last_attempt_at": "2026-11-10T08:40:05.046872+00:00",
-   "last_success_at": "2026-11-10T08:40:05.046872+00:00",
+   "last_attempt_at": "2026-11-10T11:06:12.623561+00:00",
+   "last_success_at": "2026-11-10T11:06:12.623561+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "ITC",
-   "last_attempt_at": "2026-11-10T08:40:07.539896+00:00",
-   "last_success_at": "2026-11-10T08:40:07.539896+00:00",
+   "last_attempt_at": "2026-11-10T11:06:15.134617+00:00",
+   "last_success_at": "2026-11-10T11:06:15.134617+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "DIVISLAB",
-   "last_attempt_at": "2026-11-10T08:40:10.063027+00:00",
-   "last_success_at": "2026-11-10T08:40:10.063027+00:00",
+   "last_attempt_at": "2026-11-10T11:06:17.634710+00:00",
+   "last_success_at": "2026-11-10T11:06:17.634710+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "TATASTEEL",
-   "last_attempt_at": "2026-11-10T08:40:12.543323+00:00",
-   "last_success_at": "2026-11-10T08:40:12.543323+00:00",
+   "last_attempt_at": "2026-11-10T11:06:20.131147+00:00",
+   "last_success_at": "2026-11-10T11:06:20.131147+00:00",
    "last_error": null,
    "rows": 20
   },
   {
    "source": "nse_corporate_actions",
    "scope": "JUBLFOOD",
-   "last_attempt_at": "2026-11-10T08:40:15.032739+00:00",
-   "last_success_at": "2026-11-10T08:40:15.032739+00:00",
+   "last_attempt_at": "2026-11-10T11:06:22.632661+00:00",
+   "last_success_at": "2026-11-10T11:06:22.632661+00:00",
    "last_error": null,
    "rows": 19
   },
   {
    "source": "nse_corporate_actions",
    "scope": "DIXON",
-   "last_attempt_at": "2026-11-10T08:40:17.523157+00:00",
-   "last_success_at": "2026-11-10T08:40:17.523157+00:00",
+   "last_attempt_at": "2026-11-10T11:06:25.129033+00:00",
+   "last_success_at": "2026-11-10T11:06:25.129033+00:00",
    "last_error": null,
    "rows": 11
   },
   {
+   "source": "nse_bulk_deals",
+   "scope": "all",
+   "last_attempt_at": "2026-11-10T11:06:27.505873+00:00",
+   "last_success_at": "2026-11-10T11:06:27.505873+00:00",
+   "last_error": null,
+   "rows": 79
+  },
+  {
+   "source": "nse_block_deals",
+   "scope": "all",
+   "last_attempt_at": "2026-11-10T11:06:30.196200+00:00",
+   "last_success_at": "2026-11-10T11:06:30.196200+00:00",
+   "last_error": null,
+   "rows": 2
+  },
+  {
    "source": "nse_announcements",
    "scope": "HAL",
-   "last_attempt_at": "2026-11-10T08:51:55.449562+00:00",
-   "last_success_at": "2026-11-10T08:51:55.449562+00:00",
-   "last_error": null,
-   "rows": 0
-  },
-  {
-   "source": "nse_announcements",
-   "scope": "EICHERMOT",
-   "last_attempt_at": "2026-11-10T08:51:57.848780+00:00",
-   "last_success_at": "2026-11-10T08:51:57.848780+00:00",
-   "last_error": null,
-   "rows": 1
-  },
-  {
-   "source": "nse_announcements",
-   "scope": "GRASIM",
-   "last_attempt_at": "2026-11-10T08:52:00.301709+00:00",
-   "last_success_at": "2026-11-10T08:52:00.301709+00:00",
+   "last_attempt_at": "2026-11-10T11:04:12.532486+00:00",
+   "last_success_at": "2026-11-10T11:04:12.532486+00:00",
    "last_error": null,
    "rows": 0
   },
   {
    "source": "nse_announcements",
    "scope": "TATAPOWER",
-   "last_attempt_at": "2026-11-10T08:52:02.760958+00:00",
-   "last_success_at": "2026-11-10T08:52:02.760958+00:00",
+   "last_attempt_at": "2026-11-10T11:04:20.071289+00:00",
+   "last_success_at": "2026-11-10T11:04:20.071289+00:00",
    "last_error": null,
-   "rows": 0
+   "rows": 1
   },
   {
    "source": "nse_announcements",
    "scope": "ALKEM",
-   "last_attempt_at": "2026-11-10T08:52:05.283424+00:00",
-   "last_success_at": "2026-11-10T08:52:05.283424+00:00",
+   "last_attempt_at": "2026-11-10T11:04:22.537694+00:00",
+   "last_success_at": "2026-11-10T11:04:22.537694+00:00",
    "last_error": null,
-   "rows": 0
+   "rows": 1
   },
   {
    "source": "nse_announcements",
    "scope": "KALYANKJIL",
-   "last_attempt_at": "2026-11-10T08:52:07.772743+00:00",
-   "last_success_at": "2026-11-10T08:52:07.772743+00:00",
+   "last_attempt_at": "2026-11-10T11:04:25.087642+00:00",
+   "last_success_at": "2026-11-10T11:04:25.087642+00:00",
    "last_error": null,
    "rows": 0
   },
   {
    "source": "nse_announcements",
-   "scope": "INFY",
-   "last_attempt_at": "2026-11-10T08:52:25.325142+00:00",
-   "last_success_at": "2026-11-10T08:52:25.325142+00:00",
+   "scope": "COCHINSHIP",
+   "last_attempt_at": "2026-11-10T11:04:27.721211+00:00",
+   "last_success_at": "2026-11-10T11:04:27.721211+00:00",
+   "last_error": null,
+   "rows": 6
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "IDEA",
+   "last_attempt_at": "2026-11-10T11:04:32.489239+00:00",
+   "last_success_at": "2026-11-10T11:04:32.489239+00:00",
    "last_error": null,
    "rows": 0
   },
   {
    "source": "nse_announcements",
-   "scope": "ITC",
-   "last_attempt_at": "2026-11-10T08:52:27.803593+00:00",
-   "last_success_at": "2026-11-10T08:52:27.803593+00:00",
+   "scope": "RELIANCE",
+   "last_attempt_at": "2026-11-10T11:04:34.974609+00:00",
+   "last_success_at": "2026-11-10T11:04:34.974609+00:00",
    "last_error": null,
    "rows": 0
-  },
-  {
-   "source": "nse_announcements",
-   "scope": "DIVISLAB",
-   "last_attempt_at": "2026-11-10T08:52:30.338769+00:00",
-   "last_success_at": "2026-11-10T08:52:30.338769+00:00",
-   "last_error": null,
-   "rows": 1
   },
   {
    "source": "nse_announcements",
    "scope": "TATASTEEL",
-   "last_attempt_at": "2026-11-10T08:52:32.846527+00:00",
-   "last_success_at": "2026-11-10T08:52:32.846527+00:00",
+   "last_attempt_at": "2026-11-10T11:04:50.247868+00:00",
+   "last_success_at": "2026-11-10T11:04:50.247868+00:00",
+   "last_error": null,
+   "rows": 9
+  },
+  {
+   "source": "nse_announcements",
+   "scope": "JUBLFOOD",
+   "last_attempt_at": "2026-11-10T11:04:52.474537+00:00",
+   "last_success_at": "2026-11-10T11:04:52.474537+00:00",
    "last_error": null,
    "rows": 1
   },
   {
    "source": "nse_announcements",
-   "scope": "JUBLFOOD",
-   "last_attempt_at": "2026-11-10T08:52:35.361003+00:00",
-   "last_success_at": "2026-11-10T08:52:35.361003+00:00",
+   "scope": "DIXON",
+   "last_attempt_at": "2026-11-10T11:04:54.978531+00:00",
+   "last_success_at": "2026-11-10T11:04:54.978531+00:00",
    "last_error": null,
    "rows": 0
   },
   {
-   "source": "nse_bulk_deals",
-   "scope": "all",
-   "last_attempt_at": "2026-11-10T08:55:15.035897+00:00",
-   "last_success_at": "2026-11-10T08:55:15.035897+00:00",
+   "source": "nse_board_meetings",
+   "scope": "HAL",
+   "last_attempt_at": "2026-11-10T11:04:58.064311+00:00",
+   "last_success_at": "2026-11-10T11:04:58.064311+00:00",
    "last_error": null,
-   "rows": 146
+   "rows": 5
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "EICHERMOT",
+   "last_attempt_at": "2026-11-10T11:05:00.085018+00:00",
+   "last_success_at": "2026-11-10T11:05:00.085018+00:00",
+   "last_error": null,
+   "rows": 4
+  },
+  {
+   "source": "nse_board_meetings",
+   "scope": "DIVISLAB",
+   "last_attempt_at": "2026-11-10T11:05:32.612189+00:00",
+   "last_success_at": "2026-11-10T11:05:32.612189+00:00",
+   "last_error": null,
+   "rows": 4
   }
  ]
 }

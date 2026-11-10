@@ -23,6 +23,9 @@ log = logging.getLogger("finn.classify")
 
 Tier = Literal["exchange", "rule", "model", "failed"]
 
+# Exchange-label routine groups that are containers for other content (an ad can carry results or an IPO).
+WEAK_ROUTINE_REASONS = {"Newspaper ad"}
+
 
 @dataclass
 class Classification:
@@ -82,7 +85,8 @@ def is_uninformative(subject: str) -> bool:
 
 CATEGORY_GUIDE = """\
 results: quarterly/annual financial results, board meetings to approve results, results press releases/decks
-mna: acquisitions, mergers, demergers, JVs, stake sales/purchases, schemes of arrangement, divestments
+mna: acquisitions, mergers, demergers, JVs, stake sales/purchases (incl. a subsidiary's IPO), schemes of
+     arrangement, divestments
 management_change: appointment/resignation/retirement of directors, CEO/CFO/KMP, auditors
 litigation: court/tribunal/regulator orders, tax demands, penalties, insolvency, FDA/regulatory inspections
 credit_rating: credit rating assigned/reaffirmed/upgraded/downgraded
@@ -90,15 +94,16 @@ pledging: creation/release of pledge or encumbrance on promoter shares
 capex: capacity additions, new plants, commissioning, capital expenditure plans
 press_release: order wins, contracts, product launches, partnerships, monthly business/sales updates
 insider_trading: SAST / PIT disclosures of promoter or insider share transactions
-fund_raise: QIP, preferential issue, rights issue, equity/convertible fund raising, buyback
+fund_raise: QIP, preferential issue, rights issue, equity/convertible fund raising, NCD/debenture/CP
+            allotments (debt raises), buyback
 dividend: dividend declaration or record date
 bonus_split: bonus issue, stock split
 earnings_call: earnings/analyst call schedules, audio recordings, transcripts
 agm_egm: AGM/EGM notices, proceedings, voting results, annual report
 postal_ballot: postal ballot notices and results
 investor_meetings: analyst/investor meetings or conference participation (not results calls)
-routine: compliance certificates, trading-window notices, newspaper ads, ESOP allotments, KYC letters,
-         debt (NCD/CP) allotments, policy documents, clarifications with no new business information
+routine: compliance certificates, trading-window notices, newspaper ads with no material content, ESOP
+         allotments, KYC letters, policy documents, clarifications with no new business information
 unclassified: genuinely impossible to tell from the text"""
 
 SYSTEM = (
@@ -107,13 +112,14 @@ SYSTEM = (
     "Choose 'routine' for compliance boilerplate. If the text does not allow a decision, choose 'unclassified' "
     "with low confidence. 'stage' applies only to results/earnings-call filings (intimation, outcome, "
     "presentation, call, transcript) or newspaper ads; otherwise use 'other'. For 'routine', set hidden_reason "
-    "to the closest group. Categories:\n" + CATEGORY_GUIDE
+    "to the closest group. If a filing could be either 'routine' or a material category, choose the material "
+    "category: wrongly hiding a material filing is worse than showing a routine one. Categories:\n" + CATEGORY_GUIDE
 )
 
 # Hidden-drawer groups (PRODUCT.md §4). The model must pick one of these, never write its own.
 HIDDEN_GROUPS = [
     "Newspaper ad", "Trading-window notice", "ESOP allotment / grant", "Compliance certificate",
-    "Compliance report", "Debt securities (NCD/CP)", "Shareholder administration", "Policy document",
+    "Compliance report", "Shareholder administration", "Policy document",
     "ESG rating", "Administrative change", "Guarantee / intra-group support", "Other routine filing",
 ]  # fmt: skip
 
@@ -164,6 +170,12 @@ class Classifier:
         core = subject_core(f.subject)
         label_a = exchange_map.lookup(f.exchange_category)
         if label_a:
+            # A weak routine label (e.g. "Copy of Newspaper Publication") yields to a material subject rule.
+            if label_a.category == Category.routine and label_a.hidden_reason in WEAK_ROUTINE_REASONS:
+                if better := rules.prefer_material(core, label_a):
+                    rule, lab = better
+                    note = f"rule={rule.name} (material over desc={f.exchange_category})"
+                    return Classification(lab.category, "rule", lab.stage, None, note=note)
             return Classification(label_a.category, "exchange", label_a.stage, label_a.hidden_reason,
                                   note=f"desc={f.exchange_category}")  # fmt: skip
         if rules.CLARIFICATION.search(core) or rules.CLARIFICATION.search(f.exchange_category):
