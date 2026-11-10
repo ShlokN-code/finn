@@ -17,6 +17,9 @@ api = [
   "uvicorn[standard]>=0.32",
   "psycopg[binary]>=3.2",
   "requests>=2.32",
+  # screener parsing (cross-checks now; Phase 3 research runs on Render)
+  "beautifulsoup4>=4.12",
+  "lxml>=5.0",
 ]
 jobs = [
   "requests>=2.32",

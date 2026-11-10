@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import date
 
 from finn.calendar import previous_quarter_end, quarter_period, year_ago_quarter_end
+from finn.constants import BASE_EFFECT_PCT
 from finn.extraction.results.compute import (
     BANK_PAT_NOTE,
     EBITDA_NOTE,
@@ -91,9 +92,6 @@ def margin_series(table: QuarterTable | None, n: int = 8) -> Series | None:
     if len(pts) < 2:
         return None
     return Series(metric="EBITDA margin (screener)", unit="PCT", basis=table.basis, points=pts)
-
-
-BASE_EFFECT_PCT = 100.0  # YoY above this ⇒ the base was under half the quarter: a base effect, not a trend
 
 
 def trend_pat_yoy(table: QuarterTable | None, quarter_end: date) -> float | None:

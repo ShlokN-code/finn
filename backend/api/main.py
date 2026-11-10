@@ -35,6 +35,13 @@ def health() -> dict:
     return {"status": "ok", "version": __version__}
 
 
+@app.get("/version")
+def version() -> dict:
+    """The deployed commit (Render sets RENDER_GIT_COMMIT), so a push can be confirmed live."""
+    commit = os.environ.get("RENDER_GIT_COMMIT") or os.environ.get("GIT_COMMIT") or None
+    return {"commit": commit, "short": commit[:7] if commit else None, "version": __version__}
+
+
 @app.get("/health/db")
 def health_db():
     dsn = os.environ.get("DATABASE_URL")

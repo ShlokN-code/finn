@@ -75,3 +75,15 @@ Send back the **Render URL** and the **Vercel URL** (not the database string). C
 4. **GitHub** → repo → Settings → Secrets and variables → Actions: secret `TELEGRAM_BOT_TOKEN`; variable `WEB_BASE_URL`.
 5. Local `.env` (repo root): `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `API_PUBLIC_URL=https://<render-url>`. Then `cd backend && ../.venv/bin/python -m jobs.telegram_setup` → prints `bot: @…` and `webhook: https://<render-url>/telegram/webhook`.
 6. Send `/start` to the bot → "Connected to the demo portfolio" + a **Test alert**.
+
+## After every push: confirm Render deployed it
+
+Render installs only `.[api]` (see `backend/pyproject.toml`); CI's `api-import` job imports `api.main` with exactly
+those extras, so a missing dependency fails CI first. After a push, confirm the new commit is live:
+
+```bash
+scripts/check_deploy.sh
+```
+
+It polls `GET /version` (commit from Render's `RENDER_GIT_COMMIT`) until it matches local `HEAD`, or fails after
+15 minutes — then read the Render deploy log; the previous deploy stays live.

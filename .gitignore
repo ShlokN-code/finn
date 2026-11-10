@@ -15,3 +15,6 @@ backend/spikes/.cache/
 .env.*.local
 backend/spikes/samples/_result_*.json
 backend/.cache/
+
+# setuptools build output (pip install .)
+backend/build/

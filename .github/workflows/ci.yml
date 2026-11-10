@@ -31,6 +31,23 @@ jobs:
           python -m finn.models.export_schema > /tmp/schema.json
           diff -u ../web/lib/schema.json /tmp/schema.json || (echo "::error::web/lib/schema.json is stale — run 'npm run gen:schema && npm run gen:types' in web/"; exit 1)
 
+  # Render installs only the `api` extras: fail here, not on Render, if the API's import chain needs more.
+  api-import:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: pip install ".[api]"
+      - name: api.main imports with only the api extras
+        run: python -c "import api.main; print('ok:', len(api.main.app.routes), 'routes')"
+
   web:
     runs-on: ubuntu-latest
     defaults:

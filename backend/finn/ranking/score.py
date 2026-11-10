@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 from datetime import datetime, timedelta
 
-from finn.extraction.results.build import BASE_EFFECT_PCT
+from finn.constants import BASE_EFFECT_PCT
 from finn.models import Category, ScoreBreakdown, WeightRule
 from finn.ranking.feedback import effective_multiplier
 

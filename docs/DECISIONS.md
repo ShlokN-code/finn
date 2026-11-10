@@ -206,3 +206,15 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - Defaulting banks to standalone: rejected; it contradicts the consolidated default.
 - **Why:** each fix makes the card match what's printed or comparable over time. A genuinely wrong number still fails, and the tests cover that.
 - **Known limit:** a consolidated bank's genuine exceptional item would be left out of PAT. The formula on tap says so.
+
+## 2026-11-10 · Deploy safety: light constants, api-only import check, /version
+- **Context:** Render's deploy of 4f05912 failed. The ranking module imported a constant from the results builder, which pulls in the screener scraper (`bs4`), and Render installs only the `api` extras. The previous deploy stayed live, so nothing was visibly broken.
+- **Decision:**
+  - Shared thresholds live in the dependency-free `finn/constants.py`.
+  - `beautifulsoup4` and `lxml` join the `api` extras, because Phase 3 research on Render needs screener anyway.
+  - A CI job `api-import` installs only `.[api]` and imports `api.main`.
+  - `GET /version` returns Render's `RENDER_GIT_COMMIT`.
+  - After every push, `scripts/check_deploy.sh` waits until `/version` matches `HEAD`.
+- **Alternatives:**
+  - Installing all extras on Render: rejected. It is slower to build, and yfinance and pandas aren't needed there.
+  - Lazy imports only: rejected, because they are easy to regress. CI catches it either way.
