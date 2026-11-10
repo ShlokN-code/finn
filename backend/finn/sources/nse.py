@@ -289,3 +289,40 @@ def fetch_equity_list(s: NSESession) -> list[dict]:
 
 def default_window(today: date, days: int) -> tuple[date, date]:
     return today - timedelta(days=days), today
+
+
+# --- board meetings (results intimations live here, not in the announcements feed) ------------
+
+
+def fetch_board_meetings(s: NSESession, symbol: str) -> list[dict]:
+    data = _get(s, "corporate-board-meetings", {"index": "equities", "symbol": symbol})
+    rows = data if isinstance(data, list) else data.get("data", [])
+    return [r for r in rows if isinstance(r, dict)]
+
+
+def board_meeting_to_filing(row: dict, fetched_at: datetime | None = None) -> Filing | None:
+    """Prior intimation of a board meeting → a Filing (exchange id 'BM-<hash>', category label
+    'Board Meeting: <purpose>'). The meeting date goes into the subject so threading/calendar can read it."""
+    stamp = row.get("bm_timestamp") or row.get("sysTime")
+    if not stamp or not row.get("bm_symbol"):
+        return None
+    purpose = (row.get("bm_purpose") or "").strip()
+    key = json.dumps([row["bm_symbol"], stamp, purpose, row.get("bm_date")])
+    xid = "BM-" + hashlib.sha256(key.encode()).hexdigest()[:16]
+    desc = clean_subject(row.get("bm_desc") or purpose)
+    meeting = (row.get("bm_date") or "").strip()
+    subject = f"Board meeting on {meeting}: {desc}" if meeting and meeting not in desc else desc
+    attachment = row.get("attachment") or None
+    return Filing(
+        id=f"NSE:{xid}",
+        exchange="NSE",
+        exchange_id=xid,
+        symbol=row["bm_symbol"].strip().upper(),
+        isin=row.get("sm_isin") or None,
+        filed_at=parse_ist(stamp, "%d-%b-%Y %H:%M:%S"),
+        exchange_category=f"Board Meeting: {purpose}" if purpose else "Board Meeting",
+        subject=subject,
+        attachment_url=attachment if attachment and attachment.endswith(".pdf") else None,
+        xbrl_url=attachment if attachment and attachment.endswith(".xml") else None,
+        fetched_at=fetched_at or datetime.now(UTC),
+    )
