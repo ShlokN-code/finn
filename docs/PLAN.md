@@ -67,11 +67,14 @@ Plan approved 11 Nov; rules and budget in DECISIONS.md (three Phase 3 entries).
 - [x] Screener discovery (all tables, transcripts, annual report, capex schedule) + computed trajectory / cash / balance sheet incl. lenders — `12a189a`
 - [x] Transcripts (PyMuPDF, text in Supabase), citation checker, MAP extraction — `83eb047`
 - [x] Numeric Promise Ledger + analysts + drivers in builds — `85c0cd4` (INFY local: 4 kept, 1 missed, 1 moved)
-- [ ] **Render env (product owner):** DEPLOY.md §7 — `--workers 1`, `RESEARCH_WORKER=1`, Gemini keys/models, `GEMINI_MODEL_STRONG_FALLBACKS`
-- [ ] Build the 4 demo tickers on the deployed API; spot-check 5 verdicts' quotes in the PDFs
-- [ ] JUDGE (strong #1): qualitative promises + paraphrased cross-call links, citing both calls
+- [x] **Render env (product owner):** DEPLOY.md §7 — set 11 Nov
+- [x] Build the 4 demo tickers on the deployed API; quotes checked — 20 of 20 verdict quotes on their cited pages (PERSISTENT, INFY, BAJFINANCE; POLYCAB has no scorable promise yet)
+- [ ] JUDGE (strong #1): qualitative promises + paraphrased cross-call links, citing both calls — **Wed 11 Nov**
+- [ ] REDUCE (strong #2): snapshot text, trajectory line, bull/bear with `{F#}` placeholders rendered in code — **Wed 11 Nov**
+- [ ] Rebuild the 4 demo tickers on Render and regenerate `web/public/fixtures/` — **Wed 11 Nov** (Thursday is frontend-only)
+
+**Friday morning (product owner, 11 Nov: cut if Friday gets tight):**
 - [ ] Annual report sections (headings in code) → red flags (auditor opinion, contingent liabilities growth, related parties)
-- [ ] REDUCE (strong #2): snapshot text, trajectory line, pressure-point wording, bull/bear with `{f:ID}` placeholders rendered in code
 - [ ] Ask: BM25 over the ticker's pages + facts → Flash-Lite (Groq fallback) → cited answer or "Not found in sources"
 - [ ] Nightly refresh on Actions (code-only recompute; rebuild only on a new document; first-time builds only for the 4 demo tickers); DB size guard
 - [ ] On-demand NSE dispatch (section above) → `exchange_data`

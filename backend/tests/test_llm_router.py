@@ -247,3 +247,15 @@ def test_quota_reset_is_pacific_midnight():
     from finn.calendar import next_quota_reset, to_ist
 
     assert to_ist(next_quota_reset(datetime(2026, 11, 11, 20, 0, tzinfo=UTC))).strftime("%d %H:%M") == "12 13:30"
+
+
+def test_overloaded_strong_model_is_skipped_quickly_then_cooled():
+    from finn.llm import TransientError
+
+    pauses = []
+    g = Chain("gemini", CHAIN, fails={"flash-38": TransientError("503 high demand")})
+    r = Router([g], MemoryLLMLog(), sleep=pauses.append)
+    assert r.run("strong", req(purpose="research.judge.v1", prompt="a")).model == "flash-3"
+    assert [m for _, m in g.calls] == ["flash-38", "flash-38", "flash-3"] and pauses == [2.0]  # 2 attempts, not 5
+    r.run("strong", req(purpose="research.reduce.v1", prompt="b"))
+    assert [m for _, m in g.calls][-1] == "flash-3" and len(g.calls) == 4  # cooled: no third try on flash-38

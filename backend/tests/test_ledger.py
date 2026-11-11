@@ -272,3 +272,29 @@ def test_lowered_reason_names_latest_cut_and_original():
     assert (
         "17–18%" in p.verdict_reason.text and "Q3 call" in p.verdict_reason.text and "20–22%" in p.verdict_reason.text
     )
+
+
+def test_two_numbers_in_one_call_are_not_a_revision():
+    head = g("ebit_margin", 180, 180, unit="bps", kind="point", measure="change", period_type="quarter", fy=2026,
+             quarter=3, quote="We anticipate an impact of 180 basis points on next quarter's margins")  # fmt: skip
+    offset = g("ebit_margin", 80, 100, unit="bps", measure="change", period_type="quarter", fy=2026, quarter=3,
+               quote="up to 80 to 100 basis points of this impact is expected to get offset")  # fmt: skip
+    led = ledger([call(1, date(2025, 10, 20), [head, offset])])
+    assert len(led.promises) == 2 and all(p.verdict != "goalposts_moved" and p.revision == "none" for p in led.promises)
+
+
+def test_unsigned_change_across_calls_is_revised_not_moved():
+    a1 = g("ebit_margin", 180, 180, unit="bps", kind="point", measure="change", fy=2027)
+    a2 = g("ebit_margin", 100, 100, unit="bps", kind="point", measure="change", fy=2027)
+    p = only(ledger([call(1, date(2026, 4, 20), [a1]), call(2, date(2026, 7, 20), [a2])]))
+    assert p.revision == "revised" and p.verdict != "goalposts_moved"
+
+
+def test_governance_items_are_not_promises_and_qualitative_restatements_merge():
+    q = {"unit": None, "kind": "qualitative", "measure": "qualitative", "period_type": "unspecified", "fy": None}
+    chair = g("other", None, None, metric="interim Chairman tenure", statement="Interim chairman for three months", **q)
+    launch = g("other", None, None, unit=None, kind="qualitative", measure="qualitative", metric="US launch",
+               statement="Launch our first product in the US market", period_type="unspecified", fy=None)  # fmt: skip
+    again = {**launch, "statement": "Launch first product in the US market soon", "quote": "launch in the US soon"}
+    led = ledger([call(1, date(2025, 7, 20), [chair, launch]), call(2, date(2025, 10, 20), [chair, again])])
+    assert len(led.promises) == 1 and len(led.promises[0].statements) == 2

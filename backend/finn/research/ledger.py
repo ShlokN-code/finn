@@ -156,6 +156,30 @@ def _family_key(s: Stmt) -> tuple:
     return (key, other, s.item["measure"], s.segment, s.unit)
 
 
+def _qual_words(s: Stmt) -> set[str]:
+    text = norm(f"{s.item.get('metric', '')} {s.item.get('statement', '')}")
+    return {w for w in re.findall(r"[a-z]{4,}", text)}
+
+
+def _jaccard(a: set[str], b: set[str]) -> float:
+    return len(a & b) / len(a | b) if a and b else 0.0
+
+
+# Board and personnel housekeeping isn't a business promise (an interim chairman's tenure, an AGM date). Only
+# business, financial and operational commitments enter the ledger.
+_GOVERNANCE = re.compile(
+    r"\b(chairman|chairperson|director|board|independent|appoint\w*|tenure|interim|ceo|cfo|md|"
+    r"managing director|company secretary|agm|egm|record date|book closure|auditor)\b",
+    re.I,
+)
+
+
+def is_business_promise(it: dict) -> bool:
+    if it.get("metric_key") not in ("other", "headcount"):
+        return True
+    return not _GOVERNANCE.search(f"{it.get('metric', '')} {it.get('statement', '')}")
+
+
 def group(stmts: list[Stmt]) -> list[Thread]:
     """Numeric statements → threads by family + period, with 'unspecified' basis merged into a single specified
     one. Qualitative statements stay one per thread (the strong model links paraphrases across calls)."""
@@ -163,7 +187,15 @@ def group(stmts: list[Stmt]) -> list[Thread]:
     fams: dict[tuple, list[Stmt]] = defaultdict(list)
     for s in stmts:
         if s.item["kind"] == "qualitative" or s.item["measure"] == "qualitative":
-            threads.append(Thread(("qual", s.call.doc_id, s.item["quote"][:40]), [s]))
+            # A restatement in a later call (same metric, mostly the same words) joins the earlier thread.
+            words = _qual_words(s)
+            home = next((t for t in threads if t.key[0] == "qual" and t.key[1] == s.item["metric_key"]
+                         and all(o.call.doc_id != s.call.doc_id for o in t.stmts)
+                         and _jaccard(words, _qual_words(t.stmts[0])) >= 0.5), None)  # fmt: skip
+            if home is not None:
+                home.stmts.append(s)
+            else:
+                threads.append(Thread(("qual", s.item["metric_key"], s.call.doc_id, s.item["quote"][:40]), [s]))
         else:
             fams[(*_family_key(s), s.period.end if s.period else None)].append(s)
     for fk, group_ in fams.items():
@@ -178,7 +210,17 @@ def group(stmts: list[Stmt]) -> list[Thread]:
                     b = match[0]
             buckets[b].append(s)
         for b, ss in buckets.items():
-            threads.append(Thread((*fk, *b), sorted(ss, key=lambda x: x.made_on)))
+            # One call can give two different numbers for the same metric (a 180 bps headwind, 80–100 bps of it
+            # offset): those are separate statements, not a revision — a thread holds one statement per call.
+            lanes: list[list[Stmt]] = []
+            for st in sorted(ss, key=lambda x: x.made_on):
+                lane = next((ln for ln in lanes if all(o.call.doc_id != st.call.doc_id for o in ln)), None)
+                if lane is None:
+                    lanes.append([st])
+                else:
+                    lane.append(st)
+            for i, ln in enumerate(lanes):
+                threads.append(Thread((*fk, *b) if i == 0 else (*fk, *b, i), ln))
     return threads
 
 
@@ -384,19 +426,19 @@ class Ledger:
     promises: list[Promise]
     credibility: Credibility
     counts: LedgerCounts
-    settled_on: dict[str, date]
+    settled: dict[str, date]
 
 
 def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: int = 3) -> Ledger:
     calls = sorted(calls, key=lambda c: c.made_on)
-    stmts = [_stmt(c, it, ye_month) for c in calls for it in c.facts.get("guidance", [])]
+    stmts = [_stmt(c, it, ye_month) for c in calls for it in c.facts.get("guidance", []) if is_business_promise(it)]
     threads = group(stmts)
     promises: list[Promise] = []
     settled: dict[str, date] = {}
     # 'delayed': the same target reappears for a later period, said before the earlier deadline
     by_family: dict[tuple, list[Thread]] = defaultdict(list)
     for t in threads:
-        if t.key[0] != "qual":
+        if t.key[0] != "qual":  # qualitative keys: ("qual", metric_key, doc, quote)
             by_family[t.key[:5] + t.key[6:]].append(t)
     delayed: dict[int, tuple[Thread, Stmt]] = {}
     for fam in by_family.values():
@@ -422,6 +464,8 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
         target = scored[-1]
         key = s0.item["metric_key"]
         direction = metrics.direction(key)
+        if s0.item["measure"] == "change" and all((x.low or 0) >= 0 and (x.high or 0) >= 0 for x in t.stmts):
+            direction = "neutral"  # an unsigned 'impact'/'change' — code can't tell headwind from tailwind
         qual = t.key[0] == "qual"
         pid = hashlib.sha256(repr((symbol, t.key, s0.call.doc_id if qual else "")).encode()).hexdigest()[:16]
         rev, rev_by = ("none", None) if qual else revision(t.stmts, direction)
@@ -489,19 +533,23 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
         promises.append(Promise(
             id=pid, symbol=symbol, metric=s0.item["metric"], metric_key=key,
             measure="qualitative" if qual else s0.item["measure"], kind=target.item["kind"],
-            basis=PromiseBasis(currency=_cur(t.key[-2] if not qual else last.currency),
-                               scope=t.key[-1] if not qual else last.scope, segment=last.item.get("segment") or None),
+            basis=PromiseBasis(currency=_cur(t.key[6] if not qual else last.currency),
+                               scope=t.key[7] if not qual else last.scope, segment=last.item.get("segment") or None),
             period=period, statement=" ".join(statement.split()), statements=[_ps(s) for s in t.stmts],
             scored_target=_ps(target), revision=rev, verdict=verdict, verdict_by="code",
             verdict_reason=Claim(text=why, status="verified", citations=cites), delivered=delivered,
             delivered_source=dsrc, dropped_note=dropped_note,
         ))  # fmt: skip
+    promises.sort(key=_order)
+    return Ledger(promises, credibility(promises, settled, calls), count(promises), settled)
+
+
+def count(promises: list[Promise]) -> LedgerCounts:
     counts = LedgerCounts()
     for p in promises:
         setattr(counts, p.verdict, getattr(counts, p.verdict) + 1)
         counts.raised += p.revision == "raised"
-    promises.sort(key=_order)
-    return Ledger(promises, credibility(promises, settled, calls), counts, settled)
+    return counts
 
 
 def _cur(c: str) -> str:

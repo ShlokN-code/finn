@@ -12,7 +12,7 @@ from datetime import datetime
 
 from finn.calendar import now_utc
 from finn.llm import LLMUnavailable, PostgresLLMLog, Router
-from finn.models.research import Dossier, SectionMeta
+from finn.models.research import Dossier, DossierQuality, SectionMeta
 from finn.research import store
 from finn.research.documents import get_document
 from finn.research.extract import map_transcript
@@ -39,6 +39,7 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     prev = store.load_dossier(store.get_dossier_row(conn, symbol))
     d = prev.model_copy(deep=True) if prev else empty_dossier(symbol, name, now)
     d.built_at = now
+    d.quality = DossierQuality()  # counts are per build, not cumulative
 
     # 1. Discover (screener tables + document index)
     progress.step("discover", "running", message="Finding the company's financials and documents")
@@ -85,6 +86,8 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
             break
         dropped += int(st.get("dropped_total") or st.get("checked", 0) - st.get("found", 0) - st.get("reanchored", 0))
         guidance += len(facts.get("guidance", []))
+        d.quality.quotes_checked += int(st.get("checked") or 0)
+        d.quality.quotes_reanchored += int(st.get("reanchored") or 0)
         made = doc.ref.call_date or (doc.ref.period.end if doc.ref.period else now.date())
         calls.append(Call(doc.ref.id, doc.ref.url, f"{doc.ref.period.label if doc.ref.period else ''} call".strip(),
                           made, doc.pages, facts, now))  # fmt: skip
@@ -95,12 +98,20 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
 
     # 5. Ledger, analysts, drivers (code)
     progress.step("ledger", "running", message="Scoring promises against what was delivered")
-    apply_ledger(d, symbol, disc, links, docs, calls, quota, now)
+    led = apply_ledger(d, symbol, disc, links, docs, calls, quota, now)
     progress.step("ledger", "done" if calls else "skipped", f"{len(d.ledger.promises)} promises")
+    store.publish(conn, d, complete=False)
 
-    # 6–7. Judge + reduce (strong model) — Thursday's stage; sections say so meanwhile.
-    for key in ("judge", "reduce"):
-        progress.step(key, "skipped", "Comes with the full build")
+    # 6–7. Judge + reduce (strong model chain: 3.8 Flash → 3 Flash; never Flash-Lite). An unchanged dossier hits
+    # the router's cache, so it costs no strong call.
+    tags = {"symbol": symbol, "job_id": job_id}
+    strong_quota = run_judge(d, led, calls, router, tags, progress, now) if led else None
+    if disc.status == "ok" or calls:
+        strong_quota = run_reduce(d, calls, router, tags, progress, now) or strong_quota
+    else:
+        progress.step("reduce", "skipped", "Nothing to summarise")
+        d.bull_bear.meta = meta("unavailable", "not_found_in_sources", "No financials or transcripts to summarise", now)
+    quota = quota or strong_quota
     st = router.stats.as_dict()
     d.cost = d.cost.model_copy(update={
         "calls": st["calls"] - stats0["calls"], "cache_hits": st["cache_hits"] - stats0["cache_hits"],
@@ -109,11 +120,88 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     })  # fmt: skip
     progress.step("publish", "done", message="Published" if not quota else
                   f"Published what's ready — the rest resumes after {_ist(quota.retry_after)}")  # fmt: skip
-    store.publish(conn, d, complete=False)
+    complete = quota is None and all(
+        getattr(d, k).meta.status in ("ready", "unavailable")
+        for k in ("snapshot", "trajectory", "ledger", "cash_quality", "balance_sheet", "bull_bear")
+    )
+    store.publish(conn, d, complete=complete)
     stats = {**d.cost.model_dump(), "calls_read": len(calls), "guidance": guidance}
     if quota is not None and quota.kind == "quota" and quota.retry_after:
         return Outcome("waiting_quota", stats=stats, error=str(quota)[:300], resume_after=quota.retry_after)
-    return Outcome("partial", stats=stats)
+    return Outcome("done" if complete else "partial", stats=stats)
+
+
+def _building(resume) -> str:
+    return f"Building · resumes after {_ist(resume)} quota reset"
+
+
+def run_judge(d: Dossier, led, calls, router, tags, progress: Progress, now: datetime) -> LLMUnavailable | None:
+    from finn.research import judge
+    from finn.research.ledger import count, credibility
+
+    progress.step("judge", "running", message="Judging qualitative promises against later calls")
+    req, pid_map = judge.build_request(d.ledger.promises, calls, tags)
+    if req is None:
+        progress.step("judge", "skipped", "No qualitative promise has later-call evidence to judge")
+        return None
+    try:
+        res = router.run("strong", req)
+    except LLMUnavailable as e:
+        resume = e.retry_after if e.kind == "quota" else None
+        note = f"Qualitative promises: {_building(resume)}" if resume else "Qualitative promises: judged next build"
+        d.ledger.meta = d.ledger.meta.model_copy(update={"note": note, "resume_after": resume})
+        progress.step("judge", "waiting" if resume else "failed", str(e)[:160])
+        return e if resume else None
+    jr = judge.apply(d.ledger.promises, res.data, pid_map, calls, res.model, led.settled)
+    d.ledger.counts = count(d.ledger.promises)
+    d.ledger.credibility = credibility(d.ledger.promises, led.settled, calls)
+    cr = d.ledger.credibility
+    if d.ledger.meta.status == "ready":
+        note = None if cr.shown else f"Credibility needs {cr.min_n}+ scored promises (have {cr.n})"
+        d.ledger.meta = d.ledger.meta.model_copy(update={"note": note, "written_by": res.model})
+    d.quality.claims_dropped += jr.rejected
+    progress.step("judge", "done", f"{jr.changed} verdict(s) by {res.model}; {jr.rejected} rejected (no evidence)")
+    return None
+
+
+def run_reduce(d: Dossier, calls, router, tags, progress: Progress, now: datetime) -> LLMUnavailable | None:
+    from finn.research import reduce
+
+    progress.step("reduce", "running", message="Writing the summary, bull and bear")
+    fs = reduce.facts(d, calls)
+    req = reduce.build_request(d, fs, tags)
+    if req is None:
+        progress.step("reduce", "skipped", "Too few facts to summarise")
+        d.bull_bear.meta = meta("unavailable", "not_found_in_sources", "Too few sourced facts to summarise", now)
+        return None
+    try:
+        res = router.run("strong", req)
+    except LLMUnavailable as e:
+        resume = e.retry_after if e.kind == "quota" else None
+        if d.bull_bear.meta.status != "ready":  # keep a previous good summary
+            d.bull_bear.meta = meta("building", "llm_quota" if resume else "llm_unavailable",
+                                    _building(resume) if resume else "Will be written on the next build", now,
+                                    resume_after=resume)  # fmt: skip
+        if d.snapshot.meta.status != "ready":
+            d.snapshot.meta = meta("partial", "llm_quota" if resume else "llm_unavailable",
+                                   f"Business summary: {_building(resume)}" if resume else
+                                   "Business summary: written on the next build", now, resume_after=resume)  # fmt: skip
+        progress.step("reduce", "waiting" if resume else "failed", str(e)[:160])
+        return e if resume else None
+    out = reduce.apply(res.data, fs)
+    d.quality.claims_dropped += out.dropped
+    if out.snapshot:
+        d.snapshot.lines = out.snapshot
+        d.snapshot.meta = meta("ready", None, None, now, written_by=res.model)
+    if out.trajectory_note:
+        d.trajectory.note = out.trajectory_note
+    d.bull_bear.bull, d.bull_bear.bear = out.bull, out.bear
+    full = len(out.bull) == 3 and len(out.bear) == 3
+    d.bull_bear.meta = meta("ready" if full else "partial", None if full else "not_found_in_sources",
+                            None if full else "Fewer than 3 points were fully supported by sources", now,
+                            written_by=res.model)  # fmt: skip
+    progress.step("reduce", "done", f"by {res.model}; {out.dropped} unsupported sentence(s) dropped")
+    return None
 
 
 def _ist(dt: datetime | None) -> str:
@@ -122,7 +210,7 @@ def _ist(dt: datetime | None) -> str:
     return f"{to_ist(dt):%H:%M} IST" if dt else "the quota resets"
 
 
-def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: datetime) -> None:
+def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: datetime):
     from finn.research import insights
     from finn.research.ledger import build_ledger
 
@@ -133,7 +221,7 @@ def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: 
         note = "No earnings-call transcripts found" if disc.status == "ok" else disc.note
         for sec in (d.ledger, d.analysts, d.drivers):
             sec.meta = meta("unavailable", reason, note, now)
-        return
+        return None
     if not calls:
         scanned = all(x.ref.status == "scanned" for x in docs)
         if quota is not None:
@@ -146,7 +234,7 @@ def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: 
         for sec in (d.ledger, d.analysts, d.drivers):
             if sec.meta.status != "ready":  # keep a previous good build's sections
                 sec.meta = m
-        return
+        return None
     led = build_ledger(symbol, calls, disc, now.date(), disc.year_end_month or 3)
     d.ledger.promises, d.ledger.credibility, d.ledger.counts = led.promises, led.credibility, led.counts
     d.ledger.calls_read = len(calls)
@@ -169,6 +257,7 @@ def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: 
     latest = max(calls, key=lambda c: c.made_on)
     d.snapshot.segments = insights.segments(latest)
     d.ask_chips = insights.ask_chips(d.drivers.items, bool(led.promises))
+    return led
 
 
 def apply_compute(d: Dossier, disc, prev: Dossier | None, now: datetime) -> None:

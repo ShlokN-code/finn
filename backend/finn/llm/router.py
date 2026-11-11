@@ -160,6 +160,12 @@ class _Limiter:
             sleep(pause)
 
 
+# A model in a fallback chain that keeps failing (overloaded: 503s, timeouts) is skipped for a while so the next
+# model answers at once instead of after minutes of retries. Process-wide, like the limiters.
+COOLDOWN_S = 600
+CHAIN_ATTEMPTS = 2  # attempts on a model that has a fallback after it (the last model keeps the full backoff)
+_COOLING: dict[tuple[str, str], float] = {}
+
 _LIMITERS: dict[tuple[str, str], _Limiter] = {}
 _LIMITERS_LOCK = threading.Lock()
 
@@ -168,6 +174,7 @@ def reset_limiters() -> None:
     """Forget per-minute history (tests)."""
     with _LIMITERS_LOCK:
         _LIMITERS.clear()
+        _COOLING.clear()
 
 
 def _env_int(name: str, default: int) -> int:
@@ -274,67 +281,75 @@ class Router:
                 if hit:
                     return hit
                 raise LLMUnavailable(f"research daily cap {cap} reached ({lane})", "quota", next_quota_reset())
-        for p in self.providers:
-            for model in _models(p, tier):
-                sendable = req if (p.supports_pdf() or not req.pdf) else self._as_text(req)
-                if sendable is None:
-                    errors.append(f"{p.name}: needs the PDF and it has no text layer")
-                    kinds.add("too_large")
-                    continue
-                key = sendable.content_hash(model)
-                hit = self.log.get_cached(key)
-                if hit:
-                    self.stats.cache_hits += 1
-                    resp = hit["response"]
-                    data = resp if isinstance(resp, dict) else json.loads(resp)
-                    return LLMResult(
-                        data, hit["provider"], hit["model"], hit.get("tokens_in"), hit.get("tokens_out"), cached=True
-                    )
-                if p.name == "groq" and sendable.est_tokens() > GROQ_MAX_TOKENS:
-                    errors.append(f"groq: request too large for its free tier (~{sendable.est_tokens()} tokens)")
-                    kinds.add("too_large")
-                    continue
-                if (p.name, model) in self._exhausted:
-                    errors.append(f"{model}: quota exhausted earlier in this run")
-                    kinds.add("quota")
-                    continue
-                lim = self._limiter(p.name, model)
-                if self.log.count_today(p.name, model) >= lim.rpd:
-                    self._exhausted.add((p.name, model))
-                    errors.append(f"{model}: daily budget {lim.rpd} reached")
-                    kinds.add("quota")
-                    continue
-                lim.wait(sendable.est_tokens(), RESEARCH_TPM if lane and tier == "cheap" else None, self._sleep)
-                row = {
-                    "content_hash": key, "provider": p.name, "model": model, "tier": tier, "purpose": req.purpose,
-                    "request": {"system": req.system, "prompt": req.prompt, "pdf_sha256": _pdf_hash(sendable.pdf),
-                                "document_sha256": sendable.document_sha(), "tags": req.tags},
-                }  # fmt: skip
-                res = self._attempt(p, model, sendable, row, errors, kinds)
-                if res is None:
-                    continue
-                pin, pout = p.price(model)
-                cost = ((res.tokens_in or 0) * pin + (res.tokens_out or 0) * pout) / 1e6
-                self.stats.tokens_in += res.tokens_in or 0
-                self.stats.tokens_out += res.tokens_out or 0
-                self.stats.est_cost_usd += cost
-                self.stats.by_provider[p.name] = self.stats.by_provider.get(p.name, 0) + 1
-                self.stats.by_model[res.model] = self.stats.by_model.get(res.model, 0) + 1
-                self.log.record(
-                    {
-                        **row,
-                        "model": res.model or model,
-                        "ok": True,
-                        "response": res.data,
-                        "tokens_in": res.tokens_in,
-                        "tokens_out": res.tokens_out,
-                        "est_cost_usd": cost,
-                        "latency_ms": res.latency_ms,
-                    }
+        chain = [(p, m) for p in self.providers for m in _models(p, tier)]
+        for idx, (p, model) in enumerate(chain):
+            sendable = req if (p.supports_pdf() or not req.pdf) else self._as_text(req)
+            if sendable is None:
+                errors.append(f"{p.name}: needs the PDF and it has no text layer")
+                kinds.add("too_large")
+                continue
+            key = sendable.content_hash(model)
+            hit = self.log.get_cached(key)
+            if hit:
+                self.stats.cache_hits += 1
+                resp = hit["response"]
+                data = resp if isinstance(resp, dict) else json.loads(resp)
+                return LLMResult(
+                    data, hit["provider"], hit["model"], hit.get("tokens_in"), hit.get("tokens_out"), cached=True
                 )
-                log.info("llm %s/%s %s in=%s out=%s $%.6f %sms", p.name, res.model, req.purpose, res.tokens_in,
-                         res.tokens_out, cost, res.latency_ms)  # fmt: skip
-                return res
+            if p.name == "groq" and sendable.est_tokens() > GROQ_MAX_TOKENS:
+                errors.append(f"groq: request too large for its free tier (~{sendable.est_tokens()} tokens)")
+                kinds.add("too_large")
+                continue
+            if (p.name, model) in self._exhausted:
+                errors.append(f"{model}: quota exhausted earlier in this run")
+                kinds.add("quota")
+                continue
+            lim = self._limiter(p.name, model)
+            if self.log.count_today(p.name, model) >= lim.rpd:
+                self._exhausted.add((p.name, model))
+                errors.append(f"{model}: daily budget {lim.rpd} reached")
+                kinds.add("quota")
+                continue
+            # only the strong chain short-circuits; the push side keeps full retries on Flash-Lite before Groq
+            has_next = tier == "strong" and idx < len(chain) - 1
+            if has_next and _COOLING.get((p.name, model), 0) > time.monotonic():
+                errors.append(f"{model}: skipped — overloaded in the last {COOLDOWN_S // 60} min")
+                kinds.add("transient")
+                continue
+            lim.wait(sendable.est_tokens(), RESEARCH_TPM if lane and tier == "cheap" else None, self._sleep)
+            row = {
+                "content_hash": key, "provider": p.name, "model": model, "tier": tier, "purpose": req.purpose,
+                "request": {"system": req.system, "prompt": req.prompt, "pdf_sha256": _pdf_hash(sendable.pdf),
+                            "document_sha256": sendable.document_sha(), "tags": req.tags},
+            }  # fmt: skip
+            res = self._attempt(p, model, sendable, row, errors, kinds, CHAIN_ATTEMPTS if has_next else None)
+            if res is None:
+                if has_next and "transient" in kinds:
+                    _COOLING[(p.name, model)] = time.monotonic() + COOLDOWN_S
+                continue
+            pin, pout = p.price(model)
+            cost = ((res.tokens_in or 0) * pin + (res.tokens_out or 0) * pout) / 1e6
+            self.stats.tokens_in += res.tokens_in or 0
+            self.stats.tokens_out += res.tokens_out or 0
+            self.stats.est_cost_usd += cost
+            self.stats.by_provider[p.name] = self.stats.by_provider.get(p.name, 0) + 1
+            self.stats.by_model[res.model] = self.stats.by_model.get(res.model, 0) + 1
+            self.log.record(
+                {
+                    **row,
+                    "model": res.model or model,
+                    "ok": True,
+                    "response": res.data,
+                    "tokens_in": res.tokens_in,
+                    "tokens_out": res.tokens_out,
+                    "est_cost_usd": cost,
+                    "latency_ms": res.latency_ms,
+                }
+            )
+            log.info("llm %s/%s %s in=%s out=%s $%.6f %sms", p.name, res.model, req.purpose, res.tokens_in,
+                     res.tokens_out, cost, res.latency_ms)  # fmt: skip
+            return res
         if not self.providers:
             raise LLMUnavailable("no LLM provider configured", "config")
         kind = "quota" if kinds == {"quota"} or ("quota" in kinds and "transient" not in kinds) else (
@@ -355,9 +370,10 @@ class Router:
         return None
 
     def _attempt(self, p: Provider, model: str, req: LLMRequest, row: dict, errors: list[str],
-                 kinds: set[str]) -> LLMResult | None:  # fmt: skip
+                 kinds: set[str], max_attempts: int | None = None) -> LLMResult | None:  # fmt: skip
         """One model, with exponential backoff on transient errors and per-minute 429s."""
-        for attempt, pause in enumerate((*BACKOFF_S, None), start=1):
+        pauses = (*BACKOFF_S, None) if max_attempts is None else (*BACKOFF_S[: max_attempts - 1], None)
+        for attempt, pause in enumerate(pauses, start=1):
             self.stats.calls += 1
             log.info("llm call %s/%s %s pdf=%s attempt %d", p.name, model, req.purpose, bool(req.pdf), attempt)
             try:
