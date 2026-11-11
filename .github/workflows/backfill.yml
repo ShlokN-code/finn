@@ -1,0 +1,58 @@
+# One-off backfills that need NSE (blocked from Render). Triggered by workflow_dispatch, or by committing a
+# request file under backend/data/backfills/ (so a backfill can be started without an API token; the file says
+# what was asked and why). Shares the ingest concurrency group so it never overlaps a scheduled run.
+name: backfill
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "results-relink: rewrite results cards' Open links (results PDF page → iXBRL → raw XBRL)"
+        required: true
+        default: results-relink
+        type: choice
+        options: [results-relink]
+      days:
+        description: "Results events updated in the last N days"
+        required: false
+        default: "400"
+  push:
+    branches: [main]
+    paths: ["backend/data/backfills/*.request"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      FINN_CACHE_DIR: ${{ github.workspace }}/backend/.cache
+      PYTHONUNBUFFERED: "1"
+      IN_DAYS: ${{ inputs.days || '400' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: pip install ".[jobs]"
+      - uses: actions/cache@v4
+        with:
+          path: backend/.cache
+          key: raw-cache-${{ github.run_id }}
+          restore-keys: raw-cache-
+      - name: migrate
+        run: python -m jobs.migrate
+      - name: results relink
+        run: python -m jobs.results --relink --days "$IN_DAYS"
