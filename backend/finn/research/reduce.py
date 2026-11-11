@@ -17,7 +17,7 @@ from finn.models import Citation, Claim, Figure
 from finn.models.research import Dossier
 from finn.research.ledger import Call
 
-PROMPT_VERSION = "v3"
+PROMPT_VERSION = "v4"
 PURPOSE = f"research.reduce.{PROMPT_VERSION}"
 
 SYSTEM = """You write a short, neutral research summary of an Indian listed company for a professional investor,
@@ -25,8 +25,9 @@ using ONLY the numbered facts given (from the company's own filings, calls and s
 Never use outside knowledge, news, opinions about the share price, or advice to buy or sell.
 Rules:
 - Every sentence cites the fact ids it rests on.
-- Prefer placeholders for numbers: write {F12} and it is filled in from fact F12 (only facts marked [number]
-  have one). You may type a number only if it appears in a fact you cite. Never spell numbers out in words.
+- Prefer placeholders for numbers: write {F12} and it is filled in from fact F12 WITH its unit (₹, Cr, %, x, days
+  are included — don't add them). Only facts marked [number] have a placeholder. You may type a number only if it
+  appears in a fact you cite. Never spell numbers out in words. Put fact ids in fact_ids, not in the text.
   Period names like FY26 or Q2 FY27 are fine.
 - Plain English, at most 25 words per sentence. No hype words."""
 
@@ -48,6 +49,18 @@ SCHEMA = {
 
 _PLACEHOLDER = re.compile(r"\{(F\d+)\}")
 _NUMS = re.compile(r"\d+(?:\.\d+)?")
+_ID_LIST = re.compile(r"\s*[\[{(]\s*F\d+(?:\s*,\s*F\d+)+\s*[\]})]")
+
+
+def _tidy(text: str) -> str:
+    """Units the model wrapped around a placeholder that already carries them ('₹{F3} Cr' → '₹₹1,571 Cr Cr')."""
+    text = re.sub(r"₹\s*₹", "₹", text)
+    text = re.sub(r"\b(Cr|days|x)\.?\s+\1\b", r"\1", text)
+    text = re.sub(r"%\s*(?:%|percent\b|per cent\b)", "%", text)
+    text = re.sub(r"(\d)x\s+times\b", r"\1x", text)
+    return re.sub(r"\s+([.,;])", r"\1", text).strip()
+
+
 _W = (
     r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|"
     r"eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)"
@@ -125,8 +138,7 @@ def facts(d: Dossier, calls: list[Call]) -> list[Fact]:
         if p.verdict in ("kept", "missed", "goalposts_moved", "quietly_dropped") or p.revision == "raised":
             reason = p.verdict_reason.text if p.verdict_reason else ""
             add(f"promise '{p.statement}' → {p.verdict.replace('_', ' ')}"
-                f"{' (target raised)' if p.revision == 'raised' else ''}: {reason}",
-                (p.scored_target.raw_target if p.scored_target and p.scored_target.raw_target else None),
+                f"{' (target raised)' if p.revision == 'raised' else ''}: {reason}", None,
                 (p.verdict_reason.citations if p.verdict_reason else [])[:2] or [p.statements[-1].quote])  # fmt: skip
     cr = d.ledger.credibility
     if cr and cr.shown and cr.score_pct is not None:
@@ -166,6 +178,9 @@ def render(raw: dict | None, fs: list[Fact]) -> tuple[Claim | None, bool]:
     by = {f.id: f for f in fs}
     ids = [i for i in raw.get("fact_ids") or [] if i in by]
     text = " ".join(str(raw["text"]).split())
+    for grp in _ID_LIST.findall(text):  # '{F22, F15}' citations written into the text
+        ids += [i for i in re.findall(r"F\d+", grp) if i in by]
+    text = _ID_LIST.sub("", text).strip()
     used = _PLACEHOLDER.findall(text)
     if any(u not in by or by[u].display is None for u in used):
         return None, True  # placeholders stand for numbers only
@@ -179,7 +194,7 @@ def render(raw: dict | None, fs: list[Fact]) -> tuple[Claim | None, bool]:
         return None, True  # a number the model typed that none of its cited facts prints
     if not ids:
         return None, True
-    text = _PLACEHOLDER.sub(lambda m: by[m.group(1)].display, text)
+    text = _tidy(_PLACEHOLDER.sub(lambda m: by[m.group(1)].display, text))
     cites: list[Citation] = []
     for i in ids:
         for c in by[i].citations:

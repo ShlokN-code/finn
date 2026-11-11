@@ -131,6 +131,13 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     return Outcome("done" if complete else "partial", stats=stats)
 
 
+def _tally_note(cr) -> str:
+    """Below the minimum n the tally still shows; the % score and trend need min_n (product owner, 11 Nov)."""
+    if cr.n == 0:
+        return "No promise can be scored yet — see each one's status"
+    return f"{cr.kept} of {cr.n} scored promises kept — a % score needs {cr.min_n} or more"
+
+
 def _building(resume) -> str:
     return f"Building · resumes after {_ist(resume)} quota reset"
 
@@ -157,7 +164,7 @@ def run_judge(d: Dossier, led, calls, router, tags, progress: Progress, now: dat
     d.ledger.credibility = credibility(d.ledger.promises, led.settled, calls)
     cr = d.ledger.credibility
     if d.ledger.meta.status == "ready":
-        note = None if cr.shown else f"Credibility needs {cr.min_n}+ scored promises (have {cr.n})"
+        note = None if cr.shown else _tally_note(cr)
         d.ledger.meta = d.ledger.meta.model_copy(update={"note": note, "written_by": res.model})
     d.quality.claims_dropped += jr.rejected
     progress.step("judge", "done", f"{jr.changed} verdict(s) by {res.model}; {jr.rejected} rejected (no evidence)")
@@ -244,8 +251,7 @@ def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: 
     elif len(calls) < 4:
         d.ledger.meta = meta("partial", "few_transcripts", f"Based on {len(calls)} call(s)", now)
     else:
-        note = None if led.credibility.shown else f"Credibility needs {led.credibility.min_n}+ scored promises " \
-            f"(have {led.credibility.n})"  # fmt: skip
+        note = None if led.credibility.shown else _tally_note(led.credibility)
         d.ledger.meta = meta("ready", None, note, now)
     d.analysts.points = insights.pressure_points(calls)
     d.analysts.meta = meta("ready" if d.analysts.points else "unavailable",

@@ -126,3 +126,13 @@ def test_reduce_blocks_spelled_out_numbers_and_allows_numbers_printed_by_a_cited
     assert bad is None and dropped
     fine, _ = reduce.render({"text": "A five-year record of cash conversion.", "fact_ids": ["F2"]}, [promise])
     assert fine is not None
+
+
+def test_reduce_tidies_units_around_placeholders_and_id_lists():
+    f = _fig("Free cash flow", 1571.0, "INR_CR")
+    fs = [reduce.Fact("F1", "F1: Free cash flow (FY26) = ₹1,571 Cr", reduce.show(f), [f.citation]),
+          reduce.Fact("F2", "F2: ROCE = 34.0%", "34.0%", [f.citation])]  # fmt: skip
+    c, _ = reduce.render(
+        {"text": "Free cash flow was ₹{F1} Cr in FY26 with ROCE of {F2}% {F1, F2}.", "fact_ids": []}, fs
+    )
+    assert c.text == "Free cash flow was ₹1,571 Cr in FY26 with ROCE of 34.0%." and len(c.citations) == 1

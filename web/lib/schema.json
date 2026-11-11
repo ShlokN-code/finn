@@ -896,11 +896,11 @@
             }
           ],
           "default": null,
-          "description": "kept \u00f7 n \u00d7 100, computed in code",
+          "description": "kept \u00f7 n \u00d7 100, computed in code; display only when shown",
           "title": "Score Pct"
         },
         "shown": {
-          "description": "False below min_n \u2014 the UI shows 'Not enough scored promises (n=3)'",
+          "description": "Whether the % score and trend are shown (n \u2265 min_n). The tally 'kept of n' is always shown, e.g. '2 of 4 kept'",
           "title": "Shown",
           "type": "boolean"
         },

@@ -552,11 +552,11 @@ export interface Credibility {
    */
   recent: TrendHalf | null;
   /**
-   * kept ÷ n × 100, computed in code
+   * kept ÷ n × 100, computed in code; display only when shown
    */
   score_pct: number | null;
   /**
-   * False below min_n — the UI shows 'Not enough scored promises (n=3)'
+   * Whether the % score and trend are shown (n ≥ min_n). The tally 'kept of n' is always shown, e.g. '2 of 4 kept'
    */
   shown: boolean;
   trend: ("up" | "down" | "flat") | null;

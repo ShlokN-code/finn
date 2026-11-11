@@ -136,8 +136,9 @@ class TrendHalf(Model):
 
 
 class Credibility(Model):
-    shown: bool = Field(description="False below min_n — the UI shows 'Not enough scored promises (n=3)'")
-    score_pct: float | None = Field(None, description="kept ÷ n × 100, computed in code")
+    shown: bool = Field(description="Whether the % score and trend are shown (n ≥ min_n). The tally 'kept of n' is "
+                        "always shown, e.g. '2 of 4 kept'")  # fmt: skip
+    score_pct: float | None = Field(None, description="kept ÷ n × 100, computed in code; display only when shown")
     kept: int
     n: int = Field(description="kept + missed + goalposts_moved + quietly_dropped")
     numeric_n: int = Field(description="Of n, verdicts decided in code")
