@@ -55,6 +55,7 @@ export function useBrief(opts: {
     fetchedAt: null,
   });
   const liveRef = useRef<BriefResponse | null>(null);
+  const retries = useRef(0);
 
   const since =
     opts.window === "since" ? (opts.visit?.previous ?? null) : opts.window === "custom" ? opts.customSince : null;
@@ -140,6 +141,7 @@ export function useBrief(opts: {
       .then((resp) => {
         if (cancelled) return;
         liveRef.current = resp;
+        retries.current = 0;
         const at = new Date().toISOString();
         cacheBrief(cacheKey, { resp, at, sig: holdingsSignature(holdings, resp.rules) });
         if (sent.length) settleFeedback(resp.rules, sent.map((p) => p.at).sort().at(-1) ?? null);
@@ -151,7 +153,13 @@ export function useBrief(opts: {
       })
       .catch((e) => {
         if (cancelled || (e instanceof DOMException && e.name === "AbortError")) return;
-        setState((s) => ({ ...s, refreshing: false, slow: false, error: e instanceof FetchError ? e : new FetchError(0, String(e)) }));
+        const err = e instanceof FetchError ? e : new FetchError(0, String(e));
+        setState((s) => ({ ...s, refreshing: false, slow: false, error: err }));
+        // Render's free tier may still be waking: retry a few times on its own (20 s apart).
+        if (err.waking && retries.current < 3) {
+          retries.current += 1;
+          timers.push(setTimeout(() => !cancelled && setNonce((n) => n + 1), 20_000));
+        }
       });
     return () => {
       cancelled = true;

@@ -24,7 +24,25 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "cd web && API_BASE_URL=https://finn-api-4ejm.onrender.com npm run dev -- --port 3001"
+        "cd web && API_BASE_URL=${FINN_API:-https://finn-api-4ejm.onrender.com} npm run dev -- --port 3001"
+      ],
+      "port": 3001
+    },
+    {
+      "name": "web-no-api",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd web && API_BASE_URL=http://127.0.0.1:9 npm run dev -- --port 3002"
+      ],
+      "port": 3002
+    },
+    {
+      "name": "web-via-vercel",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd web && API_BASE_URL=https://finn-tau-red.vercel.app/api npm run dev -- --port 3001"
       ],
       "port": 3001
     }

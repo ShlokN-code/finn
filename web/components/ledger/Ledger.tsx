@@ -120,7 +120,7 @@ export function LedgerSection({ d, focus }: { d: Dossier; focus?: string | null 
           </div>
         )}
         <p className="t-small mt-2 text-ink-3">
-          {L.calls_read} calls{L.decks_read ? ` · ${L.decks_read} decks` : ""} read
+          {L.calls_read} calls{L.decks_read ? ` · ${L.decks_read} deck${L.decks_read === 1 ? "" : "s"}` : ""} read
           {cred ? ` · ${cred.numeric_n} decided in code · ${cred.qualitative_n} judged by model` : ""}
         </p>
       </div>
@@ -251,7 +251,13 @@ function PromiseSheet({ p, onClose }: { p: MgmtPromise | null; onClose: () => vo
           </p>
           <p className="t-small mt-0.5 text-ink-3">
             {p.verdict_by === "code"
-              ? "Decided in code from the target and the delivered figure."
+              ? p.verdict === "goalposts_moved"
+                ? "Decided in code: a later call revised the target unfavourably — that is the verdict even if the new target is met."
+                : p.verdict === "quietly_dropped"
+                  ? "Decided in code: no delivered figure, and later calls don't mention it."
+                  : p.verdict === "not_yet_due" || p.verdict === "cant_score"
+                    ? "Status set in code; it doesn't count toward credibility."
+                    : "Decided in code from the target and the delivered figure."
               : `Judged by ${p.verdict_model ?? "the model"} — it must quote a later call, which is checked.`}
           </p>
           {p.verdict_reason && (

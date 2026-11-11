@@ -129,6 +129,8 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
   const sinceIso = b.since;
   const title = showcase
     ? "Showcase replay"
+    : b.source === "fallback"
+      ? "Saved showcase day"
     : window_ === "since" && sinceIso
       ? "Since your last visit"
       : window_ === "custom" && customSince
@@ -138,7 +140,7 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
           : window_ === "3d"
             ? "Last 3 days"
             : "Last 7 days";
-  const sinceLabel = showcase && data?.showcase ? SHOWCASE_LABEL : window_ === "since" && sinceIso ? (isTodayIST(sinceIso) ? istClock(sinceIso) : `${istDay(sinceIso)}, ${istClock(sinceIso)}`) : null;
+  const sinceLabel = (showcase || b.source === "fallback") && data?.showcase ? SHOWCASE_LABEL : window_ === "since" && sinceIso ? (isTodayIST(sinceIso) ? istClock(sinceIso) : `${istDay(sinceIso)}, ${istClock(sinceIso)}`) : null;
   const n = visible.length;
   const stale = data && !showcase && b.source !== "fallback" ? isStale(data.data_as_of) : false;
 
@@ -168,7 +170,11 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
             ) : undefined
           }
         >
-          {b.liveReady ? "Your live Brief is ready." : `Showing the saved showcase day (${SHOWCASE_LABEL}) while live data loads…`}
+          {b.liveReady
+            ? "Your live Brief is ready."
+            : b.error
+              ? `FINN's server isn't answering — showing the saved showcase day (${SHOWCASE_LABEL}). Retrying shortly.`
+              : `Showing the saved showcase day (${SHOWCASE_LABEL}) while live data loads…`}
         </Notice>
       )}
 
@@ -333,7 +339,7 @@ function TopBar({ showcase }: { showcase: boolean }) {
           onClick={() => write("showcase", !showcase)}
           className={`relative h-6 w-10 rounded-full transition-colors ${showcase ? "bg-ink" : "bg-rule"}`}
         >
-          <span className={`absolute top-0.5 size-5 rounded-full bg-surface shadow-sm transition-transform ${showcase ? "translate-x-[18px]" : "translate-x-0.5"}`} />
+          <span className={`absolute left-0 top-0.5 size-5 rounded-full transition-transform ${showcase ? "translate-x-[18px] bg-paper" : "translate-x-0.5 bg-ink-3"}`} />
         </button>
       </label>
     </div>
