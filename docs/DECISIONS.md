@@ -469,7 +469,7 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Decision:** the app shell is prerendered static HTML on Vercel's edge, and nothing on the critical path waits for Render. Brief data comes in this order:
   1. This phone's last Brief for the same holdings, rules and window (localStorage, one Brief kept at a time: a 7-day Brief is about 1 MB uncompressed).
   2. On a first visit with the demo portfolio: `GET /api/brief/demo`, a route handler that replies with `Vercel-CDN-Cache-Control: max-age=300, stale-while-revalidate=86400`. Only successful answers are cached. Measured on the deployed site: `MISS` then `HIT`, 55–160 ms from the edge.
-  3. Nothing within 0.9 s: the saved showcase day, under a banner. Live data replaces it in place if it lands before the first touch or scroll; after that a "Show live" pill appears, so content never swaps under your thumb.
+  3. Nothing within 0.4 s of hydration: the saved showcase day (prefetched at load), under a banner. Live data replaces it in place if it lands before the first touch or scroll; after that a "Show live" pill appears, so content never swaps under your thumb.
      - Why a fallback at all: Vercel's edge cache is per region and is emptied by every deploy, so the first visitor in a region after a deploy waits for Render. Measured: 4.1 s cold vs ~0.1 s warm.
   4. Always: `POST /api/brief` with holdings, rules and queued swipes. On failure the last copy stays, with "couldn't refresh · retry".
 - **Stale:** the feed is flagged when its last success is more than 2 h older than the most recent 30-minute check slot that should have run (08:30–22:00 IST, weekdays).

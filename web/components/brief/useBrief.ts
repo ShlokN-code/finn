@@ -121,7 +121,7 @@ export function useBrief(opts: {
         .catch(() => {});
     }
     if (!usable) {
-      // Fetch the saved day at once (static, on the CDN) so the fallback costs no extra round trip at 0.9 s.
+      // Fetch the saved day at once (static, on the CDN) so the fallback costs no extra round trip (shown after 0.4 s; a warm edge answers in ~0.15 s).
       const fallback = api.showcase().catch(() => null);
       timers.push(
         setTimeout(() => {
@@ -130,7 +130,7 @@ export function useBrief(opts: {
             if (!resp || cancelled || liveRef.current) return;
             setState((s2) => (s2.data ? s2 : { ...s2, data: resp, source: "fallback" }));
           });
-        }, 900),
+        }, 400),
       );
     }
     timers.push(setTimeout(() => !cancelled && setState((s) => ({ ...s, slow: s.refreshing })), 4000));
