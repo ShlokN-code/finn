@@ -1,0 +1,3 @@
+Rewrite every stored results card's Open links: results PDF page (found in code) -> NSE iXBRL view -> raw XBRL
+as a secondary link. No number changes, no model calls. Product owner's bug report, 12 Nov 2026:
+a figure's Open landed on raw XBRL XML on a phone.
