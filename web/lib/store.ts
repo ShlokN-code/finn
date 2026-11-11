@@ -140,6 +140,12 @@ export function useHydrated(): boolean {
   );
 }
 
+/** Cache one Brief at a time (a 7-day Brief is ~1 MB uncompressed; localStorage holds ~5 MB). */
+export function cacheBrief(key: string, value: CachedBrief) {
+  for (const k of ["since", "24h", "3d", "7d", "custom"]) if (`brief.${k}` !== key) write(`brief.${k}`, null);
+  write(key, value);
+}
+
 // --- Visits ("Since your last visit") ---------------------------------------------------------------------
 
 const SESSION_GAP_MS = 30 * 60 * 1000;

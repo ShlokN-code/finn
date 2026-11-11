@@ -5,6 +5,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { Check, ChevronRight, Info, RotateCcw, Send, ThumbsDown } from "lucide-react";
 import { CardView } from "@/components/cards";
 import { ErrorState, Notice, Skeleton } from "@/components/shell/StateView";
+import { Tour } from "@/components/shell/Tour";
 import { setAskContext, showToast } from "@/components/shell/ui-store";
 import { SHOWCASE_LABEL } from "@/lib/demo";
 import { CATEGORY_LABEL, CATEGORY_PLURAL, displayHeadline, isTodayIST, istClock, istDay, istTime, readTime } from "@/lib/format";
@@ -23,6 +24,8 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
   const [window_, setWindow] = useState<WindowKey>("since");
   const [customSince, setCustomSince] = useState<string | null>(null);
   const showcase = useStored<boolean>("showcase", FALLBACK.showcase);
+  const tourDone = useStored<boolean>("tour", FALLBACK.tour);
+  const [tourOpen, setTourOpen] = useState(true);
 
   useEffect(() => {
     // On "/" at desktop widths the landing shows instead; don't fetch for a hidden Brief.
@@ -297,6 +300,7 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
         )}
       </main>
 
+      {data && visible.length > 0 && !tourDone && tourOpen && <Tour onDone={() => setTourOpen(false)} />}
       <WhySheet card={why?.card ?? null} rank={why?.rank ?? 1} onClose={() => setWhy(null)} />
       <ScopeSheet card={scopeFor} onChoose={chooseScope} />
       <TimeSavedSheet open={sheet === "time"} counts={data?.counts ?? null} onClose={() => setSheet(null)} />

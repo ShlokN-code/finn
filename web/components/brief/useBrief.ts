@@ -8,13 +8,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, FetchError } from "@/lib/client";
 import { effectiveWeights } from "@/lib/holdings";
 import {
+  cacheBrief,
   FALLBACK,
   holdingsSignature,
   isDemoPortfolio,
   read,
   settleFeedback,
   useStored,
-  write,
   type CachedBrief,
   type LocalHolding,
   type Visit,
@@ -141,7 +141,7 @@ export function useBrief(opts: {
         if (cancelled) return;
         liveRef.current = resp;
         const at = new Date().toISOString();
-        write<CachedBrief>(cacheKey, { resp, at, sig: holdingsSignature(holdings, resp.rules) });
+        cacheBrief(cacheKey, { resp, at, sig: holdingsSignature(holdings, resp.rules) });
         if (sent.length) settleFeedback(resp.rules, sent.map((p) => p.at).sort().at(-1) ?? null);
         setState((s) =>
           s.source === "fallback"
