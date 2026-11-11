@@ -92,9 +92,19 @@ def hidden_items(rows: list[dict]) -> list[HiddenItem]:
     ]  # fmt: skip
 
 
-def data_as_of(conn) -> datetime | None:
+def data_as_of(conn, symbols: list[str] | None = None) -> datetime | None:
+    """Freshness of the filings feed for these holdings: the oldest last-successful NSE check among them.
+    Symbols FINN doesn't track yet have no row; if none do, the latest check of any symbol is used."""
+    if symbols:
+        r = conn.execute(
+            "select min(last_success_at) as t from public.source_status "
+            "where source = 'nse_announcements' and scope = any(%s)",
+            (symbols,),
+        ).fetchone()
+        if r and r["t"]:
+            return r["t"]
     r = conn.execute(
-        "select min(last_success_at) as t from public.source_status where source = 'nse_announcements'"
+        "select max(last_success_at) as t from public.source_status where source = 'nse_announcements'"
     ).fetchone()
     return r["t"] if r else None
 
@@ -139,7 +149,7 @@ def brief(
         cards=cards, hidden=hidden, hidden_total=len(hidden_rows), hidden_items=hidden_items(hidden_rows),
         counts=brief_counts(cards, len(hidden_rows), since),
         season=season_strip(conn, symbols, now_utc()),
-        rules=rules, data_as_of=data_as_of(conn), since=since, window=window,
+        rules=rules, data_as_of=data_as_of(conn, symbols), since=since, window=window,
     )  # fmt: skip
 
 
