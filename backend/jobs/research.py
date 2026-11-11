@@ -3,6 +3,7 @@
 python -m jobs.research enqueue --symbols INFY,POLYCAB [--reason prewarm]   # add builds to the queue
 python -m jobs.research drain [--max 20] [--minutes 40]                     # run queued builds here (a worker)
 python -m jobs.research export --symbols INFY,BAJFINANCE --out ../web/public/fixtures   # frontend fixtures
+python -m jobs.research resume                                              # re-queue builds parked for quota
 
 Builds normally run on Render's worker thread; `drain` lets the nightly Actions run (7 GB RAM, same Supabase
 queue) take work too. Both claim with SKIP LOCKED, so they never build the same job twice.
@@ -32,6 +33,7 @@ def main() -> None:
     d = sub.add_parser("drain")
     d.add_argument("--max", type=int, default=20)
     d.add_argument("--minutes", type=float, default=40)
+    sub.add_parser("resume", help="Re-queue builds parked for model quota now (e.g. after adding a model)")
     x = sub.add_parser("export")
     x.add_argument("--symbols", default="INFY,BAJFINANCE")
     x.add_argument("--out", default=str(Path(__file__).resolve().parents[2] / "web" / "public" / "fixtures"))
@@ -46,6 +48,12 @@ def main() -> None:
             worker = f"actions:{os.environ.get('GITHUB_RUN_ID', 'local')}"
             n = jobs.drain(conn, worker, args.max, args.minutes * 60)
             print(f"ran {n} job(s)")
+        elif args.cmd == "resume":
+            rows = conn.execute(
+                "update public.research_jobs set status = 'queued', resume_after = null, updated_at = now() "
+                "where status = 'waiting_quota' returning id, symbol"
+            ).fetchall()
+            print("re-queued:", ", ".join(f"{r['symbol']} (#{r['id']})" for r in rows) or "none")
         elif args.cmd == "export":
             out = Path(args.out)
             out.mkdir(parents=True, exist_ok=True)

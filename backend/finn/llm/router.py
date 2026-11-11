@@ -88,7 +88,6 @@ class MemoryLLMLog:
             1
             for r in self.rows
             if r["provider"] == provider
-            and r["ok"]
             and (model is None or r["model"] == model)
             and (purpose_prefix is None or r["purpose"].startswith(purpose_prefix))
         )
@@ -96,7 +95,8 @@ class MemoryLLMLog:
 
 class PostgresLLMLog:
     """llm_calls table: cache + token/cost log. The day boundary is midnight Pacific (Gemini's RPD reset).
-    Daily counts include successful calls only: providers don't bill a 429/503 against the day's quota."""
+    Daily counts include failed attempts: Google counted 29 timed-out/503 calls against gemini-3.8-flash's 20 a day
+    (11 Nov 2026), so only counting successes over-spends the quota."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -125,7 +125,7 @@ class PostgresLLMLog:
     def count_today(self, provider: str, model: str | None = None, purpose_prefix: str | None = None) -> int:
         # Gemini reports the served version (e.g. 'gemini-3.8-flash-001'), so a model matches by prefix.
         r = self.conn.execute(
-            "select count(*) as n from public.llm_calls where provider = %s and ok and created_at >= "
+            "select count(*) as n from public.llm_calls where provider = %s and created_at >= "
             "(date_trunc('day', now() at time zone 'America/Los_Angeles') at time zone 'America/Los_Angeles') "
             "and (%s::text is null or model like %s || '%%') and (%s::text is null or purpose like %s || '%%')",
             (provider, model, model, purpose_prefix, purpose_prefix),

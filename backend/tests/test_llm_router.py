@@ -191,7 +191,13 @@ def test_gemini_strong_chain_from_env(monkeypatch):
     monkeypatch.setenv("GEMINI_MODEL_STRONG", "gemini-3.8-flash")
     chain = "gemini-3-flash-preview, gemini-3.5-flash-lite, gemini-2.5-flash"
     monkeypatch.setenv("GEMINI_MODEL_STRONG_FALLBACKS", chain)
-    assert Gemini("k").models_for("strong") == ["gemini-3.8-flash", "gemini-3-flash-preview", "gemini-2.5-flash"]
+    assert Gemini("k").models_for("strong") == [
+        "gemini-3.8-flash",
+        "gemini-3-flash-preview",
+        "gemini-2.5-flash",
+        "gemini-3.6-flash",
+        "gemini-3.5-flash",
+    ]  # defaults appended, no Lite
 
 
 def test_document_text_is_hashed_not_logged_and_tags_stay_out_of_the_key():

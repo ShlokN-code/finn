@@ -20,10 +20,11 @@ from finn.llm.base import LLMRequest, LLMResult, ProviderError, QuotaExceeded, T
 BASE = "https://generativelanguage.googleapis.com/v1beta"
 DEFAULT_CHEAP = "gemini-3.5-flash-lite"
 DEFAULT_STRONG = "gemini-3.8-flash"
-# Strong fallbacks, each with its own free daily quota (never Flash-Lite: product owner, 11 Nov 2026).
-# gemini-2.5-flash was also approved but returns 404 "no longer available to new users" on this key (11 Nov).
-# Flash-Lite rejects thinkingBudget=0 (HTTP 400): leave thinking_budget unset for the cheap tier.
-DEFAULT_STRONG_FALLBACKS = "gemini-3-flash-preview"
+# Strong fallbacks, each with its own free daily quota (never Flash-Lite: product owner, 11 Nov 2026). 3.6 and 3.5
+# Flash were added the same day when 3.8 Flash and 3 Flash ran out (product owner). gemini-2.5-flash returns 404
+# "no longer available to new users" on this key. Flash-Lite rejects thinkingBudget=0 (HTTP 400): leave
+# thinking_budget unset for the cheap tier.
+DEFAULT_STRONG_FALLBACKS = "gemini-3-flash-preview,gemini-3.6-flash,gemini-3.5-flash"
 # Paid-tier list prices (USD / 1M tokens) — used only for the cost estimate in the log; free tier bills nothing.
 PRICES = {"flash-lite": (0.30, 2.50), "flash": (0.75, 3.75)}
 
@@ -47,7 +48,9 @@ class Gemini:
         first = self.model_for(tier)
         if tier == "cheap":
             return [first] if first else []
-        rest = os.environ.get("GEMINI_MODEL_STRONG_FALLBACKS", DEFAULT_STRONG_FALLBACKS)
+        # GEMINI_MODEL_STRONG_FALLBACKS orders the chain; the defaults are always appended after it (deduplicated),
+        # so a deploy with an older env value still gets every approved model.
+        rest = os.environ.get("GEMINI_MODEL_STRONG_FALLBACKS", "") + "," + DEFAULT_STRONG_FALLBACKS
         chain = [first, *[m.strip() for m in rest.split(",") if m.strip()]]
         return [m for i, m in enumerate(chain) if m and "lite" not in m and m not in chain[:i]]
 
