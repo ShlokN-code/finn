@@ -421,3 +421,26 @@ Short records of key decisions: context, decision, alternatives considered, why.
     - Targets for FY30 or the medium term.
     - Benchmark-relative guidance.
     - Full-year figures that appear in the deck but not in the call.
+
+## 2026-11-11 · Afternoon: acceptance on unseen tickers, deck lookup, direction and tolerance rules
+- **Unseen-ticker draw**: `evals/research/draw_unseen.py`, seed 20261111, logged. Pool: NSE EQ minus every symbol already built or tested. One bank/NBFC by company name (the equity list has no industry field). One non-financial outside the Nifty 100 (NSE archive list, committed). Results are in PLAN.md.
+- **Not promises**: ESOP and share-based-payment cost schedules are excluded alongside board housekeeping. LAXMIDENTL had two such schedules marked "quietly dropped".
+- **Deck lookup** (product owner's step 3):
+  - Covers promises that are "can't score" only because the calls never printed the delivered figure.
+  - FINN reads the investor deck for the quarter that closes the period (screener's PPT link), up to 3 decks per build, with one Flash-Lite call per deck asking only for the missing metrics.
+  - Checks:
+    - The quote must be on the cited page, the number must appear in the quote, and the metric's name must be in the quote.
+    - Fallback for decks whose table rows PDFs split into columns: the name and the exact number within 250 characters on the page, stored as that verbatim span.
+  - A deck figure scores only the promise that requested it. It never adds promises, and never counts as a later call for quietly-dropped or the trend.
+  - Cached per (deck sha, sorted list of requested metrics).
+  - BAJFINANCE: 11 of 12 waiting figures found in 2 decks, and the tally went from 1 of 4 to 8 of 13.
+- **Bound tolerance follows the target's printed precision**: half a unit of its last digit. "40–50 bps" is ±0.5 bp, "1.85–1.95%" is ±0.005 pp. It is never above the old caps (0.1 pp, 0.5 % relative). Point targets keep their ±0.5 pp / ±2.5 % allowance for spoken rounding.
+- **Direction when the metric key has none**:
+  - Code reads the metric's own words: cost, loss, NPA, debt, attrition or days mean lower is better.
+  - For an unsigned change, "improvement/expansion/saving" means more is better, and "impact/headwind/drag" means less is better.
+  - With neither, an off-range result is "can't score" with that reason, never a miss.
+- **Delivered figures are shown as printed** ("7.54 %", "43 bps"), not rounded for the reason line.
+- **Ledger header**: `next_test`, `next_test_label` ("FY27 results"), `next_test_on` (period end + results lag) and `next_test_count`, plus `decks_read`. The n ≥ 5 threshold is unchanged.
+- **Ingest**:
+  - A Gemini content refusal (`promptFeedback.blockReason`) is recorded as "model refused" and not retried every 30 minutes.
+  - JSON written to Postgres drops NUL characters. One filing's NUL made every run's tagging step fail.
