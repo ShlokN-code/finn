@@ -390,3 +390,34 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Analysts and drivers are counted in code:**
   - Pressure points are themes asked in 2 or more calls, citing up to 3 questions.
   - Drivers are scored per label as 2 × guidance count + question count; the top 3 are suggested.
+
+## 2026-11-11 · JUDGE and REDUCE (strong model), and how credibility is shown
+- **JUDGE (strong call #1)**:
+  - Candidates are qualitative promises plus undated numeric ones.
+  - BM25 (`finn/research/bm25.py`, no vector database) retrieves the 3 best passages from later calls for each candidate.
+  - Code-enforced rules:
+    - A verdict must quote a passage verbatim, and the quote is checked.
+    - The evidence must come from a later call than the promise, so every model verdict cites both calls.
+    - **kept/missed from the model count only for qualitative promises.** Despite the prompt, the model called "utilisation 85.8%" kept against 83–85%. For numeric targets it may only flag a revision (goalposts moved or raised).
+    - The model can never assert "quietly dropped".
+    - Its "not yet due" or "can't score" never overrides code.
+  - Board and personnel housekeeping (an interim chairman's tenure, AGM dates) is filtered out before the ledger.
+  - Qualitative restatements across calls merge into one thread.
+- **REDUCE (strong call #2)**: snapshot lines, a trajectory line, and 3 bull and 3 bear points, written from numbered facts only (computed figures, ledger verdicts, analyst themes, risks and capex from the latest call).
+  - Numbers appear as `{F#}` placeholders, filled in code from figures with their units.
+  - A typed number survives only if a cited fact's line prints it. A spelled-out quantity drops the sentence.
+  - Citations come from the cited facts. Dropped sentences are counted in `quality.claims_dropped`.
+- **Cost:**
+  - Each strong call caps thinking at 1,024 tokens. Unbounded thinking truncated a 6,000-token answer.
+  - Judge and reduce cost ≈ $0.005–0.012 per dossier at list price.
+  - The prompts contain no date, so an unchanged dossier hits the cache and spends no strong call.
+- **Router:**
+  - `gemini-3.8-flash` was returning 503s and timing out after 3 minutes, even on a two-word prompt.
+  - A strong model with a fallback after it now gets 2 attempts, then is skipped for 10 minutes, so `gemini-3-flash-preview` answers at once.
+  - The push side keeps full retries on Flash-Lite before Groq.
+- **Credibility display (product owner):** the "kept of n" tally is always shown with the verdict list. The % score and trend need n ≥ 5.
+  - With honest rules no demo ticker reaches 5 scored promises (PERSISTENT 2, INFY 4, BAJFINANCE 4, POLYCAB 1).
+  - The rest are not yet due or can't be scored:
+    - Targets for FY30 or the medium term.
+    - Benchmark-relative guidance.
+    - Full-year figures that appear in the deck but not in the call.
