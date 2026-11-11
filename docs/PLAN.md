@@ -58,6 +58,26 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [ ] `TAVILY_API_KEY` when the product owner signs up (cards already work without it).
 - [ ] Older results XBRL (≤ Dec-2024, `corporates-financial-results`) — only needed for year-ago comparisons before Mar-2025.
 
+## Phase 3 — research engine + Promise Ledger (11–13 Nov 2026)
+
+Plan approved 11 Nov; rules and budget in DECISIONS.md (three Phase 3 entries).
+
+- [x] Contract (Dossier with fixed sections + status/reason, MgmtPromise threads, DossierJob, DossierResponse, AskAnswer), migration 0004, research API + proxy allow-list, background worker — `bfffd9e`; live on Render
+- [x] Router: per-model quotas, strong chain (3.8 Flash → 3 Flash), TPM, research lane caps, hashed document text — `248aea6`
+- [x] Screener discovery (all tables, transcripts, annual report, capex schedule) + computed trajectory / cash / balance sheet incl. lenders — `12a189a`
+- [x] Transcripts (PyMuPDF, text in Supabase), citation checker, MAP extraction — `83eb047`
+- [x] Numeric Promise Ledger + analysts + drivers in builds — `85c0cd4` (INFY local: 4 kept, 1 missed, 1 moved)
+- [ ] **Render env (product owner):** DEPLOY.md §7 — `--workers 1`, `RESEARCH_WORKER=1`, Gemini keys/models, `GEMINI_MODEL_STRONG_FALLBACKS`
+- [ ] Build the 4 demo tickers on the deployed API; spot-check 5 verdicts' quotes in the PDFs
+- [ ] JUDGE (strong #1): qualitative promises + paraphrased cross-call links, citing both calls
+- [ ] Annual report sections (headings in code) → red flags (auditor opinion, contingent liabilities growth, related parties)
+- [ ] REDUCE (strong #2): snapshot text, trajectory line, pressure-point wording, bull/bear with `{f:ID}` placeholders rendered in code
+- [ ] Ask: BM25 over the ticker's pages + facts → Flash-Lite (Groq fallback) → cited answer or "Not found in sources"
+- [ ] Nightly refresh on Actions (code-only recompute; rebuild only on a new document; first-time builds only for the 4 demo tickers); DB size guard
+- [ ] On-demand NSE dispatch (section above) → `exchange_data`
+- [ ] Two tickers outside the demo set (one bank); cost report; README
+- [ ] Frontend fixtures: validated INFY and BAJFINANCE dossiers in `web/public/fixtures/`
+
 ## Phase 5
 
 - [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.

@@ -296,3 +296,97 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - Appointments, CFO changes and other management changes are held.
   - The broader "critical" list is unchanged for the feedback floor and the budget exemption: results still go out on their own and don't count against the 5-a-day budget.
 - **Check:** none of the 49 stored management events match as an exit. The three titles mentioning a CEO/MD are appointments or an extended charge, so there are no false positives.
+
+## 2026-11-11 · Research (Phase 3): where it runs, what it costs, how it degrades
+- **Plan approved by the product owner on 11 Nov.** The full plan is summarised here; details live in the code docstrings.
+- **Where it runs:**
+  - Builds run on a worker thread inside the Render API (`RESEARCH_WORKER=1`, `uvicorn --workers 1`).
+  - The worker claims from `research_jobs` in Supabase with `FOR UPDATE SKIP LOCKED`. A partial unique index allows one active job per ticker; other tickers queue.
+  - A 30 s heartbeat runs on its own thread. A job with no heartbeat for 3 minutes is re-queued, up to 3 attempts. A lost database connection re-queues the job instead of failing it.
+  - The nightly GitHub Actions run will claim from the same queue.
+  - Render's disk is wiped on restart, so every cache lives in Postgres:
+    - `research_documents`: URL → sha256 and status.
+    - `research_doc_text`: gzipped page text keyed by sha256. The PDF itself is never kept.
+    - `research_extractions`: validated facts per (sha256, extractor, prompt version).
+    - `dossiers`: the last good dossier.
+  - PDFs are streamed to a temp file and read page by page.
+- **Screener is cited in research:** its standardised tables are a primary source for the dossier (spec §8). Values read from a row are `verified` and carry a `screener:<section>/<row>/<column>` locator.
+  - Computed figures list their inputs.
+  - FCF = CFO + fixed assets purchased + fixed assets sold, from the investing-activity schedule (`/api/company/<id>/schedules/`, which robots.txt allows). This equals screener's own Free Cash Flow row in all 10 POLYCAB years.
+- **PyMuPDF (AGPL-3.0)** extracts text. That is acceptable because this repo is public; pypdfium2 would be the drop-in replacement.
+- **Alternatives:**
+  - Builds as GitHub Actions dispatches: rejected. Dispatches are slow to start, and a public build button would spend Actions runs.
+  - Supabase Storage for text: rejected, because it means another key and API. Postgres has room: about 0.6 MB per ticker, in a 21 MB database.
+
+## 2026-11-11 · LLM budget for research: per-model quotas, strong fallback chain, Groq only for Ask
+- **Free tier (product owner's AI Studio dashboard):**
+  - Flash-Lite: 15 RPM / 250K TPM / 500 RPD. The push side peaks at 251 a day.
+  - gemini-3.8-flash, Gemini 3 Flash and Gemini 2.5 Flash: 5 RPM / 20 RPD each.
+- **Router changes:**
+  - Limits, daily counts and exhaustion are per model. A strong-model 429 no longer disables Flash-Lite.
+  - The strong tier is a chain: `GEMINI_MODEL_STRONG` → `GEMINI_MODEL_STRONG_FALLBACKS`.
+    - `gemini-2.5-flash` returns 404 "no longer available to new users" on this key, so the default chain is 3.8 Flash → `gemini-3-flash-preview`, 40 strong calls a day.
+    - The chain never uses Flash-Lite (product owner) and never Groq. Each verdict records its model.
+  - Research purposes (`research.*`) have their own daily caps (`RESEARCH_CHEAP_RPD` 220, `RESEARCH_ASK_RPD` 40, `RESEARCH_STRONG_RPD` 60) and 150K of Flash-Lite's TPM, so the push side keeps its share.
+  - Daily counts include successful calls only.
+- **Per dossier:**
+
+  | Case | Cheap calls | Strong calls | Measured |
+  |---|---|---|---|
+  | First-time dossier | 8 (one per transcript) + 1 (annual report) | 2 or fewer | POLYCAB: 104K tokens in / 68K out, ≈ $0.20 at list price |
+  | Cached dossier | 0 | 0 | |
+  | New transcript | 1 | 2 | |
+
+  The cap is 15 first-time dossiers per IST day (`RESEARCH_DAILY_BUILDS`). Pre-warming covers only the 4 demo tickers (product owner).
+- **Quota out mid-build:**
+  - The job parks as `waiting_quota` until the next Pacific midnight (13:30 IST in winter).
+  - Sections already built stay published. The ledger says "Read N of M calls — the rest after 13:30 IST".
+  - If every strong model is out, qualitative verdicts and synthesis show "Building · resumes after 13:30 IST quota reset".
+- **Groq can't take a transcript:** the free-tier qwen3.8-27b allows 8K tokens a minute, and a transcript is 13–17K tokens. It serves Ask only. The router skips Groq for any request estimated above 6K tokens.
+- **Other changes:**
+  - `LLMRequest.document_text` is sent to the model, but only its hash is logged in `llm_calls`.
+  - Truncated output (`MAX_TOKENS`) is an error, never parsed.
+  - Flash-Lite rejects `thinkingBudget: 0`, so research leaves thinking unset on Flash-Lite.
+
+## 2026-11-11 · Promise Ledger rules (code)
+- **MAP (Flash-Lite, one call per transcript):**
+  - The model copies guidance, actuals, analyst questions, segments, capex and risks. Each item has numbers as printed, a verbatim quote and a page.
+  - Code validates item by item and finds each quote in the page text. The search order is the claimed page, then ±1, then pages holding the quote's rarest words, after normalising line-break hyphens, quote marks and whitespace.
+  - A quote that isn't found is re-anchored to the sentence on the claimed page (±1) that contains most of the quote's words and the same number. Otherwise it is dropped and counted.
+  - The item's own number must be printed in its quote.
+  - Analyst and moderator statements are never guidance.
+  - Facts are stored per document hash and prompt version. `VALIDATOR_VERSION` lets checker fixes re-validate cached model output without a new call.
+- **Periods:** resolved in code from what the model read (`fy`, `quarter`, `this_fy`, `next_fy`, …) and the call date.
+  - The company's fiscal year-end comes from screener.
+  - "Next year" said within two months after a year-end is ambiguous, so it can't be scored.
+  - Medium-term or unspecified targets get no date.
+- **Threads:** metric key, measure, segment, unit family, currency, scope and period.
+  - An unspecified basis joins the single specified group.
+  - Qualitative statements stay one per thread until the strong model links paraphrases.
+- **Delivered figure:**
+  - Screener only for a whitelist of rows, with INR or unspecified currency and a matching scope: revenue, revenue/PAT YoY growth, PAT, EBITDA margin when the quote says EBITDA, and GNPA/NNPA by quarter. INFY's "operating margin" is EBIT margin, so it is never scored from OPM %.
+  - Otherwise, the earliest later-call actual with the same key, measure, period, unit and basis, with its quote.
+  - Constant currency is never compared with reported growth. Loose keys (headcount, capex, other…) also need a shared word in the metric names: "fresher hiring" is not "total headcount".
+- **Verdicts** (`compare`, unit-tested):
+
+  | Target | Kept when |
+  |---|---|
+  | Point | Within ±0.5 pp (%), ±2 days, ±2.5 % (money) |
+  | Range / threshold | Within its bounds, plus the reported figure's rounding (±0.1 pp, ±0.5 %) |
+  | Beyond the favourable bound | Kept ("beat"), using the metric's direction (code dictionary: credit cost and NPAs lower-is-better; capex neutral, so off-plan either way) |
+- **Revisions:**
+  - An unfavourable change or a later date → **goalposts moved**. That is the verdict, even if the lower target is then met.
+  - A favourable change → **↗ raised**. A tighter range at the same midpoint → **narrowed**.
+  - Scoring uses the last target given before the period ended (product owner).
+- **Not yet due / can't score:**
+  - **Not yet due:** the period isn't over, or results aren't due yet (60 days after a quarter, 75 after a half, 90 after a year).
+  - **Can't score:** no date, a benchmark-relative target ("1.5–2x industry growth"), or no delivered figure in the sources read.
+  - Neither counts toward credibility.
+- **Quietly dropped:** only when there is no delivered figure, there are at least 2 readable later calls, and a lenient whole-word search for the promise's terms and the metric's synonyms finds nothing in any of them. Worded "Not mentioned in the N calls since the Q1 FY26 call". The model can never assert it.
+- **Credibility:**
+  - Formula: kept ÷ (kept + missed + goalposts moved + quietly dropped).
+  - Code and model verdicts both count, with the split shown (product owner). Hidden below n = 5.
+  - Trend compares promises settled in the last 4 calls with earlier ones. It is shown only when both halves have 3 or more and the difference is 15 pp or more.
+- **Analysts and drivers are counted in code:**
+  - Pressure points are themes asked in 2 or more calls, citing up to 3 questions.
+  - Drivers are scored per label as 2 × guidance count + question count; the top 3 are suggested.
