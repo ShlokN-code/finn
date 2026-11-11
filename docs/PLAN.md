@@ -110,6 +110,8 @@ General bugs found: (1) the judge step stays `pending` when there is no ledger; 
 
 The remaining "quietly dropped" (advertisement spend ≤ 5% of revenue, FY26 — not mentioned in the 5 calls since Q1 FY26) is a genuine guidance item.
 
+**Run 3 (LAXMIDENTL with the deck lookup, `9b0ccbe`, job 45):** decks 2 read, 2 of 3 waiting figures found; FY26 PAT margin 13–15% → **missed** at 10.4% (Q4 FY26 investor presentation); tally 1 of 3 → 1 of 4; header "1 of 4 kept · 6 not yet due · next test: FY27 results (5)". 2 Flash-Lite calls, no strong call available (summary refresh parked until the 13:30 IST reset; the earlier summary stays).
+
 ### Independent spot-check (11 Nov 2026, 16:20 IST)
 
 Five verdicts drawn across the 4 demo dossiers with `random.Random(1111)` from the 11 scored verdicts (forced: one missed, one goalposts moved, one model-judged; then two at random). A fresh subagent that had not seen this session got only each verdict, its cited PDFs and pages, downloaded the PDFs from BSE itself and read every page.
@@ -144,7 +146,11 @@ Strong models: all four are out for the Pacific day (3.8 Flash, 3 Flash and 3.6 
 - [ ] Ask: BM25 over the ticker's pages + facts → Flash-Lite (Groq fallback) → cited answer or "Not found in sources"
 - [ ] Nightly refresh on Actions (code-only recompute; rebuild only on a new document; first-time builds only for the 4 demo tickers); DB size guard. **Reuse the previous summary unless the document set changed**: REDUCE's facts include the day's market cap, so a forced rebuild spends a strong call even with no new document
 - [ ] On-demand NSE dispatch (section above) → `exchange_data`
-- [ ] Two tickers outside the demo set (one bank); cost report; README
+- [x] Two tickers outside the demo set — seeded draw JPOLYINVST (NBFC/holding co, no transcripts → labelled partial) and LAXMIDENTL (full dossier); runs 1–3 recorded above
+- [ ] Cost report (per-dossier tokens/cost from `research_jobs.stats` / `llm_calls.request->tags`); README research section
+- [ ] Results cards: ITC and RELIANCE revenue doesn't reconcile with screener (ITC ~50 % higher: gross vs net of excise/GST?) — logged as a run failure every 30 min; decide the reconciliation or log it as a card state, not a run failure
+- [ ] Deck lookup: guidance items the extraction labels `change` that are really levels (BAJFINANCE "cost of funds 7.75–7.85%") stay can't-score — consider a MAP prompt v2 note on measure
+- [ ] Summary refresh reuse: nightly/forced rebuilds re-run REDUCE whenever any fact changes (market cap moves daily); reuse the stored summary unless the document set or ledger verdicts changed
 - [x] Frontend fixtures: validated INFY, BAJFINANCE, POLYCAB dossiers in `web/public/fixtures/` (`python -m jobs.research export`; built locally against Supabase — rebuild on Render once §7 is set)
 
 ## Phase 5
