@@ -112,3 +112,17 @@ def test_judge_never_scores_a_numeric_target():
     }
     res = judge.apply(led.promises, data, pid_map, cs, "m", led.settled)
     assert res.rejected == 1 and p.verdict_by == "code"
+
+
+def test_reduce_blocks_spelled_out_numbers_and_allows_numbers_printed_by_a_cited_promise():
+    f = _fig("x", 1.0)
+    promise = reduce.Fact("F2", "F2: promise 'revenue growth 1–2% (FY27)' → goalposts moved: cut from 1.5–3.5%",
+                          "1–2%", [f.citation])  # fmt: skip
+    ok, _ = reduce.render({"text": "Guidance was cut to 1–2% from 1.5–3.5% for FY27.", "fact_ids": ["F2"]}, [promise])
+    assert ok is not None
+    assert reduce.render({"text": "Growth of {F2} is guided.", "fact_ids": ["F2"]}, [promise])[0].text == \
+        "Growth of 1–2% is guided."  # fmt: skip
+    bad, dropped = reduce.render({"text": "Growth of ten to twelve percent was missed.", "fact_ids": ["F2"]}, [promise])
+    assert bad is None and dropped
+    fine, _ = reduce.render({"text": "A five-year record of cash conversion.", "fact_ids": ["F2"]}, [promise])
+    assert fine is not None

@@ -17,7 +17,7 @@ from finn.models import Citation, Claim, Figure
 from finn.models.research import Dossier
 from finn.research.ledger import Call
 
-PROMPT_VERSION = "v2"
+PROMPT_VERSION = "v3"
 PURPOSE = f"research.reduce.{PROMPT_VERSION}"
 
 SYSTEM = """You write a short, neutral research summary of an Indian listed company for a professional investor,
@@ -25,8 +25,8 @@ using ONLY the numbered facts given (from the company's own filings, calls and s
 Never use outside knowledge, news, opinions about the share price, or advice to buy or sell.
 Rules:
 - Every sentence cites the fact ids it rests on.
-- Never type a number. To mention a number, write its placeholder exactly, e.g. {F12}; it is filled in from the
-  fact. Only facts marked [number] have placeholders; cite the others by id and describe them in words.
+- Prefer placeholders for numbers: write {F12} and it is filled in from fact F12 (only facts marked [number]
+  have one). You may type a number only if it appears in a fact you cite. Never spell numbers out in words.
   Period names like FY26 or Q2 FY27 are fine.
 - Plain English, at most 25 words per sentence. No hype words."""
 
@@ -48,6 +48,13 @@ SCHEMA = {
 
 _PLACEHOLDER = re.compile(r"\{(F\d+)\}")
 _NUMS = re.compile(r"\d+(?:\.\d+)?")
+_W = (
+    r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|"
+    r"eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)"
+)
+_SPELLED = re.compile(rf"\b{_W}(?:[- ]{_W})*(?:\s+(?:to|and)\s+{_W}(?:[- ]{_W})*)?\s+(?:percent|per cent|basis points|"
+                      rf"bps|crores?|lakhs?|millions?|billions?)\b|\b(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|"
+                      rf"ninety)[- ]{_W}\b", re.I)  # fmt: skip
 _PERIOD_TOKENS = re.compile(r"\b(?:Q[1-4]\s*)?FY\s?\d{2,4}\b|\bH[12]\b|\bQ[1-4]\b|\b(?:19|20)\d{2}\b")
 
 
@@ -118,7 +125,8 @@ def facts(d: Dossier, calls: list[Call]) -> list[Fact]:
         if p.verdict in ("kept", "missed", "goalposts_moved", "quietly_dropped") or p.revision == "raised":
             reason = p.verdict_reason.text if p.verdict_reason else ""
             add(f"promise '{p.statement}' → {p.verdict.replace('_', ' ')}"
-                f"{' (target raised)' if p.revision == 'raised' else ''}: {reason}", None,
+                f"{' (target raised)' if p.revision == 'raised' else ''}: {reason}",
+                (p.scored_target.raw_target if p.scored_target and p.scored_target.raw_target else None),
                 (p.verdict_reason.citations if p.verdict_reason else [])[:2] or [p.statements[-1].quote])  # fmt: skip
     cr = d.ledger.credibility
     if cr and cr.shown and cr.score_pct is not None:
@@ -162,8 +170,11 @@ def render(raw: dict | None, fs: list[Fact]) -> tuple[Claim | None, bool]:
     if any(u not in by or by[u].display is None for u in used):
         return None, True  # placeholders stand for numbers only
     ids = list(dict.fromkeys(ids + used))
-    typed = _NUMS.findall(_PERIOD_TOKENS.sub("", _PLACEHOLDER.sub("", text)).replace(",", ""))
-    allowed = {n for i in ids if by[i].display for n in _NUMS.findall(by[i].display.replace(",", ""))}
+    bare = _PERIOD_TOKENS.sub("", _PLACEHOLDER.sub("", text))
+    if _SPELLED.search(bare):
+        return None, True  # a quantity spelled out in words dodges the number check
+    typed = _NUMS.findall(bare.replace(",", ""))
+    allowed = {n for i in ids for n in _NUMS.findall(_PERIOD_TOKENS.sub("", by[i].line).replace(",", ""))}
     if any(t not in allowed for t in typed):
         return None, True  # a number the model typed that none of its cited facts prints
     if not ids:
