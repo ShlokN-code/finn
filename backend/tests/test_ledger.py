@@ -298,3 +298,12 @@ def test_governance_items_are_not_promises_and_qualitative_restatements_merge():
     again = {**launch, "statement": "Launch first product in the US market soon", "quote": "launch in the US soon"}
     led = ledger([call(1, date(2025, 7, 20), [chair, launch]), call(2, date(2025, 10, 20), [chair, again])])
     assert len(led.promises) == 1 and len(led.promises[0].statements) == 2
+
+
+def test_far_off_scale_is_a_different_measure_not_a_beat():
+    add = g(
+        "customer_growth", 17, 18, unit="million", metric="customer franchise", measure="level", currency="not_money"
+    )
+    total = {**a("customer_growth", 119.3, unit="million", currency="not_money"), "metric": "customer franchise"}
+    p = only(ledger([call(1, date(2025, 7, 20), [add]), call(2, date(2026, 5, 5), actuals=[total])]))
+    assert p.verdict == "cant_score" and "different measure" in p.verdict_reason.text

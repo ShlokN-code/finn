@@ -123,6 +123,9 @@ def apply(promises: list[Promise], data: dict, pid_map: dict, calls: list[Call],
         verdict = v.get("verdict")
         if verdict not in ("kept", "missed", "goalposts_moved", "raised"):
             continue  # 'not yet due' / 'can't score' from the model never overrides code
+        if verdict in ("kept", "missed") and p.measure != "qualitative":
+            res.rejected += 1  # a numeric target is kept or missed only by code's comparison, never the model's
+            continue
         hit = pid_map.get(v.get("passage_id") or "")
         quote = (v.get("quote") or "").strip()
         if not hit or hit[1] != p.id or not quote or not quote_in_text(quote, hit[0].text):

@@ -47,6 +47,7 @@ SCHEMA = {
 }  # fmt: skip
 
 _PLACEHOLDER = re.compile(r"\{(F\d+)\}")
+_NUMS = re.compile(r"\d+(?:\.\d+)?")
 _PERIOD_TOKENS = re.compile(r"\b(?:Q[1-4]\s*)?FY\s?\d{2,4}\b|\bH[12]\b|\bQ[1-4]\b|\b(?:19|20)\d{2}\b")
 
 
@@ -160,9 +161,11 @@ def render(raw: dict | None, fs: list[Fact]) -> tuple[Claim | None, bool]:
     used = _PLACEHOLDER.findall(text)
     if any(u not in by or by[u].display is None for u in used):
         return None, True  # placeholders stand for numbers only
-    if re.search(r"\d", _PERIOD_TOKENS.sub("", _PLACEHOLDER.sub("", text))):
-        return None, True  # a number typed by the model instead of a placeholder
     ids = list(dict.fromkeys(ids + used))
+    typed = _NUMS.findall(_PERIOD_TOKENS.sub("", _PLACEHOLDER.sub("", text)).replace(",", ""))
+    allowed = {n for i in ids if by[i].display for n in _NUMS.findall(by[i].display.replace(",", ""))}
+    if any(t not in allowed for t in typed):
+        return None, True  # a number the model typed that none of its cited facts prints
     if not ids:
         return None, True
     text = _PLACEHOLDER.sub(lambda m: by[m.group(1)].display, text)

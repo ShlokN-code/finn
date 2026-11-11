@@ -342,6 +342,15 @@ def _fmt_count(v: float, like: str | None = None) -> str:
 # --- verdicts -------------------------------------------------------------------------------------------------------
 
 
+def _different_measure(target: Stmt, value: float) -> bool:
+    """A level (money, count) more than 3× or under ⅓ of its target is almost always another measure (new customers
+    vs total customers, a segment vs the company) — never scored as a beat or a miss."""
+    mid = target.mid()
+    if target.unit not in ("INR_CR", "USD_MN", "COUNT") or target.item["measure"] != "level" or not mid or mid <= 0:
+        return False
+    return not (mid / 3 <= value <= mid * 3)
+
+
 def _tol(unit: str | None, target: float, point: bool) -> float:
     if unit in TOL_ABS:
         return TOL_ABS[unit][0 if point else 1]
@@ -502,6 +511,10 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             why = "Target is relative to an outside benchmark (e.g. industry growth) — not scored in code"
         elif today <= period.end:
             verdict, why = "not_yet_due", f"Due {period.label} (ends {period.end:%d %b %Y})"
+        elif delivered is not None and delivered.value is not None and _different_measure(target, delivered.value):
+            why = (f"A figure was reported ({_fmt(delivered.value, target.unit, target.item.get('unit_text'))}) but it "
+                   f"is far from the target's scale, so it is probably a different measure — not scored")  # fmt: skip
+            delivered, dsrc = None, None
         elif delivered is not None and delivered.value is not None:
             kind = target.item["kind"]
             verdict, how = compare(kind, target.low, target.high, delivered.value, target.unit, direction)

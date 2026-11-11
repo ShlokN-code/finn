@@ -81,3 +81,34 @@ def test_reduce_fills_placeholders_and_drops_typed_numbers():
     assert bad is None and dropped  # the model typed a number
     none, dropped = reduce.render({"text": "Strong franchise.", "fact_ids": ["F9"]}, fs)
     assert none is None and dropped  # no valid fact behind it
+
+
+def test_reduce_keeps_a_typed_number_only_when_a_cited_fact_prints_it():
+    f = _fig("Revenue CAGR 5y", 26.94)
+    fs = [reduce.Fact("F1", "F1: Revenue CAGR 5y = 26.9%", reduce.show(f), [f.citation])]
+    ok, dropped = reduce.render({"text": "Revenue compounded at 26.9% a year.", "fact_ids": ["F1"]}, fs)
+    assert ok is not None and not dropped
+    bad, dropped = reduce.render({"text": "Revenue compounded at 27.5% a year.", "fact_ids": ["F1"]}, fs)
+    assert bad is None and dropped
+
+
+def test_judge_never_scores_a_numeric_target():
+    cs = calls()
+    led = build_ledger("T", cs, None, date(2026, 11, 11))
+    p = led.promises[0]
+    req, pid_map = judge.build_request(led.promises, cs, {})
+    pid = next(iter(pid_map))
+    p.measure = "level"  # the same verdict on a numeric target must be refused
+    data = {
+        "verdicts": [
+            {
+                "id": p.id,
+                "verdict": "kept",
+                "passage_id": pid,
+                "quote": "we launched our first product in the US market in December",
+                "reason": "x",
+            }
+        ]
+    }
+    res = judge.apply(led.promises, data, pid_map, cs, "m", led.settled)
+    assert res.rejected == 1 and p.verdict_by == "code"
