@@ -56,6 +56,17 @@ export function useBrief(opts: {
   });
   const liveRef = useRef<BriefResponse | null>(null);
   const retries = useRef(0);
+  // Until the user touches or scrolls, a fallback can be replaced in place; after that, offer a pill instead.
+  const interacted = useRef(false);
+  useEffect(() => {
+    const mark = () => (interacted.current = true);
+    window.addEventListener("pointerdown", mark, { once: true, passive: true });
+    window.addEventListener("scroll", mark, { once: true, passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", mark);
+      window.removeEventListener("scroll", mark);
+    };
+  }, []);
 
   const since =
     opts.window === "since" ? (opts.visit?.previous ?? null) : opts.window === "custom" ? opts.customSince : null;
@@ -103,7 +114,9 @@ export function useBrief(opts: {
         .demoBrief(w, ctrl.signal)
         .then((resp) => {
           if (cancelled || liveRef.current) return;
-          setState((s) => ({ ...s, data: resp, source: "edge", liveReady: false }));
+          setState((s) =>
+            s.source === "fallback" && interacted.current ? s : { ...s, data: resp, source: "edge", liveReady: false },
+          );
         })
         .catch(() => {});
     }
@@ -122,7 +135,7 @@ export function useBrief(opts: {
               .catch(() => {});
             return s;
           });
-        }, 1500),
+        }, 900),
       );
     }
     timers.push(setTimeout(() => !cancelled && setState((s) => ({ ...s, slow: s.refreshing })), 4000));
@@ -146,7 +159,7 @@ export function useBrief(opts: {
         cacheBrief(cacheKey, { resp, at, sig: holdingsSignature(holdings, resp.rules) });
         if (sent.length) settleFeedback(resp.rules, sent.map((p) => p.at).sort().at(-1) ?? null);
         setState((s) =>
-          s.source === "fallback"
+          s.source === "fallback" && interacted.current
             ? { ...s, refreshing: false, slow: false, liveReady: true, error: null }
             : { data: resp, source: "live", refreshing: false, slow: false, error: null, liveReady: false, fetchedAt: at },
         );

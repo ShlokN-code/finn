@@ -51,6 +51,11 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
   const dragged = useRef(false);
 
   const cards = data?.cards ?? [];
+  useEffect(() => {
+    // For first-paint measurement (DECISIONS: first paint): when cards first appear, and from which source.
+    if (data && typeof performance !== "undefined" && !performance.getEntriesByName("finn:brief-cards").length)
+      performance.mark("finn:brief-cards", { detail: b.source });
+  }, [data, b.source]);
   const visible = cards.filter((c) => c.card_type !== "inline_chip" && !marks[c.id]);
   const chips = cards.filter((c) => c.card_type === "inline_chip" && !marks[c.id]);
   const reviewedToday = useMemo(
