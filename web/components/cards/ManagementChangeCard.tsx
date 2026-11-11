@@ -11,7 +11,7 @@ function WebTag({ c }: { c: Citation }) {
       target="_blank"
       rel="noopener noreferrer"
       title={c.quote ? `“${c.quote}”` : undefined}
-      className="ml-1 whitespace-nowrap text-[11px] text-amber-700 underline-offset-2 hover:underline dark:text-amber-300"
+      className="ml-1 whitespace-nowrap text-[12px] text-warn underline-offset-2 hover:underline"
     >
       web · unverified{kind ? ` · ${kind}` : ""} ↗
     </a>
@@ -24,18 +24,18 @@ function years(start?: number | null, end?: number | null) {
 }
 
 export function ManagementBody({ d }: { d: ManagementDetail }) {
-  if (d.people.length === 0) return <p className="text-xs text-muted-foreground">No profile found in the filing.</p>;
+  if (d.people.length === 0) return <p className="text-xs text-ink-2">No profile found in the filing.</p>;
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 t-small">
       {d.people.map((p) => (
-        <section key={p.name} className="text-sm">
-          <p className="font-medium">
-            {p.name} <span className="font-normal text-muted-foreground">— {p.role}, {p.change.replace("_", "-")}</span>
+        <section key={p.name} className="t-small">
+          <p className="text-[15px] font-medium">
+            {p.name} <span className="font-normal text-ink-2">— {p.role}, {p.change.replace("_", "-")}</span>
           </p>
           {p.insider !== null && (
             <p className="text-xs">
               {p.insider ? "Insider" : "Outside hire"}
-              {p.insider_reason && <span className="text-muted-foreground"> · {p.insider_reason}</span>}
+              {p.insider_reason && <span className="text-ink-2"> · {p.insider_reason}</span>}
             </p>
           )}
           {p.tenure_years && (
@@ -64,7 +64,7 @@ export function ManagementBody({ d }: { d: ManagementDetail }) {
             </ul>
           )}
           {p.qualifications.length > 0 && (
-            <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+            <ul className="mt-1 space-y-0.5 text-xs text-ink-2">
               {p.qualifications.map((q, i) => (
                 <li key={i}>
                   {q.text}
@@ -85,7 +85,7 @@ export function ManagementBody({ d }: { d: ManagementDetail }) {
           )}
         </section>
       ))}
-      <p className="text-[11px] text-muted-foreground">
+      <p className="t-small text-ink-3">
         {d.web_enrichment === "done"
           ? "Items marked “web · unverified” come from search snippets, not the filing."
           : d.web_enrichment === "unavailable"

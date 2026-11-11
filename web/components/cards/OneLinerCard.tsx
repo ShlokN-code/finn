@@ -1,28 +1,33 @@
 // One-liner (M&A, fund raise, litigation, rating, pledging, capex, orders, insider trades): one line + key number.
 import type { OneLinerDetail } from "@/lib/types";
+import { ClaimText } from "./ClaimLink";
 import { FigureValue } from "./FigureValue";
 
-const DIRECTION: Record<string, string> = { up: "▲ Up", down: "▼ Down", new: "New", unchanged: "Unchanged" };
+export function oneLinerDirection(d: OneLinerDetail, category: string): string | null {
+  if (!d.direction) return null;
+  if (category === "credit_rating")
+    return { up: "▲ Upgrade", down: "▼ Downgrade", new: "New rating", unchanged: "Reaffirmed" }[d.direction];
+  if (category === "pledging")
+    return { up: "▲ Pledge increased", down: "▼ Pledge reduced", new: "New pledge", unchanged: "Unchanged" }[d.direction];
+  return { up: "▲ Up", down: "▼ Down", new: "New", unchanged: "Unchanged" }[d.direction];
+}
 
 export function OneLinerBody({ d, category }: { d: OneLinerDetail; category: string }) {
-  const dir =
-    d.direction && category === "credit_rating"
-      ? { up: "▲ Upgrade", down: "▼ Downgrade", new: "New rating", unchanged: "Reaffirmed" }[d.direction]
-      : d.direction && category === "pledging"
-        ? { up: "▲ Pledge increased", down: "▼ Pledge reduced", new: "New pledge", unchanged: "Unchanged" }[d.direction]
-        : d.direction
-          ? DIRECTION[d.direction]
-          : null;
+  const dir = oneLinerDirection(d, category);
   return (
-    <div className="space-y-1 text-sm">
+    <div className="t-small space-y-1.5">
+      <p className="text-ink-2">
+        <ClaimText claim={d.line} />
+      </p>
       {d.key_figure && (
         <p>
-          {d.key_figure.label}: <FigureValue f={d.key_figure} className="font-semibold" />
+          <span className="text-ink-2">{d.key_figure.label}: </span>
+          <FigureValue f={d.key_figure} className="font-medium" />
         </p>
       )}
-      {dir && <p className="text-xs font-medium">{dir}</p>}
+      {dir && <p className={`font-medium ${category === "credit_rating" && d.direction === "down" ? "text-neg" : ""}`}>{dir}</p>}
       {d.facts.rating_new && (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-ink-2">
           {d.facts.rating_previous ? `${d.facts.rating_previous} → ` : ""}
           {d.facts.rating_new}
         </p>

@@ -3,12 +3,13 @@ import type { ChipDetail } from "@/lib/types";
 
 export function InlineChip({ symbol, d }: { symbol: string; d: ChipDetail }) {
   const body = (
-    <span className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs">
-      <span className="font-semibold">{symbol}</span> {d.text}
+    <span className="t-small inline-flex items-center gap-1.5">
+      <span className="font-semibold">{symbol}</span>
+      <span className="text-ink-2">{d.text}</span>
     </span>
   );
   return d.citation ? (
-    <a href={d.citation.url} target="_blank" rel="noopener noreferrer">
+    <a href={d.citation.url} target="_blank" rel="noopener noreferrer" className="underline decoration-ink-3/40 underline-offset-4">
       {body}
     </a>
   ) : (

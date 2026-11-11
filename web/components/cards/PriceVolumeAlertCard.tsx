@@ -4,37 +4,55 @@ import { FigureValue } from "./FigureValue";
 
 export function PriceVolumeBody({ d }: { d: PriceVolumeDetail }) {
   return (
-    <div className="space-y-2 text-sm">
+    <div className="t-small space-y-2">
       <div className="flex flex-wrap gap-x-4 gap-y-1">
         <span>
-          Move <FigureValue f={d.move_pct} signed className="font-semibold" />
+          <span className="text-ink-2">Move </span>
+          <FigureValue f={d.move_pct} signed className="font-medium" />
         </span>
+        {d.relative_move_pct && (
+          <span>
+            <span className="text-ink-2">vs sector </span>
+            <FigureValue f={d.relative_move_pct} signed />
+          </span>
+        )}
         {d.sector_move_pct && (
-          <span className="text-muted-foreground">
+          <span className="text-ink-2">
             {d.sector_index} <FigureValue f={d.sector_move_pct} signed />
           </span>
         )}
         {d.volume_ratio && (
           <span>
-            Volume <FigureValue f={d.volume_ratio} /> 20-day avg
+            <span className="text-ink-2">Volume </span>
+            <FigureValue f={d.volume_ratio} />
+            <span className="text-ink-2"> of 20-day avg</span>
           </span>
         )}
-        {d.z_score !== null && <span className="text-muted-foreground">{Math.abs(d.z_score).toFixed(1)}σ day</span>}
+        {d.z_score !== null && <span className="text-ink-3">{Math.abs(d.z_score).toFixed(1)}σ for this stock</span>}
       </div>
-      {d.day_label && <p className="text-xs font-medium">{d.day_label}</p>}
-      <ul className="space-y-1 text-xs">
-        {d.explanations.map((e, i) => (
-          <li key={i} className={e.kind === "none" ? "font-medium text-amber-700 dark:text-amber-300" : ""}>
-            {e.citation ? (
-              <a href={e.citation.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline">
-                {e.text}
-              </a>
-            ) : (
-              e.text
-            )}
-          </li>
-        ))}
-      </ul>
+      {d.day_label && <p className="font-medium">{d.day_label}</p>}
+      <div>
+        <p className="t-micro text-ink-3">Likely explanation</p>
+        <ol className="mt-1 space-y-1">
+          {d.explanations.map((e, i) => (
+            <li key={i} className={e.kind === "none" ? "font-medium text-warn" : ""}>
+              {e.citation ? (
+                <a
+                  href={e.citation.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(ev) => ev.stopPropagation()}
+                  className="underline decoration-ink-3/50 underline-offset-4"
+                >
+                  {e.text.replace(/^⚠️\s*/, "")}
+                </a>
+              ) : (
+                e.text.replace(/^⚠️\s*/, "")
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   );
 }

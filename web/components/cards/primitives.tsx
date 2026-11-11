@@ -1,79 +1,81 @@
-// Shared card primitives: impact tag, verification badge, source chip, timeline. Pure presentational.
+// Shared card primitives: impact, verification, source chip, event-thread timeline. Pure presentational.
+import { FileText } from "lucide-react";
 import type { Citation, Impact, TimelineItem } from "@/lib/types";
-import { ist } from "@/lib/format";
-
-const IMPACT: Record<Impact, { dot: string; label: string; cls: string }> = {
-  positive: { dot: "🟢", label: "Positive", cls: "bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200" },
-  negative: { dot: "🔴", label: "Negative", cls: "bg-red-50 text-red-800 dark:bg-red-950 dark:text-red-200" },
-  mixed: { dot: "🟡", label: "Mixed", cls: "bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200" },
-  neutral: { dot: "⚪", label: "Neutral", cls: "bg-muted text-muted-foreground" },
-};
+import { istWhen, sourceHref, sourceLabel } from "@/lib/format";
+import { ImpactLabel } from "@/components/ui/signal";
 
 export function ImpactTag({ impact, title }: { impact: Impact | null; title?: string }) {
-  if (!impact) return null;
-  const i = IMPACT[impact];
-  return (
-    <span title={title} className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${i.cls}`}>
-      <span aria-hidden>{i.dot}</span>
-      {i.label}
-    </span>
-  );
+  return <ImpactLabel impact={impact} title={title} />;
 }
 
 export type Verification = "cross_checked" | "partial" | "pending" | "mismatch";
 
-export function VerificationBadge({ state, note }: { state: Verification; note?: string | null }) {
-  const map = {
-    cross_checked: { text: "✓ Cross-checked", cls: "text-emerald-700 dark:text-emerald-300" },
-    partial: { text: "✓ Partly cross-checked", cls: "text-emerald-700 dark:text-emerald-300" },
-    pending: { text: "Cross-check pending", cls: "text-amber-700 dark:text-amber-300" },
-    mismatch: { text: "Couldn't verify — open filing", cls: "text-red-700 dark:text-red-300" },
-  }[state];
+export const VERIFICATION: Record<Verification, { text: string; short: string; cls: string }> = {
+  cross_checked: { text: "✓ Cross-checked", short: "✓ Cross-checked", cls: "text-pos" },
+  partial: { text: "✓ Partly cross-checked", short: "✓ Partly checked", cls: "text-pos" },
+  pending: { text: "Cross-check pending", short: "Check pending", cls: "text-warn" },
+  mismatch: { text: "Couldn't verify — open filing", short: "Couldn't verify", cls: "text-neg" },
+};
+
+export function VerificationBadge({ state, note, short = false }: { state: Verification; note?: string | null; short?: boolean }) {
+  const m = VERIFICATION[state];
   return (
-    <span title={note ?? undefined} className={`text-xs font-medium ${map.cls}`}>
-      {map.text}
+    <span title={note ?? undefined} className={`t-small font-medium ${m.cls}`}>
+      {short ? m.short : m.text}
     </span>
   );
 }
 
 export function SourceChip({ c, primary = false }: { c: Citation; primary?: boolean }) {
-  const label =
-    c.source_type === "exchange_filing"
-      ? `${c.exchange ?? "NSE"} filing${c.page ? ` · p.${c.page}` : ""}`
-      : c.source_type === "xbrl"
-        ? "XBRL"
-        : c.source_type === "screener_table"
-          ? "screener"
-          : c.source_type === "web_profile"
-            ? "Web"
-            : c.source_type === "price_feed"
-              ? "Prices"
-              : c.source_type.replace("_", " ");
   return (
     <a
-      href={c.url}
+      href={sourceHref(c)}
       target="_blank"
       rel="noopener noreferrer"
       title={c.title ?? c.url}
-      className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs ${
-        primary ? "border-foreground/30 font-medium" : "border-border text-muted-foreground"
+      onClick={(e) => e.stopPropagation()}
+      className={`t-small hit inline-flex h-7 max-w-full items-center gap-1 rounded-md border px-2 ${
+        primary ? "border-ink-3/50 font-medium text-ink" : "border-rule text-ink-2"
       }`}
     >
-      📄 {label}
+      <FileText className="size-3.5 shrink-0" strokeWidth={1.75} />
+      <span className="truncate">{sourceLabel(c)}</span>
     </a>
   );
 }
 
+const STAGE: Record<string, string> = {
+  intimation: "Board meeting notice",
+  outcome: "Outcome",
+  presentation: "Investor deck",
+  call: "Earnings call",
+  transcript: "Transcript",
+  newspaper_ad: "Newspaper ad",
+  clarification: "Clarification",
+  other: "Filing",
+};
+
 export function Timeline({ items }: { items: TimelineItem[] }) {
   if (items.length < 2) return null;
+  const sorted = [...items].sort((a, b) => a.at.localeCompare(b.at));
   return (
-    <ol className="mt-3 space-y-1 border-l pl-3 text-xs text-muted-foreground">
-      {items.map((t) => (
-        <li key={t.filing_id}>
-          <span className="font-medium capitalize text-foreground">{t.stage.replace("_", " ")}</span> ·{" "}
-          {ist(t.at)} · {t.label}
-        </li>
-      ))}
-    </ol>
+    <div className="mt-4">
+      <p className="t-micro text-ink-3">Event thread · {items.length} filings</p>
+      <ol className="mt-2">
+        {sorted.map((t, i) => (
+          <li key={t.filing_id} className="relative flex gap-3 pb-2.5 last:pb-0">
+            <span aria-hidden className="relative flex w-2.5 justify-center">
+              <span className={`mt-1.5 size-2 rounded-full ${t.stage === "outcome" ? "bg-ink" : "border border-ink-3 bg-surface"}`} />
+              {i < sorted.length - 1 && <span className="absolute top-4 bottom-[-6px] w-px bg-rule" />}
+            </span>
+            <span className="t-small min-w-0 flex-1">
+              <span className="font-medium">{STAGE[t.stage] ?? t.stage}</span>
+              <span className="text-ink-3"> · {istWhen(t.at)}</span>
+              {t.label && t.label !== STAGE[t.stage] && <span className="block truncate text-ink-2">{t.label}</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
