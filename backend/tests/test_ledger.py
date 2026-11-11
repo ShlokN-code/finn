@@ -241,3 +241,21 @@ def test_loose_metric_keys_need_matching_names():
         ledger([call(1, date(2024, 7, 20), [hire]), call(2, date(2025, 5, 5), actuals=[total])], date(2025, 11, 1))
     )
     assert p.delivered is None
+
+
+def test_partly_specified_basis_merges_into_the_fully_specified_thread():
+    cc = {"measure": "growth", "currency": "constant_currency"}
+    calls = [call(1, date(2025, 4, 20), [g("revenue_growth", 0, 3, **cc)]),
+             call(2, date(2025, 7, 20), [g("revenue_growth", 1, 3, scope="unspecified", **cc)]),
+             call(3, date(2025, 10, 20), [g("revenue_growth", 2, 3, **cc)])]  # fmt: skip
+    p = only(ledger(calls))
+    assert len(p.statements) == 3 and p.revision == "raised"
+
+
+def test_lowered_reason_names_latest_cut_and_original():
+    calls = [call(1, date(2025, 4, 20), [g(lo=20, hi=22)]), call(2, date(2025, 7, 20), [g(lo=19, hi=21)]),
+             call(3, date(2025, 10, 20), [g(lo=17, hi=18)])]  # fmt: skip
+    p = only(ledger(calls))
+    assert (
+        "17–18%" in p.verdict_reason.text and "Q3 call" in p.verdict_reason.text and "20–22%" in p.verdict_reason.text
+    )

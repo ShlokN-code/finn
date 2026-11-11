@@ -153,14 +153,13 @@ def group(stmts: list[Stmt]) -> list[Thread]:
         else:
             fams[(*_family_key(s), s.period.end if s.period else None)].append(s)
     for fk, group_ in fams.items():
-        specified = {(s.currency, s.scope) for s in group_ if s.currency != "unspecified" or s.scope != "unspecified"}
+        # merge targets: fully specified bases; a partly/un-specified statement joins the single compatible one
+        full = {(s.currency, s.scope) for s in group_ if "unspecified" not in (s.currency, s.scope)}
         buckets: dict[tuple, list[Stmt]] = defaultdict(list)
         for s in group_:
             b = (s.currency, s.scope)
-            if b == ("unspecified", "unspecified") and len(specified) == 1:
-                b = next(iter(specified))
-            elif "unspecified" in b and len(specified) >= 1:
-                match = [x for x in specified if (b[0] in ("unspecified", x[0])) and (b[1] in ("unspecified", x[1]))]
+            if "unspecified" in b:
+                match = [x for x in full if b[0] in ("unspecified", x[0]) and b[1] in ("unspecified", x[1])]
                 if len(match) == 1:
                     b = match[0]
             buckets[b].append(s)
@@ -319,7 +318,7 @@ def revision(stmts: list[Stmt], direction: str) -> tuple[str, Stmt | None]:
         else:
             up = m1 > m0
             kind = "raised" if up == (direction == "higher") else "lowered"
-        if rank[kind] > rank[best]:
+        if rank[kind] >= rank[best] and kind != "none":  # the latest change of the most significant kind
             best, by = kind, cur
     return best, by
 
@@ -415,8 +414,10 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             settled[pid] = ls.made_on
         elif rev == "lowered" and rev_by is not None:
             verdict = "goalposts_moved"
-            why = f"Target changed to {_target_str(rev_by)} in the {rev_by.call.label} (was {_target_str(s0)})"
-            cites.append(rev_by.call.cite(rev_by.item["page"], rev_by.item["quote"]))
+            why = (f"Target cut to {_target_str(rev_by)} in the {rev_by.call.label}; first given as "
+                   f"{_target_str(s0)} in the {s0.call.label}")  # fmt: skip
+            first = s0.call.cite(s0.item["page"], s0.item["quote"])
+            cites = [first, rev_by.call.cite(rev_by.item["page"], rev_by.item["quote"])]
             settled[pid] = rev_by.made_on
         elif qual:
             verdict = "not_yet_due" if period and today < results_due(period) else "cant_score"
