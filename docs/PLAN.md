@@ -99,6 +99,32 @@ Draw: `python -m evals.research.draw_unseen --seed 20261111` → pool 2,375 EQ s
 
 General bugs found: (1) the judge step stays `pending` when there is no ledger; (2) "ESOP expense ₹2.19 Cr / ₹6.35 Cr" — share-based-payment cost schedules — entered the ledger and were marked **quietly dropped**, the most serious claim FINN makes.
 
+**Run 2 (deployed `719bd7e`: ESOP / share-based cost schedules aren't promises; judge step `skipped` without a ledger)**
+
+| | JPOLYINVST (job 39) | LAXMIDENTL (job 40) |
+|---|---|---|
+| Build time | 5 s | 15 s (transcripts and extractions cached) |
+| Calls | 0 cheap · 0 strong (summary cached) | 0 cheap · 1 strong (summary re-written: ledger facts changed) |
+| Promise Ledger | unavailable · no_transcripts (unchanged); judge step now `skipped` | 16 promises (was 18): 1 kept, 1 missed, **1 quietly dropped (was 3)**, 6 not yet due, 7 can't score; tally 1 of 3 |
+| Other sections | unchanged | unchanged |
+
+The remaining "quietly dropped" (advertisement spend ≤ 5% of revenue, FY26 — not mentioned in the 5 calls since Q1 FY26) is a genuine guidance item.
+
+### Independent spot-check (11 Nov 2026, 16:20 IST)
+
+Five verdicts drawn across the 4 demo dossiers with `random.Random(1111)` from the 11 scored verdicts (forced: one missed, one goalposts moved, one model-judged; then two at random). A fresh subagent that had not seen this session got only each verdict, its cited PDFs and pages, downloaded the PDFs from BSE itself and read every page.
+
+| # | Ticker | Verdict (by) | Quote 1 on page | Quote 2 on page | Numbers match | Verdict follows | Auditor's note |
+|---|---|---|---|---|---|---|---|
+| 1 | BAJFINANCE | missed (code): MSME growth 10–12% FY26 → 6% | yes p4 | yes p4 | yes | yes | Neither call states the growth base (likely AUM YoY); Q4 p11 confirms 6% |
+| 2 | INFY | goalposts moved (code): FY27 CC growth 1.5–3.5% → 1–2% | yes p4 | yes p4 | yes | yes | Same metric and basis (YoY, constant currency) |
+| 3 | POLYCAB | goalposts moved (model): EPC margin "high" → "mid-to-high single digits" | yes p7 | yes p8 | yes | yes, soft | A real cut at the bottom of the range, but vague and undated; actual margins were already below it |
+| 4 | BAJFINANCE | missed (code): franchise ≥ 120 M FY26 → 119.3 M | yes p4 | yes p3 | yes | yes, debatable | "Well on course to cross 120 million" is a projection; under the rule it is a miss |
+| 5 | PERSISTENT | kept (code): ETR 23–23.5% FY25 → 23.2% | yes p14 | yes p13 | yes | yes | Inside the range |
+
+Result: 10/10 quotes on their cited pages, numbers correct, 5/5 verdicts follow from the evidence; nothing to fix. Items 3 and 4 are softer by nature (an undated outlook; a projection phrased as "well on course") — the verdict reason already quotes both calls so a reader can judge.
+
+
 **Friday morning (product owner, 11 Nov: cut if Friday gets tight):**
 - [ ] Annual report sections (headings in code) → red flags (auditor opinion, contingent liabilities growth, related parties)
 - [ ] Ask: BM25 over the ticker's pages + facts → Flash-Lite (Groq fallback) → cited answer or "Not found in sources"
