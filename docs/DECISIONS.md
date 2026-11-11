@@ -444,3 +444,81 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Ingest**:
   - A Gemini content refusal (`promptFeedback.blockReason`) is recorded as "model refused" and not retried every 30 minutes.
   - JSON written to Postgres drops NUL characters. One filing's NUL made every run's tagging step fail.
+
+## 2026-11-12 · Phase 4 frontend: plan amendments (product owner)
+- **Approved with amendments, 11 Nov evening:**
+  1. Push and verify the deployed site after the Brief and after the Ledger, not only at the end.
+  2. No empty tabs: Portfolio lists the holdings with their latest Brief event; Rules has Connect Telegram and Reset; the Brief has a visible "Connect Telegram" entry.
+  3. Drivers queue: read today's Flash-Lite count from `llm_calls` first (failed attempts count), cap a run at 50 calls, and skip it if fewer than 150 would stay free afterwards.
+  4. Strong models were out of quota until 13:30 IST: BuildProgress explains that and shows the ready sections meanwhile; a first-time build asks for one-tap confirmation.
+  5. Verify the landing iframe on the deployed site (no X-Frame-Options conflict).
+  6. Screenshots: 375 px light and dark for Brief, Research, Ledger and the provenance sheet; 1280 px for the landing only; the time saved goes into loading, error and stale states.
+- **Deviation:** the first push came after Research and the Ledger rather than after the Brief, because amendment 2 ruled out shipping an empty Research tab.
+
+## 2026-11-12 · Visual direction
+- **Decision:** a printed financial page, not a dashboard.
+  - Ink on warm paper (`#F7F6F2` / `#0F0F0E`), hairline rules between full-bleed rows, no shadows, gradients or decorative colour.
+  - Newsreader (serif) for what you read: titles, headlines, claims and quotes. Geist for what you scan. Tabular numerals everywhere.
+  - Colour only for signal: impact, verdicts, verification and warnings. Moves stay ink, with ▲/▼.
+  - Dark mode follows `prefers-color-scheme` through a media-query variant, so there's no script and no flash.
+- **Symbols:** the spec's ✅ ❌ ↘ ↗ 🔇 / 🟢🔴🟡⚪ states are drawn as monochrome glyphs in signal colour (✓ ✕ ↘ ↗, a muted-speaker icon, a 6 px dot plus a word), not system emoji. Same states; renders the same on every phone.
+- **Headlines lead with meaning:** a results card's serif headline is its code-written line ("Revenue +46.7% YoY; margin −104 bps"). A management card names the person and role from the filing. Other cards use the exchange subject without its "Category:" prefix, with the so-what underneath.
+- **Tappable numbers:** a dotted underline (amber when unverified). Every number opens a sheet with its document, page, verbatim quote and `url#page=N`; computed figures show their formula and inputs. Ledger delivered figures show as printed ("119.3 million", "7.54%").
+
+## 2026-11-12 · First paint < 1 s while Render may be asleep
+- **Decision:** the app shell is prerendered static HTML on Vercel's edge, and nothing on the critical path waits for Render. Brief data comes in this order:
+  1. This phone's last Brief for the same holdings, rules and window (localStorage, one Brief kept at a time: a 7-day Brief is about 1 MB uncompressed).
+  2. On a first visit with the demo portfolio: `GET /api/brief/demo`, a route handler that replies with `Vercel-CDN-Cache-Control: max-age=300, stale-while-revalidate=86400`. Only successful answers are cached. Measured on the deployed site: `MISS` then `HIT`, 55–160 ms from the edge.
+  3. Nothing within 1.5 s: the saved showcase day, under a banner. When live data lands, a "Show live" pill appears; content never swaps under your thumb.
+  4. Always: `POST /api/brief` with holdings, rules and queued swipes. On failure the last copy stays, with "couldn't refresh · retry".
+- **Stale:** the feed is flagged when its last success is more than 2 h older than the most recent 30-minute check slot that should have run (08:30–22:00 IST, weekdays).
+- **Freshness fix:** `data_as_of` now means the oldest NSE check among the *requested* holdings. Before, two one-off test tickers made every Brief look a day behind.
+- **Alternatives:** a server-rendered Brief inside `use cache` (a cold Render at build time stalls or fails the build); a skeleton until Render answers (fails the "populated in < 1 s" bar on a cold start).
+
+## 2026-11-12 · Brief contract, est. time saved, season strip, feedback
+- **Contract:** `BriefRequest` / `BriefResponse` are Pydantic models exported to `types.ts`. The response adds:
+  - `hidden_items` (the newest 300; every one still opens its PDF);
+  - `counts`;
+  - `season`;
+  - `rules`;
+  - `window`;
+  - `showcase`.
+- **est. time saved** (`finn/cards/counts.py`, shown with its formula on tap and always labelled "est."):
+
+  est. = 30 s × routine filings hidden + 3 min × material filings in the window − the Brief's read time (30 s per card, 10 s per one-liner or chip); nearest minute under 10 min, else nearest 5; never below 0.
+
+  It's calibrated so the spec's "41 hidden · ~35 min" holds for a small Brief. "Material filings" counts the distinct filings behind the shown cards that were filed inside the window.
+- **Season strip** (`finn/cards/season.py`): shown from a quarter's end until 60 days after it (75 for Q4). It gives reported/total, cross-checked count, PAT YoY up/down and EBITDA margin YoY up/down, plus a per-holding scoreboard sheet.
+  - A card that failed its cross-check counts as reported but contributes no numbers.
+  - "Met guidance" is left out until results cards carry the ledger's guidance line.
+- **Feedback stays in Python:** after its 5 s undo window, a swipe is queued on the phone and sent as `feedback[]` with the next Brief request, which fires immediately. `apply_feedback` applies it, and the response's `rules` replace the phone's copy. No ×0.8 maths in TypeScript.
+- **Scopes:** "this stock" → `stock_category`, "all stocks" → `category`, "just this one" → `event`. Dismissing the sheet means "just this one". Reviewed (swipe right) changes no weight.
+
+## 2026-11-12 · Showcase replay is a frozen Brief
+- **Decision:** `python -m jobs.snapshot --brief 2026-10-30` ranks the snapshot day's events for the demo portfolio and writes `web/public/showcase/brief.json` (committed; 16 KB gzipped).
+  - Events are used as stored now, with their built card details. Timelines are cut at the end of that IST day, and the season strip is computed as of that day.
+  - It works with Render and Supabase both down. It isn't re-ranked live. Swipes made in the replay still create real rules, applied to the live Brief.
+- **Alternatives:** a `/brief?showcase=` server mode. The snapshot's events carry no card details, so a replay built from it would lose every results table.
+
+## 2026-11-12 · Holdings import and quantities
+- **Decision:** paste or CSV, one per line. `SYMBOL 6%` is a weight; `SYMBOL 120` is a share quantity. Every symbol is checked against NSE's equity list.
+  - Until prices are wired (Friday's `/portfolio`), quantity-only holdings split the weight the others leave equally. The UI says so.
+  - Only symbols and weights go to `/brief`; quantities never leave the phone.
+
+## 2026-11-12 · Drivers for the holdings without the strong quota
+- **Decision:** `python -m jobs.research drivers` runs in the foreground (locally or from Actions), not on Render's queue, so no new job reason and no worker change.
+  - Discover → the latest 3 transcripts → Flash-Lite MAP (the same cache as full builds) → `apply_ledger` in code → the drivers section saved to `drivers` (migration 0005).
+  - No dossier is published: Research still shows the normal build for that ticker, which then reuses the cached MAP output.
+- **Guards:**
+  - `CheapOnly` wraps the router and raises `StrongTierBlocked` on any strong request.
+  - The run stops at its call budget.
+  - Before a run it reads today's Flash-Lite count from `llm_calls` (failed attempts included). The budget is 50 calls, and only if 500 − used − 50 ≥ 150; otherwise it skips.
+  - Holdings are taken largest first; those that already have drivers are skipped.
+- **Read path:** `GET /research/drivers?symbols=` returns a full dossier's drivers when present, else the drivers-only row. The web proxy passes a query string only to this route; `?force=true` on `/build` stays blocked, because it would spend quota.
+
+## 2026-11-12 · Research UX rules
+- **Builds:** never started by opening a page. "Research X" is a one-tap confirmation that says what it reads, how long it takes, and that summaries wait for the 13:30 IST quota reset when the strong models are out.
+- **BuildProgress:** polls every 3 s, or every 60 s while parked for quota. It names the paused steps and the sections already readable.
+- **Fallback:** if the API can't be reached, the 4 demo tickers fall back to their fixtures, labelled "Saved copy from 11 Nov 2026".
+- **Section states:** building + `not_built_yet` (red flags, exchange data) renders a quiet "Coming soon"; `llm_quota` shows when it resumes; other reasons are explained in plain words.
+- **Ask (until Friday):** the bar is always visible. Its 3 context suggestions per screen jump to the section, ledger filter or card that answers them. Free text says it arrives with the next release. `lib/ask`-style wiring is one place: `components/shell/ui-store.ts` `setAskContext`.
