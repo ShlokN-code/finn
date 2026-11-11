@@ -8,6 +8,11 @@ replay survives a Supabase pause; rule 7).
 python -m jobs.snapshot                 # suggest the richest day of the last 30 and freeze it
 python -m jobs.snapshot --date 2026-10-30
 python -m jobs.snapshot --suggest       # only print the ranking
+python -m jobs.snapshot --brief 2026-10-30   # freeze that day's ranked Brief for the web's Showcase replay
+
+The frozen Brief ranks the snapshot day's events (as stored now, with their built card details) for the demo
+portfolio, with each timeline cut at the end of that IST day, and writes it to
+backend/data/snapshots/<D>.brief.json and web/public/showcase/brief.json (DECISIONS: Showcase replay).
 """
 
 from __future__ import annotations
@@ -19,10 +24,16 @@ from pathlib import Path
 
 from finn import store
 from finn.calendar import IST, ist_today
+from finn.cards.brief import EVENT_COLS, hidden_counts, hidden_filings, hidden_items, load_filings, rank
+from finn.cards.counts import brief_counts
+from finn.cards.season import season_strip
 from finn.db import connect
-from finn.portfolio import tracked_symbols
+from finn.models import BriefResponse
+from finn.portfolio import DEMO_WEIGHTS, tracked_symbols
+from finn.ranking.score import REPEAT_WINDOW_DAYS
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "data" / "snapshots"
+WEB_SHOWCASE = Path(__file__).resolve().parents[2] / "web" / "public" / "showcase" / "brief.json"
 MATERIAL = ("results", "earnings_call", "mna", "management_change", "litigation", "credit_rating", "pledging",
             "capex", "press_release", "fund_raise", "insider_trading")  # fmt: skip
 
@@ -96,12 +107,55 @@ def build(conn, d: date, symbols: list[str]) -> dict:
     })  # fmt: skip
 
 
+def _ts(x) -> datetime:
+    return x if isinstance(x, datetime) else datetime.fromisoformat(str(x).replace("Z", "+00:00"))
+
+
+def freeze_brief(conn, d: date, weights: dict[str, float]) -> BriefResponse:
+    """The demo portfolio's Brief for IST day d, from the committed snapshot's events."""
+    snap = json.loads((OUT_DIR / f"{d.isoformat()}.json").read_text())
+    start = datetime(d.year, d.month, d.day, tzinfo=IST).astimezone(UTC)
+    end = start + timedelta(days=1)
+    ids = [e["id"] for e in snap["events"]]
+    events = conn.execute(f"select {EVENT_COLS} from public.events where id = any(%s)", (ids,)).fetchall()
+    for e in events:
+        e["timeline"] = [t for t in (e.get("timeline") or []) if _ts(t["at"]) < end]
+    events = [e for e in events if e["timeline"]]
+    symbols = sorted(weights)
+    context = conn.execute(
+        "select id, symbol, category, started_at from public.events where symbol = any(%s) "
+        "and started_at >= %s and started_at < %s",
+        (symbols, start - timedelta(days=REPEAT_WINDOW_DAYS + 1), end),
+    ).fetchall()
+    cards = rank(events, load_filings(conn, events), weights, [], start, context)
+    rows = hidden_filings(conn, symbols, start, end)
+    frozen = _ts(snap["frozen_at"])
+    return BriefResponse(
+        cards=cards, hidden=hidden_counts(rows), hidden_total=len(rows), hidden_items=hidden_items(rows),
+        counts=brief_counts(cards, len(rows), start), season=season_strip(conn, symbols, end - timedelta(seconds=1)),
+        rules=[], data_as_of=min(end - timedelta(minutes=1), frozen), since=start, window="since",
+        showcase=d.isoformat(),
+    )  # fmt: skip
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default="")
     ap.add_argument("--symbols", default="")
     ap.add_argument("--suggest", action="store_true")
+    ap.add_argument("--brief", default="", help="Freeze the ranked Brief for this already-snapshotted IST day")
     args = ap.parse_args()
+    if args.brief:
+        d = date.fromisoformat(args.brief)
+        with connect() as conn:
+            b = freeze_brief(conn, d, DEMO_WEIGHTS)
+        text = json.dumps(b.model_dump(mode="json"), ensure_ascii=False, separators=(",", ":")) + "\n"
+        for out in (OUT_DIR / f"{d.isoformat()}.brief.json", WEB_SHOWCASE):
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(text)
+        print(f"showcase brief {d}: {len(b.cards)} cards, {b.hidden_total} hidden, counts={b.counts.model_dump()}")
+        print(f"  season: {b.season.reported if b.season else '-'} reported → {WEB_SHOWCASE}")
+        return
     symbols = tracked_symbols(args.symbols or None)
     with connect() as conn:
         ranked = rank_days(conn, symbols)

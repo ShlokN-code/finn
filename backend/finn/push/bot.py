@@ -50,7 +50,7 @@ def send_test_alert(conn, tg: Telegram, sub: dict) -> str:
     """The best card for these holdings in the last 7 days, labelled 'Test alert'."""
     weights = subs.weights_of(sub)
     b = brief(conn, weights, now_utc() - TEST_WINDOW, subs.rules(conn, sub["id"]))
-    cards = [c for c in b["cards"] if c.card_type != "what_to_watch"] or b["cards"]
+    cards = [c for c in b.cards if c.card_type != "what_to_watch"] or b.cards
     if not cards:
         tg.send(sub["chat_id"], "🔔 <b>Test alert</b> — FINN is connected. Nothing material on your holdings in "
                 "the last 7 days; the next real event will arrive here.")  # fmt: skip

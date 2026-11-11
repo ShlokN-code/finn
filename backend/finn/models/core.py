@@ -277,6 +277,102 @@ class Card(Model):
         return v
 
 
+class HiddenItem(Model):
+    """A filing kept out of the Brief (hidden drawer). Still tappable: `url` opens the exchange PDF."""
+
+    id: str
+    symbol: str
+    subject: str
+    filed_at: AwareDatetime
+    url: str | None = None
+    group: str = Field(description="Drawer group, e.g. 'Trading-window notice', 'Investor-meeting notice'")
+
+
+class BriefCounts(Model):
+    """What the Brief header says. Computed in code (finn/cards/brief.py); the formula string is shown on tap."""
+
+    cards: int = Field(description="Full cards: results, management change, price/volume, what to watch")
+    one_liners: int
+    chips: int
+    material_filings: int = Field(description="Filings inside the window that belong to the events shown")
+    hidden_filings: int
+    read_seconds: int = Field(description="Estimated time to read this Brief")
+    est_minutes_saved: int = Field(description="Estimate; always labelled 'est.' in the UI")
+    formula: str
+
+
+class SeasonRow(Model):
+    """One holding in the results-season scoreboard."""
+
+    symbol: str
+    status: Literal["reported", "scheduled", "awaited"]
+    event_id: str | None = None
+    reported_at: AwareDatetime | None = None
+    verification: Literal["cross_checked", "partial", "pending", "mismatch"] | None = None
+    revenue_yoy: Figure | None = Field(None, description="Revenue YoY % (NII for lenders)")
+    pat_yoy: Figure | None = None
+    margin_yoy: Figure | None = Field(None, description="EBITDA margin YoY change in bps (standard template)")
+
+
+class SeasonStrip(Model):
+    """Results-season strip (PRODUCT §4), shown only while a quarter's results are being reported.
+    Counts are taken in code from cards whose numbers are shown (mismatches are counted as reported only)."""
+
+    quarter: Period
+    total: int
+    reported: int
+    cross_checked: int
+    pat_up: int
+    pat_down: int
+    margin_up: int
+    margin_down: int
+    rows: list[SeasonRow] = Field(default_factory=list)
+
+
+class FeedbackAction(Model):
+    """One swipe sent with a Brief request after its undo window expired; the server applies it to the rules."""
+
+    useful: bool
+    scope: Literal["stock", "category", "stock_category", "event"]
+    symbol: str | None = None
+    category: Category | None = None
+    event_id: str | None = None
+    at: AwareDatetime
+
+
+class BriefHolding(Model):
+    symbol: str = Field(min_length=1, max_length=20)
+    weight_pct: float | None = Field(None, gt=0, le=100)
+
+
+class BriefRequest(Model):
+    """POST /brief. Holdings are used only to rank this response: never stored, never logged."""
+
+    holdings: list[BriefHolding] = Field(min_length=1, max_length=40)
+    window: Literal["since", "24h", "3d", "7d", "all"] = "7d"
+    since: AwareDatetime | None = Field(None, description="For window='since' (last visit) or a custom start")
+    rules: list[WeightRule] = Field(default_factory=list, max_length=500)
+    feedback: list[FeedbackAction] = Field(
+        default_factory=list, max_length=200, description="Swipes to apply to `rules` before ranking"
+    )
+
+
+class BriefResponse(Model):
+    """The ranked Brief for one window."""
+
+    cards: list[Card]
+    hidden: dict[str, int] = Field(description="Hidden-drawer group → count")
+    hidden_total: int
+    hidden_items: list[HiddenItem] = Field(default_factory=list, description="Newest first, at most 300")
+    counts: BriefCounts
+    season: SeasonStrip | None = None
+    rules: list[WeightRule] = Field(default_factory=list, description="The request's rules with `feedback` applied")
+    data_as_of: AwareDatetime | None = None
+    since: AwareDatetime | None = None
+    window: str
+    showcase: str | None = Field(None, description="IST date of a frozen Showcase replay day; null when live")
+
+
 class Alert(Model):
     """A push notification decision (stored server-side to enforce budget, batching, quiet hours, dedup)."""
 

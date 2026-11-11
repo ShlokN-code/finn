@@ -360,6 +360,271 @@
       "title": "AskAnswer",
       "type": "object"
     },
+    "BriefCounts": {
+      "additionalProperties": false,
+      "description": "What the Brief header says. Computed in code (finn/cards/brief.py); the formula string is shown on tap.",
+      "properties": {
+        "cards": {
+          "description": "Full cards: results, management change, price/volume, what to watch",
+          "title": "Cards",
+          "type": "integer"
+        },
+        "chips": {
+          "title": "Chips",
+          "type": "integer"
+        },
+        "est_minutes_saved": {
+          "description": "Estimate; always labelled 'est.' in the UI",
+          "title": "Est Minutes Saved",
+          "type": "integer"
+        },
+        "formula": {
+          "title": "Formula",
+          "type": "string"
+        },
+        "hidden_filings": {
+          "title": "Hidden Filings",
+          "type": "integer"
+        },
+        "material_filings": {
+          "description": "Filings inside the window that belong to the events shown",
+          "title": "Material Filings",
+          "type": "integer"
+        },
+        "one_liners": {
+          "title": "One Liners",
+          "type": "integer"
+        },
+        "read_seconds": {
+          "description": "Estimated time to read this Brief",
+          "title": "Read Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cards",
+        "one_liners",
+        "chips",
+        "material_filings",
+        "hidden_filings",
+        "read_seconds",
+        "est_minutes_saved",
+        "formula"
+      ],
+      "title": "BriefCounts",
+      "type": "object"
+    },
+    "BriefHolding": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Symbol",
+          "type": "string"
+        },
+        "weight_pct": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 100,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weight Pct"
+        }
+      },
+      "required": [
+        "symbol",
+        "weight_pct"
+      ],
+      "title": "BriefHolding",
+      "type": "object"
+    },
+    "BriefRequest": {
+      "additionalProperties": false,
+      "description": "POST /brief. Holdings are used only to rank this response: never stored, never logged.",
+      "properties": {
+        "feedback": {
+          "description": "Swipes to apply to `rules` before ranking",
+          "items": {
+            "$ref": "#/$defs/FeedbackAction"
+          },
+          "maxItems": 200,
+          "title": "Feedback",
+          "type": "array"
+        },
+        "holdings": {
+          "items": {
+            "$ref": "#/$defs/BriefHolding"
+          },
+          "maxItems": 40,
+          "minItems": 1,
+          "title": "Holdings",
+          "type": "array"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/WeightRule"
+          },
+          "maxItems": 500,
+          "title": "Rules",
+          "type": "array"
+        },
+        "since": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For window='since' (last visit) or a custom start",
+          "title": "Since"
+        },
+        "window": {
+          "default": "7d",
+          "enum": [
+            "since",
+            "24h",
+            "3d",
+            "7d",
+            "all"
+          ],
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "required": [
+        "holdings",
+        "window",
+        "since",
+        "rules",
+        "feedback"
+      ],
+      "title": "BriefRequest",
+      "type": "object"
+    },
+    "BriefResponse": {
+      "additionalProperties": false,
+      "description": "The ranked Brief for one window.",
+      "properties": {
+        "cards": {
+          "items": {
+            "$ref": "#/$defs/Card"
+          },
+          "title": "Cards",
+          "type": "array"
+        },
+        "counts": {
+          "$ref": "#/$defs/BriefCounts"
+        },
+        "data_as_of": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Data As Of"
+        },
+        "hidden": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "description": "Hidden-drawer group \u2192 count",
+          "title": "Hidden",
+          "type": "object"
+        },
+        "hidden_items": {
+          "description": "Newest first, at most 300",
+          "items": {
+            "$ref": "#/$defs/HiddenItem"
+          },
+          "title": "Hidden Items",
+          "type": "array"
+        },
+        "hidden_total": {
+          "title": "Hidden Total",
+          "type": "integer"
+        },
+        "rules": {
+          "description": "The request's rules with `feedback` applied",
+          "items": {
+            "$ref": "#/$defs/WeightRule"
+          },
+          "title": "Rules",
+          "type": "array"
+        },
+        "season": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SeasonStrip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "showcase": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "IST date of a frozen Showcase replay day; null when live",
+          "title": "Showcase"
+        },
+        "since": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Since"
+        },
+        "window": {
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cards",
+        "hidden",
+        "hidden_total",
+        "hidden_items",
+        "counts",
+        "season",
+        "rules",
+        "data_as_of",
+        "since",
+        "window",
+        "showcase"
+      ],
+      "title": "BriefResponse",
+      "type": "object"
+    },
     "BullBearSection": {
       "additionalProperties": false,
       "properties": {
@@ -1774,6 +2039,76 @@
       "title": "ExchangeDataSection",
       "type": "object"
     },
+    "FeedbackAction": {
+      "additionalProperties": false,
+      "description": "One swipe sent with a Brief request after its undo window expired; the server applies it to the rules.",
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Category"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "scope": {
+          "enum": [
+            "stock",
+            "category",
+            "stock_category",
+            "event"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "symbol": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Symbol"
+        },
+        "useful": {
+          "title": "Useful",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "useful",
+        "scope",
+        "symbol",
+        "category",
+        "event_id",
+        "at"
+      ],
+      "title": "FeedbackAction",
+      "type": "object"
+    },
     "Figure": {
       "additionalProperties": false,
       "description": "A number with provenance. Money is float \u20b9 crore; see DECISIONS.md (float vs Decimal).",
@@ -2153,6 +2488,56 @@
         "fetched_at"
       ],
       "title": "Filing",
+      "type": "object"
+    },
+    "HiddenItem": {
+      "additionalProperties": false,
+      "description": "A filing kept out of the Brief (hidden drawer). Still tappable: `url` opens the exchange PDF.",
+      "properties": {
+        "filed_at": {
+          "format": "date-time",
+          "title": "Filed At",
+          "type": "string"
+        },
+        "group": {
+          "description": "Drawer group, e.g. 'Trading-window notice', 'Investor-meeting notice'",
+          "title": "Group",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "id",
+        "symbol",
+        "subject",
+        "filed_at",
+        "url",
+        "group"
+      ],
+      "title": "HiddenItem",
       "type": "object"
     },
     "Holding": {
@@ -3812,6 +4197,172 @@
         "notes"
       ],
       "title": "ScoreBreakdown",
+      "type": "object"
+    },
+    "SeasonRow": {
+      "additionalProperties": false,
+      "description": "One holding in the results-season scoreboard.",
+      "properties": {
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "margin_yoy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "EBITDA margin YoY change in bps (standard template)"
+        },
+        "pat_yoy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "reported_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reported At"
+        },
+        "revenue_yoy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Figure"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Revenue YoY % (NII for lenders)"
+        },
+        "status": {
+          "enum": [
+            "reported",
+            "scheduled",
+            "awaited"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "verification": {
+          "anyOf": [
+            {
+              "enum": [
+                "cross_checked",
+                "partial",
+                "pending",
+                "mismatch"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verification"
+        }
+      },
+      "required": [
+        "symbol",
+        "status",
+        "event_id",
+        "reported_at",
+        "verification",
+        "revenue_yoy",
+        "pat_yoy",
+        "margin_yoy"
+      ],
+      "title": "SeasonRow",
+      "type": "object"
+    },
+    "SeasonStrip": {
+      "additionalProperties": false,
+      "description": "Results-season strip (PRODUCT \u00a74), shown only while a quarter's results are being reported.\nCounts are taken in code from cards whose numbers are shown (mismatches are counted as reported only).",
+      "properties": {
+        "cross_checked": {
+          "title": "Cross Checked",
+          "type": "integer"
+        },
+        "margin_down": {
+          "title": "Margin Down",
+          "type": "integer"
+        },
+        "margin_up": {
+          "title": "Margin Up",
+          "type": "integer"
+        },
+        "pat_down": {
+          "title": "Pat Down",
+          "type": "integer"
+        },
+        "pat_up": {
+          "title": "Pat Up",
+          "type": "integer"
+        },
+        "quarter": {
+          "$ref": "#/$defs/Period"
+        },
+        "reported": {
+          "title": "Reported",
+          "type": "integer"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/SeasonRow"
+          },
+          "title": "Rows",
+          "type": "array"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "quarter",
+        "total",
+        "reported",
+        "cross_checked",
+        "pat_up",
+        "pat_down",
+        "margin_up",
+        "margin_down",
+        "rows"
+      ],
+      "title": "SeasonStrip",
       "type": "object"
     },
     "SectionMeta": {

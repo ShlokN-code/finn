@@ -12,8 +12,7 @@ from __future__ import annotations
 import hmac
 import logging
 import os
-from datetime import datetime, timedelta
-from typing import Literal
+from datetime import timedelta
 
 from fastapi import APIRouter, Header, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -21,7 +20,7 @@ from pydantic import BaseModel, Field
 from finn.calendar import now_utc
 from finn.cards.brief import brief, single_card
 from finn.db import connect
-from finn.models import AlertSettings, WeightRule
+from finn.models import AlertSettings, BriefHolding, BriefRequest, WeightRule
 from finn.push import subscriptions as subs
 from finn.push.bot import handle_update
 from finn.push.telegram import Telegram
@@ -32,20 +31,8 @@ router = APIRouter()
 WINDOWS = {"24h": timedelta(hours=24), "3d": timedelta(days=3), "7d": timedelta(days=7)}
 
 
-class HoldingIn(BaseModel):
-    symbol: str = Field(min_length=1, max_length=20)
-    weight_pct: float | None = Field(None, gt=0, le=100)
-
-
-class BriefIn(BaseModel):
-    holdings: list[HoldingIn] = Field(min_length=1, max_length=subs.MAX_SYMBOLS)
-    window: Literal["since", "24h", "3d", "7d", "all"] = "7d"
-    since: datetime | None = Field(None, description="For window='since' (last visit) or a custom start")
-    rules: list[WeightRule] = Field(default_factory=list, max_length=500)
-
-
 @router.post("/brief")
-def post_brief(body: BriefIn):
+def post_brief(body: BriefRequest):
     # Holdings are used only to rank this response: never stored, never logged.
     since = (
         body.since if body.window == "since" else (None if body.window == "all" else now_utc() - WINDOWS[body.window])
@@ -54,8 +41,8 @@ def post_brief(body: BriefIn):
     if all(w is None for w in weights.values()):
         weights = {s: round(100 / len(weights), 4) for s in weights}
     with connect() as conn:
-        b = brief(conn, weights, since, body.rules)
-    return {**b, "cards": [c.model_dump(mode="json") for c in b["cards"]]}
+        b = brief(conn, weights, since, body.rules, body.feedback, window=body.window)
+    return b.model_dump(mode="json")
 
 
 @router.get("/events/{event_id}/card")
@@ -68,7 +55,7 @@ def get_card(event_id: str):
 
 
 class LinkIn(BaseModel):
-    holdings: list[HoldingIn] = Field(min_length=1, max_length=subs.MAX_SYMBOLS)
+    holdings: list[BriefHolding] = Field(min_length=1, max_length=subs.MAX_SYMBOLS)
     settings: AlertSettings | None = None
 
 
@@ -119,7 +106,7 @@ def get_me(authorization: str = Header("")):
 
 
 class MeIn(BaseModel):
-    holdings: list[HoldingIn] | None = Field(None, max_length=subs.MAX_SYMBOLS)
+    holdings: list[BriefHolding] | None = Field(None, max_length=subs.MAX_SYMBOLS)
     settings: AlertSettings | None = None
     rules: list[WeightRule] | None = Field(None, max_length=500)
 

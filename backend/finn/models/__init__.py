@@ -15,12 +15,18 @@ from finn.models.common import (
 from finn.models.core import (
     Alert,
     AlertSettings,
+    BriefCounts,
+    BriefHolding,
+    BriefRequest,
+    BriefResponse,
     Card,
     ChipDetail,
     Driver,
     Event,
     EventStage,
+    FeedbackAction,
     Filing,
+    HiddenItem,
     Holding,
     ManagementDetail,
     MoveExplanation,
@@ -31,6 +37,8 @@ from finn.models.core import (
     ResultsDetail,
     ResultsLine,
     ScoreBreakdown,
+    SeasonRow,
+    SeasonStrip,
     Series,
     TimelineItem,
     WeightRule,
@@ -51,7 +59,7 @@ from finn.models.research import (
 # Top-level contracts exported to TypeScript (nested types come along via $defs).
 EXPORTED = [
     Citation, Figure, Claim, Period, Filing, Event, Card, Alert, Holding, Driver, Promise, Dossier,
-    WeightRule, AlertSettings, DossierJob, DossierResponse, AskAnswer,
+    WeightRule, AlertSettings, DossierJob, DossierResponse, AskAnswer, BriefRequest, BriefResponse,
 ]  # fmt: skip
 
 __all__ = [
@@ -65,6 +73,14 @@ __all__ = [
     "ResultsDetail",
     "ResultsLine",
     "WeightRule",
+    "BriefCounts",
+    "BriefHolding",
+    "BriefRequest",
+    "BriefResponse",
+    "FeedbackAction",
+    "HiddenItem",
+    "SeasonRow",
+    "SeasonStrip",
     "Alert",
     "Basis",
     "Card",

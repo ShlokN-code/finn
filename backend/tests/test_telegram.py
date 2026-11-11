@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -53,7 +54,7 @@ def fake_db(monkeypatch):
     monkeypatch.setattr(bot.subs, "rules", lambda conn, i: [])
     monkeypatch.setattr(bot.subs, "snooze", lambda conn, i, s, d: state["snoozes"].append((s, d)) or NOW)
     card = build_card(EVENT, FILINGS, NEUTRAL_SCORE)
-    monkeypatch.setattr(bot, "brief", lambda conn, w, since, rules: {"cards": [card]})
+    monkeypatch.setattr(bot, "brief", lambda conn, w, since, rules: SimpleNamespace(cards=[card]))
     monkeypatch.setattr(bot, "record_alert", lambda *a, **k: state["alerts"].append(a[3:5]))
     return state
 

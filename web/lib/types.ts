@@ -281,16 +281,120 @@ export interface AskAnswer {
   resume_after: string | null;
   status: "answered" | "not_found" | "unavailable";
 }
-export interface BullBearSection {
+/**
+ * What the Brief header says. Computed in code (finn/cards/brief.py); the formula string is shown on tap.
+ */
+export interface BriefCounts {
   /**
-   * @maxItems 3
+   * Full cards: results, management change, price/volume, what to watch
    */
-  bear: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
+  cards: number;
+  chips: number;
   /**
-   * @maxItems 3
+   * Estimate; always labelled 'est.' in the UI
    */
-  bull: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
-  meta: SectionMeta;
+  est_minutes_saved: number;
+  formula: string;
+  hidden_filings: number;
+  /**
+   * Filings inside the window that belong to the events shown
+   */
+  material_filings: number;
+  one_liners: number;
+  /**
+   * Estimated time to read this Brief
+   */
+  read_seconds: number;
+}
+export interface BriefHolding {
+  symbol: string;
+  weight_pct: number | null;
+}
+/**
+ * POST /brief. Holdings are used only to rank this response: never stored, never logged.
+ */
+export interface BriefRequest {
+  /**
+   * Swipes to apply to `rules` before ranking
+   *
+   * @maxItems 200
+   */
+  feedback: FeedbackAction[];
+  /**
+   * @minItems 1
+   * @maxItems 40
+   */
+  holdings: [BriefHolding, ...BriefHolding[]];
+  /**
+   * @maxItems 500
+   */
+  rules: WeightRule[];
+  /**
+   * For window='since' (last visit) or a custom start
+   */
+  since: string | null;
+  window: "since" | "24h" | "3d" | "7d" | "all";
+}
+/**
+ * One swipe sent with a Brief request after its undo window expired; the server applies it to the rules.
+ */
+export interface FeedbackAction {
+  at: string;
+  category: Category | null;
+  event_id: string | null;
+  scope: "stock" | "category" | "stock_category" | "event";
+  symbol: string | null;
+  useful: boolean;
+}
+/**
+ * A visible feedback adjustment (PRODUCT §5). Listed on the Rules screen; Reset deletes it.
+ */
+export interface WeightRule {
+  category: Category | null;
+  event_id: string | null;
+  /**
+   * Deterministic from scope, e.g. 'stock:IDEA', 'category:fund_raise', 'stock_category:BAJFINANCE:fund_raise', 'event:<event id>'
+   */
+  id: string;
+  /**
+   * Product of ×0.8 (not useful) and ×1.25 (useful) taps, bounded
+   */
+  multiplier: number;
+  not_useful_count: number;
+  scope: "stock" | "category" | "stock_category" | "event";
+  symbol: string | null;
+  updated_at: string;
+  useful_count: number;
+}
+/**
+ * The ranked Brief for one window.
+ */
+export interface BriefResponse {
+  cards: Card[];
+  counts: BriefCounts;
+  data_as_of: string | null;
+  /**
+   * Hidden-drawer group → count
+   */
+  hidden: {
+    [k: string]: number | undefined;
+  };
+  /**
+   * Newest first, at most 300
+   */
+  hidden_items: HiddenItem[];
+  hidden_total: number;
+  /**
+   * The request's rules with `feedback` applied
+   */
+  rules: WeightRule[];
+  season: SeasonStrip | null;
+  /**
+   * IST date of a frozen Showcase replay day; null when live
+   */
+  showcase: string | null;
+  since: string | null;
+  window: string;
 }
 /**
  * A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.
@@ -529,6 +633,65 @@ export interface TimelineItem {
   filing_id: string;
   label: string;
   stage: EventStage;
+}
+/**
+ * A filing kept out of the Brief (hidden drawer). Still tappable: `url` opens the exchange PDF.
+ */
+export interface HiddenItem {
+  filed_at: string;
+  /**
+   * Drawer group, e.g. 'Trading-window notice', 'Investor-meeting notice'
+   */
+  group: string;
+  id: string;
+  subject: string;
+  symbol: string;
+  url: string | null;
+}
+/**
+ * Results-season strip (PRODUCT §4), shown only while a quarter's results are being reported.
+ * Counts are taken in code from cards whose numbers are shown (mismatches are counted as reported only).
+ */
+export interface SeasonStrip {
+  cross_checked: number;
+  margin_down: number;
+  margin_up: number;
+  pat_down: number;
+  pat_up: number;
+  quarter: Period;
+  reported: number;
+  rows: SeasonRow[];
+  total: number;
+}
+/**
+ * One holding in the results-season scoreboard.
+ */
+export interface SeasonRow {
+  event_id: string | null;
+  /**
+   * EBITDA margin YoY change in bps (standard template)
+   */
+  margin_yoy: Figure | null;
+  pat_yoy: Figure | null;
+  reported_at: string | null;
+  /**
+   * Revenue YoY % (NII for lenders)
+   */
+  revenue_yoy: Figure | null;
+  status: "reported" | "scheduled" | "awaited";
+  symbol: string;
+  verification: ("cross_checked" | "partial" | "pending" | "mismatch") | null;
+}
+export interface BullBearSection {
+  /**
+   * @maxItems 3
+   */
+  bear: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
+  /**
+   * @maxItems 3
+   */
+  bull: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
+  meta: SectionMeta;
 }
 export interface Credibility {
   earlier: TrendHalf | null;
@@ -1080,24 +1243,4 @@ export interface Holding {
    * If the user pasted weights instead
    */
   weight_pct: number | null;
-}
-/**
- * A visible feedback adjustment (PRODUCT §5). Listed on the Rules screen; Reset deletes it.
- */
-export interface WeightRule {
-  category: Category | null;
-  event_id: string | null;
-  /**
-   * Deterministic from scope, e.g. 'stock:IDEA', 'category:fund_raise', 'stock_category:BAJFINANCE:fund_raise', 'event:<event id>'
-   */
-  id: string;
-  /**
-   * Product of ×0.8 (not useful) and ×1.25 (useful) taps, bounded
-   */
-  multiplier: number;
-  not_useful_count: number;
-  scope: "stock" | "category" | "stock_category" | "event";
-  symbol: string | null;
-  updated_at: string;
-  useful_count: number;
 }

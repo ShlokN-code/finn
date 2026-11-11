@@ -8,8 +8,12 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
+from finn.calendar import now_utc
 from finn.cards.build import NEUTRAL_SCORE, build_card
-from finn.models import Card, WeightRule
+from finn.cards.counts import brief_counts
+from finn.cards.season import season_strip
+from finn.models import BriefResponse, Card, FeedbackAction, HiddenItem, WeightRule
+from finn.ranking.feedback import apply_feedback
 from finn.ranking.score import HIDDEN, REPEAT_WINDOW_DAYS, repeat_counts, score
 
 EVENT_COLS = (
@@ -48,20 +52,44 @@ def _repeat_context(conn, symbols: list[str], since: datetime | None) -> list[di
     ).fetchall()
 
 
-def hidden_counts(conn, symbols: list[str], since: datetime | None) -> dict[str, int]:
-    """Hidden drawer groups: routine filings by their hidden_reason, plus investor meetings and unclassified."""
+HIDDEN_GROUP = (
+    "coalesce(case when category = 'routine' then hidden_reason end, case category "
+    "when 'investor_meetings' then 'Investor-meeting notice' when 'unclassified' then 'Unclassified' end, "
+    "'Other routine filing')"
+)
+MAX_HIDDEN_ITEMS = 300
+
+
+def hidden_filings(conn, symbols: list[str], since: datetime | None, until: datetime | None = None) -> list[dict]:
+    """Hidden drawer: routine filings (grouped by hidden_reason), investor meetings and unclassified, newest first."""
     q = (
-        "select coalesce(case when category = 'routine' then hidden_reason end, case category "
-        "when 'investor_meetings' then 'Investor-meeting notice' when 'unclassified' then 'Unclassified' end, "
-        "'Other routine filing') as grp, count(*) as n from public.filings where symbol = any(%s) "
+        f"select id, symbol, subject, filed_at, coalesce(attachment_url, xbrl_url) as url, {HIDDEN_GROUP} as grp "
+        "from public.filings where symbol = any(%s) and duplicate_of is null "
         "and category in ('routine', 'investor_meetings', 'unclassified')"
     )
     params: list = [symbols]
     if since is not None:
         q += " and filed_at >= %s"
         params.append(since)
-    rows = conn.execute(q + " group by 1 order by 2 desc", params).fetchall()
-    return {r["grp"]: r["n"] for r in rows}
+    if until is not None:
+        q += " and filed_at < %s"
+        params.append(until)
+    return conn.execute(q + " order by filed_at desc", params).fetchall()
+
+
+def hidden_counts(rows: list[dict]) -> dict[str, int]:
+    out: dict[str, int] = {}
+    for r in rows:
+        out[r["grp"]] = out.get(r["grp"], 0) + 1
+    return dict(sorted(out.items(), key=lambda kv: (-kv[1], kv[0])))
+
+
+def hidden_items(rows: list[dict]) -> list[HiddenItem]:
+    return [
+        HiddenItem(id=r["id"], symbol=r["symbol"], subject=(r["subject"] or "")[:240], filed_at=r["filed_at"],
+                   url=r["url"], group=r["grp"])
+        for r in rows[:MAX_HIDDEN_ITEMS]
+    ]  # fmt: skip
 
 
 def data_as_of(conn) -> datetime | None:
@@ -92,19 +120,34 @@ def rank(
     return cards
 
 
-def brief(conn, weights: dict[str, float | None], since: datetime | None, rules: list[WeightRule]) -> dict:
+def brief(
+    conn,
+    weights: dict[str, float | None],
+    since: datetime | None,
+    rules: list[WeightRule],
+    feedback: list[FeedbackAction] | None = None,
+    window: str = "since",
+) -> BriefResponse:
     symbols = sorted(weights)
+    rules = apply_actions(rules, feedback or [])
     events = load_events(conn, symbols, since)
     filings = load_filings(conn, events)
     cards = rank(events, filings, weights, rules, since, _repeat_context(conn, symbols, since))
-    hidden = hidden_counts(conn, symbols, since)
-    return {
-        "cards": cards,
-        "hidden": hidden,
-        "hidden_total": sum(hidden.values()),
-        "data_as_of": data_as_of(conn),
-        "since": since,
-    }
+    hidden_rows = hidden_filings(conn, symbols, since)
+    hidden = hidden_counts(hidden_rows)
+    return BriefResponse(
+        cards=cards, hidden=hidden, hidden_total=len(hidden_rows), hidden_items=hidden_items(hidden_rows),
+        counts=brief_counts(cards, len(hidden_rows), since),
+        season=season_strip(conn, symbols, now_utc()),
+        rules=rules, data_as_of=data_as_of(conn), since=since, window=window,
+    )  # fmt: skip
+
+
+def apply_actions(rules: list[WeightRule], actions: list[FeedbackAction]) -> list[WeightRule]:
+    """Swipes queued on the phone (after their undo window) applied in order — the ×0.8/×1.25 maths stays here."""
+    for a in sorted(actions, key=lambda a: a.at):
+        rules = apply_feedback(rules, a.useful, a.scope, a.symbol, a.category, a.event_id, now=a.at)
+    return rules
 
 
 def single_card(conn, event_id: str) -> Card | None:
