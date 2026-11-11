@@ -180,11 +180,19 @@ class TrajectorySection(Model):
 
 
 class LedgerSection(Model):
+    """Header example: '2 of 4 kept · 9 not yet due · next test: FY27 results' — from credibility.kept/n,
+    counts.not_yet_due and next_test_label."""
+
     meta: SectionMeta
     promises: list[Promise] = Field(default_factory=list)
     credibility: Credibility | None = None
     counts: LedgerCounts = Field(default_factory=LedgerCounts)
     calls_read: int = 0
+    decks_read: int = Field(0, description="Investor decks read for delivered figures the calls didn't state")
+    next_test: Period | None = Field(None, description="Earliest period at which a not-yet-due promise is tested")
+    next_test_label: str | None = Field(None, description="e.g. 'FY27 results'")
+    next_test_on: date | None = Field(None, description="When those results should be out (period end + lag)")
+    next_test_count: int = Field(0, description="Promises that fall due at next_test")
 
 
 class SeriesSection(Model):

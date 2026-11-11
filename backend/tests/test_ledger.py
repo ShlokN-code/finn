@@ -314,3 +314,60 @@ def test_accounting_schedules_are_not_promises():
     sbc = g("pat", 6.35, 6.35, unit="crore", kind="point", metric="share-based payment cost", fy=2026)
     led = ledger([call(1, date(2024, 10, 20), [esop, sbc]), call(2, date(2025, 1, 20)), call(3, date(2025, 4, 20))])
     assert led.promises == []
+
+
+def test_bound_tolerance_follows_printed_precision():
+    # '40–50 bps' improvement delivered 36 bps → missed (a flat 0.1 pp tolerance would have kept it)
+    assert compare("range", 0.40, 0.50, 0.36, "PCT", "neutral", precision=0.005)[0] == "missed"
+    assert compare("range", 1.85, 1.95, 1.93, "PCT", "lower", precision=0.005)[0] == "kept"
+    assert (
+        compare("range", 20, 22, 19.95, "PCT", "higher", precision=0.5)[0] == "kept"
+    )  # bound cap 0.1 pp still applies
+    assert compare("range", 20, 22, 19.6, "PCT", "higher", precision=0.5)[0] == "missed"
+
+
+def test_deck_figure_scores_only_the_promise_that_requested_it():
+    bps = g("debt", 10, 15, unit="bps", measure="change", metric="cost of funds improvement", fy=2026)
+    lvl = g("debt", 7.55, 7.6, unit="%", measure="change", metric="cost of funds", fy=2026)
+    led0 = ledger([call(1, date(2025, 7, 20), [bps, lvl])])
+    ids = {p.metric: p.id for p in led0.promises}
+    deck_actual = {**a("debt", 7.54, measure="change"), "metric": "cost of funds", "for_promise": ids["cost of funds"]}
+    deck = Call("deck", "https://x/deck.pdf", "Q4 FY26 investor presentation", date(2026, 4, 30), ["x"],
+                {"guidance": [], "actuals": [deck_actual]}, NOW, kind="deck")  # fmt: skip
+    led = ledger([call(1, date(2025, 7, 20), [bps, lvl]), deck])
+    by = {p.metric: p for p in led.promises}
+    assert by["cost of funds"].delivered is not None and by["cost of funds improvement"].delivered is None
+    assert by["cost of funds"].delivered.citation.source_type == "investor_presentation"
+
+
+def test_direction_from_metric_words_and_unsigned_change_words():
+    cof = g("other", 7.55, 7.6, metric="cost of funds", fy=2026)
+    p = only(
+        ledger(
+            [
+                call(1, date(2025, 7, 20), [cof]),
+                call(2, date(2026, 5, 5), actuals=[{**a("other", 7.54), "metric": "cost of funds"}]),
+            ]
+        )
+    )
+    assert p.verdict == "kept" and "beat" in p.verdict_reason.text  # lower cost of funds is better
+    imp = g("ebit_margin", 10, 15, unit="bps", measure="change", metric="cost of funds improvement", fy=2026)
+    p = only(
+        ledger(
+            [
+                call(1, date(2025, 7, 20), [imp]),
+                call(2, date(2026, 5, 5), actuals=[a("ebit_margin", 43, unit="bps", measure="change")]),
+            ]
+        )
+    )
+    assert p.verdict == "kept"  # an 'improvement' of 43 bps beats 10–15 bps
+    bare = g("ebit_margin", 10, 15, unit="bps", measure="change", metric="ebit margin", fy=2026)
+    p = only(
+        ledger(
+            [
+                call(1, date(2025, 7, 20), [bare]),
+                call(2, date(2026, 5, 5), actuals=[a("ebit_margin", 43, unit="bps", measure="change")]),
+            ]
+        )
+    )
+    assert p.verdict == "cant_score"  # no word says whether more is better → never a miss

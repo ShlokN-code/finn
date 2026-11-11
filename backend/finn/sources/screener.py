@@ -210,9 +210,9 @@ def parse_company(soup: BeautifulSoup) -> dict:
 
 
 def parse_documents(soup: BeautifulSoup) -> dict:
-    """Transcript links (concall entries with a 'Transcript' link only — never notes/PPT/recordings) newest first,
+    """Transcript links and investor-deck (PPT) links per concall entry (never notes/recordings), newest first,
     and annual-report links newest first."""
-    out: dict[str, list[dict]] = {"transcripts": [], "annual_reports": []}
+    out: dict[str, list[dict]] = {"transcripts": [], "annual_reports": [], "decks": []}
     docs = soup.select_one("section#documents")
     if not docs:
         return out
@@ -221,11 +221,15 @@ def parse_documents(soup: BeautifulSoup) -> dict:
         period = li.select_one(".ink-600") or li.select_one("div")
         label = " ".join(period.get_text(" ", strip=True).split()) if period else ""
         m = re.match(r"([A-Z][a-z]{2})\s+(\d{4})", label)
+        if not (m and m.group(1) in _MONTHS):
+            continue
+        month = date(int(m.group(2)), _MONTHS[m.group(1)], 1)
         for a in li.select("a[href]"):
-            if a.get_text(strip=True).lower().startswith("transcript") and m and m.group(1) in _MONTHS:
-                out["transcripts"].append({"month": date(int(m.group(2)), _MONTHS[m.group(1)], 1),
-                                           "label": m.group(0), "url": a["href"]})  # fmt: skip
-                break
+            kind = a.get_text(strip=True).lower()
+            if kind.startswith("transcript"):
+                out["transcripts"].append({"month": month, "label": m.group(0), "url": a["href"]})
+            elif kind in ("ppt", "presentation"):  # the investor deck for that call (delivered figures)
+                out["decks"].append({"month": month, "label": m.group(0), "url": a["href"]})
     ar = docs.select_one(".annual-reports")
     for a in ar.select("a[href]") if ar else []:
         text = " ".join(a.get_text(" ", strip=True).split())

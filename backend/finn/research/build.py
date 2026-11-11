@@ -102,9 +102,27 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     progress.step("ledger", "done" if calls else "skipped", f"{len(d.ledger.promises)} promises")
     store.publish(conn, d, complete=False)
 
+    # 5b. Decks: delivered figures the calls didn't state (one cheap call per deck needed, never all decks)
+    tags = {"symbol": symbol, "job_id": job_id}
+    if led is not None and led.unscored and disc.status == "ok" and quota is None:
+        from finn.research import deck
+
+        progress.step("decks", "running", message="Checking investor decks for figures the calls didn't state")
+        dr = deck.lookup(conn, router, symbol, disc, d.ledger.promises, led.unscored, now, tags)
+        if dr.found:
+            led = apply_ledger(d, symbol, disc, links, docs, calls, quota, now, extra=dr.calls)
+        d.ledger.decks_read = sum(1 for x in dr.sources if x.status == "read")
+        known = {x.url for x in d.sources}
+        d.sources += [x for x in dr.sources if x.url not in known]
+        if dr.quota is not None and dr.quota.kind == "quota":
+            quota = dr.quota
+        progress.step("decks", "done", f"{dr.found} of {dr.requested} missing figure(s) found in "
+                      f"{d.ledger.decks_read} deck(s)")  # fmt: skip
+    else:
+        progress.step("decks", "skipped", "No promise is waiting only on a delivered figure")
+
     # 6–7. Judge + reduce (strong model chain: 3.8 Flash → 3 Flash; never Flash-Lite). An unchanged dossier hits
     # the router's cache, so it costs no strong call.
-    tags = {"symbol": symbol, "job_id": job_id}
     if led is not None:
         strong_quota = run_judge(d, led, calls, router, tags, progress, now)
     else:
@@ -221,7 +239,7 @@ def _ist(dt: datetime | None) -> str:
     return f"{to_ist(dt):%H:%M} IST" if dt else "the quota resets"
 
 
-def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: datetime):
+def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: datetime, extra=()):
     from finn.research import insights
     from finn.research.ledger import build_ledger
 
@@ -246,8 +264,13 @@ def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: 
             if sec.meta.status != "ready":  # keep a previous good build's sections
                 sec.meta = m
         return None
-    led = build_ledger(symbol, calls, disc, now.date(), disc.year_end_month or 3)
+    from finn.research.ledger import next_test
+
+    led = build_ledger(symbol, [*calls, *extra], disc, now.date(), disc.year_end_month or 3)
     d.ledger.promises, d.ledger.credibility, d.ledger.counts = led.promises, led.credibility, led.counts
+    nt, on, n_due = next_test(led.promises, now.date())
+    d.ledger.next_test, d.ledger.next_test_on, d.ledger.next_test_count = nt, on, n_due
+    d.ledger.next_test_label = f"{nt.label} results" if nt else None
     d.ledger.calls_read = len(calls)
     if quota is not None:
         d.ledger.meta = meta("partial", "llm_quota", f"Read {len(calls)} of {len(calls) + unread} calls — the rest "

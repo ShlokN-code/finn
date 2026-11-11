@@ -57,7 +57,12 @@ class Call:
     facts: dict
     retrieved_at: datetime
 
+    kind: str = "transcript"  # transcript | deck (a deck only supplies delivered figures — never promises)
+
     def cite(self, page: int, quote: str) -> Citation:
+        if self.kind == "deck":
+            return Citation(source_type="investor_presentation", url=self.url, title=self.label, page=page,
+                            quote=quote, retrieved_at=self.retrieved_at)  # fmt: skip
         return Citation(source_type="concall_transcript", url=self.url, title=f"{self.label} transcript", page=page,
                         quote=quote, retrieved_at=self.retrieved_at)  # fmt: skip
 
@@ -73,6 +78,7 @@ class Stmt:
     currency: str
     scope: str
     segment: str
+    factor: float = 1.0  # printed unit → normalised unit (bps → pp: 0.01)
 
     @property
     def made_on(self) -> date:
@@ -81,6 +87,16 @@ class Stmt:
     def mid(self) -> float | None:
         vals = [v for v in (self.low, self.high) if v is not None]
         return sum(vals) / len(vals) if vals else None
+
+    def precision(self) -> float:
+        """Half a unit of the target's last printed digit, in normalised units ('1.85%' → 0.005 pp; '40 bps' →
+        0.005 pp; '20%' → 0.5 pp): a bound can't be met by more than the rounding of what management said."""
+        decs = 0
+        for v in (self.item.get("target_low"), self.item.get("target_high")):
+            if v is not None:
+                txt = f"{float(v):.6f}".rstrip("0").rstrip(".")
+                decs = max(decs, len(txt.split(".")[1]) if "." in txt else 0)
+        return 0.5 * 10**-decs * self.factor
 
     def width(self) -> float:
         return (self.high - self.low) if self.low is not None and self.high is not None else 0.0
@@ -144,7 +160,7 @@ def _stmt(call: Call, it: dict, ye_month: int) -> Stmt:
                      it.get("years"), call.made_on, ye_month)  # fmt: skip
     seg = norm(it.get("segment") or "") if it.get("scope") == "segment" else ""
     return Stmt(call, it, period, unit, lo * f if lo is not None else None, hi * f if hi is not None else None,
-                it.get("currency", "unspecified"), it.get("scope", "unspecified"), seg)  # fmt: skip
+                it.get("currency", "unspecified"), it.get("scope", "unspecified"), seg, f)  # fmt: skip
 
 
 # --- grouping -----------------------------------------------------------------------------------------------------
@@ -277,7 +293,7 @@ def _screener_delivered(t: Thread, disc) -> Figure | None:
                     s.period)  # fmt: skip
 
 
-def _actual_delivered(t: Thread, calls: list[Call], ye_month: int) -> tuple[Figure | None, Call | None]:
+def _actual_delivered(t: Thread, calls: list[Call], ye_month: int, pid: str | None = None):
     s = t.stmts[-1]
     if s.period is None:
         return None, None
@@ -285,6 +301,8 @@ def _actual_delivered(t: Thread, calls: list[Call], ye_month: int) -> tuple[Figu
         if call.made_on < s.period.end:
             continue
         for a in call.facts.get("actuals", []):
+            if a.get("for_promise") not in (None, pid):
+                continue  # a deck figure was requested for one specific promise
             if a["metric_key"] != s.item["metric_key"] or a["measure"] != s.item["measure"]:
                 continue
             if not _same_metric(s.item, a):
@@ -349,6 +367,34 @@ def _fmt_count(v: float, like: str | None = None) -> str:
 # --- verdicts -------------------------------------------------------------------------------------------------------
 
 
+_LOWER_WORDS = re.compile(
+    r"\b(cost|costs|loss|losses|npa|npas|stage 3|slippage|debt|leverage|borrowing|attrition|"
+    r"days|delinquen\w*|write[- ]?offs?|provisions?)\b",
+    re.I,
+)
+_BETTER_UP = re.compile(r"\b(improv\w*|expan\w*|increas\w*|gain\w*|accretion|uplift|saving\w*|benefit)\b", re.I)
+_BETTER_DOWN = re.compile(r"\b(impact|headwind|drag|pressure|compress\w*|dilution|erosion|hit)\b", re.I)
+
+
+def direction_for(item: dict, stmts: list[Stmt]) -> str:
+    """Which way is good, decided in code: the metric key's direction; for keys without one ('other'), the metric's
+    own words (cost, loss, NPA, debt, days → lower). An unsigned change ('+40–50 bps') is read from its words —
+    'improvement/expansion/saving' (more is better) vs 'impact/headwind/drag' (less is better); with neither, it
+    has no direction and an off-range result can't be scored as a miss."""
+    text = f"{item.get('metric', '')} {item.get('statement', '')}"
+    if item.get("measure") == "change" and all((x.low or 0) >= 0 and (x.high or 0) >= 0 for x in stmts):
+        if _BETTER_DOWN.search(text):
+            return "lower"
+        if _BETTER_UP.search(text):
+            return "higher"
+        return "unknown"
+    d = metrics.direction(item.get("metric_key", "other"))
+    lower = _LOWER_WORDS.search(item.get("metric", "")) and "saving" not in text.lower()
+    if d == "neutral" and item.get("metric_key") in ("other", "debt") and lower:
+        return "lower"
+    return d
+
+
 def _different_measure(target: Stmt, value: float) -> bool:
     """A level (money, count) more than 3× or under ⅓ of its target is almost always another measure (new customers
     vs total customers, a segment vs the company) — never scored as a beat or a miss."""
@@ -365,19 +411,25 @@ def _tol(unit: str | None, target: float, point: bool) -> float:
 
 
 def compare(kind: str, lo: float | None, hi: float | None, value: float, unit: str | None,
-            direction: str) -> tuple[str, str]:  # fmt: skip
-    """(kept|missed, how) for a delivered value against a target. Pure function — see DECISIONS.md."""
+            direction: str, precision: float | None = None) -> tuple[str, str]:  # fmt: skip
+    """(kept|missed, how) for a delivered value against a target. Pure function — see DECISIONS.md.
+    `precision` caps the tolerance on range/threshold bounds at the rounding of the printed target."""
+
+    def btol(unit, x):
+        t = _tol(unit, x, False)
+        return min(t, precision) if precision is not None else t
+
     if kind == "at_least" and lo is not None:
-        return ("kept", "at or above") if value >= lo - _tol(unit, lo, False) else ("missed", "below")
+        return ("kept", "at or above") if value >= lo - btol(unit, lo) else ("missed", "below")
     if kind == "at_most" and hi is not None:
-        return ("kept", "at or below") if value <= hi + _tol(unit, hi, False) else ("missed", "above")
+        return ("kept", "at or below") if value <= hi + btol(unit, hi) else ("missed", "above")
     point = kind == "point" or lo is None or hi is None or lo == hi
     a = lo if lo is not None else hi
     b = hi if hi is not None else lo
     if a is None or b is None:
         return "missed", "no target"
     a, b = min(a, b), max(a, b)
-    ta, tb = _tol(unit, a, point), _tol(unit, b, point)
+    ta, tb = (_tol(unit, a, True), _tol(unit, b, True)) if point else (btol(unit, a), btol(unit, b))
     if a - ta <= value <= b + tb:
         return "kept", "within"
     above = value > b
@@ -397,7 +449,7 @@ def revision(stmts: list[Stmt], direction: str) -> tuple[str, Stmt | None]:
         eps = _tol(cur.unit, m0, False)
         if abs(m1 - m0) <= eps:
             kind = "narrowed" if cur.width() < prev.width() - eps else "none"
-        elif direction == "neutral":
+        elif direction in ("neutral", "unknown"):
             kind = "revised"
         else:
             up = m1 > m0
@@ -443,11 +495,18 @@ class Ledger:
     credibility: Credibility
     counts: LedgerCounts
     settled: dict[str, date]
+    # promise id → its period, for promises that are "can't score" only because no delivered figure was found in
+    # the calls (the deck lookup reads the deck that closes that period)
+    unscored: dict[str, Period] = field(default_factory=dict)
 
 
 def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: int = 3) -> Ledger:
     calls = sorted(calls, key=lambda c: c.made_on)
-    stmts = [_stmt(c, it, ye_month) for c in calls for it in c.facts.get("guidance", []) if is_business_promise(it)]
+    transcripts = [c for c in calls if c.kind == "transcript"]  # decks supply delivered figures only
+    unscored: dict[str, Period] = {}
+    stmts = [
+        _stmt(c, it, ye_month) for c in transcripts for it in c.facts.get("guidance", []) if is_business_promise(it)
+    ]
     threads = group(stmts)
     promises: list[Promise] = []
     settled: dict[str, date] = {}
@@ -479,9 +538,7 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
         scored = [s for s in t.stmts if period is None or s.made_on <= period.end] or [last]
         target = scored[-1]
         key = s0.item["metric_key"]
-        direction = metrics.direction(key)
-        if s0.item["measure"] == "change" and all((x.low or 0) >= 0 and (x.high or 0) >= 0 for x in t.stmts):
-            direction = "neutral"  # an unsigned 'impact'/'change' — code can't tell headwind from tailwind
+        direction = direction_for(s0.item, t.stmts)
         qual = t.key[0] == "qual"
         pid = hashlib.sha256(repr((symbol, t.key, s0.call.doc_id if qual else "")).encode()).hexdigest()[:16]
         rev, rev_by = ("none", None) if qual else revision(t.stmts, direction)
@@ -490,7 +547,7 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             delivered = _screener_delivered(t, disc)
             dsrc = "screener" if delivered else None
             if delivered is None:
-                delivered, dcall = _actual_delivered(t, calls, ye_month)
+                delivered, dcall = _actual_delivered(t, calls, ye_month, pid)
                 dsrc = "management_reported" if delivered else None
         promise_cite = target.call.cite(target.item["page"], target.item["quote"])
         verdict, why, cites = "cant_score", "", [promise_cite]
@@ -524,9 +581,17 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             delivered, dsrc = None, None
         elif delivered is not None and delivered.value is not None:
             kind = target.item["kind"]
-            verdict, how = compare(kind, target.low, target.high, delivered.value, target.unit, direction)
+            verdict, how = compare(
+                kind, target.low, target.high, delivered.value, target.unit, direction, target.precision()
+            )
+            if direction == "unknown" and how in ("above", "below"):
+                verdict, how = "cant_score", f"{how} the range, but the call doesn't say whether more is better"
             src = "screener" if dsrc == "screener" else (dcall.label if dcall else "a later call")
-            got = _fmt(delivered.value, target.unit, target.item.get("unit_text"))
+            got = (
+                delivered.raw
+                if delivered.raw and dsrc != "screener"
+                else _fmt(delivered.value, target.unit, target.item.get("unit_text"))
+            )
             why = f"Delivered {got} vs target {_target_str(target)} ({how}; {src})"
             if delivered.citation:
                 cites.append(delivered.citation)
@@ -535,10 +600,11 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             verdict, why = "not_yet_due", f"Awaiting {period.label} results"
         else:
             why = f"No delivered figure for {period.label} found in the sources read"
+            unscored[pid] = period
         # quietly dropped: only unscored, with ≥ 2 readable later calls that never mention it
         dropped_note = None
         if verdict in ("cant_score", "not_yet_due") and delivered is None and not relative:
-            later = [c for c in calls if c.made_on > last.made_on]
+            later = [c for c in transcripts if c.made_on > last.made_on]
             if len(later) >= 2:
                 terms = list(last.item.get("search_terms") or []) + list(metrics.synonyms(key))
                 terms += [last.item.get("metric", "")]
@@ -561,7 +627,17 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             delivered_source=dsrc, dropped_note=dropped_note,
         ))  # fmt: skip
     promises.sort(key=_order)
-    return Ledger(promises, credibility(promises, settled, calls), count(promises), settled)
+    return Ledger(promises, credibility(promises, settled, transcripts), count(promises), settled, unscored)
+
+
+def next_test(promises: list[Promise], today: date) -> tuple[Period | None, date | None, int]:
+    """The earliest period at which a not-yet-due promise is tested, when its results are due, and how many fall due
+    then — for the ledger header ("next test: FY27 results")."""
+    due = [p.period for p in promises if p.verdict == "not_yet_due" and p.period is not None]
+    if not due:
+        return None, None, 0
+    first = min(due, key=lambda x: x.end)
+    return first, results_due(first), sum(1 for x in due if x.end == first.end)
 
 
 def count(promises: list[Promise]) -> LedgerCounts:

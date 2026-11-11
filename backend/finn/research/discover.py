@@ -54,6 +54,7 @@ class Discovery:
     tables: dict[str, Table] = field(default_factory=dict)
     transcripts: list[DocLink] = field(default_factory=list)  # newest first, ≤ 8, one per quarter
     annual_report: DocLink | None = None
+    decks: dict = field(default_factory=dict)  # quarter end → DocLink of that quarter's investor deck
     capex: dict[str, str] | None = None  # 'Fixed assets purchased' by period label, as printed
     fixed_assets_sold: dict[str, str] | None = None
     year_end_month: int | None = None
@@ -101,6 +102,14 @@ def _from_html(symbol: str, html: str, url: str, fetched_at: datetime) -> Discov
         )
         if len(d.transcripts) >= MAX_TRANSCRIPTS:
             break
+    for t in docs["decks"]:
+        qe = transcript_quarter(t["month"])
+        if qe in d.decks or "nseindia.com" in t["url"]:
+            continue
+        label = quarter_period(qe).label
+        d.decks[qe] = DocLink(
+            "investor_presentation", t["url"], f"{label} investor presentation", label, t["month"], qe
+        )
     for a in docs["annual_reports"]:
         if "nseindia.com" in a["url"]:
             continue

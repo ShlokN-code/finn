@@ -690,11 +690,35 @@ export interface ExchangeDataSection {
   meta: SectionMeta;
   pledging: Figure[];
 }
+/**
+ * Header example: '2 of 4 kept · 9 not yet due · next test: FY27 results' — from credibility.kept/n,
+ * counts.not_yet_due and next_test_label.
+ */
 export interface LedgerSection {
   calls_read: number;
   counts: LedgerCounts;
   credibility: Credibility | null;
+  /**
+   * Investor decks read for delivered figures the calls didn't state
+   */
+  decks_read: number;
   meta: SectionMeta;
+  /**
+   * Earliest period at which a not-yet-due promise is tested
+   */
+  next_test: Period | null;
+  /**
+   * Promises that fall due at next_test
+   */
+  next_test_count: number;
+  /**
+   * e.g. 'FY27 results'
+   */
+  next_test_label: string | null;
+  /**
+   * When those results should be out (period end + lag)
+   */
+  next_test_on: string | null;
   promises: MgmtPromise[];
 }
 export interface LedgerCounts {

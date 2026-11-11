@@ -2402,6 +2402,7 @@
     },
     "LedgerSection": {
       "additionalProperties": false,
+      "description": "Header example: '2 of 4 kept \u00b7 9 not yet due \u00b7 next test: FY27 results' \u2014 from credibility.kept/n,\ncounts.not_yet_due and next_test_label.",
       "properties": {
         "calls_read": {
           "default": 0,
@@ -2422,8 +2423,59 @@
           ],
           "default": null
         },
+        "decks_read": {
+          "default": 0,
+          "description": "Investor decks read for delivered figures the calls didn't state",
+          "title": "Decks Read",
+          "type": "integer"
+        },
         "meta": {
           "$ref": "#/$defs/SectionMeta"
+        },
+        "next_test": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Period"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Earliest period at which a not-yet-due promise is tested"
+        },
+        "next_test_count": {
+          "default": 0,
+          "description": "Promises that fall due at next_test",
+          "title": "Next Test Count",
+          "type": "integer"
+        },
+        "next_test_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. 'FY27 results'",
+          "title": "Next Test Label"
+        },
+        "next_test_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "When those results should be out (period end + lag)",
+          "title": "Next Test On"
         },
         "promises": {
           "items": {
@@ -2438,7 +2490,12 @@
         "promises",
         "credibility",
         "counts",
-        "calls_read"
+        "calls_read",
+        "decks_read",
+        "next_test",
+        "next_test_label",
+        "next_test_on",
+        "next_test_count"
       ],
       "title": "LedgerSection",
       "type": "object"
