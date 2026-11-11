@@ -47,7 +47,7 @@ export function Landing() {
         </div>
       </section>
       <section aria-label="Live preview" className="shrink-0">
-        <div className="relative h-[812px] w-[390px] rounded-[54px] border border-rule bg-ink p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)]">
+        <div className="relative h-[min(812px,calc(100dvh-110px))] min-h-[560px] w-[390px] rounded-[54px] border border-rule bg-ink p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)]">
           <div className="absolute left-1/2 top-5 z-10 h-[26px] w-[110px] -translate-x-1/2 rounded-full bg-ink" aria-hidden />
           <iframe
             src="/brief"
