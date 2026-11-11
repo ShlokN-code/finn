@@ -167,7 +167,8 @@ Plan approved 11 Nov with six amendments (DECISIONS: "Phase 4 frontend: plan ame
 - [x] QR landing with live phone iframe (no X-Frame-Options; verified on the deployed site), 3-step tour — `76061bc`, `f42e868`
 - [x] Drivers-only builds (Flash-Lite only, 50-call cap, 150 headroom) + `GET /research/drivers` + "What you're watching" — `536fa91`
 - [x] Loading / error / stale states checked with an unreachable API; auto-retry while waking; first-paint fallback at 0.9 s — `3e5114d`, `0936c0f`
-- [ ] **Drivers for the rest of the holdings.** First runs got HAL and EICHERMOT (plus RELIANCE partly) before Gemini Flash-Lite returned 503 "high demand". Re-run `python -m jobs.research drivers`: it skips holdings that already have drivers and checks headroom itself. ITC publishes no transcripts on screener.
+- [x] Drivers for the holdings: 16 of 18 served (3 drivers each; RELIANCE 1). 0 strong calls; 73 Flash-Lite attempts across three runs (36 were Gemini 503 retries); budget now counts failed attempts — `536fa91`, `62d8029`
+- [ ] MAP output truncates at 16K tokens on very long transcripts (IDEA, 2 of 3 RELIANCE calls): split the transcript or raise the output cap for MAP. ITC publishes no transcripts on screener (stays "drivers appear after research").
 - [ ] Confirmed drivers → ×1.5 Level-1 boost in `/brief` (today `brief()` never passes drivers to `score()`); needs an event→driver match rule
 - [ ] `POST /portfolio`: last close, day change, 1-month sparkline, status dot (rule in DECISIONS), upcoming calendar; Portfolio scoreboard
 - [ ] Rules editing (thresholds, categories, budget, quiet hours, snoozes) synced via `PUT /subscriptions/me` when Telegram is connected; push rule changes to a connected Telegram copy
