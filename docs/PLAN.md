@@ -33,7 +33,7 @@ Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DA
 - [x] Tests: dedup, threading, unit normalisation, classification rules, LLM router — 105 passing
 - [x] Run against tickers outside the demo set (TRENT, POLYCAB) — clean
 - [x] **Daily job verified on GitHub Actions** — run 42804318441 (dispatched 10 Nov 16:33 IST, commit `85ccaa4`): success in 2 m 54 s; `ingest_runs` #5 status ok, 0 failures; NSE reachable from the runner for every source; prices skipped (exchange holiday).
-- [ ] **Confirm the schedule fires.** No scheduled `ingest` run had started by 16:40 IST on 10 Nov (new crons can take a while to register on GitHub). Check on 11 Nov that the 30-min filing checks (`check_filings`) and the 16:30 daily run appear in `ingest_runs` with trigger `schedule`.
+- [ ] **Confirm the schedule fires.** *(11 Nov: see the schedule check under Phase 3.)* No scheduled `ingest` run had started by 16:40 IST on 10 Nov (new crons can take a while to register on GitHub). Check on 11 Nov that the 30-min filing checks (`check_filings`) and the 16:30 daily run appear in `ingest_runs` with trigger `schedule`.
 - [x] **Review the eval labels** — reviewed 10 Nov: 4 corrected, 7 checked against the PDF and confirmed; material-over-routine rule added (`05536be`).
 - [ ] **Held-out eval set** — moved to Phase 5 (below).
 - [x] **Content-free newspaper ads** read by the model from their first PDF pages — full-ladder eval 98.3 %; 20 of 49 stored ads turned out material (see DECISIONS, "Ambiguous between routine and material").
@@ -124,6 +124,20 @@ Five verdicts drawn across the 4 demo dossiers with `random.Random(1111)` from t
 
 Result: 10/10 quotes on their cited pages, numbers correct, 5/5 verdicts follow from the evidence; nothing to fix. Items 3 and 4 are softer by nature (an undated outlook; a projection phrased as "well on course") — the verdict reason already quotes both calls so a reader can judge.
 
+
+### Deck lookup (11 Nov 2026, 16:05 IST) — `71916fe`, count fix `9b0ccbe`
+
+Promises that were can't-score only because the call never printed the delivered figure now read the deck for the quarter that closes the period (one Flash-Lite call per deck).
+
+| Ticker | Decks read | Waiting figures found | Tally before → after | Header now |
+|---|---|---|---|---|
+| BAJFINANCE | 2 (Q4 FY26, Q4 FY25) | 11 of 12 | 1 of 4 → **8 of 13 · 61.5%** | 15 not yet due · next test: FY27 results (14) |
+| INFY | 1 (Q4 FY25) | 2 of 2 | 2 of 4 → **4 of 6 · 66.7%** | 5 not yet due · next test: FY27 results (5) |
+| PERSISTENT | 1 | 0 of 1 | 1 of 2 → 1 of 2 | 4 not yet due · next test: FY27 results |
+| POLYCAB | 0 (nothing waiting on a figure) | — | 0 of 1 | 8 not yet due · next test: FY28 results |
+
+Quote check on the deployed dossiers (every cited quote, all sections): **183/183 transcript quotes and 13/13 deck quotes on their cited pages.** Fixtures regenerated from Render.
+Strong models: all four are out for the Pacific day (3.8 Flash, 3 Flash and 3.6 Flash used; 3.5 Flash answers our requests with a quota 429 — it has no free quota on this key). PERSISTENT and POLYCAB keep this afternoon's 3.6 Flash summaries; their parked jobs rewrite them after 13:30 IST on 12 Nov automatically.
 
 **Friday morning (product owner, 11 Nov: cut if Friday gets tight):**
 - [ ] Annual report sections (headings in code) → red flags (auditor opinion, contingent liabilities growth, related parties)
