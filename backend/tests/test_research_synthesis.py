@@ -136,3 +136,14 @@ def test_reduce_tidies_units_around_placeholders_and_id_lists():
         {"text": "Free cash flow was ₹{F1} Cr in FY26 with ROCE of {F2}% {F1, F2}.", "fact_ids": []}, fs
     )
     assert c.text == "Free cash flow was ₹1,571 Cr in FY26 with ROCE of 34.0%." and len(c.citations) == 1
+
+
+def test_segment_shares_over_100_percent_are_not_shares():
+    from finn.research.insights import segments
+
+    c = calls()[1]
+    c.facts["segments"] = [
+        {"name": "Rural", "share_pct": 63.0, "quote": "rural contributed 63% growth", "page": 1},
+        {"name": "CV", "share_pct": 89.0, "quote": "CV and tractor share up 89%", "page": 1},
+    ]
+    assert segments(c) == []
