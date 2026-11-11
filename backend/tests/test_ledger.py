@@ -192,12 +192,25 @@ def test_narrowed_range():
     assert only(ledger(calls)).revision == "narrowed"
 
 
-def test_delayed_target_is_goalposts_moved():
-    calls = [call(1, date(2025, 7, 20), [g(lo=20, hi=20, kind="point", fy=2026)]),
-             call(2, date(2025, 10, 20), [g(lo=20, hi=20, kind="point", fy=2027, period_text="FY27")])]  # fmt: skip
+def test_delayed_deadline_is_goalposts_moved():
+    by = {"period_type": "by_fy", "kind": "point"}
+    calls = [call(1, date(2025, 7, 20), [g(lo=20, hi=20, fy=2026, **by)]),
+             call(2, date(2025, 10, 20), [g(lo=20, hi=20, fy=2027, period_text="by FY27", **by)])]  # fmt: skip
     led = ledger(calls)
     fy26 = next(p for p in led.promises if p.period.label == "FY26")
     assert fy26.revision == "delayed" and fy26.verdict == "goalposts_moved"
+
+
+def test_same_level_restated_for_next_year_is_not_a_delay():
+    calls = [call(1, date(2025, 7, 20), [g("credit_cost", 1.85, 1.95, fy=2026)]),
+             call(2, date(2025, 10, 20), [g("credit_cost", 1.85, 1.95, fy=2027, period_text="FY27")])]  # fmt: skip
+    assert all(p.revision != "delayed" for p in ledger(calls).promises)
+
+
+def test_count_millions_are_not_money():
+    assert normalise_unit("million", "unspecified", "customer_growth") == ("COUNT", 1e6)
+    assert normalise_unit("million", "unspecified", "revenue") == ("INR_CR", 0.1)
+    assert normalise_unit("million", "not_money", "other") == ("COUNT", 1e6)
 
 
 # --- quietly dropped ------------------------------------------------------------------------------------------------

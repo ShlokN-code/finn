@@ -76,7 +76,7 @@ Plan approved 11 Nov; rules and budget in DECISIONS.md (three Phase 3 entries).
 - [ ] Nightly refresh on Actions (code-only recompute; rebuild only on a new document; first-time builds only for the 4 demo tickers); DB size guard
 - [ ] On-demand NSE dispatch (section above) → `exchange_data`
 - [ ] Two tickers outside the demo set (one bank); cost report; README
-- [ ] Frontend fixtures: validated INFY and BAJFINANCE dossiers in `web/public/fixtures/`
+- [x] Frontend fixtures: validated INFY, BAJFINANCE, POLYCAB dossiers in `web/public/fixtures/` (`python -m jobs.research export`; built locally against Supabase — rebuild on Render once §7 is set)
 
 ## Phase 5
 

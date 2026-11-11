@@ -99,15 +99,29 @@ _MONEY = [(r"\blakh|\blac", 0.01), (r"\bcrore|\bcr\b", 1.0), (r"\bbillion|\bbn\b
 _USD = [(r"\bbillion|\bbn\b", 1000.0), (r"\bmillion|\bmn\b|\bmln\b", 1.0)]
 
 
-def normalise_unit(unit_text: str | None, currency: str) -> tuple[str | None, float]:
-    """(unit family, multiplier to that family). bps → percentage points; INR money → ₹ crore; USD → USD million."""
+# Metrics whose 'million'/'crore' is money. For anything else (customers, units, tonnes) a 'million' is a count.
+MONEY_KEYS = {"revenue", "ebitda", "pat", "eps", "capex", "order_book", "order_inflow", "deal_wins", "debt", "net_debt",
+              "cost_savings", "dividend_payout", "other"}  # fmt: skip
+_COUNT = [(r"\bbillion|\bbn\b", 1e9), (r"\bmillion|\bmn\b|\bmln\b", 1e6), (r"\bcrore|\bcr\b", 1e7),
+          (r"\blakh|\blac", 1e5), (r"\bthousand|\bk\b", 1e3)]  # fmt: skip
+
+
+def normalise_unit(unit_text: str | None, currency: str, metric_key: str = "other") -> tuple[str | None, float]:
+    """(unit family, multiplier to that family). bps → percentage points; INR money → ₹ crore; USD → USD million;
+    a count metric's 'million'/'lakh' → COUNT (never money)."""
     u = (unit_text or "").strip().lower()
     if not u:
         return None, 1.0
+    money = currency in ("INR", "USD") or "₹" in u or "rs" in u.split() or "inr" in u or (
+        currency != "not_money" and metric_key in MONEY_KEYS)  # fmt: skip
     if "bps" in u or "basis point" in u:
         return "PCT", 0.01
     if "%" in u or "percent" in u or "per cent" in u:
         return "PCT", 1.0
+    if not money and not re.search(r"usd|\$|dollar", u):
+        for rx, f in _COUNT:
+            if re.search(rx, u):
+                return "COUNT", f
     if currency == "USD" or "usd" in u or "$" in u or "dollar" in u:
         for rx, f in _USD:
             if re.search(rx, u):
@@ -124,7 +138,7 @@ def normalise_unit(unit_text: str | None, currency: str) -> tuple[str | None, fl
 
 
 def _stmt(call: Call, it: dict, ye_month: int) -> Stmt:
-    unit, f = normalise_unit(it.get("unit_text"), it.get("currency", "unspecified"))
+    unit, f = normalise_unit(it.get("unit_text"), it.get("currency", "unspecified"), it.get("metric_key", "other"))
     lo, hi = it.get("target_low"), it.get("target_high")
     period = resolve(it.get("period_type", "unspecified"), it.get("fy"), it.get("quarter"), it.get("half"),
                      it.get("years"), call.made_on, ye_month)  # fmt: skip
@@ -226,7 +240,7 @@ def _actual_delivered(t: Thread, calls: list[Call], ye_month: int) -> tuple[Figu
                 continue
             if not _same_metric(s.item, a):
                 continue
-            unit, f = normalise_unit(a.get("unit_text"), a.get("currency", "unspecified"))
+            unit, f = normalise_unit(a.get("unit_text"), a.get("currency", "unspecified"), a["metric_key"])
             if unit != s.unit:
                 continue
             cur = a.get("currency", "unspecified")
@@ -269,6 +283,18 @@ def _same_metric(g: dict, a: dict) -> bool:
 
 def _unit_enum(u: str | None) -> str:
     return {"PCT": "PCT", "INR_CR": "INR_CR", "X": "X", "DAYS": "DAYS"}.get(u or "", "COUNT")
+
+
+def _fmt_count(v: float, like: str | None = None) -> str:
+    """A count in the scale the target was given in ('million' target → '119.3 million')."""
+    scales = ((1e9, "billion"), (1e7, "crore"), (1e6, "million"), (1e5, "lakh"))
+    for div, name in scales:
+        if like and name in like.lower():
+            return f"{v / div:,.2f}".rstrip("0").rstrip(".") + f" {name}"
+    for div, name in scales:
+        if abs(v) >= div:
+            return f"{v / div:,.2f}".rstrip("0").rstrip(".") + f" {name}"
+    return f"{v:,.0f}"
 
 
 # --- verdicts -------------------------------------------------------------------------------------------------------
@@ -381,6 +407,9 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
                 if a is b or pa is None or pb is None or pb.end <= pa.end:
                     continue
                 first_b = b.stmts[0]
+                # Only deadline-style targets ('by FY27') can slip; a level restated for the next year is normal.
+                if a.stmts[-1].item.get("period_type") != "by_fy" or first_b.item.get("period_type") != "by_fy":
+                    continue
                 ma, mb = a.stmts[-1].mid(), first_b.mid()
                 if (first_b.made_on > a.stmts[-1].made_on and first_b.made_on <= pa.end and ma is not None
                         and mb is not None and abs(ma - mb) <= _tol(first_b.unit, ma, True)):  # fmt: skip
@@ -433,7 +462,8 @@ def build_ledger(symbol: str, calls: list[Call], disc, today: date, ye_month: in
             kind = target.item["kind"]
             verdict, how = compare(kind, target.low, target.high, delivered.value, target.unit, direction)
             src = "screener" if dsrc == "screener" else (dcall.label if dcall else "a later call")
-            why = f"Delivered {_fmt(delivered.value, target.unit)} vs target {_target_str(target)} ({how}; {src})"
+            got = _fmt(delivered.value, target.unit, target.item.get("unit_text"))
+            why = f"Delivered {got} vs target {_target_str(target)} ({how}; {src})"
             if delivered.citation:
                 cites.append(delivered.citation)
             settled[pid] = dcall.made_on if dcall else results_due(period)
@@ -478,7 +508,7 @@ def _cur(c: str) -> str:
     return c if c in ("INR", "USD", "constant_currency", "unspecified", "not_money") else "unspecified"
 
 
-def _fmt(v: float, unit: str | None) -> str:
+def _fmt(v: float, unit: str | None, like: str | None = None) -> str:
     if unit == "PCT":
         return f"{v:.1f}%"
     if unit == "INR_CR":
@@ -488,6 +518,8 @@ def _fmt(v: float, unit: str | None) -> str:
     num = f"{v:,.2f}".rstrip("0").rstrip(".")
     if unit == "X":
         return f"{num}x"
+    if unit == "COUNT":
+        return _fmt_count(v, like)
     return f"{num} {unit.lower()}" if unit else num
 
 
