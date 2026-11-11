@@ -24,6 +24,9 @@ log = logging.getLogger("finn.research.extract")
 EXTRACTOR = "map_transcript"
 PROMPT_VERSION = "v1"
 PURPOSE = f"research.map_transcript.{PROMPT_VERSION}"
+# Bump when validation/checking changes: stored extractions are re-validated from the cached model response
+# (llm_calls), so the fix applies without another model call.
+VALIDATOR_VERSION = 2
 MAX_OUTPUT = 16_000
 
 SYSTEM = """You extract facts from ONE earnings-call transcript of an Indian listed company, for an audit trail.
@@ -244,13 +247,13 @@ def validate(raw: dict, pages: list[str]) -> tuple[dict, dict]:
 def map_transcript(conn, router, sha256: str, pages: list[str], tags: dict | None = None) -> tuple[dict | None, dict]:
     """Facts for one transcript: cached extraction, else one cheap call. Raises LLMUnavailable on quota."""
     hit = store.get_extraction(conn, sha256, EXTRACTOR, PROMPT_VERSION)
-    if hit:
+    if hit and (hit["stats"] or {}).get("validator") == VALIDATOR_VERSION:
         return hit["payload"], {**(hit["stats"] or {}), "cached": True, "model": hit["model"]}
     req = LLMRequest(purpose=PURPOSE, system=SYSTEM, prompt=PROMPT, schema=SCHEMA, document_text=document_text(pages),
                      max_output_tokens=MAX_OUTPUT, timeout_s=240, tags=tags or {})  # fmt: skip
     res = router.run("cheap", req)
     facts, stats = validate(res.data, pages)
-    stats.update(model=res.model, tokens_in=res.tokens_in, tokens_out=res.tokens_out,
+    stats.update(validator=VALIDATOR_VERSION, model=res.model, tokens_in=res.tokens_in, tokens_out=res.tokens_out,
                  raw_counts={k: len(res.data.get(k) or []) for k in SHAPES})  # fmt: skip
     store.save_extraction(conn, sha256, EXTRACTOR, PROMPT_VERSION, res.model, facts, stats)
     return facts, stats

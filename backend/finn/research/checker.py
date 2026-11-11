@@ -63,8 +63,11 @@ class Checker:
     def _on(self, i: int, q: str) -> bool:
         if not (0 <= i < len(self.pages)):
             return False
-        return q in self.pages[i] or quote_in_text(q, self.pages[i]) or (
-            i + 1 < len(self.pages) and q in (self.pages[i] + " " + self.pages[i + 1]))  # fmt: skip
+        if q in self.pages[i] or quote_in_text(q, self.pages[i]):
+            return True
+        # a quote straddling a page break counts for the page it starts on — not one that is wholly on the next
+        nxt = self.pages[i + 1] if i + 1 < len(self.pages) else ""
+        return bool(nxt) and q not in nxt and q in (self.pages[i] + " " + nxt)
 
     def _candidates(self, q: str, claimed: int | None) -> list[int]:
         order: list[int] = []
@@ -119,10 +122,10 @@ class Checker:
                 words = set(_WORD.findall(ns))
                 if not words:
                     continue
-                score = len(want & words) / len(want | words)
+                score = len(want & words) / len(want)  # share of the quote's words found (the number must match)
                 if best is None or score > best[0]:
                     best = (score, i, " ".join(sent.split()))
-        if best and best[0] >= 0.35:
+        if best and best[0] >= 0.3:
             return Located(best[1] + 1, best[2], "reanchored")
         return None
 

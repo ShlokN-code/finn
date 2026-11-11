@@ -86,8 +86,12 @@ def run_job(conn, job: dict) -> Outcome:
     try:
         out = build(conn, job["symbol"], progress, job_id=job["id"])
     except Exception as e:  # never leave a job running; the last good dossier stays published
+        import psycopg
+
         log.exception("research build %s failed", job["symbol"])
-        out = Outcome("failed", error=f"{type(e).__name__}: {str(e)[:300]}")
+        transient = isinstance(e, psycopg.OperationalError) and job.get("attempts", 1) < store.MAX_ATTEMPTS
+        # a lost database connection is retried (every stage is cached, so the rerun is cheap); a bug is not
+        out = Outcome("queued" if transient else "failed", error=f"{type(e).__name__}: {str(e)[:300]}")
     store.finish(conn, job["id"], out.status, out.stats, out.error, out.resume_after)
     return out
 
