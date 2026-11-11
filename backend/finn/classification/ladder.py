@@ -242,6 +242,8 @@ class Classifier:
         try:
             res = self.router.run("cheap", req)
         except LLMUnavailable as e:
+            if "refused" in str(e):  # a content refusal is permanent; only 'llm unavailable…' failures are retried
+                return Classification(Category.unclassified, "failed", note=f"model refused: {e}"[:300])
             return Classification(Category.unclassified, "failed", note=f"llm unavailable: {e}"[:300])
         d = res.data
         try:

@@ -96,6 +96,9 @@ class Gemini:
         if not r.ok:
             raise ProviderError(f"gemini HTTP {r.status_code}: {_short(r.text)}")
         payload = r.json()
+        block = (payload.get("promptFeedback") or {}).get("blockReason")
+        if block:  # the model won't read this input at all — permanent, not worth retrying
+            raise ProviderError(f"gemini refused: {block}")
         finish = ((payload.get("candidates") or [{}])[0]).get("finishReason")
         if finish == "MAX_TOKENS":  # cut-off JSON — never parse a partial answer
             raise ProviderError(f"gemini output truncated at {req.max_output_tokens} tokens")

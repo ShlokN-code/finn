@@ -6,11 +6,25 @@ in GitHub Actions the variables come from secrets.
 
 from __future__ import annotations
 
+import json
 import os
+import re
 from pathlib import Path
 
 import psycopg
 from psycopg.rows import dict_row
+from psycopg.types.json import set_json_dumps
+
+# Postgres jsonb rejects the NUL character ("\u0000 cannot be converted to text"), and a single filing whose PDF
+# text carried one made every run's tagging step fail. Strip escaped NULs (not an escaped backslash before 'u0000').
+_NUL = re.compile(r"(?<!\\)((?:\\\\)*)\\u0000")
+
+
+def _dumps(obj) -> str:
+    return _NUL.sub(r"\1", json.dumps(obj))
+
+
+set_json_dumps(_dumps)
 
 _ROOTS = [Path(__file__).resolve().parents[2], Path(__file__).resolve().parents[1]]
 

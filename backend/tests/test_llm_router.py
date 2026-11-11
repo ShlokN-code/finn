@@ -265,3 +265,24 @@ def test_overloaded_strong_model_is_skipped_quickly_then_cooled():
     assert [m for _, m in g.calls] == ["flash-38", "flash-38", "flash-3"] and pauses == [2.0]  # 2 attempts, not 5
     r.run("strong", req(purpose="research.reduce.v1", prompt="b"))
     assert [m for _, m in g.calls][-1] == "flash-3" and len(g.calls) == 4  # cooled: no third try on flash-38
+
+
+def test_gemini_content_refusal_is_a_permanent_error(monkeypatch):
+    from finn.llm import gemini
+
+    class Resp:
+        status_code, ok, text = 200, True, ""
+
+        def json(self):
+            return {"promptFeedback": {"blockReason": "PROHIBITED_CONTENT"}}
+
+    monkeypatch.setattr(gemini.requests, "post", lambda *a, **k: Resp())
+    with pytest.raises(ProviderError, match="refused: PROHIBITED_CONTENT"):
+        gemini.Gemini("k").generate(req(), "gemini-3.5-flash-lite")
+
+
+def test_json_written_to_postgres_has_no_nul():
+    from finn.db import _dumps
+
+    assert json.loads(_dumps({"t": "Ministry of Corporate A\x00ffairs"})) == {"t": "Ministry of Corporate Affairs"}
+    assert json.loads(_dumps({"t": "a literal \\u0000 stays"})) == {"t": "a literal \\u0000 stays"}
