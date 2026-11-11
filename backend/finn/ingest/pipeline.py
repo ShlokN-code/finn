@@ -28,6 +28,7 @@ BACKFILL_PERIOD = "1y"
 INCREMENTAL_DAYS = 15  # calendar days ≈ 10 sessions
 MAX_PDF_BYTES = 12 * 1024 * 1024
 MAX_XBRL_BYTES = 8 * 1024 * 1024
+RESULTS_PDF_BYTES = 32 * 1024 * 1024  # board outcomes bundle scanned auditor reports: 18–25 MB is common
 
 
 @dataclass
@@ -266,6 +267,7 @@ def step_results_fetch(run: Run, s: NSESession, symbols: list[str], days: int = 
             run.fail("results_fetch", sym, err)
             continue
         have = store.stored_xbrl_urls(run.conn, sym)
+        stats["ixbrl_linked"] = stats.get("ixbrl_linked", 0) + store.set_ixbrl_urls(run.conn, refs)
         for q in sorted(need):
             mine = [r for r in refs if r.period_end == q]
             if not mine:
@@ -317,6 +319,80 @@ def _results_from_pdf(run: Run, s: NSESession, url: str, qe: date, ev: dict, sta
     return None, None
 
 
+def _results_doc(run: Run, s: NSESession | None, outcome_ids: list[str], basis: str, revenue_cr: float | None,
+                 stats: dict):  # fmt: skip
+    """The results PDF and the page with this basis's statement (cached in results_pdf_pages). Looking a page up
+    needs the PDF, so only a run with an NSE session (Actions) can find new pages; others reuse stored ones."""
+    from finn.citations import pdf_text
+    from finn.extraction.results.links import ResultsDoc, find_results_page
+
+    pdfs = store.outcome_pdfs(run.conn, outcome_ids)
+    if not pdfs:
+        return None
+    known = store.results_pdf_pages(run.conn, [p["id"] for p in pdfs], basis)
+    for p in pdfs:
+        k = known.get(p["id"])
+        if k and k["page"]:
+            return ResultsDoc(k["url"], k["page"])
+    if s is None:
+        return None
+    for p in pdfs:
+        if p["id"] in known:
+            continue  # looked before, no statement page in it
+        raw = fetch_capped(s, p["attachment_url"], max_bytes=RESULTS_PDF_BYTES, deadline_s=120)
+        if not raw or not raw.startswith(b"%PDF"):
+            store.save_results_pdf_page(run.conn, p["id"], basis, p["attachment_url"], None, False, "not a PDF")
+            continue
+        _, pages = pdf_text(raw, max_pages=40)
+        m = find_results_page(pages, basis, revenue_cr) if any(t.strip() for t in pages) else None
+        note = None if m else ("no text layer (scanned)" if not any(t.strip() for t in pages) else "no statement page")
+        store.save_results_pdf_page(run.conn, p["id"], basis, p["attachment_url"], m.page if m else None,
+                                    bool(m and m.value_on_page), note)  # fmt: skip
+        stats["pdf_pages_found" if m else "pdf_pages_missing"] = stats.get("pdf_pages_found" if m else
+                                                                           "pdf_pages_missing", 0) + 1  # fmt: skip
+        if m:
+            return ResultsDoc(p["attachment_url"], m.page)
+    return None
+
+
+def _with_readable_links(run: Run, s: NSESession | None, sym: str, outcome_ids: list[str], detail, reason, stats):
+    """Point every results figure at the results PDF page (→ iXBRL view → raw XBRL, labelled)."""
+    from finn.extraction.results.links import apply_links, revenue_input_cr
+
+    if detail.source_path != "xbrl":
+        return detail, reason  # PDF-sourced cards already cite the PDF page
+    doc = _results_doc(run, s, outcome_ids, detail.basis, revenue_input_cr(detail), stats)
+    return apply_links(detail, reason, symbol=sym, pdf=doc, ixbrl=store.ixbrl_map(run.conn, sym))
+
+
+def step_results_relink(run: Run, symbols: list[str], days: int, s: NSESession | None = None) -> None:
+    """Rewrite the links of stored results cards without recomputing a number (backfill after the link change)."""
+    from finn.models import Claim, ResultsDetail
+
+    stats: dict = {"relinked": 0, "skipped": 0}
+    if s is not None:  # NSE's iXBRL links for instances stored before they were recorded
+        for sym in symbols:
+            try:
+                stats["ixbrl_linked"] = stats.get("ixbrl_linked", 0) + store.set_ixbrl_urls(
+                    run.conn, nse.fetch_integrated_results(s, sym)
+                )
+            except FetchError as err:
+                run.fail("results_relink", sym, err)
+    for ev in store.recent_results_events(run.conn, symbols, days):
+        d = ev["detail"] or {}
+        if d.get("kind") != "results" or d.get("source_path") != "xbrl":
+            stats["skipped"] += 1
+            continue
+        outcome_ids = [t["filing_id"] for t in ev["timeline"] if t["stage"] == "outcome"]
+        detail = ResultsDetail.model_validate(d)
+        reason = Claim.model_validate(ev["impact_reason"]) if ev.get("impact_reason") else None
+        detail, reason = _with_readable_links(run, s, ev["symbol"], outcome_ids, detail, reason, stats)
+        store.update_event_links(run.conn, ev["id"], detail.model_dump(mode="json"),
+                                 reason.model_dump(mode="json") if reason else None)  # fmt: skip
+        stats["relinked"] += 1
+    run.stats["results_relink"] = stats
+
+
 def step_results_build(run: Run, symbols: list[str], days: int = 45, s: NSESession | None = None,
                        rebuild: bool = False) -> None:  # fmt: skip
     """Build/refresh results cards from stored XBRL + screener. Final cards (XBRL, cross-checked or partial)
@@ -351,9 +427,10 @@ def step_results_build(run: Run, symbols: list[str], days: int = 45, s: NSESessi
             run.fail("results_build", sym, f"screener: {err}")
             table = None
         b = results_build.build_from_quarters(template, basis, qe, quarters, table, source_path, filing_url)
+        detail, reason = _with_readable_links(run, s, sym, outcome_ids, b.detail, b.impact_reason, stats)
         store.save_event_detail(
-            run.conn, ev["id"], b.detail.model_dump(mode="json"), b.so_what, b.impact,
-            b.impact_reason.model_dump(mode="json") if b.impact_reason else None, "code",
+            run.conn, ev["id"], detail.model_dump(mode="json"), b.so_what, b.impact,
+            reason.model_dump(mode="json") if reason else None, "code",
         )  # fmt: skip
         stats["built"] += 1
         stats[b.detail.verification] += 1

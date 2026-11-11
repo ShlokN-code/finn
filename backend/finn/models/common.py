@@ -51,7 +51,16 @@ class Citation(Model):
     """Where a number or claim came from. Every Figure/Claim that is not `not_found` carries one."""
 
     source_type: SourceType
-    url: str = Field(min_length=1, description="Direct link to the document (exchange PDF, XBRL, etc.)")
+    url: str = Field(
+        min_length=1,
+        description="The human-readable document to open (results PDF, iXBRL view, filing PDF, page); `source_type` "
+        "says where the value was read, which may be a machine format kept in `raw_url`",
+    )
+    doc_kind: Literal["results_pdf", "pdf", "ixbrl", "raw_xbrl", "screener", "web", "zip"] | None = Field(
+        None, description="What `url` opens — drives the Open button's label ('Results PDF · p.3', 'iXBRL view')"
+    )
+    raw_url: str | None = Field(None, description="Machine-readable original (raw XBRL), offered as a secondary link")
+    check_url: str | None = Field(None, description="Independent cross-check, e.g. screener's quarterly table")
     title: str | None = Field(None, description="Human title, e.g. 'Q2 FY27 earnings call transcript'")
     exchange: Literal["NSE", "BSE"] | None = None
     page: int | None = Field(None, ge=1, description="1-based PDF page")

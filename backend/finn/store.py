@@ -324,18 +324,20 @@ def stored_xbrl_urls(conn, symbol: str) -> set[str]:
 def upsert_results_filing(conn, ref, parsed: dict, xml_gz: bytes | None) -> None:
     conn.execute(
         "insert into public.results_filings (symbol, period_end, basis, type_sub, audited, xbrl_url, broadcast_at, "
-        "facts, xml_gz) values (%s,%s,%s,%s,%s,%s,%s,%s,%s) on conflict (symbol, period_end, basis, xbrl_url) do "
+        "facts, xml_gz, ixbrl_url) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+        "on conflict (symbol, period_end, basis, xbrl_url) do "
         "update set facts = excluded.facts, type_sub = excluded.type_sub, broadcast_at = excluded.broadcast_at, "
-        "xml_gz = coalesce(excluded.xml_gz, results_filings.xml_gz), fetched_at = now()",
+        "xml_gz = coalesce(excluded.xml_gz, results_filings.xml_gz), "
+        "ixbrl_url = coalesce(excluded.ixbrl_url, results_filings.ixbrl_url), fetched_at = now()",
         (ref.symbol, ref.period_end, ref.basis, ref.type_sub, ref.audited, ref.xbrl_url, ref.broadcast_at,
-         Jsonb(parsed), xml_gz),
+         Jsonb(parsed), xml_gz, getattr(ref, "ixbrl_url", None)),
     )  # fmt: skip
 
 
 def results_filings(conn, symbol: str) -> list[dict]:
     """Stored XBRL instances for a symbol (no raw XML), newest version first within a quarter/basis."""
     return conn.execute(
-        "select symbol, period_end, basis, type_sub, audited, xbrl_url, broadcast_at, facts, fetched_at "
+        "select symbol, period_end, basis, type_sub, audited, xbrl_url, ixbrl_url, broadcast_at, facts, fetched_at "
         "from public.results_filings where symbol = %s order by period_end desc, basis, "
         "(type_sub = 'Revised') desc, broadcast_at desc nulls last",
         (symbol,),
@@ -345,7 +347,8 @@ def results_filings(conn, symbol: str) -> list[dict]:
 def recent_results_events(conn, symbols: list[str], days: int) -> list[dict]:
     """Results events with an outcome filing, updated in the last `days` days."""
     return conn.execute(
-        "select id, symbol, period, timeline, detail, updated_at from public.events where category = 'results' "
+        "select id, symbol, period, timeline, detail, impact_reason, updated_at from public.events "
+        "where category = 'results' "
         "and symbol = any(%s) and updated_at > now() - make_interval(days => %s) "
         "and exists (select 1 from jsonb_array_elements(timeline) t where t->>'stage' = 'outcome') "
         "order by updated_at desc",
@@ -363,6 +366,14 @@ def save_event_detail(conn, event_id: str, detail: dict | None, so_what: str | N
     )  # fmt: skip
 
 
+def update_event_links(conn, event_id: str, detail: dict, impact_reason: dict | None) -> None:
+    """Same numbers, new links (results relink): detail_at is left alone so freshness stamps don't move."""
+    conn.execute(
+        "update public.events set detail = %s, impact_reason = %s where id = %s",
+        (Jsonb(detail), Jsonb(impact_reason) if impact_reason is not None else None, event_id),
+    )
+
+
 def symbol_industry(conn, symbol: str) -> str | None:
     r = conn.execute(
         "select raw->>'smIndustry' as ind from public.filings where symbol = %s and raw ? 'smIndustry' "
@@ -370,6 +381,54 @@ def symbol_industry(conn, symbol: str) -> str | None:
         (symbol,),
     ).fetchone()
     return r["ind"] if r else None
+
+
+def set_ixbrl_urls(conn, refs) -> int:
+    """NSE's iXBRL (HTML) view for instances already stored (backfill; the instance itself never changes)."""
+    n = 0
+    for r in refs:
+        if r.ixbrl_url:
+            n += conn.execute(
+                "update public.results_filings set ixbrl_url = %s "
+                "where xbrl_url = %s and ixbrl_url is distinct from %s",
+                (r.ixbrl_url, r.xbrl_url, r.ixbrl_url),
+            ).rowcount
+    return n
+
+
+def ixbrl_map(conn, symbol: str) -> dict[str, str]:
+    rows = conn.execute(
+        "select xbrl_url, ixbrl_url from public.results_filings where symbol = %s and ixbrl_url is not null", (symbol,)
+    ).fetchall()
+    return {r["xbrl_url"]: r["ixbrl_url"] for r in rows}
+
+
+def outcome_pdfs(conn, ids: list[str]) -> list[dict]:
+    """Outcome filings with a PDF attachment, in filing order (the results PDF is usually the first)."""
+    return conn.execute(
+        "select id, attachment_url, filed_at from public.filings where id = any(%s) "
+        "and attachment_url ilike '%%.pdf' order by filed_at",
+        (ids,),
+    ).fetchall()
+
+
+def results_pdf_pages(conn, ids: list[str], basis: str) -> dict[str, dict]:
+    rows = conn.execute(
+        "select filing_id, url, page, value_on_page, note from public.results_pdf_pages "
+        "where filing_id = any(%s) and basis = %s",
+        (ids, basis),
+    ).fetchall()
+    return {r["filing_id"]: r for r in rows}
+
+
+def save_results_pdf_page(conn, filing_id: str, basis: str, url: str, page: int | None, on_page: bool,
+                          note: str | None) -> None:  # fmt: skip
+    conn.execute(
+        "insert into public.results_pdf_pages (filing_id, basis, url, page, value_on_page, note) "
+        "values (%s,%s,%s,%s,%s,%s) on conflict (filing_id, basis) do update set url = excluded.url, "
+        "page = excluded.page, value_on_page = excluded.value_on_page, note = excluded.note, checked_at = now()",
+        (filing_id, basis, url, page, on_page, note),
+    )
 
 
 def filing_urls(conn, ids: list[str]) -> dict[str, str | None]:
@@ -475,7 +534,8 @@ def events_to_tag(conn, symbols: list[str], days: int, limit: int) -> list[dict]
 
 def filing_rows(conn, ids: list[str]) -> dict[str, dict]:
     rows = conn.execute(
-        "select id, symbol, filed_at, exchange_category, subject, attachment_url, xbrl_url, stage from public.filings "
+        "select id, symbol, filed_at, exchange_category, subject, attachment_url, xbrl_url, "
+        "raw->>'ixbrl' as ixbrl_url, stage from public.filings "
         "where id = any(%s)",
         (ids,),
     ).fetchall()

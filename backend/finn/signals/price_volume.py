@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
 
 from finn.calendar import IST
+from finn.citations import filing_doc
 from finn.models import AlertSettings
 
 VOL_WINDOW, Z_WINDOW = 20, 60
@@ -238,7 +239,8 @@ def explain(
         lab = (labels or {}).get(f["category"], f["category"].replace("_", " ").capitalize())
         when = f["filed_at"].astimezone(IST).strftime("%d %b %H:%M")
         subj = re.sub(SUBJECT_BOILERPLATE, "", f["subject"], flags=re.I).strip(" .'\"") or f["subject"]
-        out.append(Explanation("filing", f"{lab} filed {when} IST: {subj[:90]}", f.get("attachment_url"), f))
+        doc = filing_doc(f)  # readable-first: PDF, else iXBRL view; never '-'
+        out.append(Explanation("filing", f"{lab} filed {when} IST: {subj[:90]}", doc[0] if doc else None, f))
         break
     if deals:
         d = max(deals, key=lambda d: d["value_cr"])

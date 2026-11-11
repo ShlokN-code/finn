@@ -90,3 +90,4 @@ class ResultsFilingRef:
     xbrl_url: str
     broadcast_at: datetime | None
     raw: dict
+    ixbrl_url: str | None = None  # NSE's human-readable (HTML) view of the same instance

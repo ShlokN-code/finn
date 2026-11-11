@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+from finn.citations import filing_doc
 from finn.models import Card, Citation, Figure, ScoreBreakdown
 
 CARD_TYPE = {
@@ -53,11 +54,13 @@ def card_type(event: dict) -> str:
 
 
 def _citation(f: dict) -> Citation | None:
-    url = f.get("attachment_url") or f.get("xbrl_url")
-    if not url:
+    doc = filing_doc(f)
+    if not doc:
         return None
+    url, kind, raw = doc
     return Citation(
-        source_type="exchange_filing", url=url, title=(f.get("subject") or "")[:120] or None,
+        source_type="exchange_filing", url=url, doc_kind=kind, raw_url=raw,
+        title=(f.get("subject") or "")[:120] or None,
         exchange=f.get("exchange") or "NSE", published_at=f.get("filed_at"),
         retrieved_at=f.get("fetched_at") or f.get("filed_at") or datetime.now(UTC),
     )  # fmt: skip

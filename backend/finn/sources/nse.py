@@ -364,6 +364,7 @@ def fetch_integrated_results(s: NSESession, symbol: str) -> list[ResultsFilingRe
                 xbrl_url=url,
                 broadcast_at=parse_ist(stamp, "%d-%b-%Y %H:%M:%S") if stamp else None,
                 raw=r,
+                ixbrl_url=ix if (ix := (r.get("ixbrl") or "").strip()).lower().endswith(".html") else None,
             )
         )
     return out

@@ -102,6 +102,14 @@ export interface MoveExplanation {
  * Where a number or claim came from. Every Figure/Claim that is not `not_found` carries one.
  */
 export interface Citation {
+  /**
+   * Independent cross-check, e.g. screener's quarterly table
+   */
+  check_url: string | null;
+  /**
+   * What `url` opens — drives the Open button's label ('Results PDF · p.3', 'iXBRL view')
+   */
+  doc_kind: ("results_pdf" | "pdf" | "ixbrl" | "raw_xbrl" | "screener" | "web" | "zip") | null;
   exchange: ("NSE" | "BSE") | null;
   /**
    * Machine locator when there is no page, e.g. 'in-capmkt:ProfitBeforeTax@OneD' or 'screener:quarters/Net Profit/Sep 2026'
@@ -120,6 +128,10 @@ export interface Citation {
    */
   quote: string | null;
   /**
+   * Machine-readable original (raw XBRL), offered as a secondary link
+   */
+  raw_url: string | null;
+  /**
    * When FINN fetched it (UTC) — drives freshness stamps
    */
   retrieved_at: string;
@@ -129,7 +141,7 @@ export interface Citation {
    */
   title: string | null;
   /**
-   * Direct link to the document (exchange PDF, XBRL, etc.)
+   * The human-readable document to open (results PDF, iXBRL view, filing PDF, page); `source_type` says where the value was read, which may be a machine format kept in `raw_url`
    */
   url: string;
 }

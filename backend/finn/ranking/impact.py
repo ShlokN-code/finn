@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from finn.citations import page_of, pdf_text, quote_in_text
+from finn.citations import filing_doc, page_of, pdf_text, quote_in_text
 from finn.llm import LLMRequest, LLMUnavailable, Router
 from finn.models import Citation, Claim, Figure, OneLinerDetail
 from finn.numbers import parse_money
@@ -100,8 +100,10 @@ def build_tagged(d: dict, event: dict, filing: dict, source_text: str, pages: li
     quote = (d.get("quote") or "").strip()
     found = quote_in_text(quote, source_text)
     page = page_of(quote, pages) if found and pages else None
-    url = filing.get("attachment_url") or filing.get("xbrl_url")
-    cite = Citation(source_type="exchange_filing", url=url, title=filing["subject"][:120], exchange="NSE",
+    doc = filing_doc(filing)
+    url, kind, raw = doc if doc else (None, None, None)
+    cite = Citation(source_type="exchange_filing", url=url, doc_kind=kind, raw_url=raw, title=filing["subject"][:120],
+                    exchange="NSE",
                     page=page, quote=quote[:300] if found else None, published_at=filing["filed_at"],
                     retrieved_at=now) if url else None  # fmt: skip
     impact = d.get("impact") if d.get("impact") in ("positive", "negative", "mixed", "neutral") else None

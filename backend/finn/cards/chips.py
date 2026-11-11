@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, date, datetime, timedelta
 
+from finn.citations import filing_doc
 from finn.models import ChipDetail, Citation, Figure
 
 
@@ -18,7 +19,8 @@ def chip_for(event: dict, actions: list[dict], filing: dict | None) -> ChipDetai
     a = min(cands, key=lambda a: a["ex_date"])
     rec = a.get("record_date")
     when = f"record {rec:%d %b}" if rec else f"ex {a['ex_date']:%d %b}"
-    url = (filing or {}).get("attachment_url") or f"https://www.nseindia.com/get-quotes/equity?symbol={event['symbol']}"
+    doc = filing_doc(filing) if filing else None
+    url = doc[0] if doc else f"https://www.nseindia.com/get-quotes/equity?symbol={event['symbol']}"
     cite = Citation(source_type="exchange_filing", url=url, title=f"NSE corporate action: {a['subject'][:80]}",
                     exchange="NSE", locator=f"nse:corporate-actions/{event['symbol']}/{a['ex_date']}",
                     retrieved_at=a.get("fetched_at") or datetime.now(UTC))  # fmt: skip

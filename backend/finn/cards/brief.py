@@ -20,7 +20,9 @@ EVENT_COLS = (
     "id, key, symbol, category, title, period, started_at, updated_at, timeline, figures, impact, impact_reason, "
     "driver_ids, so_what, detail, detail_at, refreshed_at"
 )
-FILING_COLS = "id, exchange, symbol, filed_at, subject, attachment_url, xbrl_url, fetched_at"
+FILING_COLS = (
+    "id, exchange, symbol, filed_at, subject, attachment_url, xbrl_url, raw->>'ixbrl' as ixbrl_url, fetched_at"
+)
 
 
 def load_events(conn, symbols: list[str], since: datetime | None, limit: int = 400) -> list[dict]:
@@ -63,7 +65,8 @@ MAX_HIDDEN_ITEMS = 300
 def hidden_filings(conn, symbols: list[str], since: datetime | None, until: datetime | None = None) -> list[dict]:
     """Hidden drawer: routine filings (grouped by hidden_reason), investor meetings and unclassified, newest first."""
     q = (
-        f"select id, symbol, subject, filed_at, coalesce(attachment_url, xbrl_url) as url, {HIDDEN_GROUP} as grp "
+        "select id, symbol, subject, filed_at, coalesce(nullif(nullif(attachment_url, '-'), ''), raw->>'ixbrl', "
+        f"xbrl_url) as url, {HIDDEN_GROUP} as grp "
         "from public.filings where symbol = any(%s) and duplicate_of is null "
         "and category in ('routine', 'investor_meetings', 'unclassified')"
     )

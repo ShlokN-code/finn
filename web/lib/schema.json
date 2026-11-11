@@ -957,6 +957,41 @@
       "additionalProperties": false,
       "description": "Where a number or claim came from. Every Figure/Claim that is not `not_found` carries one.",
       "properties": {
+        "check_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Independent cross-check, e.g. screener's quarterly table",
+          "title": "Check Url"
+        },
+        "doc_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "results_pdf",
+                "pdf",
+                "ixbrl",
+                "raw_xbrl",
+                "screener",
+                "web",
+                "zip"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What `url` opens \u2014 drives the Open button's label ('Results PDF \u00b7 p.3', 'iXBRL view')",
+          "title": "Doc Kind"
+        },
         "exchange": {
           "anyOf": [
             {
@@ -1027,6 +1062,19 @@
           "description": "Verbatim snippet supporting the value/claim",
           "title": "Quote"
         },
+        "raw_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Machine-readable original (raw XBRL), offered as a secondary link",
+          "title": "Raw Url"
+        },
         "retrieved_at": {
           "description": "When FINN fetched it (UTC) \u2014 drives freshness stamps",
           "format": "date-time",
@@ -1050,7 +1098,7 @@
           "title": "Title"
         },
         "url": {
-          "description": "Direct link to the document (exchange PDF, XBRL, etc.)",
+          "description": "The human-readable document to open (results PDF, iXBRL view, filing PDF, page); `source_type` says where the value was read, which may be a machine format kept in `raw_url`",
           "minLength": 1,
           "title": "Url",
           "type": "string"
@@ -1059,6 +1107,9 @@
       "required": [
         "source_type",
         "url",
+        "doc_kind",
+        "raw_url",
+        "check_url",
         "title",
         "exchange",
         "page",

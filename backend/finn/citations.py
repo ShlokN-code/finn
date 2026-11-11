@@ -60,3 +60,24 @@ def page_of(quote: str, pages: list[str]) -> int | None:
         if quote_in_text(quote, p):
             return i
     return None
+
+
+def filing_doc(f: dict) -> tuple[str, str, str | None] | None:
+    """(url, doc_kind, raw_url) for an exchange filing, most readable first: the attached PDF, else NSE's iXBRL
+    (HTML) view, else the raw XBRL labelled as machine-readable. None when the filing has no usable link
+    (NSE sometimes sends '-')."""
+    att = (f.get("attachment_url") or "").strip()
+    xbrl = (f.get("xbrl_url") or "").strip() or None
+    if att and att != "-" and att.startswith("http"):
+        low = att.lower().split("?")[0]
+        kind = "zip" if low.endswith(".zip") else "raw_xbrl" if low.endswith(".xml") else "pdf"
+        if kind != "raw_xbrl":
+            return att, kind, None
+        xbrl = xbrl or att
+    raw = f.get("raw") if isinstance(f.get("raw"), dict) else {}
+    ix = (f.get("ixbrl_url") or raw.get("ixbrl") or "").strip()
+    if ix.startswith("http") and ix.lower().endswith(".html"):
+        return ix, "ixbrl", xbrl
+    if xbrl and xbrl.startswith("http"):
+        return xbrl, "raw_xbrl", xbrl
+    return None
