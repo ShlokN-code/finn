@@ -1,7 +1,7 @@
 "use client";
 // Browser → Vercel proxy (/api/*) → Render. Render's free tier can take ~50 s to wake: callers show progress,
 // never a blank screen, and keep the last good data (CLAUDE.md rule 7).
-import type { BriefRequest, BriefResponse, DossierJob, DossierResponse } from "@/lib/types";
+import type { BriefRequest, BriefResponse, DossierJob, DossierResponse, DriversSection } from "@/lib/types";
 
 export class FetchError extends Error {
   constructor(
@@ -52,5 +52,9 @@ export const api = {
     call<DossierJob & { dossier_version: number }>(`/api/research/jobs/${id}`, { signal }, 20_000),
   fixture: (sym: string) => call<DossierResponse>(`/fixtures/dossier_${sym}.json`, { cache: "default" }),
   symbols: () => call<{ symbols: [string, string][] }>("/api/research/symbols", {}, 58_000),
+  drivers: (symbols: string[]) =>
+    call<{ drivers: Record<string, DriversSection | null> }>(
+      `/api/research/drivers?symbols=${encodeURIComponent(symbols.join(","))}`,
+    ),
   staticSymbols: () => call<{ at: string; symbols: [string, string][] }>("/nse-symbols.json", { cache: "default" }),
 };

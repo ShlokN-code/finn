@@ -13,6 +13,7 @@ const ALLOWED: [string, RegExp][] = [
   ["DELETE", /^subscriptions\/me$/],
   // Research (Phase 3): builds run in the background on the API, so every call here returns quickly.
   ["GET", /^research\/symbols$/],
+  ["GET", /^research\/drivers$/],
   ["GET", /^research\/jobs\/\d+$/],
   ["GET", /^research\/[A-Za-z0-9&_-]{1,20}$/],
   ["POST", /^research\/[A-Za-z0-9&_-]{1,20}\/build$/],
@@ -31,7 +32,9 @@ async function proxy(req: Request, ctx: RouteContext<"/api/[...path]">) {
   const auth = req.headers.get("authorization");
   if (auth) headers.authorization = auth;
   try {
-    const r = await fetch(`${base}/${joined}`, {
+    // Query strings pass only where a route needs one (never e.g. ?force=true on /build: that spends quota).
+    const search = /^research\/drivers$/.test(path.join("/")) ? new URL(req.url).search : "";
+    const r = await fetch(`${base}/${joined}${search}`, {
       method: req.method,
       headers,
       body: req.method === "GET" || req.method === "DELETE" ? undefined : await req.text(),

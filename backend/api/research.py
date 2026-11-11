@@ -66,6 +66,16 @@ def symbols():
         return {"symbols": _securities(conn)["rows"]}
 
 
+@router.get("/drivers")
+def drivers(symbols: str = Query(..., description="Comma-separated NSE symbols (at most 40)")):
+    """Suggested drivers per holding (Portfolio's "What you're watching"); null where none are built yet."""
+    from finn.research.drivers_only import load_many
+
+    syms = sorted({s.strip().upper() for s in symbols.split(",") if s.strip()})[:40]
+    with connect() as conn:
+        return {"drivers": load_many(conn, syms)}
+
+
 @router.get("/jobs/{job_id}")
 def job(job_id: int):
     with connect() as conn:

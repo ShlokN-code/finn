@@ -15,7 +15,7 @@ import { api } from "@/lib/client";
 import { CATEGORY_LABEL, displayHeadline, istWhen } from "@/lib/format";
 import { effectiveWeights, parseHoldings } from "@/lib/holdings";
 import { FALLBACK, isDemoPortfolio, read, useHydrated, useStored, write, type LocalHolding } from "@/lib/store";
-import type { Card } from "@/lib/types";
+import type { Card, DriversSection } from "@/lib/types";
 
 function latestAt(c: Card): string {
   return [...c.timeline.map((t) => t.at)].sort().at(-1) ?? c.as_of;
@@ -125,15 +125,79 @@ export function PortfolioScreen() {
           Holdings entered as share quantities split the remaining weight equally until prices are wired in.
         </p>
       )}
-      <section className="mt-8 px-4">
-        <h2 className="t-micro text-ink-3">What you&apos;re watching</h2>
-        <p className="t-small mt-1 text-ink-2">
-          FINN suggests 2–3 drivers per holding from the company&apos;s own calls (margins, growth, asset quality…). Drivers appear after
-          research — open a holding in Research to see its suggestions.
-        </p>
-      </section>
+      <Watching symbols={rows.map((r) => r.symbol)} />
+
       <ImportSheet open={editing} onClose={() => setEditing(false)} current={holdings} demo={demo} />
     </div>
+  );
+}
+
+// "What you're watching": 2–3 drivers per holding suggested from the company's own calls (counted in code);
+// one tap confirms. Confirmed drivers stay on this phone.
+function Watching({ symbols }: { symbols: string[] }) {
+  const [drivers, setDrivers] = useState<Record<string, DriversSection | null> | null>(null);
+  const [failed, setFailed] = useState(false);
+  const confirmed = useStored<Record<string, string[]>>("drivers", FALLBACK.drivers);
+  const key = symbols.join(",");
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .drivers(key.split(","))
+      .then((r) => !cancelled && setDrivers(r.drivers))
+      .catch(() => !cancelled && setFailed(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [key]);
+  const toggle = (sym: string, id: string) => {
+    const cur = read<Record<string, string[]>>("drivers", FALLBACK.drivers);
+    const list = cur[sym] ?? [];
+    write("drivers", { ...cur, [sym]: list.includes(id) ? list.filter((i) => i !== id) : [...list, id] });
+  };
+  const withItems = symbols.filter((s) => drivers?.[s]?.items.length);
+  const without = symbols.filter((s) => !drivers?.[s]?.items.length);
+  return (
+    <section className="mt-8" id="watching">
+      <h2 className="t-micro px-4 text-ink-3">What you&apos;re watching</h2>
+      <p className="t-small mt-1 px-4 text-ink-2">
+        Suggested from each company&apos;s own calls — what management guides on and analysts ask about most. Tap to watch.
+      </p>
+      {!drivers && !failed && <Skeleton rows={2} label="Loading drivers" />}
+      {failed && <p className="t-small px-4 pt-2 text-ink-3">Couldn&apos;t load drivers right now.</p>}
+      {drivers && (
+        <ul className="mt-2 divide-y divide-rule border-y border-rule bg-surface">
+          {withItems.map((s) => (
+            <li key={s} className="px-4 py-3">
+              <p className="text-[15px] font-semibold">{s}</p>
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                {drivers[s]!.items.map((d) => {
+                  const on = (confirmed[s] ?? []).includes(d.id);
+                  return (
+                    <button
+                      key={d.id}
+                      type="button"
+                      aria-pressed={on}
+                      title={d.description}
+                      onClick={() => toggle(s, d.id)}
+                      className={`hit h-8 rounded-full border px-3 text-[13px] ${on ? "border-ink bg-ink font-medium text-paper" : "border-rule text-ink-2"}`}
+                    >
+                      {on ? "✓ " : ""}
+                      {d.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </li>
+          ))}
+          {without.length > 0 && (
+            <li className="t-small px-4 py-3 text-ink-3">
+              {without.join(", ")}: drivers appear after research
+              {without.some((s) => drivers[s]?.meta.reason === "no_transcripts") ? " (some publish no call transcripts)" : ""}.
+            </li>
+          )}
+        </ul>
+      )}
+    </section>
   );
 }
 
