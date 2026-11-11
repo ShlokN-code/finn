@@ -217,7 +217,7 @@ export function sourceLabel(c: Citation): string {
       return `${c.exchange ?? "NSE"} filing${page}`;
     }
     case "xbrl":
-      return docKind(c) === "results_pdf" ? `Results PDF${page}` : docKind(c) === "ixbrl" ? "NSE iXBRL" : "NSE XBRL";
+      return docKind(c) === "results_pdf" ? "Results PDF · figures read from NSE XBRL" : docKind(c) === "ixbrl" ? "NSE iXBRL" : "NSE XBRL";
     case "screener_table":
       return "screener.in";
     case "concall_transcript":

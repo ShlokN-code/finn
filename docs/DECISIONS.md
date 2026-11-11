@@ -523,3 +523,35 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Fallback:** if the API can't be reached, the 4 demo tickers fall back to their fixtures, labelled "Saved copy from 11 Nov 2026".
 - **Section states:** building + `not_built_yet` (red flags, exchange data) renders a quiet "Coming soon"; `llm_quota` shows when it resumes; other reasons are explained in plain words.
 - **Ask (until Friday):** the bar is always visible. Its 3 context suggestions per screen jump to the section, ledger filter or card that answers them. Free text says it arrives with the next release. `lib/ask`-style wiring is one place: `components/shell/ui-store.ts` `setAskContext`.
+
+## 2026-11-12 · Readable Open links (product owner's bug: a figure opened raw XBRL XML on a phone)
+- **Context:** results figures are read from NSE's XBRL instances, and their citation pointed at the `.xml`. On Android Chrome, Open showed a wall of tags. An audit of every stored link (cards, filings, dossiers) found the same problem in three more places:
+  - 22 results impact reasons;
+  - 45 board-meeting filings with only a prior-intimation XBRL link, shown as source chips on results, what-to-watch and one-liner cards, and in the hidden drawer;
+  - one KMP `.zip` attachment, and 3 one-liner chips pointing at `-`.
+
+  Filing PDFs, BSE transcripts and decks, Yahoo price history and web profiles were already readable.
+- **Decision: a figure's Open goes to a human-readable document, in this order:**
+  1. **Results PDF**, the outcome announcement in the card's own event thread, at the page with the statement for the card's basis, as `url#page=N`. The page is found in code (`finn/extraction/results/links.py`):
+     - a candidate page prints ≥ 3 statement line items;
+     - it scores for naming its basis in the heading, and loses for naming only the other basis;
+     - it scores most when the card's revenue (or a lender's interest line) is printed on it in crore, lakh or million.
+
+     Previous- and year-ago-quarter figures open the same PDF page, titled "… · Q1 FY27 column". Pages are cached in `results_pdf_pages` (migration 0006). Results PDFs may be up to 32 MB: board outcomes bundle scanned auditor reports, and 18–25 MB is common.
+  2. **NSE's iXBRL (HTML) view** of the same instance, when there's no results PDF or no statement page. It's stored on `results_filings.ixbrl_url` from the integrated-filing list.
+  3. **Raw XBRL** only as a small secondary "Raw XBRL (machine-readable)" link (`Citation.raw_url`), kept for auditability.
+  4. **Screener cross-check** (`Citation.check_url`): the company page's `#quarters` section. Every screener citation also lands on its own section (`#profit-loss`, `#cash-flow`, …) from its locator.
+- **Filing links everywhere** (`finn.citations.filing_doc`): the attached PDF, else NSE's iXBRL view (board-meeting rows keep it in `raw`), else raw XBRL labelled as such. `-` and empty links are dropped. ZIPs are labelled "ZIP file".
+- **Contract:** `Citation.url` now means "the human-readable document to open". `source_type` still says where the value was read (`xbrl`), and the XBRL element stays in `locator`. Added `doc_kind`, `raw_url` and `check_url`, all optional, so stored data stays valid.
+- **Provenance sheet:**
+  - one row per document, with one Open button and the figures and XBRL elements it supplied listed underneath (previously the same XBRL file appeared once per input);
+  - the button says what opens and shows the page ("Results PDF · p.3", "iXBRL view", "Raw XBRL"), because mobile PDF viewers often ignore `#page`;
+  - figures never wrap mid-value; the label column wraps.
+- **Where it runs:** the page finder needs the PDF, and NSE archives are blocked from Render, so new pages are found by the results job on GitHub Actions. Render and local runs reuse stored pages.
+  - Existing cards were relinked by `python -m jobs.results --relink`: same numbers, new links, `detail_at` unchanged. It ran through the new `backfill.yml` workflow, which starts from `workflow_dispatch` or a committed request file under `backend/data/backfills/` (no API token on this machine).
+- **Order of deploys:** Render had to serve the new contract before any card carried `doc_kind`, because the API's models forbid unknown fields. That was checked through the proxy's new `GET /api/version`, and the backfill was triggered afterwards.
+- **No model calls:** page finding and relinking are code only.
+- **Alternatives:**
+  - Render the XBRL as an HTML table ourselves: rejected, because a reader should see the company's own document.
+  - Link only the iXBRL view: rejected; it's readable, but it isn't the statement as the company printed it.
+  - Leave XBRL and label it: rejected; it's still unreadable on a phone.

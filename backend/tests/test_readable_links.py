@@ -50,6 +50,8 @@ def test_value_printed_in_crore_lakh_or_million():
     assert value_printed("Revenue from operations 49,24,400.00", 49244.0)  # lakh
     assert value_printed("Revenue from operations 492,440", 49244.0)  # million
     assert not value_printed("Revenue from operations 12,345", 49244.0)
+    assert value_printed("Profit for the period 1,115.88", 111.5883)  # ₹ million
+    assert not value_printed("Other line 111.46", 111.5883)  # printed precision: not the same number
 
 
 XBRL = "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1_WEB.xml"

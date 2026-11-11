@@ -174,6 +174,7 @@ Plan approved 11 Nov with six amendments (DECISIONS: "Phase 4 frontend: plan ame
 - [ ] Rules editing (thresholds, categories, budget, quiet hours, snoozes) synced via `PUT /subscriptions/me` when Telegram is connected; push rule changes to a connected Telegram copy
 - [ ] PWA: manifest, icons, offline cache of the latest Brief (web push stays below the cut)
 - [ ] Wire `/ask` when Friday's backend lands: `setAskContext` chips → `POST /research/{sym}/ask` → answer sheet; enable free text
+- [x] **Readable Open links** (bug from the product owner's phone): results figures open the results PDF at the statement page → iXBRL view → raw XBRL as a secondary link; filing links readable-first everywhere; provenance grouped by document with page-numbered buttons; figures nowrap — `c59a247`, `41d6096`, backfill workflow `74f383f`, relink run 43106362843 (`5b87c57`)
 - [ ] Real-phone checks the browser pane can't do: iOS swipe vs scroll, haptics on Android, first paint on 4G
 - [ ] Brief payload: a 7-day Brief is ~1 MB uncompressed (results figures carry full provenance trees); brotli makes the transfer small, but consider trimming duplicated `inputs` server-side
 

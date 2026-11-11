@@ -52,6 +52,9 @@ export function CitationBlock({ c, label, children }: { c: Citation; label?: str
           “{c.quote}”
         </blockquote>
       )}
+      {c.page && (c.doc_kind === "results_pdf" || c.doc_kind === "pdf") && (
+        <p className="t-small mt-1 text-ink-3">Page {c.page} as your PDF viewer counts it; the document may print its own page numbers.</p>
+      )}
       {children}
       {c.locator && !c.quote && !children && <p className="mt-1 break-all font-mono text-[11px] text-ink-3">{c.locator}</p>}
       <RawLink c={c} />

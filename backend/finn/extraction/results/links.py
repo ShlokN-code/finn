@@ -46,27 +46,30 @@ class PageMatch:
     score: int
 
 
-def _numbers(text: str) -> list[float]:
+def _numbers(text: str) -> list[tuple[float, int]]:
+    """(value, decimals printed) for every number on the page."""
     out = []
     for tok in _NUM.findall(text):
         t = tok.strip("()").replace(",", "")
         if not t or t in ("-", "."):
             continue
         try:
-            out.append(abs(float(t)))
+            out.append((abs(float(t)), len(t.split(".")[1]) if "." in t else 0))
         except ValueError:
             continue
     return out
 
 
 def value_printed(text: str, value_cr: float | None) -> bool:
-    """Is a ₹ crore value printed on the page in crore, lakh or million (within the printed rounding)?"""
+    """Is a ₹ crore value printed on the page in crore, lakh or million? A printed number matches within half a
+    unit of its own last digit (or 0.05% for rounding of large values) — 111.46 is not 111.59."""
     if value_cr is None or value_cr == 0:
         return False
     targets = [abs(value_cr), abs(value_cr) * 100, abs(value_cr) * 10]  # crore, lakh, million
-    for n in _numbers(text):
+    for n, dec in _numbers(text):
+        tol = 0.5 * 10 ** (-dec)
         for t in targets:
-            if t >= 1 and abs(n - t) <= max(0.51, t * 0.0005):
+            if t >= 1 and abs(n - t) <= max(tol, t * 0.0005):
                 return True
     return False
 
