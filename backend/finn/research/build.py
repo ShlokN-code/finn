@@ -105,7 +105,11 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     # 6–7. Judge + reduce (strong model chain: 3.8 Flash → 3 Flash; never Flash-Lite). An unchanged dossier hits
     # the router's cache, so it costs no strong call.
     tags = {"symbol": symbol, "job_id": job_id}
-    strong_quota = run_judge(d, led, calls, router, tags, progress, now) if led else None
+    if led is not None:
+        strong_quota = run_judge(d, led, calls, router, tags, progress, now)
+    else:
+        strong_quota = None
+        progress.step("judge", "skipped", "No promises to judge")
     if disc.status == "ok" or calls:
         strong_quota = run_reduce(d, calls, router, tags, progress, now) or strong_quota
     else:

@@ -307,3 +307,10 @@ def test_far_off_scale_is_a_different_measure_not_a_beat():
     total = {**a("customer_growth", 119.3, unit="million", currency="not_money"), "metric": "customer franchise"}
     p = only(ledger([call(1, date(2025, 7, 20), [add]), call(2, date(2026, 5, 5), actuals=[total])]))
     assert p.verdict == "cant_score" and "different measure" in p.verdict_reason.text
+
+
+def test_accounting_schedules_are_not_promises():
+    esop = g("other", 2.19, 2.19, unit="crore", kind="point", metric="ESOP expense", fy=2025, terms=("ESOP",))
+    sbc = g("pat", 6.35, 6.35, unit="crore", kind="point", metric="share-based payment cost", fy=2026)
+    led = ledger([call(1, date(2024, 10, 20), [esop, sbc]), call(2, date(2025, 1, 20)), call(3, date(2025, 4, 20))])
+    assert led.promises == []

@@ -174,7 +174,14 @@ _GOVERNANCE = re.compile(
 )
 
 
+# Accounting schedules aren't commitments either: an ESOP / share-based-payment charge forecast is arithmetic on
+# grants already made, and calling it "quietly dropped" would be a false accusation.
+_ACCOUNTING = re.compile(r"\b(esops?|esos|share[- ]based|stock options?|employee stock|sbc)\b", re.I)
+
+
 def is_business_promise(it: dict) -> bool:
+    if _ACCOUNTING.search(it.get("metric", "")):
+        return False
     if it.get("metric_key") not in ("other", "headcount"):
         return True
     return not _GOVERNANCE.search(f"{it.get('metric', '')} {it.get('statement', '')}")

@@ -75,6 +75,30 @@ Plan approved 11 Nov; rules and budget in DECISIONS.md (three Phase 3 entries).
 - [x] Strong chain + 3.6/3.5 Flash; daily budgets count failed attempts — `0c239b2`, `28296c0`
 - [x] Rebuild the 4 demo tickers on Render and regenerate `web/public/fixtures/` (4 tickers incl. PERSISTENT) — 100 of 100 cited transcript quotes on their pages; every section ready except red flags / exchange data (Friday)
 
+### Unseen-ticker acceptance (11 Nov 2026, 15:52 IST)
+
+Draw: `python -m evals.research.draw_unseen --seed 20261111` → pool 2,375 EQ symbols after excluding 34 already built/tested (demo portfolio, demo tickers, anything in dossiers / research_documents / filings / results_filings / prices_daily, TRENT). Banks/NBFCs by company name (`FIN_RE`; the equity list carries no industry): 114 → **JPOLYINVST** (Jindal Poly Investment and Finance). Outside the Nifty 100 (NSE archive list, committed) and not financial: 2,190 → **LAXMIDENTL** (Laxmi Dental). Both have screener pages, so no extra draw. Built on Render through `POST /research/{sym}/build`, no code changes before the first run.
+
+**Run 1 (deployed `75bfa59`, before fixes)**
+
+| | JPOLYINVST (job 37) | LAXMIDENTL (job 38) |
+|---|---|---|
+| Build time | 8 s | 256 s |
+| Calls | 0 cheap · 1 strong (gemini-3.6-flash) | 8 cheap (Flash-Lite) · 2 strong (3.6 Flash); 14 attempts incl. retries; ≈ $0.22 list |
+| Documents | 0 transcripts on screener; annual report listed (not read yet) | 8/8 transcripts read (Q3 FY25–Q2 FY27); 432 quotes checked, 1 dropped, 5 re-anchored |
+| Snapshot | ready (3 lines, headline figures) | ready |
+| Trajectory | ready (10 y; template standard — screener shows this holding company in the standard format) | ready (7 y, listed Jan 2025) |
+| Promise Ledger | unavailable · no_transcripts | ready: 18 promises — 1 kept, 1 missed (FY26 growth 16.3% vs 20–25%), 3 quietly dropped, 6 not yet due, 7 can't score; tally 1 of 5 |
+| Cash quality | ready (CFO, CFO/PAT, FCF ✓ screener, capex) | ready |
+| Balance sheet | ready | ready |
+| Analysts | unavailable · no_transcripts | ready (Growth 8 calls, Margins 8, Market share 4…) |
+| Red flags | building · not_built_yet (Friday) | building · not_built_yet (Friday) |
+| Bull/bear | ready (3 + 3) | ready (3 + 3) |
+| Drivers | unavailable · no_transcripts | ready (Growth, Margins, Profit) |
+| Exchange data | building · not_built_yet (Friday) | building · not_built_yet (Friday) |
+
+General bugs found: (1) the judge step stays `pending` when there is no ledger; (2) "ESOP expense ₹2.19 Cr / ₹6.35 Cr" — share-based-payment cost schedules — entered the ledger and were marked **quietly dropped**, the most serious claim FINN makes.
+
 **Friday morning (product owner, 11 Nov: cut if Friday gets tight):**
 - [ ] Annual report sections (headings in code) → red flags (auditor opinion, contingent liabilities growth, related parties)
 - [ ] Ask: BM25 over the ticker's pages + facts → Flash-Lite (Groq fallback) → cited answer or "Not found in sources"
