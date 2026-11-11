@@ -6,6 +6,7 @@ recur, and how often, is decided in code from cited questions.
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 
 from finn.models import Claim, Driver, Figure
@@ -93,17 +94,26 @@ def drivers(symbol: str, calls: list[Call], promises: list[Promise]) -> list[Dri
     return out
 
 
+_SHARE_WORDS = r"share|contribut|of (?:our |the )?(?:total|overall|revenue|sales|business|topline)|mix"
+
+
 def segments(call: Call | None) -> list[Figure]:
-    """Segment figures from the latest call, as reported (with quote)."""
+    """Segment figures from the latest call, as reported (with quote). A % counts only as a share of the business
+    when its quote says so and the call's shares don't add up past 100% (else they are growth rates); other
+    values must be money."""
     if call is None:
         return []
+    segs = call.facts.get("segments", [])
+    claimed = [x["share_pct"] for x in segs if x.get("share_pct") is not None and 0 < x["share_pct"] <= 100]
+    shares_ok = sum(claimed) <= 105
     out = []
-    for sgm in call.facts.get("segments", []):
-        if sgm.get("share_pct") is not None:
-            value, unit, raw = sgm["share_pct"], "PCT", f"{sgm['share_pct']:g}%"
+    for sgm in segs:
+        share = sgm.get("share_pct")
+        if shares_ok and share is not None and 0 < share <= 100 and re.search(_SHARE_WORDS, sgm["quote"].lower()):
+            value, unit, raw = share, "PCT", f"{share:g}%"
         elif sgm.get("value") is not None:
-            fam, f = normalise_unit(sgm.get("unit_text"), "INR")
-            if fam not in ("INR_CR", "PCT"):
+            fam, f = normalise_unit(sgm.get("unit_text"), "INR", "revenue")
+            if fam != "INR_CR":
                 continue
             value, unit, raw = sgm["value"] * f, fam, f"{sgm['value']:g} {sgm.get('unit_text') or ''}".strip()
         else:
