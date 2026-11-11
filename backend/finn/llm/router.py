@@ -189,7 +189,7 @@ def research_caps() -> dict[str, int]:
     return {
         "research.ask": _env_int("RESEARCH_ASK_RPD", 40),
         "research.cheap": _env_int("RESEARCH_CHEAP_RPD", 220),
-        "research.strong": _env_int("RESEARCH_STRONG_RPD", 60),
+        "research.strong": _env_int("RESEARCH_STRONG_RPD", 80),  # 4 strong models × 20 a day
     }
 
 
