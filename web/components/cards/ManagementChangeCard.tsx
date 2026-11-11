@@ -1,5 +1,6 @@
 // Management change: the incoming person's mini-CV — filing first. Every web fact says "web · unverified",
 // names its kind of source (profile, bio page, prior employer, news) and links to the snippet's URL.
+import { sourceHref } from "@/lib/format";
 import type { Citation, ManagementDetail } from "@/lib/types";
 import { FigureValue } from "./FigureValue";
 
@@ -47,7 +48,7 @@ export function ManagementBody({ d }: { d: ManagementDetail }) {
             <ul className="mt-1 space-y-0.5 text-xs">
               {p.prior_roles.map((r, i) => (
                 <li key={i}>
-                  <a href={r.citation.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                  <a href={sourceHref(r.citation)} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     {r.role ? `${r.role}, ` : ""}
                     {r.company}
                     {r.period_citation ? "" : years(r.start_year, r.end_year)}

@@ -155,7 +155,10 @@ export function HiddenSheet({ open, data, onClose }: { open: boolean; data: Brie
                         <span className="w-24 shrink-0 font-semibold">{i.symbol}</span>
                         <span className="min-w-0 flex-1 text-ink-2">
                           <span className="line-clamp-2">{i.subject}</span>
-                          <span className="text-ink-3">{istWhen(i.filed_at)}</span>
+                          <span className="text-ink-3">
+                            {istWhen(i.filed_at)}
+                            {i.url?.includes("/ixbrl/") ? " · iXBRL view" : i.url?.toLowerCase().endsWith(".xml") ? " · raw XBRL" : ""}
+                          </span>
                         </span>
                         <ArrowUpRight className="mt-0.5 size-3.5 shrink-0 text-ink-3" />
                       </a>

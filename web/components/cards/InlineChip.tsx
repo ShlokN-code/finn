@@ -1,4 +1,5 @@
 // Inline chip for dividends and bonus/splits, e.g. "₹8 dividend · record 21 Nov".
+import { sourceHref } from "@/lib/format";
 import type { ChipDetail } from "@/lib/types";
 
 export function InlineChip({ symbol, d }: { symbol: string; d: ChipDetail }) {
@@ -9,7 +10,7 @@ export function InlineChip({ symbol, d }: { symbol: string; d: ChipDetail }) {
     </span>
   );
   return d.citation ? (
-    <a href={d.citation.url} target="_blank" rel="noopener noreferrer" className="underline decoration-ink-3/40 underline-offset-4">
+    <a href={sourceHref(d.citation)} target="_blank" rel="noopener noreferrer" className="underline decoration-ink-3/40 underline-offset-4">
       {body}
     </a>
   ) : (

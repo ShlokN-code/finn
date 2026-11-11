@@ -1,4 +1,5 @@
 // Price/volume alert: the move, volume, z-score, and the explanation chain (filing → deal → sector → none).
+import { sourceHref } from "@/lib/format";
 import type { PriceVolumeDetail } from "@/lib/types";
 import { FigureValue } from "./FigureValue";
 
@@ -38,7 +39,7 @@ export function PriceVolumeBody({ d }: { d: PriceVolumeDetail }) {
             <li key={i} className={e.kind === "none" ? "font-medium text-warn" : ""}>
               {e.citation ? (
                 <a
-                  href={e.citation.url}
+                  href={sourceHref(e.citation)}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(ev) => ev.stopPropagation()}

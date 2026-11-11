@@ -31,7 +31,7 @@ export function FigureValue({
           e.stopPropagation();
           setOpen(true);
         }}
-        className={`hit tabular-nums underline decoration-dotted decoration-1 underline-offset-[5px] ${
+        className={`hit whitespace-nowrap tabular-nums underline decoration-dotted decoration-1 underline-offset-[5px] ${
           unverified ? "decoration-warn" : "decoration-ink-3/70"
         } ${className}`}
         aria-label={`${f.label}: ${text}${unverified ? " (unverified)" : ""} — show source`}

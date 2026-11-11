@@ -141,18 +141,83 @@ export function displayHeadline(card: Card): { headline: string; sub: string | n
   return { headline: cleaned, sub: null };
 }
 
+// --- Source links: every Open lands on a human-readable document (DECISIONS: readable Open links) -----------
+
+type DocKind = NonNullable<Citation["doc_kind"]>;
 const PDF_TYPES = new Set(["exchange_filing", "concall_transcript", "investor_presentation", "annual_report"]);
+const SCREENER_SECTION: Record<string, string> = {
+  quarters: "Quarters",
+  "profit-loss": "Profit & loss",
+  "balance-sheet": "Balance sheet",
+  "cash-flow": "Cash flows",
+  ratios: "Ratios",
+  shareholding: "Shareholding",
+  "top-ratios": "Key ratios",
+  schedules: "Cash flows",
+};
+
+/** What a citation's url opens. Stored cards from before the change carry no doc_kind: infer it. */
+export function docKind(c: Citation): DocKind {
+  if (c.doc_kind) return c.doc_kind;
+  const u = c.url.toLowerCase().split("?")[0];
+  if (u.endsWith(".xml")) return "raw_xbrl";
+  if (u.endsWith(".zip")) return "zip";
+  if (u.includes("/ixbrl/") || u.endsWith(".html")) return c.source_type === "web_profile" ? "web" : "ixbrl";
+  if (c.source_type === "screener_table") return "screener";
+  if (u.endsWith(".pdf") || PDF_TYPES.has(c.source_type) || u.includes("annpdfopen")) return "pdf";
+  return "web";
+}
+
+function screenerSection(c: Citation): string | null {
+  const m = /^screener:([a-z-]+)/.exec(c.locator ?? "");
+  return m ? m[1] : null;
+}
+
 export function sourceHref(c: Citation): string {
-  return c.page && PDF_TYPES.has(c.source_type) ? `${c.url}#page=${c.page}` : c.url;
+  const kind = docKind(c);
+  if (kind === "screener") {
+    const sec = screenerSection(c);
+    const base = c.url.split("#")[0];
+    return sec ? `${base}#${sec === "schedules" ? "cash-flow" : sec}` : base;
+  }
+  return c.page && (kind === "pdf" || kind === "results_pdf") ? `${c.url}#page=${c.page}` : c.url;
+}
+
+/** The Open button: says what opens, with the page visible (mobile PDF viewers often ignore #page). */
+export function openLabel(c: Citation): string {
+  const page = c.page ? ` · p.${c.page}` : "";
+  switch (docKind(c)) {
+    case "results_pdf":
+      return `Results PDF${page}`;
+    case "pdf":
+      return `PDF${page}`;
+    case "ixbrl":
+      return "iXBRL view";
+    case "raw_xbrl":
+      return "Raw XBRL";
+    case "zip":
+      return "ZIP file";
+    case "screener": {
+      const sec = screenerSection(c);
+      return `screener.in${sec && SCREENER_SECTION[sec] ? ` · ${SCREENER_SECTION[sec]}` : ""}`;
+    }
+    default:
+      return "Web page";
+  }
 }
 
 export function sourceLabel(c: Citation): string {
   const page = c.page ? ` p.${c.page}` : "";
   switch (c.source_type) {
-    case "exchange_filing":
+    case "exchange_filing": {
+      const k = docKind(c);
+      if (k === "ixbrl") return `${c.exchange ?? "NSE"} filing · iXBRL`;
+      if (k === "raw_xbrl") return `${c.exchange ?? "NSE"} filing · raw XBRL`;
+      if (k === "zip") return `${c.exchange ?? "NSE"} filing · ZIP`;
       return `${c.exchange ?? "NSE"} filing${page}`;
+    }
     case "xbrl":
-      return "NSE XBRL";
+      return docKind(c) === "results_pdf" ? `Results PDF${page}` : docKind(c) === "ixbrl" ? "NSE iXBRL" : "NSE XBRL";
     case "screener_table":
       return "screener.in";
     case "concall_transcript":
