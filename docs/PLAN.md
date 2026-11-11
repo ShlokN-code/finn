@@ -69,14 +69,16 @@ Plan approved 11 Nov; rules and budget in DECISIONS.md (three Phase 3 entries).
 - [x] Numeric Promise Ledger + analysts + drivers in builds — `85c0cd4` (INFY local: 4 kept, 1 missed, 1 moved)
 - [x] **Render env (product owner):** DEPLOY.md §7 — set 11 Nov
 - [x] Build the 4 demo tickers on the deployed API; quotes checked — 20 of 20 verdict quotes on their cited pages (PERSISTENT, INFY, BAJFINANCE; POLYCAB has no scorable promise yet)
-- [ ] JUDGE (strong #1): qualitative promises + paraphrased cross-call links, citing both calls — **Wed 11 Nov**
-- [ ] REDUCE (strong #2): snapshot text, trajectory line, bull/bear with `{F#}` placeholders rendered in code — **Wed 11 Nov**
-- [ ] Rebuild the 4 demo tickers on Render and regenerate `web/public/fixtures/` — **Wed 11 Nov** (Thursday is frontend-only)
+- [x] JUDGE (strong #1): qualitative promises + paraphrased cross-call links, citing both calls — `eebcf9a`, guards `56e9442`
+- [x] REDUCE (strong #2): snapshot text, trajectory line, bull/bear with `{F#}` placeholders rendered in code — `eebcf9a` … `c434aa8`
+- [x] Credibility tally always shown, % from n ≥ 5 (product owner) — `540cb77`
+- [x] Strong chain + 3.6/3.5 Flash; daily budgets count failed attempts — `0c239b2`, `28296c0`
+- [x] Rebuild the 4 demo tickers on Render and regenerate `web/public/fixtures/` (4 tickers incl. PERSISTENT) — 100 of 100 cited transcript quotes on their pages; every section ready except red flags / exchange data (Friday)
 
 **Friday morning (product owner, 11 Nov: cut if Friday gets tight):**
 - [ ] Annual report sections (headings in code) → red flags (auditor opinion, contingent liabilities growth, related parties)
 - [ ] Ask: BM25 over the ticker's pages + facts → Flash-Lite (Groq fallback) → cited answer or "Not found in sources"
-- [ ] Nightly refresh on Actions (code-only recompute; rebuild only on a new document; first-time builds only for the 4 demo tickers); DB size guard
+- [ ] Nightly refresh on Actions (code-only recompute; rebuild only on a new document; first-time builds only for the 4 demo tickers); DB size guard. **Reuse the previous summary unless the document set changed**: REDUCE's facts include the day's market cap, so a forced rebuild spends a strong call even with no new document
 - [ ] On-demand NSE dispatch (section above) → `exchange_data`
 - [ ] Two tickers outside the demo set (one bank); cost report; README
 - [x] Frontend fixtures: validated INFY, BAJFINANCE, POLYCAB dossiers in `web/public/fixtures/` (`python -m jobs.research export`; built locally against Supabase — rebuild on Render once §7 is set)

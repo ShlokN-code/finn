@@ -6,192 +6,130 @@
   "name": "Bajaj Finance Limited",
   "template": "nbfc",
   "basis": "consolidated",
-  "as_of": "2026-11-11T13:36:10.811775+05:30",
-  "built_at": "2026-11-11T08:10:20.103904Z",
+  "as_of": "2026-11-11T09:35:36.901511Z",
+  "built_at": "2026-11-11T09:35:36.369404Z",
   "snapshot": {
    "meta": {
-    "status": "partial",
-    "reason": "not_built_yet",
-    "note": "Headline numbers ready; business summary is being written",
-    "as_of": "2026-11-11T13:36:10.811775+05:30",
+    "status": "ready",
+    "reason": null,
+    "note": null,
+    "as_of": "2026-11-11T09:35:36.369404Z",
     "resume_after": null,
-    "written_by": null
+    "written_by": "gemini-3.6-flash"
    },
-   "lines": [],
-   "segments": [
+   "lines": [
     {
-     "label": "urban consumer finance",
-     "value": 43.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
+     "text": "Bajaj Finance reported a market capitalization of ₹6,67,889 Cr.",
      "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 3,
-      "quote": "urban consumer finance grew by 43%, rural consumer finance by 63%.",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "43 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in key ratios",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:top-ratios/Market Cap",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      }
+     ]
     },
     {
-     "label": "rural consumer finance",
-     "value": 63.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
+     "text": "In FY26, net interest income reached ₹53,086 Cr while PAT stood at ₹19,332 Cr.",
      "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 3,
-      "quote": "urban consumer finance grew by 43%, rural consumer finance by 63%.",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "63 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Revenue/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Interest/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      }
+     ]
     },
     {
-     "label": "MFI",
-     "value": 54.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
+     "text": "The company recorded an ROE of 18.0% and an ROA of 3.8% during FY26.",
      "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 3,
-      "quote": "MFI grew on a low base, grew 54%, CV and Tractor on low base grew 89%, LAS grew 42%,",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "54 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
-    },
-    {
-     "label": "CV and Tractor",
-     "value": 89.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
-     "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 3,
-      "quote": "MFI grew on a low base, grew 54%, CV and Tractor on low base grew 89%, LAS grew 42%,",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "89 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
-    },
-    {
-     "label": "LAS",
-     "value": 42.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
-     "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 3,
-      "quote": "MFI grew on a low base, grew 54%, CV and Tractor on low base grew 89%, LAS grew 42%,",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "42 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
-    },
-    {
-     "label": "MSME",
-     "value": 3.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
-     "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 4,
-      "quote": "MSME grew by 3%.",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "3 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
-    },
-    {
-     "label": "Gold loan portfolio",
-     "value": 4.1,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
-     "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=7873abcb-7f97-487d-a474-028b0a26feea.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 4,
-      "quote": "Gold loan book portfolio continued to grow, it's now 4.1% of balance sheet.",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:10:20.103904Z"
-     },
-     "raw": "4.1%",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in ratios",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:ratios/ROE %/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in balance sheet",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:balance-sheet/Total Assets/Mar 2025",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in balance sheet",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:balance-sheet/Total Assets/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      }
+     ]
     }
    ],
+   "segments": [],
    "headline": [
     {
      "label": "Market cap",
-     "value": 667796.0,
+     "value": 667889.0,
      "unit": "INR_CR",
      "period": {
       "kind": "instant",
@@ -210,9 +148,9 @@
       "quote": null,
       "locator": "screener:top-ratios/Market Cap",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
      },
-     "raw": "₹ 6,67,796 Cr.",
+     "raw": "₹ 6,67,889 Cr.",
      "raw_unit": "crore",
      "check_note": null,
      "formula": null,
@@ -257,7 +195,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "81,985",
        "raw_unit": "crore",
@@ -286,7 +224,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Interest/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "28,899",
        "raw_unit": "crore",
@@ -317,7 +255,7 @@
       "quote": null,
       "locator": "screener:profit-loss/Net Profit/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
      },
      "raw": "19,332",
      "raw_unit": "crore",
@@ -346,7 +284,7 @@
       "quote": null,
       "locator": "screener:ratios/ROE %/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
      },
      "raw": "18%",
      "raw_unit": null,
@@ -411,7 +349,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "26,673",
          "raw_unit": "crore",
@@ -440,7 +378,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,519",
          "raw_unit": "crore",
@@ -489,7 +427,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "81,985",
          "raw_unit": "crore",
@@ -518,7 +456,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "28,899",
          "raw_unit": "crore",
@@ -569,7 +507,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "4,420",
        "raw_unit": "crore",
@@ -598,7 +536,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "19,332",
        "raw_unit": "crore",
@@ -615,7 +553,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T13:36:10.811775+05:30",
+    "as_of": "2026-11-11T09:35:36.901511Z",
     "resume_after": null,
     "written_by": null
    },
@@ -664,7 +602,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,970",
          "raw_unit": "crore",
@@ -693,7 +631,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "3,853",
          "raw_unit": "crore",
@@ -742,7 +680,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "12,746",
          "raw_unit": "crore",
@@ -771,7 +709,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "4,696",
          "raw_unit": "crore",
@@ -820,7 +758,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "18,487",
          "raw_unit": "crore",
@@ -849,7 +787,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "6,723",
          "raw_unit": "crore",
@@ -898,7 +836,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "26,375",
          "raw_unit": "crore",
@@ -927,7 +865,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,608",
          "raw_unit": "crore",
@@ -976,7 +914,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "26,673",
          "raw_unit": "crore",
@@ -1005,7 +943,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,519",
          "raw_unit": "crore",
@@ -1054,7 +992,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "31,633",
          "raw_unit": "crore",
@@ -1083,7 +1021,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,848",
          "raw_unit": "crore",
@@ -1132,7 +1070,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "41,411",
          "raw_unit": "crore",
@@ -1161,7 +1099,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "12,701",
          "raw_unit": "crore",
@@ -1210,7 +1148,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "54,972",
          "raw_unit": "crore",
@@ -1239,7 +1177,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "18,886",
          "raw_unit": "crore",
@@ -1288,7 +1226,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "68,832",
          "raw_unit": "crore",
@@ -1317,7 +1255,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "24,991",
          "raw_unit": "crore",
@@ -1366,7 +1304,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "81,985",
          "raw_unit": "crore",
@@ -1395,7 +1333,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "28,899",
          "raw_unit": "crore",
@@ -1433,7 +1371,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1,836",
        "raw_unit": "crore",
@@ -1462,7 +1400,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "2,496",
        "raw_unit": "crore",
@@ -1491,7 +1429,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "3,995",
        "raw_unit": "crore",
@@ -1520,7 +1458,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "5,264",
        "raw_unit": "crore",
@@ -1549,7 +1487,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "4,420",
        "raw_unit": "crore",
@@ -1578,7 +1516,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "7,028",
        "raw_unit": "crore",
@@ -1607,7 +1545,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "11,508",
        "raw_unit": "crore",
@@ -1636,7 +1574,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "14,451",
        "raw_unit": "crore",
@@ -1665,7 +1603,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "16,779",
        "raw_unit": "crore",
@@ -1694,7 +1632,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "19,332",
        "raw_unit": "crore",
@@ -1730,7 +1668,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "22%",
        "raw_unit": null,
@@ -1759,7 +1697,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "20%",
        "raw_unit": null,
@@ -1788,7 +1726,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "22%",
        "raw_unit": null,
@@ -1817,7 +1755,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "20%",
        "raw_unit": null,
@@ -1846,7 +1784,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "13%",
        "raw_unit": null,
@@ -1875,7 +1813,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "17%",
        "raw_unit": null,
@@ -1904,7 +1842,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "23%",
        "raw_unit": null,
@@ -1933,7 +1871,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "22%",
        "raw_unit": null,
@@ -1962,7 +1900,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "19%",
        "raw_unit": null,
@@ -1991,7 +1929,7 @@
         "quote": null,
         "locator": "screener:ratios/ROE %/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "18%",
        "raw_unit": null,
@@ -2027,7 +1965,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "9,970",
        "raw_unit": "crore",
@@ -2056,7 +1994,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "12,746",
        "raw_unit": "crore",
@@ -2085,7 +2023,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "18,487",
        "raw_unit": "crore",
@@ -2114,7 +2052,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "26,375",
        "raw_unit": "crore",
@@ -2143,7 +2081,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "26,673",
        "raw_unit": "crore",
@@ -2172,7 +2110,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "31,633",
        "raw_unit": "crore",
@@ -2201,7 +2139,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "41,411",
        "raw_unit": "crore",
@@ -2230,7 +2168,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "54,972",
        "raw_unit": "crore",
@@ -2259,7 +2197,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "68,832",
        "raw_unit": "crore",
@@ -2288,7 +2226,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Revenue/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "81,985",
        "raw_unit": "crore",
@@ -2324,7 +2262,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Sep 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.91%",
        "raw_unit": null,
@@ -2353,7 +2291,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Dec 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.95%",
        "raw_unit": null,
@@ -2382,7 +2320,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.85%",
        "raw_unit": null,
@@ -2411,7 +2349,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Jun 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.86%",
        "raw_unit": null,
@@ -2440,7 +2378,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Sep 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.06%",
        "raw_unit": null,
@@ -2469,7 +2407,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Dec 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.12%",
        "raw_unit": null,
@@ -2498,7 +2436,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.96%",
        "raw_unit": null,
@@ -2527,7 +2465,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Jun 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.03%",
        "raw_unit": null,
@@ -2556,7 +2494,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Sep 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.24%",
        "raw_unit": null,
@@ -2585,7 +2523,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Dec 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.21%",
        "raw_unit": null,
@@ -2614,7 +2552,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.01%",
        "raw_unit": null,
@@ -2643,7 +2581,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Jun 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.96%",
        "raw_unit": null,
@@ -2672,7 +2610,7 @@
         "quote": null,
         "locator": "screener:quarters/Gross NPA %/Sep 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "1.06%",
        "raw_unit": null,
@@ -2708,7 +2646,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Sep 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.31%",
        "raw_unit": null,
@@ -2737,7 +2675,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Dec 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.37%",
        "raw_unit": null,
@@ -2766,7 +2704,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.37%",
        "raw_unit": null,
@@ -2795,7 +2733,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Jun 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.38%",
        "raw_unit": null,
@@ -2824,7 +2762,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Sep 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.46%",
        "raw_unit": null,
@@ -2853,7 +2791,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Dec 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.48%",
        "raw_unit": null,
@@ -2882,7 +2820,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.44%",
        "raw_unit": null,
@@ -2911,7 +2849,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Jun 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.50%",
        "raw_unit": null,
@@ -2940,7 +2878,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Sep 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.60%",
        "raw_unit": null,
@@ -2969,7 +2907,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Dec 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.47%",
        "raw_unit": null,
@@ -2998,7 +2936,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.41%",
        "raw_unit": null,
@@ -3027,7 +2965,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Jun 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.39%",
        "raw_unit": null,
@@ -3056,7 +2994,7 @@
         "quote": null,
         "locator": "screener:quarters/Net NPA %/Sep 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "0.42%",
        "raw_unit": null,
@@ -3125,7 +3063,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "41,411",
          "raw_unit": "crore",
@@ -3154,7 +3092,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "12,701",
          "raw_unit": "crore",
@@ -3203,7 +3141,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "81,985",
          "raw_unit": "crore",
@@ -3232,7 +3170,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "28,899",
          "raw_unit": "crore",
@@ -3301,7 +3239,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "26,673",
          "raw_unit": "crore",
@@ -3330,7 +3268,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,519",
          "raw_unit": "crore",
@@ -3379,7 +3317,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Revenue/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "81,985",
          "raw_unit": "crore",
@@ -3408,7 +3346,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Interest/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "28,899",
          "raw_unit": "crore",
@@ -3459,7 +3397,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "11,508",
        "raw_unit": "crore",
@@ -3488,7 +3426,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "19,332",
        "raw_unit": "crore",
@@ -3537,7 +3475,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "4,420",
        "raw_unit": "crore",
@@ -3566,7 +3504,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "19,332",
        "raw_unit": "crore",
@@ -3577,16 +3515,65 @@
      ]
     }
    ],
-   "note": null
+   "note": {
+    "text": "Between FY17 and FY26, total revenue expanded from ₹9,970 Cr to ₹81,985 Cr, while ROE moved from 22.0% to 18.0%.",
+    "status": "verified",
+    "citations": [
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+      "title": "screener.in profit & loss",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:profit-loss/Revenue/Mar 2017",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
+     },
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+      "title": "screener.in profit & loss",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:profit-loss/Revenue/Mar 2026",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
+     },
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+      "title": "screener.in ratios",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:ratios/ROE %/Mar 2017",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
+     },
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+      "title": "screener.in ratios",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:ratios/ROE %/Mar 2026",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:35:36.901511Z"
+     }
+    ]
+   }
   },
   "ledger": {
    "meta": {
     "status": "ready",
     "reason": null,
-    "note": "Credibility needs 5+ scored promises (have 4)",
-    "as_of": "2026-11-11T08:10:20.103904Z",
+    "note": "1 of 4 scored promises kept — a % score needs 5 or more",
+    "as_of": "2026-11-11T09:35:36.369404Z",
     "resume_after": null,
-    "written_by": null
+    "written_by": "gemini-3.8-flash"
    },
    "promises": [
     {
@@ -3628,7 +3615,7 @@
         "quote": "The AUM growth estimates of AUM remain at 24 to 25% aided by new lines of businesses launched in last two to three years.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       },
@@ -3651,7 +3638,7 @@
         "quote": "So we now would circle up our guidance to 22- 23% growth for full year versus 24-25% that we had pencilled in January'25, when we talked about.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       },
@@ -3674,7 +3661,7 @@
         "quote": "overall, we've taken a view that the top line growth or AUM growth will gravitate between 22% and 23%, but more likely to be 22% on a full year basis.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -3698,7 +3685,7 @@
        "quote": "overall, we've taken a view that the top line growth or AUM growth will gravitate between 22% and 23%, but more likely to be 22% on a full year basis.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -3719,7 +3706,7 @@
         "quote": "The AUM growth estimates of AUM remain at 24 to 25% aided by new lines of businesses launched in last two to three years.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -3730,7 +3717,7 @@
         "quote": "So we now would circle up our guidance to 22- 23% growth for full year versus 24-25% that we had pencilled in January'25, when we talked about.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -3755,7 +3742,7 @@
        "quote": "AUM, I talked about grew 22%. PAT grew 24%, ROA, and opex to NTI I talked about it...",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "raw": "22 %",
       "raw_unit": "%",
@@ -3768,9 +3755,9 @@
      "driver_ids": []
     },
     {
-     "id": "2d580f5b47dc8cba",
+     "id": "9badbc62e37fb7da",
      "symbol": "BAJFINANCE",
-     "metric": "customer franchise",
+     "metric": "franchise count",
      "metric_key": "customer_growth",
      "measure": "level",
      "kind": "at_least",
@@ -3785,77 +3772,8 @@
       "end": "2026-03-31",
       "label": "FY26"
      },
-     "statement": "customer franchise ≥ 120 million (FY26)",
+     "statement": "franchise count ≥ 120 million (FY26)",
      "statements": [
-      {
-       "doc_id": "6e1438fab845f05cfd6e880eb7e55ee41c0631697393ec91e2b466b56a5cbc72",
-       "call_label": "Q4 FY25 call",
-       "made_on": "2025-04-29",
-       "kind": "range",
-       "target_low": 14000000.0,
-       "target_high": 16000000.0,
-       "unit": "COUNT",
-       "raw_target": "14–16 million",
-       "period_text": "FY26",
-       "quote": {
-        "source_type": "concall_transcript",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b5b2e46c-df69-4427-b981-219268c6c43c.pdf",
-        "title": "Q4 FY25 call transcript",
-        "exchange": null,
-        "page": 6,
-        "quote": "The customer franchise we remain confident to add 14 to 16 million customers in FY26.",
-        "locator": null,
-        "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
-       },
-       "speaker": "Anup Saha"
-      },
-      {
-       "doc_id": "28aaace6ecf860e5cf778977b4882005df7d960093072ce286fcdb71b648c047",
-       "call_label": "Q2 FY26 call",
-       "made_on": "2025-11-10",
-       "kind": "range",
-       "target_low": 16000000.0,
-       "target_high": 17000000.0,
-       "unit": "COUNT",
-       "raw_target": "16–17 million",
-       "period_text": "FY '26",
-       "quote": {
-        "source_type": "concall_transcript",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=39ea369b-a7b8-42e8-b787-2d1df4efa020.pdf",
-        "title": "Q2 FY26 call transcript",
-        "exchange": null,
-        "page": 4,
-        "quote": "We now expect to add 16 to 17 million new customers in FY '26.",
-        "locator": null,
-        "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
-       },
-       "speaker": "Rajeev Jain"
-      },
-      {
-       "doc_id": "38b727e9eadf30596cdadc3744bc059195bc2b23ff9a4c71e1dc3108706b4b64",
-       "call_label": "Q3 FY26 call",
-       "made_on": "2026-02-03",
-       "kind": "range",
-       "target_low": 17000000.0,
-       "target_high": 18000000.0,
-       "unit": "COUNT",
-       "raw_target": "17–18 million",
-       "period_text": "FY '26",
-       "quote": {
-        "source_type": "concall_transcript",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
-        "title": "Q3 FY26 call transcript",
-        "exchange": null,
-        "page": 4,
-        "quote": "We now expect 17 to 18 million customers to be added to the franchise in FY '26. It will be on back of 17 million customers we added in the previous fiscal as well.",
-        "locator": null,
-        "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
-       },
-       "speaker": "Rajeev Jain"
-      },
       {
        "doc_id": "38b727e9eadf30596cdadc3744bc059195bc2b23ff9a4c71e1dc3108706b4b64",
        "call_label": "Q3 FY26 call",
@@ -3875,7 +3793,7 @@
         "quote": "The overall franchise stood at 115 million. We are well on course to cross 120 million franchise in the current year.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -3899,11 +3817,11 @@
        "quote": "The overall franchise stood at 115 million. We are well on course to cross 120 million franchise in the current year.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
-     "revision": "raised",
+     "revision": "none",
      "verdict": "missed",
      "verdict_by": "code",
      "verdict_model": null,
@@ -3920,7 +3838,7 @@
         "quote": "The overall franchise stood at 115 million. We are well on course to cross 120 million franchise in the current year.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -3931,7 +3849,7 @@
         "quote": "Overall, the customer franchise as of FY'26, March stood at 119.3 million customers.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -3956,7 +3874,7 @@
        "quote": "Overall, the customer franchise as of FY'26, March stood at 119.3 million customers.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "raw": "119.3 million",
       "raw_unit": "million",
@@ -4007,7 +3925,7 @@
         "quote": "We now expect MSME business to grow in the current full fiscal by 10-12% only.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4031,7 +3949,7 @@
        "quote": "We now expect MSME business to grow in the current full fiscal by 10-12% only.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4052,7 +3970,7 @@
         "quote": "We now expect MSME business to grow in the current full fiscal by 10-12% only.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -4063,7 +3981,7 @@
         "quote": "MSME continue to see muted growth. It grew by 6% only on account of a set of proactive risk actions that we have been taking since Q2 FY'26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4088,7 +4006,7 @@
        "quote": "MSME continue to see muted growth. It grew by 6% only on account of a set of proactive risk actions that we have been taking since Q2 FY'26.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "raw": "6 %",
       "raw_unit": "%",
@@ -4139,7 +4057,7 @@
         "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4163,7 +4081,7 @@
        "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4184,7 +4102,7 @@
         "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -4195,7 +4113,7 @@
         "quote": "AUM, I talked about grew 22%. PAT grew 24%, ROA, and opex to NTI I talked about it...",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4220,7 +4138,7 @@
        "quote": "AUM, I talked about grew 22%. PAT grew 24%, ROA, and opex to NTI I talked about it...",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "raw": "24 %",
       "raw_unit": "%",
@@ -4271,7 +4189,7 @@
         "quote": "On opex to NTI, we expect to see continued improvement of 25 to 40 basis points from current levels.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       },
@@ -4294,7 +4212,7 @@
         "quote": "Overall, we are confident of delivering 25 to 40 basis points improvement for FY '27 in opex to NTI.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       },
@@ -4317,7 +4235,7 @@
         "quote": "We remain pretty comfortable place to deliver a 25 to 40 basis point improvement in FY27 on opex-to-NTI.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4341,7 +4259,7 @@
        "quote": "We remain pretty comfortable place to deliver a 25 to 40 basis point improvement in FY27 on opex-to-NTI.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4362,7 +4280,7 @@
         "quote": "We remain pretty comfortable place to deliver a 25 to 40 basis point improvement in FY27 on opex-to-NTI.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4410,7 +4328,7 @@
         "quote": "and we remain quite clear about ending the year with close to 2,800 on stand-alone gold branches.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4434,7 +4352,7 @@
        "quote": "and we remain quite clear about ending the year with close to 2,800 on stand-alone gold branches.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4455,7 +4373,7 @@
         "quote": "and we remain quite clear about ending the year with close to 2,800 on stand-alone gold branches.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4503,7 +4421,7 @@
         "quote": "We are well on track to deliver between 60 million to 62 million new loans in FY27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4527,7 +4445,7 @@
        "quote": "We are well on track to deliver between 60 million to 62 million new loans in FY27.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4548,7 +4466,7 @@
         "quote": "We are well on track to deliver between 60 million to 62 million new loans in FY27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4596,7 +4514,7 @@
         "quote": "We are clear about adding between 18 MM to 20 MM customers to the franchise in FY27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4620,7 +4538,7 @@
        "quote": "We are clear about adding between 18 MM to 20 MM customers to the franchise in FY27.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4641,7 +4559,7 @@
         "quote": "We are clear about adding between 18 MM to 20 MM customers to the franchise in FY27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4689,7 +4607,7 @@
         "quote": "I would say probably between 26%, 27% growth we should deliver now on a full year basis.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4713,7 +4631,7 @@
        "quote": "I would say probably between 26%, 27% growth we should deliver now on a full year basis.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4734,7 +4652,7 @@
         "quote": "I would say probably between 26%, 27% growth we should deliver now on a full year basis.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4782,7 +4700,7 @@
         "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4806,7 +4724,7 @@
        "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4827,7 +4745,7 @@
         "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4875,7 +4793,7 @@
         "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4899,7 +4817,7 @@
        "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -4920,7 +4838,7 @@
         "quote": "By year-end we foresee 2,700 to 2,800 branches, all goes well, maybe 3,000 branches and AUM of between INR29,000 crores and INR31,000 crores, all organic.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -4968,7 +4886,7 @@
         "quote": "I am targeting that next year we should be delivering INR100,000 crores volume between customer centricity, AI and tech transformation and digital transformation",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -4992,7 +4910,7 @@
        "quote": "I am targeting that next year we should be delivering INR100,000 crores volume between customer centricity, AI and tech transformation and digital transformation",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5013,7 +4931,7 @@
         "quote": "I am targeting that next year we should be delivering INR100,000 crores volume between customer centricity, AI and tech transformation and digital transformation",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5023,7 +4941,7 @@
      "driver_ids": []
     },
     {
-     "id": "7f7f32ffbb9bea6f",
+     "id": "7667159728341256",
      "symbol": "BAJFINANCE",
      "metric": "MSME growth",
      "metric_key": "loan_growth",
@@ -5061,7 +4979,7 @@
         "quote": "We expect that it should come back to double-digit growth or the company growth momentum between Q2 and Q3 of FY'27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5085,7 +5003,7 @@
        "quote": "We expect that it should come back to double-digit growth or the company growth momentum between Q2 and Q3 of FY'27.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5106,7 +5024,7 @@
         "quote": "We expect that it should come back to double-digit growth or the company growth momentum between Q2 and Q3 of FY'27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5154,7 +5072,7 @@
         "quote": "We foresee gold loan portfolio to probably cross 5-odd percent of total AUM by FY'27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5178,7 +5096,7 @@
        "quote": "We foresee gold loan portfolio to probably cross 5-odd percent of total AUM by FY'27.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5199,7 +5117,7 @@
         "quote": "We foresee gold loan portfolio to probably cross 5-odd percent of total AUM by FY'27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5247,7 +5165,7 @@
         "quote": "In terms of customer franchise, we continue to be confident of adding 15 - 17 million new customers in FY27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5271,7 +5189,7 @@
        "quote": "In terms of customer franchise, we continue to be confident of adding 15 - 17 million new customers in FY27.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5292,7 +5210,7 @@
         "quote": "In terms of customer franchise, we continue to be confident of adding 15 - 17 million new customers in FY27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5340,7 +5258,7 @@
         "quote": "In terms of AUM, we're confident of a 20% to 24% AUM growth, aided by new businesses that we've launched in the last few years as they begin to scale.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5364,7 +5282,7 @@
        "quote": "In terms of AUM, we're confident of a 20% to 24% AUM growth, aided by new businesses that we've launched in the last few years as they begin to scale.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5385,7 +5303,7 @@
         "quote": "In terms of AUM, we're confident of a 20% to 24% AUM growth, aided by new businesses that we've launched in the last few years as they begin to scale.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5433,7 +5351,7 @@
         "quote": "ROA came in as of fourth quarter at 4.6%. We continue to guide for 4.4% to 4.6%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5457,7 +5375,7 @@
        "quote": "ROA came in as of fourth quarter at 4.6%. We continue to guide for 4.4% to 4.6%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5478,7 +5396,7 @@
         "quote": "ROA came in as of fourth quarter at 4.6%. We continue to guide for 4.4% to 4.6%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5526,7 +5444,7 @@
         "quote": "Return on equity came in at 20% in the current quarter, we continue to guide for 19% to 20%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5550,7 +5468,7 @@
        "quote": "Return on equity came in at 20% in the current quarter, we continue to guide for 19% to 20%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5571,7 +5489,7 @@
         "quote": "Return on equity came in at 20% in the current quarter, we continue to guide for 19% to 20%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5619,7 +5537,7 @@
         "quote": "We foresee that the number next year as we enter could be anywhere between 165 to 175 basis points, that's the number, including the permanent provisions that we're talking about.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5643,7 +5561,7 @@
        "quote": "We foresee that the number next year as we enter could be anywhere between 165 to 175 basis points, that's the number, including the permanent provisions that we're talking about.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5664,7 +5582,7 @@
         "quote": "We foresee that the number next year as we enter could be anywhere between 165 to 175 basis points, that's the number, including the permanent provisions that we're talking about.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5707,7 +5625,7 @@
         "quote": "We remain comfortable in the longer term, we should be able to sustain a 15% to 18% fee income growth is what I would just say to you, Viral.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5731,7 +5649,7 @@
        "quote": "We remain comfortable in the longer term, we should be able to sustain a 15% to 18% fee income growth is what I would just say to you, Viral.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5752,7 +5670,7 @@
         "quote": "We remain comfortable in the longer term, we should be able to sustain a 15% to 18% fee income growth is what I would just say to you, Viral.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5795,7 +5713,7 @@
         "quote": "I'm not changing, I must say to you, the longer-term growth guidance of 23% to 25%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5819,7 +5737,7 @@
        "quote": "I'm not changing, I must say to you, the longer-term growth guidance of 23% to 25%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5840,7 +5758,146 @@
         "quote": "I'm not changing, I must say to you, the longer-term growth guidance of 23% to 25%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       }
+      ]
+     },
+     "delivered": null,
+     "delivered_source": null,
+     "dropped_note": null,
+     "driver_ids": []
+    },
+    {
+     "id": "2d580f5b47dc8cba",
+     "symbol": "BAJFINANCE",
+     "metric": "customer franchise",
+     "metric_key": "customer_growth",
+     "measure": "level",
+     "kind": "range",
+     "basis": {
+      "currency": "not_money",
+      "scope": "consolidated",
+      "segment": null
+     },
+     "period": {
+      "kind": "year",
+      "start": "2025-04-01",
+      "end": "2026-03-31",
+      "label": "FY26"
+     },
+     "statement": "customer franchise 17–18 million (FY26)",
+     "statements": [
+      {
+       "doc_id": "6e1438fab845f05cfd6e880eb7e55ee41c0631697393ec91e2b466b56a5cbc72",
+       "call_label": "Q4 FY25 call",
+       "made_on": "2025-04-29",
+       "kind": "range",
+       "target_low": 14000000.0,
+       "target_high": 16000000.0,
+       "unit": "COUNT",
+       "raw_target": "14–16 million",
+       "period_text": "FY26",
+       "quote": {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b5b2e46c-df69-4427-b981-219268c6c43c.pdf",
+        "title": "Q4 FY25 call transcript",
+        "exchange": null,
+        "page": 6,
+        "quote": "The customer franchise we remain confident to add 14 to 16 million customers in FY26.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       },
+       "speaker": "Anup Saha"
+      },
+      {
+       "doc_id": "28aaace6ecf860e5cf778977b4882005df7d960093072ce286fcdb71b648c047",
+       "call_label": "Q2 FY26 call",
+       "made_on": "2025-11-10",
+       "kind": "range",
+       "target_low": 16000000.0,
+       "target_high": 17000000.0,
+       "unit": "COUNT",
+       "raw_target": "16–17 million",
+       "period_text": "FY '26",
+       "quote": {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=39ea369b-a7b8-42e8-b787-2d1df4efa020.pdf",
+        "title": "Q2 FY26 call transcript",
+        "exchange": null,
+        "page": 4,
+        "quote": "We now expect to add 16 to 17 million new customers in FY '26.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       },
+       "speaker": "Rajeev Jain"
+      },
+      {
+       "doc_id": "38b727e9eadf30596cdadc3744bc059195bc2b23ff9a4c71e1dc3108706b4b64",
+       "call_label": "Q3 FY26 call",
+       "made_on": "2026-02-03",
+       "kind": "range",
+       "target_low": 17000000.0,
+       "target_high": 18000000.0,
+       "unit": "COUNT",
+       "raw_target": "17–18 million",
+       "period_text": "FY '26",
+       "quote": {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+        "title": "Q3 FY26 call transcript",
+        "exchange": null,
+        "page": 4,
+        "quote": "We now expect 17 to 18 million customers to be added to the franchise in FY '26. It will be on back of 17 million customers we added in the previous fiscal as well.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       },
+       "speaker": "Rajeev Jain"
+      }
+     ],
+     "scored_target": {
+      "doc_id": "38b727e9eadf30596cdadc3744bc059195bc2b23ff9a4c71e1dc3108706b4b64",
+      "call_label": "Q3 FY26 call",
+      "made_on": "2026-02-03",
+      "kind": "range",
+      "target_low": 17000000.0,
+      "target_high": 18000000.0,
+      "unit": "COUNT",
+      "raw_target": "17–18 million",
+      "period_text": "FY '26",
+      "quote": {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+       "title": "Q3 FY26 call transcript",
+       "exchange": null,
+       "page": 4,
+       "quote": "We now expect 17 to 18 million customers to be added to the franchise in FY '26. It will be on back of 17 million customers we added in the previous fiscal as well.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      },
+      "speaker": "Rajeev Jain"
+     },
+     "revision": "raised",
+     "verdict": "cant_score",
+     "verdict_by": "code",
+     "verdict_model": null,
+     "verdict_reason": {
+      "text": "A figure was reported (119.3 million) but it is far from the target's scale, so it is probably a different measure — not scored",
+      "status": "verified",
+      "citations": [
+       {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=6eb34dc2-bde9-4df5-8b93-aad3d461140e.pdf",
+        "title": "Q3 FY26 call transcript",
+        "exchange": null,
+        "page": 4,
+        "quote": "We now expect 17 to 18 million customers to be added to the franchise in FY '26. It will be on back of 17 million customers we added in the previous fiscal as well.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -5888,7 +5945,7 @@
         "quote": "In FY '26, overall, we estimate cost of funds to come in at 760 to 765. This is not taking into account any further cuts that may come at this point in time.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       },
@@ -5911,7 +5968,7 @@
         "quote": "For FY '26, we expect cost of funds to be in the region of overall full year to be between 7.5% to 7.55%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       },
@@ -5934,7 +5991,7 @@
         "quote": "COF is expected to be -- we had outlined at the beginning of the year from a guidance standpoint, the number to be between 7.55% to 7.65%. We're likely to be between 7.55% to 7.60% in terms of cost of funds as we exit the year.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -5958,7 +6015,7 @@
        "quote": "COF is expected to be -- we had outlined at the beginning of the year from a guidance standpoint, the number to be between 7.55% to 7.65%. We're likely to be between 7.55% to 7.60% in terms of cost of funds as we exit the year.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -5979,7 +6036,7 @@
         "quote": "COF is expected to be -- we had outlined at the beginning of the year from a guidance standpoint, the number to be between 7.55% to 7.65%. We're likely to be between 7.55% to 7.60% in terms of cost of funds as we exit the year.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6027,7 +6084,7 @@
         "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       },
@@ -6050,7 +6107,7 @@
         "quote": "Our credit costs for FY26, the company estimates the loan loss to average AUF in the corridor of 185 to 195.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       },
@@ -6073,10 +6130,80 @@
         "quote": "We expect full year credit cost to be at the upper end of guided range of 1.85% to 1.95% now.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
+      }
+     ],
+     "scored_target": {
+      "doc_id": "28aaace6ecf860e5cf778977b4882005df7d960093072ce286fcdb71b648c047",
+      "call_label": "Q2 FY26 call",
+      "made_on": "2025-11-10",
+      "kind": "range",
+      "target_low": 1.85,
+      "target_high": 1.95,
+      "unit": "PCT",
+      "raw_target": "1.85–1.95%",
+      "period_text": "full year",
+      "quote": {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=39ea369b-a7b8-42e8-b787-2d1df4efa020.pdf",
+       "title": "Q2 FY26 call transcript",
+       "exchange": null,
+       "page": 3,
+       "quote": "We expect full year credit cost to be at the upper end of guided range of 1.85% to 1.95% now.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
+      "speaker": "Rajeev Jain"
+     },
+     "revision": "raised",
+     "verdict": "cant_score",
+     "verdict_by": "code",
+     "verdict_model": null,
+     "verdict_reason": {
+      "text": "No delivered figure for FY26 found in the sources read",
+      "status": "verified",
+      "citations": [
+       {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=39ea369b-a7b8-42e8-b787-2d1df4efa020.pdf",
+        "title": "Q2 FY26 call transcript",
+        "exchange": null,
+        "page": 3,
+        "quote": "We expect full year credit cost to be at the upper end of guided range of 1.85% to 1.95% now.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       }
+      ]
+     },
+     "delivered": null,
+     "delivered_source": null,
+     "dropped_note": null,
+     "driver_ids": []
+    },
+    {
+     "id": "b8feefadd98762a7",
+     "symbol": "BAJFINANCE",
+     "metric": "full year credit cost",
+     "metric_key": "credit_cost",
+     "measure": "level",
+     "kind": "range",
+     "basis": {
+      "currency": "not_money",
+      "scope": "consolidated",
+      "segment": null
+     },
+     "period": {
+      "kind": "year",
+      "start": "2025-04-01",
+      "end": "2026-03-31",
+      "label": "FY26"
+     },
+     "statement": "full year credit cost 1.85–1.95% (FY26)",
+     "statements": [
       {
        "doc_id": "28aaace6ecf860e5cf778977b4882005df7d960093072ce286fcdb71b648c047",
        "call_label": "Q2 FY26 call",
@@ -6096,7 +6223,7 @@
         "quote": "As a result, we expect full year credit cost to come within 1.85% to 1.95% for FY'26, and we expect significant improvements in credit costs for FY'27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -6120,11 +6247,11 @@
        "quote": "As a result, we expect full year credit cost to come within 1.85% to 1.95% for FY'26, and we expect significant improvements in credit costs for FY'27.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
-     "revision": "raised",
+     "revision": "none",
      "verdict": "cant_score",
      "verdict_by": "code",
      "verdict_model": null,
@@ -6141,7 +6268,7 @@
         "quote": "As a result, we expect full year credit cost to come within 1.85% to 1.95% for FY'26, and we expect significant improvements in credit costs for FY'27.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6168,7 +6295,7 @@
       "end": "2026-03-31",
       "label": "FY26"
      },
-     "statement": "cost of funds 10–15 bps (FY26)",
+     "statement": "cost of funds 7.75–7.85% (FY26)",
      "statements": [
       {
        "doc_id": "6e1438fab845f05cfd6e880eb7e55ee41c0631697393ec91e2b466b56a5cbc72",
@@ -6189,10 +6316,80 @@
         "quote": "Overall from a direction standpoint, we expect cost of funds to gradually go down to 7.75 to 7.85 by end of FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
+      }
+     ],
+     "scored_target": {
+      "doc_id": "6e1438fab845f05cfd6e880eb7e55ee41c0631697393ec91e2b466b56a5cbc72",
+      "call_label": "Q4 FY25 call",
+      "made_on": "2025-04-29",
+      "kind": "range",
+      "target_low": 7.75,
+      "target_high": 7.85,
+      "unit": "PCT",
+      "raw_target": "7.75–7.85%",
+      "period_text": "by end of FY26",
+      "quote": {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b5b2e46c-df69-4427-b981-219268c6c43c.pdf",
+       "title": "Q4 FY25 call transcript",
+       "exchange": null,
+       "page": 4,
+       "quote": "Overall from a direction standpoint, we expect cost of funds to gradually go down to 7.75 to 7.85 by end of FY26.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
+      "speaker": "Rajeev Jain"
+     },
+     "revision": "none",
+     "verdict": "cant_score",
+     "verdict_by": "code",
+     "verdict_model": null,
+     "verdict_reason": {
+      "text": "No delivered figure for FY26 found in the sources read",
+      "status": "verified",
+      "citations": [
+       {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b5b2e46c-df69-4427-b981-219268c6c43c.pdf",
+        "title": "Q4 FY25 call transcript",
+        "exchange": null,
+        "page": 4,
+        "quote": "Overall from a direction standpoint, we expect cost of funds to gradually go down to 7.75 to 7.85 by end of FY26.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       }
+      ]
+     },
+     "delivered": null,
+     "delivered_source": null,
+     "dropped_note": null,
+     "driver_ids": []
+    },
+    {
+     "id": "c39c5d1e64f9e10a",
+     "symbol": "BAJFINANCE",
+     "metric": "cost of fund",
+     "metric_key": "debt",
+     "measure": "change",
+     "kind": "range",
+     "basis": {
+      "currency": "unspecified",
+      "scope": "consolidated",
+      "segment": null
+     },
+     "period": {
+      "kind": "year",
+      "start": "2025-04-01",
+      "end": "2026-03-31",
+      "label": "FY26"
+     },
+     "statement": "cost of fund 10–15 bps (FY26)",
+     "statements": [
       {
        "doc_id": "6e1438fab845f05cfd6e880eb7e55ee41c0631697393ec91e2b466b56a5cbc72",
        "call_label": "Q4 FY25 call",
@@ -6212,7 +6409,7 @@
         "quote": "Cost of fund is estimated to go down by 10 to 15 bps in FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       }
@@ -6236,11 +6433,11 @@
        "quote": "Cost of fund is estimated to go down by 10 to 15 bps in FY26.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Anup Saha"
      },
-     "revision": "raised",
+     "revision": "none",
      "verdict": "cant_score",
      "verdict_by": "code",
      "verdict_model": null,
@@ -6257,7 +6454,7 @@
         "quote": "Cost of fund is estimated to go down by 10 to 15 bps in FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6305,7 +6502,7 @@
         "quote": "The company estimates its fee and charges to grow by 13 to 15% in FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       }
@@ -6329,7 +6526,7 @@
        "quote": "The company estimates its fee and charges to grow by 13 to 15% in FY26.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Anup Saha"
      },
@@ -6350,7 +6547,7 @@
         "quote": "The company estimates its fee and charges to grow by 13 to 15% in FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6398,7 +6595,7 @@
         "quote": "OPEX to NTI is estimated to improve by 40 to 50 bps from our current level, and some of that we are talking about our AI progress.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       }
@@ -6422,7 +6619,7 @@
        "quote": "OPEX to NTI is estimated to improve by 40 to 50 bps from our current level, and some of that we are talking about our AI progress.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Anup Saha"
      },
@@ -6443,7 +6640,7 @@
         "quote": "OPEX to NTI is estimated to improve by 40 to 50 bps from our current level, and some of that we are talking about our AI progress.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6491,7 +6688,7 @@
         "quote": "Return on asset is estimated to be in the range of 4.4 to 4.6.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       }
@@ -6515,7 +6712,7 @@
        "quote": "Return on asset is estimated to be in the range of 4.4 to 4.6.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Anup Saha"
      },
@@ -6536,7 +6733,7 @@
         "quote": "Return on asset is estimated to be in the range of 4.4 to 4.6.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6584,7 +6781,7 @@
         "quote": "Return on equity given excess capital, ROE metric is estimated to be between 19 to 20% for FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Anup Saha"
       }
@@ -6608,7 +6805,7 @@
        "quote": "Return on equity given excess capital, ROE metric is estimated to be between 19 to 20% for FY26.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Anup Saha"
      },
@@ -6629,7 +6826,7 @@
         "quote": "Return on equity given excess capital, ROE metric is estimated to be between 19 to 20% for FY26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6672,7 +6869,7 @@
         "quote": "The only change you principally see here is return on assets, which used to be 4.6 to 4.8%. We're creating a little wider ROE range of 4.3 to 4.7%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -6696,7 +6893,7 @@
        "quote": "The only change you principally see here is return on assets, which used to be 4.6 to 4.8%. We're creating a little wider ROE range of 4.3 to 4.7%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -6717,7 +6914,7 @@
         "quote": "The only change you principally see here is return on assets, which used to be 4.6 to 4.8%. We're creating a little wider ROE range of 4.3 to 4.7%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6760,7 +6957,7 @@
         "quote": "And ROE from a long-term guidance standpoint, pre-COVID were 19 to 21. We went up from 21 to 23 and we think this is one of the last remaining residues of COVID that we think, on a long-term basis, will compound between 19 and 21%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -6784,7 +6981,7 @@
        "quote": "And ROE from a long-term guidance standpoint, pre-COVID were 19 to 21. We went up from 21 to 23 and we think this is one of the last remaining residues of COVID that we think, on a long-term basis, will compound between 19 and 21%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -6805,7 +7002,7 @@
         "quote": "And ROE from a long-term guidance standpoint, pre-COVID were 19 to 21. We went up from 21 to 23 and we think this is one of the last remaining residues of COVID that we think, on a long-term basis, will compound between 19 and 21%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6815,7 +7012,7 @@
      "driver_ids": []
     },
     {
-     "id": "8d58a3d79e640e8b",
+     "id": "5adf354672c11bb4",
      "symbol": "BAJFINANCE",
      "metric": "employee headcount addition",
      "metric_key": "headcount",
@@ -6853,7 +7050,7 @@
         "quote": "Clearly, as we head into the next year, it's likely that the employee headcount addition will continue to be smaller and smaller or lower and lower as we move into fiscal '26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -6877,7 +7074,7 @@
        "quote": "Clearly, as we head into the next year, it's likely that the employee headcount addition will continue to be smaller and smaller or lower and lower as we move into fiscal '26.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -6898,7 +7095,7 @@
         "quote": "Clearly, as we head into the next year, it's likely that the employee headcount addition will continue to be smaller and smaller or lower and lower as we move into fiscal '26.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -6920,12 +7117,12 @@
       "segment": null
      },
      "period": {
-      "kind": "quarter",
-      "start": "2025-01-01",
+      "kind": "year",
+      "start": "2024-04-01",
       "end": "2025-03-31",
-      "label": "Q4 FY25"
+      "label": "FY25"
      },
-     "statement": "loan loss to average AUF 2–2.05% (Q4 FY25)",
+     "statement": "loan loss to average AUF 2.2% (FY25)",
      "statements": [
       {
        "doc_id": "a14053f9b3072eacafc0269832db254bcb7fb65ee2c84257a381189f198fab59",
@@ -6946,10 +7143,80 @@
         "quote": "On a full year basis, we estimate loan loss to average AUF to be in the range of 2.2%, for quarter 4 to be in the range of 2% to 2.05%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
+      }
+     ],
+     "scored_target": {
+      "doc_id": "a14053f9b3072eacafc0269832db254bcb7fb65ee2c84257a381189f198fab59",
+      "call_label": "Q3 FY25 call",
+      "made_on": "2025-01-29",
+      "kind": "range",
+      "target_low": 2.2,
+      "target_high": 2.2,
+      "unit": "PCT",
+      "raw_target": "2.2%",
+      "period_text": "full year",
+      "quote": {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=69225438-777a-4c06-b91a-37dc58df9c20.pdf",
+       "title": "Q3 FY25 call transcript",
+       "exchange": null,
+       "page": 5,
+       "quote": "On a full year basis, we estimate loan loss to average AUF to be in the range of 2.2%, for quarter 4 to be in the range of 2% to 2.05%.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
+      "speaker": "Rajeev Jain"
+     },
+     "revision": "none",
+     "verdict": "cant_score",
+     "verdict_by": "code",
+     "verdict_model": null,
+     "verdict_reason": {
+      "text": "No delivered figure for FY25 found in the sources read",
+      "status": "verified",
+      "citations": [
+       {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=69225438-777a-4c06-b91a-37dc58df9c20.pdf",
+        "title": "Q3 FY25 call transcript",
+        "exchange": null,
+        "page": 5,
+        "quote": "On a full year basis, we estimate loan loss to average AUF to be in the range of 2.2%, for quarter 4 to be in the range of 2% to 2.05%.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
+       }
+      ]
+     },
+     "delivered": null,
+     "delivered_source": null,
+     "dropped_note": null,
+     "driver_ids": []
+    },
+    {
+     "id": "e2c10500763f4d81",
+     "symbol": "BAJFINANCE",
+     "metric": "loan loss to average AUF for quarter 4",
+     "metric_key": "credit_cost",
+     "measure": "level",
+     "kind": "range",
+     "basis": {
+      "currency": "not_money",
+      "scope": "consolidated",
+      "segment": null
+     },
+     "period": {
+      "kind": "quarter",
+      "start": "2025-01-01",
+      "end": "2025-03-31",
+      "label": "Q4 FY25"
+     },
+     "statement": "loan loss to average AUF for quarter 4 2–2.05% (Q4 FY25)",
+     "statements": [
       {
        "doc_id": "a14053f9b3072eacafc0269832db254bcb7fb65ee2c84257a381189f198fab59",
        "call_label": "Q3 FY25 call",
@@ -6969,7 +7236,7 @@
         "quote": "On a full year basis, we estimate loan loss to average AUF to be in the range of 2.2%, for quarter 4 to be in the range of 2% to 2.05%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -6993,11 +7260,11 @@
        "quote": "On a full year basis, we estimate loan loss to average AUF to be in the range of 2.2%, for quarter 4 to be in the range of 2% to 2.05%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
-     "revision": "raised",
+     "revision": "none",
      "verdict": "cant_score",
      "verdict_by": "code",
      "verdict_model": null,
@@ -7014,7 +7281,7 @@
         "quote": "On a full year basis, we estimate loan loss to average AUF to be in the range of 2.2%, for quarter 4 to be in the range of 2% to 2.05%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -7062,7 +7329,7 @@
         "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        "speaker": "Rajeev Jain"
       }
@@ -7086,7 +7353,7 @@
        "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:10:20.103904Z"
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
       },
       "speaker": "Rajeev Jain"
      },
@@ -7107,7 +7374,7 @@
         "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -7142,8 +7409,8 @@
     "goalposts_moved": 1,
     "quietly_dropped": 0,
     "not_yet_due": 15,
-    "cant_score": 14,
-    "raised": 4
+    "cant_score": 18,
+    "raised": 2
    },
    "calls_read": 8
   },
@@ -7152,7 +7419,7 @@
     "status": "unavailable",
     "reason": "not_meaningful_for_lenders",
     "note": "CFO/PAT and free cash flow aren't meaningful for lenders: loan growth runs through operating cash flow",
-    "as_of": "2026-11-11T13:36:10.811775+05:30",
+    "as_of": "2026-11-11T09:35:36.901511Z",
     "resume_after": null,
     "written_by": null
    },
@@ -7164,7 +7431,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T13:36:10.811775+05:30",
+    "as_of": "2026-11-11T09:35:36.901511Z",
     "resume_after": null,
     "written_by": null
    },
@@ -7195,7 +7462,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "49,250",
        "raw_unit": "crore",
@@ -7224,7 +7491,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "66,557",
        "raw_unit": "crore",
@@ -7253,7 +7520,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "101,588",
        "raw_unit": "crore",
@@ -7282,7 +7549,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "129,806",
        "raw_unit": "crore",
@@ -7311,7 +7578,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "131,634",
        "raw_unit": "crore",
@@ -7340,7 +7607,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "165,232",
        "raw_unit": "crore",
@@ -7369,7 +7636,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "216,690",
        "raw_unit": "crore",
@@ -7398,7 +7665,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "293,346",
        "raw_unit": "crore",
@@ -7427,7 +7694,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "361,249",
        "raw_unit": "crore",
@@ -7456,7 +7723,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowing/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "435,112",
        "raw_unit": "crore",
@@ -7510,7 +7777,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "109",
          "raw_unit": "crore",
@@ -7539,7 +7806,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "9,491",
          "raw_unit": "crore",
@@ -7588,7 +7855,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "115",
          "raw_unit": "crore",
@@ -7617,7 +7884,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "15,733",
          "raw_unit": "crore",
@@ -7666,7 +7933,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "115",
          "raw_unit": "crore",
@@ -7695,7 +7962,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "19,582",
          "raw_unit": "crore",
@@ -7744,7 +8011,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "120",
          "raw_unit": "crore",
@@ -7773,7 +8040,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "32,208",
          "raw_unit": "crore",
@@ -7822,7 +8089,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "120",
          "raw_unit": "crore",
@@ -7851,7 +8118,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "36,798",
          "raw_unit": "crore",
@@ -7900,7 +8167,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "121",
          "raw_unit": "crore",
@@ -7929,7 +8196,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "43,592",
          "raw_unit": "crore",
@@ -7978,7 +8245,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "121",
          "raw_unit": "crore",
@@ -8007,7 +8274,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "54,251",
          "raw_unit": "crore",
@@ -8056,7 +8323,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "124",
          "raw_unit": "crore",
@@ -8085,7 +8352,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "76,572",
          "raw_unit": "crore",
@@ -8134,7 +8401,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "124",
          "raw_unit": "crore",
@@ -8163,7 +8430,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "96,569",
          "raw_unit": "crore",
@@ -8212,7 +8479,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "622",
          "raw_unit": "crore",
@@ -8241,7 +8508,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "113,377",
          "raw_unit": "crore",
@@ -8297,7 +8564,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "1,836",
          "raw_unit": "crore",
@@ -8326,7 +8593,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2016",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "46,973",
          "raw_unit": "crore",
@@ -8355,7 +8622,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "63,731",
          "raw_unit": "crore",
@@ -8404,7 +8671,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "2,496",
          "raw_unit": "crore",
@@ -8433,7 +8700,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "63,731",
          "raw_unit": "crore",
@@ -8462,7 +8729,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "84,798",
          "raw_unit": "crore",
@@ -8511,7 +8778,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "3,995",
          "raw_unit": "crore",
@@ -8540,7 +8807,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "84,798",
          "raw_unit": "crore",
@@ -8569,7 +8836,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "124,233",
          "raw_unit": "crore",
@@ -8618,7 +8885,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "5,264",
          "raw_unit": "crore",
@@ -8647,7 +8914,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "124,233",
          "raw_unit": "crore",
@@ -8676,7 +8943,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "164,391",
          "raw_unit": "crore",
@@ -8725,7 +8992,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "4,420",
          "raw_unit": "crore",
@@ -8754,7 +9021,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "164,391",
          "raw_unit": "crore",
@@ -8783,7 +9050,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "171,470",
          "raw_unit": "crore",
@@ -8832,7 +9099,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "7,028",
          "raw_unit": "crore",
@@ -8861,7 +9128,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "171,470",
          "raw_unit": "crore",
@@ -8890,7 +9157,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "212,505",
          "raw_unit": "crore",
@@ -8939,7 +9206,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "11,508",
          "raw_unit": "crore",
@@ -8968,7 +9235,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "212,505",
          "raw_unit": "crore",
@@ -8997,7 +9264,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "275,226",
          "raw_unit": "crore",
@@ -9046,7 +9313,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "14,451",
          "raw_unit": "crore",
@@ -9075,7 +9342,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "275,226",
          "raw_unit": "crore",
@@ -9104,7 +9371,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "375,742",
          "raw_unit": "crore",
@@ -9153,7 +9420,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "16,779",
          "raw_unit": "crore",
@@ -9182,7 +9449,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "375,742",
          "raw_unit": "crore",
@@ -9211,7 +9478,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "466,127",
          "raw_unit": "crore",
@@ -9260,7 +9527,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "19,332",
          "raw_unit": "crore",
@@ -9289,7 +9556,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "466,127",
          "raw_unit": "crore",
@@ -9318,7 +9585,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Total Assets/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+          "retrieved_at": "2026-11-11T09:35:36.901511Z"
          },
          "raw": "559,952",
          "raw_unit": "crore",
@@ -9371,7 +9638,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Equity Capital/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "622",
        "raw_unit": "crore",
@@ -9400,7 +9667,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Reserves/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "113,377",
        "raw_unit": "crore",
@@ -9449,7 +9716,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "19,332",
        "raw_unit": "crore",
@@ -9478,7 +9745,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Total Assets/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "466,127",
        "raw_unit": "crore",
@@ -9507,7 +9774,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Total Assets/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:36:10.811775+05:30"
+        "retrieved_at": "2026-11-11T09:35:36.901511Z"
        },
        "raw": "559,952",
        "raw_unit": "crore",
@@ -9524,7 +9791,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T08:10:20.103904Z",
+    "as_of": "2026-11-11T09:35:36.369404Z",
     "resume_after": null,
     "written_by": null
    },
@@ -9544,7 +9811,7 @@
         "quote": "In MSME, you've seen GNPA continue to deteriorate. What book is driving that? And also broadly, GNPA going up 10 basis points in the quarter, which areas you've talked about gold but any other areas that we should be thinking of in terms of where stress might be building?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9555,7 +9822,7 @@
         "quote": "Do you see this kind of a structural improvement or this is again a cyclical kind of a mean reversion will happen? And if this is structural do you see that structurally the yields will see a compression because the credit cost is improving?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9566,7 +9833,7 @@
         "quote": "Yes, so there, your number is gross loan provisions of INR 2,126 crores and then INR 260 crores of recovery. So the net loan provision is INR 1,866 crores. That INR 1,866 crores works out to 165 bps in 4Q. And against that, you're guiding for 145 to 160 bps next year, full year. Is that the right understanding?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -9588,7 +9855,7 @@
         "quote": "So, what would be the growth guidance here onwards for near and medium term? So that's the first question? And second, in terms of the overall margins, cost of funds are down 9 basis points, but given that we are in the rate hike scenario, we had still seen some margin compression and NIMs on calculated basis appear to be down.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9599,7 +9866,7 @@
         "quote": "So, the question is that fact that it was an excellent quarter, despite that, you've not seen any change in your assessment for FY'27. This kind of a growth in the first quarter itself, don't you think this year we can grow at maybe a higher rate also drawing from the fact that what you just alluded, business and professional loans should turn from yourself acknowledge that maybe from third quarter we can start growing it. So don't you think this 22% to 24% corridor that we have given for AUM growth can maybe see some upside.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9610,7 +9877,7 @@
         "quote": "Yes. So on the growth guidance, 22% to 24% apart from SME, which is almost bottomed out, we have started to see the sequential growth and we will get into double digits. Ex of that when we and the newer businesses, where do we see we would be able to grow at a pace faster than the overall AUM growth? And which segments do you still believe could continue to lag, so particularly on our core segments as well. If you can highlight that, that would be helpful?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -9632,7 +9899,7 @@
         "quote": "So, firstly, again, touching upon the point on margin. This time, yield improvement appears to be largely because the growth was led by consumer durables, and we kept excess liquidity as well compared to where we were in fourth quarter. We guided for margin moderation in FY '27, but are we more comfortable with where the margins stay...",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9643,7 +9910,7 @@
         "quote": "On the cost of fund guidance, I see that we have lowered our cost of fund guidance for the full year by around 5 basis points. Does this set up the stage for, say, from here on 5 to 10 bps kind of a margin expansion in the...",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9654,7 +9921,7 @@
         "quote": "Do we now anticipate, say, a 5 to 10 bps kind of a NIM expansion on a full year basis versus flat earlier?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -9676,7 +9943,7 @@
         "quote": "Do you think you can protect this as the operating profitability level that is through maybe cost or yield? Or do you think you can lean on your credit cost, which is anywhere running below where you're guiding for this year? And that will come in use to protect your ROA. So which part of the ROA do you have more control on?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9687,7 +9954,7 @@
         "quote": "Can we think of -- or when do we think of ROE touching about 24% and ROA is going beyond 5%. I'm mindful of the fact that Bajaj Housing Finance business is a low ROA and low ROE and would continue to remain within a certain boundary. And therefore, our Bajaj Finance net stand-alone is a much better number.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        },
        {
         "source_type": "concall_transcript",
@@ -9698,7 +9965,7 @@
         "quote": "Delighted to see the good results. I just had one broad question. If we see the evolution of Bajaj Finance and if we see the period prior to COVID, and I draw distinction for the period after COVID. So generally out of the 4 levers, the growth of the assets, the margin, the cost intensity or cost diminution and the credit cost, these 4 levers leading to ROA and in terms degrading leading to ROE.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -9721,22 +9988,203 @@
   },
   "bull_bear": {
    "meta": {
-    "status": "building",
-    "reason": "not_built_yet",
+    "status": "ready",
+    "reason": null,
     "note": null,
-    "as_of": null,
+    "as_of": "2026-11-11T09:35:36.369404Z",
     "resume_after": null,
-    "written_by": null
+    "written_by": "gemini-3.6-flash"
    },
-   "bull": [],
-   "bear": []
+   "bull": [
+    {
+     "text": "PAT registered a 5-year CAGR of 34.3% alongside a 3-year CAGR of 18.9%.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2021",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2023",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      }
+     ]
+    },
+    {
+     "text": "Management kept its profit growth promise for FY26 by delivering 24.0% against a target of 22–23%.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=69225438-777a-4c06-b91a-37dc58df9c20.pdf",
+       "title": "Q3 FY25 call transcript",
+       "exchange": null,
+       "page": 14,
+       "quote": "Given the current external environment, overall, I would say we would like to grow on a consolidated basis, balance sheet should grow by 25%, maintain credit costs at below 2% and deliver a corridor of 22% - 23% profit growth as we venture into next year, next fiscal.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      },
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
+       "title": "Q4 FY26 call transcript",
+       "exchange": null,
+       "page": 7,
+       "quote": "AUM, I talked about grew 22%. PAT grew 24%, ROA, and opex to NTI I talked about it...",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      }
+     ]
+    },
+    {
+     "text": "Net worth for FY26 reached ₹1,13,999 Cr.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in balance sheet",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:balance-sheet/Equity Capital/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in balance sheet",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:balance-sheet/Reserves/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      }
+     ]
+    }
+   ],
+   "bear": [
+    {
+     "text": "Gross NPA increased from 0.9% in Q2 FY24 to 1.1% in Q2 FY27.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in quarterly results",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:quarters/Gross NPA %/Sep 2023",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
+       "title": "screener.in quarterly results",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:quarters/Gross NPA %/Sep 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.901511Z"
+      }
+     ]
+    },
+    {
+     "text": "Management lowered its FY26 AUM growth target from 24–25% down to 22–23%.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=b5b2e46c-df69-4427-b981-219268c6c43c.pdf",
+       "title": "Q4 FY25 call transcript",
+       "exchange": null,
+       "page": 6,
+       "quote": "The AUM growth estimates of AUM remain at 24 to 25% aided by new lines of businesses launched in last two to three years.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      },
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=39ea369b-a7b8-42e8-b787-2d1df4efa020.pdf",
+       "title": "Q2 FY26 call transcript",
+       "exchange": null,
+       "page": 4,
+       "quote": "So we now would circle up our guidance to 22- 23% growth for full year versus 24-25% that we had pencilled in January'25, when we talked about.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      }
+     ]
+    },
+    {
+     "text": "The company missed its FY26 MSME business growth target of 10–12%, delivering 6.0%.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=39ea369b-a7b8-42e8-b787-2d1df4efa020.pdf",
+       "title": "Q2 FY26 call transcript",
+       "exchange": null,
+       "page": 4,
+       "quote": "We now expect MSME business to grow in the current full fiscal by 10-12% only.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      },
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=a448b6b0-edb5-4b99-a122-d602950310af.pdf",
+       "title": "Q4 FY26 call transcript",
+       "exchange": null,
+       "page": 4,
+       "quote": "MSME continue to see muted growth. It grew by 6% only on account of a set of proactive risk actions that we have been taking since Q2 FY'26.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:35:36.369404Z"
+      }
+     ]
+    }
+   ]
   },
   "drivers": {
    "meta": {
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T08:10:20.103904Z",
+    "as_of": "2026-11-11T09:35:36.369404Z",
     "resume_after": null,
     "written_by": null
    },
@@ -9760,7 +10208,7 @@
         "quote": "I would say probably between 26%, 27% growth we should deliver now on a full year basis.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -9769,7 +10217,7 @@
       "08278aa35de129c1",
       "6f747b13e304e452",
       "7bd3dea26a0b6212",
-      "7f7f32ffbb9bea6f",
+      "7667159728341256",
       "eefd4a1080624720",
       "1fe9d006b64cedab",
       "29d1e85ddd2c6084",
@@ -9795,14 +10243,16 @@
         "quote": "In MSME, you've seen GNPA continue to deteriorate. What book is driving that? And also broadly, GNPA going up 10 basis points in the quarter, which areas you've talked about gold but any other areas that we should be thinking of in terms of where stress might be building?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
      "promise_ids": [
       "a42423281af49262",
       "a2301be2b3e03fff",
-      "ba23021c241c34b8"
+      "b8feefadd98762a7",
+      "ba23021c241c34b8",
+      "e2c10500763f4d81"
      ]
     },
     {
@@ -9824,7 +10274,7 @@
         "quote": "Do you think you can protect this as the operating profitability level that is through maybe cost or yield? Or do you think you can lean on your credit cost, which is anywhere running below where you're guiding for this year? And that will come in use to protect your ROA. So which part of the ROA do you have more control on?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:10:20.103904Z"
+        "retrieved_at": "2026-11-11T09:35:36.369404Z"
        }
       ]
      },
@@ -9988,20 +10438,22 @@
   ],
   "screener_url": "https://www.screener.in/company/BAJFINANCE/consolidated/",
   "quality": {
-   "quotes_checked": 0,
+   "quotes_checked": 346,
    "quotes_dropped": 9,
    "quotes_reanchored": 0,
    "claims_dropped": 0
   },
   "cost": {
-   "calls": 0,
-   "cache_hits": 0,
-   "tokens_in": 0,
-   "tokens_out": 0,
-   "est_usd": 0.0,
-   "models": {}
+   "calls": 2,
+   "cache_hits": 1,
+   "tokens_in": 1467,
+   "tokens_out": 1433,
+   "est_usd": 0.006474,
+   "models": {
+    "gemini-3.6-flash": 1
+   }
   }
  },
  "job": null,
- "dossier_version": 7
+ "dossier_version": 33
 }

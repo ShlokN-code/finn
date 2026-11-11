@@ -6,67 +6,104 @@
   "name": "Polycab India Limited",
   "template": "standard",
   "basis": "consolidated",
-  "as_of": "2026-11-11T13:39:37.243896+05:30",
-  "built_at": "2026-11-11T08:09:36.493437Z",
+  "as_of": "2026-11-11T09:38:06.395158Z",
+  "built_at": "2026-11-11T09:38:05.788256Z",
   "snapshot": {
    "meta": {
-    "status": "partial",
-    "reason": "not_built_yet",
-    "note": "Headline numbers ready; business summary is being written",
-    "as_of": "2026-11-11T13:39:37.243896+05:30",
+    "status": "ready",
+    "reason": null,
+    "note": null,
+    "as_of": "2026-11-11T09:38:05.788256Z",
     "resume_after": null,
-    "written_by": null
+    "written_by": "gemini-3.6-flash"
    },
-   "lines": [],
+   "lines": [
+    {
+     "text": "Polycab India Limited recorded a market capitalization of ₹1,19,134 Cr with FY26 revenue of ₹28,884 Cr and PAT of ₹2,708 Cr.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in key ratios",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:top-ratios/Market Cap",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Sales/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      }
+     ]
+    },
+    {
+     "text": "The company's operating margin stood at 14.0% while ROCE reached 33.0% in FY26.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/OPM %/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in ratios",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:ratios/ROCE %/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      }
+     ]
+    },
+    {
+     "text": "Its segment revenue includes EPC at ₹617 Cr.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf",
+       "title": "Q2 FY27 call transcript",
+       "exchange": null,
+       "page": 7,
+       "quote": "The EPC segment reported revenues of INR 6,171 million in Q2 FY27, representing a healthy year-on-year growth of 53%.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
+      }
+     ]
+    }
+   ],
    "segments": [
-    {
-     "label": "Wires and Cables",
-     "value": 47.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
-     "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 6,
-      "quote": "The Wires and Cables segment delivered a strong quarter, recording 47% year-on-year revenue growth.",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:09:36.493437Z"
-     },
-     "raw": "47 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
-    },
-    {
-     "label": "FMEG",
-     "value": 124.0,
-     "unit": "PCT",
-     "period": null,
-     "basis": null,
-     "status": "verified",
-     "citation": {
-      "source_type": "concall_transcript",
-      "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf",
-      "title": "Q2 FY27 call transcript",
-      "exchange": null,
-      "page": 7,
-      "quote": "The FMEG segment delivered a breakthrough quarter, registering a remarkable 124% year-on-year growth with strong performance across all major product categories.",
-      "locator": null,
-      "published_at": null,
-      "retrieved_at": "2026-11-11T08:09:36.493437Z"
-     },
-     "raw": "124 %",
-     "raw_unit": "%",
-     "check_note": null,
-     "formula": null,
-     "inputs": []
-    },
     {
      "label": "EPC",
      "value": 617.1,
@@ -83,7 +120,7 @@
       "quote": "The EPC segment reported revenues of INR 6,171 million in Q2 FY27, representing a healthy year-on-year growth of 53%.",
       "locator": null,
       "published_at": null,
-      "retrieved_at": "2026-11-11T08:09:36.493437Z"
+      "retrieved_at": "2026-11-11T09:38:05.788256Z"
      },
      "raw": "6171 million",
      "raw_unit": "million",
@@ -95,7 +132,7 @@
    "headline": [
     {
      "label": "Market cap",
-     "value": 119141.0,
+     "value": 119134.0,
      "unit": "INR_CR",
      "period": {
       "kind": "instant",
@@ -114,9 +151,9 @@
       "quote": null,
       "locator": "screener:top-ratios/Market Cap",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
      },
-     "raw": "₹ 1,19,141 Cr.",
+     "raw": "₹ 1,19,134 Cr.",
      "raw_unit": "crore",
      "check_note": null,
      "formula": null,
@@ -143,7 +180,7 @@
       "quote": null,
       "locator": "screener:profit-loss/Sales/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
      },
      "raw": "28,884",
      "raw_unit": "crore",
@@ -172,7 +209,7 @@
       "quote": null,
       "locator": "screener:profit-loss/OPM %/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
      },
      "raw": "14%",
      "raw_unit": null,
@@ -201,7 +238,7 @@
       "quote": null,
       "locator": "screener:profit-loss/Net Profit/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
      },
      "raw": "2,708",
      "raw_unit": "crore",
@@ -230,7 +267,7 @@
       "quote": null,
       "locator": "screener:ratios/ROCE %/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
      },
      "raw": "33%",
      "raw_unit": null,
@@ -277,7 +314,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "8,792",
        "raw_unit": "crore",
@@ -306,7 +343,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "28,884",
        "raw_unit": "crore",
@@ -355,7 +392,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "886",
        "raw_unit": "crore",
@@ -384,7 +421,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,708",
        "raw_unit": "crore",
@@ -401,7 +438,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T13:39:37.243896+05:30",
+    "as_of": "2026-11-11T09:38:06.395158Z",
     "resume_after": null,
     "written_by": null
    },
@@ -432,7 +469,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "5,500",
        "raw_unit": "crore",
@@ -461,7 +498,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "6,770",
        "raw_unit": "crore",
@@ -490,7 +527,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "7,986",
        "raw_unit": "crore",
@@ -519,7 +556,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "8,830",
        "raw_unit": "crore",
@@ -548,7 +585,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "8,792",
        "raw_unit": "crore",
@@ -577,7 +614,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "12,204",
        "raw_unit": "crore",
@@ -606,7 +643,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "14,108",
        "raw_unit": "crore",
@@ -635,7 +672,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "18,039",
        "raw_unit": "crore",
@@ -664,7 +701,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "22,408",
        "raw_unit": "crore",
@@ -693,7 +730,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "28,884",
        "raw_unit": "crore",
@@ -729,7 +766,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "9%",
        "raw_unit": null,
@@ -758,7 +795,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "11%",
        "raw_unit": null,
@@ -787,7 +824,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "12%",
        "raw_unit": null,
@@ -816,7 +853,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "13%",
        "raw_unit": null,
@@ -845,7 +882,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "13%",
        "raw_unit": null,
@@ -874,7 +911,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "10%",
        "raw_unit": null,
@@ -903,7 +940,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "13%",
        "raw_unit": null,
@@ -932,7 +969,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "14%",
        "raw_unit": null,
@@ -961,7 +998,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "13%",
        "raw_unit": null,
@@ -990,7 +1027,7 @@
         "quote": null,
         "locator": "screener:profit-loss/OPM %/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "14%",
        "raw_unit": null,
@@ -1026,7 +1063,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "233",
        "raw_unit": "crore",
@@ -1055,7 +1092,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "359",
        "raw_unit": "crore",
@@ -1084,7 +1121,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "500",
        "raw_unit": "crore",
@@ -1113,7 +1150,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "766",
        "raw_unit": "crore",
@@ -1142,7 +1179,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "886",
        "raw_unit": "crore",
@@ -1171,7 +1208,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "917",
        "raw_unit": "crore",
@@ -1200,7 +1237,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,282",
        "raw_unit": "crore",
@@ -1229,7 +1266,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,803",
        "raw_unit": "crore",
@@ -1258,7 +1295,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,046",
        "raw_unit": "crore",
@@ -1287,7 +1324,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,708",
        "raw_unit": "crore",
@@ -1323,7 +1360,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "16%",
        "raw_unit": null,
@@ -1352,7 +1389,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "22%",
        "raw_unit": null,
@@ -1381,7 +1418,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "28%",
        "raw_unit": null,
@@ -1410,7 +1447,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "29%",
        "raw_unit": null,
@@ -1439,7 +1476,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "23%",
        "raw_unit": null,
@@ -1468,7 +1505,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "21%",
        "raw_unit": null,
@@ -1497,7 +1534,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "27%",
        "raw_unit": null,
@@ -1526,7 +1563,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "31%",
        "raw_unit": null,
@@ -1555,7 +1592,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "30%",
        "raw_unit": null,
@@ -1584,7 +1621,7 @@
         "quote": null,
         "locator": "screener:ratios/ROCE %/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "33%",
        "raw_unit": null,
@@ -1635,7 +1672,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "14,108",
        "raw_unit": "crore",
@@ -1664,7 +1701,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "28,884",
        "raw_unit": "crore",
@@ -1713,7 +1750,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "8,792",
        "raw_unit": "crore",
@@ -1742,7 +1779,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Sales/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "28,884",
        "raw_unit": "crore",
@@ -1791,7 +1828,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,282",
        "raw_unit": "crore",
@@ -1820,7 +1857,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,708",
        "raw_unit": "crore",
@@ -1869,7 +1906,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "886",
        "raw_unit": "crore",
@@ -1898,7 +1935,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,708",
        "raw_unit": "crore",
@@ -1909,20 +1946,69 @@
      ]
     }
    ],
-   "note": null
+   "note": {
+    "text": "Revenue expanded from ₹5,500 Cr in FY17 to ₹28,884 Cr in FY26 while operating margins improved from 9.0% to 14.0%.",
+    "status": "verified",
+    "citations": [
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+      "title": "screener.in profit & loss",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:profit-loss/Sales/Mar 2017",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
+     },
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+      "title": "screener.in profit & loss",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:profit-loss/Sales/Mar 2026",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
+     },
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+      "title": "screener.in profit & loss",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:profit-loss/OPM %/Mar 2017",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
+     },
+     {
+      "source_type": "screener_table",
+      "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+      "title": "screener.in profit & loss",
+      "exchange": null,
+      "page": null,
+      "quote": null,
+      "locator": "screener:profit-loss/OPM %/Mar 2026",
+      "published_at": null,
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
+     }
+    ]
+   }
   },
   "ledger": {
    "meta": {
     "status": "ready",
     "reason": null,
-    "note": "Credibility needs 5+ scored promises (have 0)",
-    "as_of": "2026-11-11T08:09:36.493437Z",
+    "note": "0 of 1 scored promises kept — a % score needs 5 or more",
+    "as_of": "2026-11-11T09:38:05.788256Z",
     "resume_after": null,
-    "written_by": null
+    "written_by": "gemini-3-flash-preview"
    },
    "promises": [
     {
-     "id": "29f29dbaac3ec522",
+     "id": "693ee9cc64407ffa",
      "symbol": "POLYCAB",
      "metric": "EHV plant timelines",
      "metric_key": "capacity",
@@ -1960,7 +2046,7 @@
         "quote": "So I would like to take this opportunity to sort of also let the investor community know that in terms of our EHV plant timelines, we are expecting the EHV plant to now commission somewhere in FY 2028, the next year, though, so FY28.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Nikhil Jaisinghani"
       }
@@ -1984,7 +2070,7 @@
        "quote": "So I would like to take this opportunity to sort of also let the investor community know that in terms of our EHV plant timelines, we are expecting the EHV plant to now commission somewhere in FY 2028, the next year, though, so FY28.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Nikhil Jaisinghani"
      },
@@ -2005,7 +2091,7 @@
         "quote": "So I would like to take this opportunity to sort of also let the investor community know that in terms of our EHV plant timelines, we are expecting the EHV plant to now commission somewhere in FY 2028, the next year, though, so FY28.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2053,7 +2139,7 @@
         "quote": "This growth will be a profitable one, with a goal to achieve EBITDA margins of 8% to 10% by FY30 within the segment.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2076,7 +2162,7 @@
         "quote": "Looking ahead, the FMEG segment is expected to continue its upward trajectory aligned with our Project Spring goals of achieving 1.5x – 2x industry growth and improving EBITDA margins to 8% - 10% by FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2099,7 +2185,7 @@
         "quote": "We remain confident in the long- term potential of our FMEG business, continuing to align our efforts with Project Spring, targeting 1.5 to 2x of industry growth and improving EBITDA margins to 8% to 10% range by FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Gandharv Tongia"
       },
@@ -2122,7 +2208,7 @@
         "quote": "progressing towards the 8%-10% EBITDA target by FY 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2145,7 +2231,7 @@
         "quote": "Looking ahead, we are confident in the long-term potential of the FMEG segment and remain on track to achieve our Project Spring targets of 1.5x - 2x industry growth and EBITDA margins in the range of 8% to 10% by FY30, positioning the business for sustained growth and value creation.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       },
@@ -2168,7 +2254,7 @@
         "quote": "EBIT margins for the quarter were 8%, very much in line with the milestones laid out under Project Spring, where we target EBITDA margins of 8% to 10% by FY 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       },
@@ -2191,7 +2277,7 @@
         "quote": "So over the longer term, I believe we would end up in that kind of a range of 8% to 10% of the EBITDA margin.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Nikhil Jaisinghani"
       }
@@ -2215,7 +2301,7 @@
        "quote": "So over the longer term, I believe we would end up in that kind of a range of 8% to 10% of the EBITDA margin.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Nikhil Jaisinghani"
      },
@@ -2236,7 +2322,7 @@
         "quote": "So over the longer term, I believe we would end up in that kind of a range of 8% to 10% of the EBITDA margin.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2284,7 +2370,7 @@
         "quote": "Our next target is to grow the share of international business to north of 10% of the overall Company's revenue.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2307,7 +2393,7 @@
         "quote": "Under Project Spring, we have anyways laid out a guidance that we would want to increase the contribution of exports to the overall revenue to 10% from the current 6% that we saw in FY25.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2330,7 +2416,7 @@
         "quote": "We have given our guidance of going north of 10% of our overall top line by 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -2354,7 +2440,7 @@
        "quote": "We have given our guidance of going north of 10% of our overall top line by 2030.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
@@ -2375,7 +2461,7 @@
         "quote": "We have given our guidance of going north of 10% of our overall top line by 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2423,7 +2509,7 @@
         "quote": "Further, we will continue to gradually increase our dividend payout ratio to greater than 30% by FY30 from the current 26.5%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2446,7 +2532,7 @@
         "quote": "This is a step forward towards our Project Spring target of 30% payout ratio by FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2469,7 +2555,7 @@
         "quote": "in line with our goal of crossing 30% dividend payout by FY 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -2493,7 +2579,7 @@
        "quote": "in line with our goal of crossing 30% dividend payout by FY 2030.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -2514,7 +2600,7 @@
         "quote": "in line with our goal of crossing 30% dividend payout by FY 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2562,7 +2648,7 @@
         "quote": "So again, within Project Spring, we have given a guidance of spending roughly ₹ 6,000 crores to ₹ 8,000 crores over the next 5 years.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Gandharv Tongia"
       },
@@ -2585,7 +2671,7 @@
         "quote": "in line with our Project Spring guidance of investing ₹ 12 billion - ₹ 16 billion annually through to FY 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -2609,7 +2695,7 @@
        "quote": "in line with our Project Spring guidance of investing ₹ 12 billion - ₹ 16 billion annually through to FY 2030.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -2630,7 +2716,7 @@
         "quote": "in line with our Project Spring guidance of investing ₹ 12 billion - ₹ 16 billion annually through to FY 2030.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2678,7 +2764,7 @@
         "quote": "We remain on track toward our greater than 10% export contribution goal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -2702,7 +2788,7 @@
        "quote": "We remain on track toward our greater than 10% export contribution goal.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -2723,7 +2809,7 @@
         "quote": "We remain on track toward our greater than 10% export contribution goal.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2771,7 +2857,7 @@
         "quote": "To be able to achieve this goal, the company will be investing ₹ 60 billion to ₹ 80 billion in capex over the next 5 years, most of which will be for the Wires and Cables business, and which will generate asset turns of 4x to 5x.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2794,7 +2880,7 @@
         "quote": "Capital expenditure for the quarter was ₹ 4.1 billion, in-line with our Project Spring guidance of investing ₹ 12 billion to ₹ 16 billion annually through FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -2818,7 +2904,7 @@
        "quote": "Capital expenditure for the quarter was ₹ 4.1 billion, in-line with our Project Spring guidance of investing ₹ 12 billion to ₹ 16 billion annually through FY30.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -2839,7 +2925,7 @@
         "quote": "Capital expenditure for the quarter was ₹ 4.1 billion, in-line with our Project Spring guidance of investing ₹ 12 billion to ₹ 16 billion annually through FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2887,7 +2973,7 @@
         "quote": "Within Project Spring, our goal will be to grow our Wires and Cables business at ~1.5x the market growth with sustainable EBITDA margins of 11% to 13%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -2911,7 +2997,7 @@
        "quote": "Within Project Spring, our goal will be to grow our Wires and Cables business at ~1.5x the market growth with sustainable EBITDA margins of 11% to 13%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -2932,7 +3018,7 @@
         "quote": "Within Project Spring, our goal will be to grow our Wires and Cables business at ~1.5x the market growth with sustainable EBITDA margins of 11% to 13%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -2975,7 +3061,7 @@
         "quote": "Our guidance, as a part of Project Spring, is on EBITDA and we’ve given the guidance that over the near to mid-term we expect the EBITDA margins in the cables and wires business to be consistently in the 11% to 13% range.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -2998,7 +3084,7 @@
         "quote": "Having said that, internally, we'll obviously try to optimize on that. And whatever quarters we can improve on that, the practice will be to improve on that. But otherwise, the longer-term guidance will continue to be the 11% to 13% EBITDA margins.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Gandharv Tongia"
       },
@@ -3021,7 +3107,7 @@
         "quote": "If I had to add to that, to refer to our Project Spring guidance, we've given a long-term guidance of 11% to 13%. But in the near term, yes, what you mentioned is correct.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       },
@@ -3044,7 +3130,7 @@
         "quote": "In line with our Project Spring roadmap, we remain confident of sustaining medium- to long-term EBITDA margins within our guided range of 11% to 13%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Aditya Nathany"
       }
@@ -3068,7 +3154,7 @@
        "quote": "In line with our Project Spring roadmap, we remain confident of sustaining medium- to long-term EBITDA margins within our guided range of 11% to 13%.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Aditya Nathany"
      },
@@ -3089,7 +3175,7 @@
         "quote": "In line with our Project Spring roadmap, we remain confident of sustaining medium- to long-term EBITDA margins within our guided range of 11% to 13%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3132,7 +3218,7 @@
         "quote": "Our strategic priorities remain unchanged to grow at 1.5x to 2x of the industry growth while progressively enhancing profitability.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       },
@@ -3155,7 +3241,7 @@
         "quote": "Our objective continues to be growing at 1.5x to 2x of the industry growth rate while steadily enhancing profitability.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Aditya Nathany"
       }
@@ -3179,7 +3265,7 @@
        "quote": "Our objective continues to be growing at 1.5x to 2x of the industry growth rate while steadily enhancing profitability.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Aditya Nathany"
      },
@@ -3200,7 +3286,7 @@
         "quote": "Our objective continues to be growing at 1.5x to 2x of the industry growth rate while steadily enhancing profitability.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3243,7 +3329,7 @@
         "quote": "Over the medium- to long-term, we continue to expect sustainable margins for the EPC business to remain in the high single-digit range, supported by disciplined project selection, efficient execution, and a healthy order pipeline.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Aditya Nathany"
       }
@@ -3267,7 +3353,7 @@
        "quote": "Over the medium- to long-term, we continue to expect sustainable margins for the EPC business to remain in the high single-digit range, supported by disciplined project selection, efficient execution, and a healthy order pipeline.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Aditya Nathany"
      },
@@ -3288,7 +3374,7 @@
         "quote": "Over the medium- to long-term, we continue to expect sustainable margins for the EPC business to remain in the high single-digit range, supported by disciplined project selection, efficient execution, and a healthy order pipeline.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3298,7 +3384,7 @@
      "driver_ids": []
     },
     {
-     "id": "d06499d971740841",
+     "id": "fe531a5733ae1356",
      "symbol": "POLYCAB",
      "metric": "operating margins",
      "metric_key": "ebit_margin",
@@ -3331,7 +3417,7 @@
         "quote": "Over the medium to long term, we continue to expect sustainable operating margins for the EPC business to remain in the high single-digit range.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -3355,7 +3441,7 @@
        "quote": "Over the medium to long term, we continue to expect sustainable operating margins for the EPC business to remain in the high single-digit range.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
@@ -3376,7 +3462,7 @@
         "quote": "Over the medium to long term, we continue to expect sustainable operating margins for the EPC business to remain in the high single-digit range.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3419,7 +3505,7 @@
         "quote": "On a normalized basis, we expect the working capital cycle to return to a long-term steady range of 50 to 55 days.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -3442,7 +3528,7 @@
         "quote": "We expect this to normalize to our long-term steady range of 50 to 55 days in the coming quarters.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       },
@@ -3465,7 +3551,7 @@
         "quote": "As these effects normalize, we expect the working capital cycle to settle within our long-term operating range of 45 to 50 days.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -3489,7 +3575,7 @@
        "quote": "As these effects normalize, we expect the working capital cycle to settle within our long-term operating range of 45 to 50 days.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
@@ -3510,7 +3596,7 @@
         "quote": "As these effects normalize, we expect the working capital cycle to settle within our long-term operating range of 45 to 50 days.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3553,7 +3639,7 @@
         "quote": "Consistent with our Project Spring roadmap, we continue to maintain our medium- to long-term margin guidance of 11% to 13% for this business.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -3577,7 +3663,7 @@
        "quote": "Consistent with our Project Spring roadmap, we continue to maintain our medium- to long-term margin guidance of 11% to 13% for this business.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
@@ -3598,7 +3684,7 @@
         "quote": "Consistent with our Project Spring roadmap, we continue to maintain our medium- to long-term margin guidance of 11% to 13% for this business.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3646,7 +3732,7 @@
         "quote": "But I think we have always guided that we will do 1.5x of market growth, which is a mix of both volume and value.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -3670,7 +3756,7 @@
        "quote": "But I think we have always guided that we will do 1.5x of market growth, which is a mix of both volume and value.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
@@ -3691,7 +3777,7 @@
         "quote": "But I think we have always guided that we will do 1.5x of market growth, which is a mix of both volume and value.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3713,7 +3799,7 @@
       "segment": null
      },
      "period": null,
-     "statement": "EBITDA margin 12–14% (near to mid term)",
+     "statement": "EBITDA margin 11–13% (over long term)",
      "statements": [
       {
        "doc_id": "ffed5ff85c254bce2ade9d6249791c4caab98244aa462321925abd38d2d07347",
@@ -3734,10 +3820,75 @@
         "quote": "that over long term, we should expect 11% to 13% EBITDA margin. and in the near to mid term, we may expect 12% to 14% EBITDA.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
+      }
+     ],
+     "scored_target": {
+      "doc_id": "ffed5ff85c254bce2ade9d6249791c4caab98244aa462321925abd38d2d07347",
+      "call_label": "Q4 FY26 call",
+      "made_on": "2026-05-08",
+      "kind": "range",
+      "target_low": 11.0,
+      "target_high": 13.0,
+      "unit": "PCT",
+      "raw_target": "11–13%",
+      "period_text": "over long term",
+      "quote": {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+       "title": "Q4 FY26 call transcript",
+       "exchange": null,
+       "page": 13,
+       "quote": "that over long term, we should expect 11% to 13% EBITDA margin. and in the near to mid term, we may expect 12% to 14% EBITDA.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
+      "speaker": "Shashank Yagnick"
+     },
+     "revision": "none",
+     "verdict": "cant_score",
+     "verdict_by": "code",
+     "verdict_model": null,
+     "verdict_reason": {
+      "text": "No clear period given, so it can't be scored",
+      "status": "verified",
+      "citations": [
+       {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+        "title": "Q4 FY26 call transcript",
+        "exchange": null,
+        "page": 13,
+        "quote": "that over long term, we should expect 11% to 13% EBITDA margin. and in the near to mid term, we may expect 12% to 14% EBITDA.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
+       }
+      ]
+     },
+     "delivered": null,
+     "delivered_source": null,
+     "dropped_note": null,
+     "driver_ids": []
+    },
+    {
+     "id": "3972ec63bdc360fb",
+     "symbol": "POLYCAB",
+     "metric": "EBITDA margin",
+     "metric_key": "ebitda_margin",
+     "measure": "level",
+     "kind": "range",
+     "basis": {
+      "currency": "not_money",
+      "scope": "unspecified",
+      "segment": null
+     },
+     "period": null,
+     "statement": "EBITDA margin 12–14% (near to mid term)",
+     "statements": [
       {
        "doc_id": "ffed5ff85c254bce2ade9d6249791c4caab98244aa462321925abd38d2d07347",
        "call_label": "Q4 FY26 call",
@@ -3757,7 +3908,7 @@
         "quote": "and in the near to mid term, we may expect 12% to 14% EBITDA.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -3781,11 +3932,11 @@
        "quote": "and in the near to mid term, we may expect 12% to 14% EBITDA.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
-     "revision": "raised",
+     "revision": "none",
      "verdict": "cant_score",
      "verdict_by": "code",
      "verdict_model": null,
@@ -3802,7 +3953,7 @@
         "quote": "and in the near to mid term, we may expect 12% to 14% EBITDA.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3812,9 +3963,9 @@
      "driver_ids": []
     },
     {
-     "id": "837c7872d97b7919",
+     "id": "367240d87642dd15",
      "symbol": "POLYCAB",
-     "metric": "EPC annual sustainable operating margin",
+     "metric": "annual sustainable operating margin",
      "metric_key": "ebit_margin",
      "measure": "qualitative",
      "kind": "qualitative",
@@ -3826,6 +3977,29 @@
      "period": null,
      "statement": "EPC annual sustainable operating margin is expected to remain in high single digits over mid to long term. (over mid- to long term)",
      "statements": [
+      {
+       "doc_id": "ee79a802892443f1d182485d4f59797830884b5c0acca416c8056910cf6a9d32",
+       "call_label": "Q1 FY26 call",
+       "made_on": "2025-07-25",
+       "kind": "qualitative",
+       "target_low": null,
+       "target_high": null,
+       "unit": null,
+       "raw_target": null,
+       "period_text": "over mid-to-long term",
+       "quote": {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0d06e9ad-0c88-4d9a-beda-c76de11b708e.pdf",
+        "title": "Q1 FY26 call transcript",
+        "exchange": null,
+        "page": 7,
+        "quote": "We expect the annual sustainable operating margin to be in high single digit over mid-to-long term in this business.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
+       },
+       "speaker": "Gandharv Tongia"
+      },
       {
        "doc_id": "a329cd206e93f6b36d9bb4a10682624bf088792ff1f4cf1adbb5b997e06305eb",
        "call_label": "Q3 FY26 call",
@@ -3845,7 +4019,7 @@
         "quote": "Segment profitability stood at ₹ 272 million, translating to a margin of 6.7%. Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Shashank Yagnick"
       }
@@ -3869,16 +4043,16 @@
        "quote": "Segment profitability stood at ₹ 272 million, translating to a margin of 6.7%. Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Shashank Yagnick"
      },
-     "revision": "none",
-     "verdict": "cant_score",
-     "verdict_by": "code",
-     "verdict_model": null,
+     "revision": "revised",
+     "verdict": "goalposts_moved",
+     "verdict_by": "model",
+     "verdict_model": "gemini-3-flash-preview",
      "verdict_reason": {
-      "text": "Qualitative promise — judged against later calls in the full build",
+      "text": "The company revised the lower end of its margin expectation from high single digits to mid- to high single digits.",
       "status": "verified",
       "citations": [
        {
@@ -3890,7 +4064,18 @@
         "quote": "Segment profitability stood at ₹ 272 million, translating to a margin of 6.7%. Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
+       },
+       {
+        "source_type": "concall_transcript",
+        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+        "title": "Q4 FY26 call transcript",
+        "exchange": null,
+        "page": 8,
+        "quote": "Looking ahead, the annual sustainable operating margin is expected to remain in the mid- to high single digits over mid- to long term.",
+        "locator": null,
+        "published_at": null,
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -3933,7 +4118,7 @@
         "quote": "But on a yearly level, going ahead, as we've been guiding, we want to take A&P spends up to 3% to 5% of B2C top-line, and that is something that we'll plan to do gradually.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Niyant Maru"
       }
@@ -3957,7 +4142,7 @@
        "quote": "But on a yearly level, going ahead, as we've been guiding, we want to take A&P spends up to 3% to 5% of B2C top-line, and that is something that we'll plan to do gradually.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Niyant Maru"
      },
@@ -3978,95 +4163,7 @@
         "quote": "But on a yearly level, going ahead, as we've been guiding, we want to take A&P spends up to 3% to 5% of B2C top-line, and that is something that we'll plan to do gradually.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
-       }
-      ]
-     },
-     "delivered": null,
-     "delivered_source": null,
-     "dropped_note": null,
-     "driver_ids": []
-    },
-    {
-     "id": "e8c5f5d20e16950f",
-     "symbol": "POLYCAB",
-     "metric": "annual sustainable operating margin",
-     "metric_key": "ebit_margin",
-     "measure": "qualitative",
-     "kind": "qualitative",
-     "basis": {
-      "currency": "not_money",
-      "scope": "segment",
-      "segment": "EPC"
-     },
-     "period": null,
-     "statement": "We expect annual sustainable operating margin to be in high single digit over mid-to-long term. (over mid-to-long term)",
-     "statements": [
-      {
-       "doc_id": "ee79a802892443f1d182485d4f59797830884b5c0acca416c8056910cf6a9d32",
-       "call_label": "Q1 FY26 call",
-       "made_on": "2025-07-25",
-       "kind": "qualitative",
-       "target_low": null,
-       "target_high": null,
-       "unit": null,
-       "raw_target": null,
-       "period_text": "over mid-to-long term",
-       "quote": {
-        "source_type": "concall_transcript",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0d06e9ad-0c88-4d9a-beda-c76de11b708e.pdf",
-        "title": "Q1 FY26 call transcript",
-        "exchange": null,
-        "page": 7,
-        "quote": "We expect the annual sustainable operating margin to be in high single digit over mid-to-long term in this business.",
-        "locator": null,
-        "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
-       },
-       "speaker": "Gandharv Tongia"
-      }
-     ],
-     "scored_target": {
-      "doc_id": "ee79a802892443f1d182485d4f59797830884b5c0acca416c8056910cf6a9d32",
-      "call_label": "Q1 FY26 call",
-      "made_on": "2025-07-25",
-      "kind": "qualitative",
-      "target_low": null,
-      "target_high": null,
-      "unit": null,
-      "raw_target": null,
-      "period_text": "over mid-to-long term",
-      "quote": {
-       "source_type": "concall_transcript",
-       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0d06e9ad-0c88-4d9a-beda-c76de11b708e.pdf",
-       "title": "Q1 FY26 call transcript",
-       "exchange": null,
-       "page": 7,
-       "quote": "We expect the annual sustainable operating margin to be in high single digit over mid-to-long term in this business.",
-       "locator": null,
-       "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
-      },
-      "speaker": "Gandharv Tongia"
-     },
-     "revision": "none",
-     "verdict": "cant_score",
-     "verdict_by": "code",
-     "verdict_model": null,
-     "verdict_reason": {
-      "text": "Qualitative promise — judged against later calls in the full build",
-      "status": "verified",
-      "citations": [
-       {
-        "source_type": "concall_transcript",
-        "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=0d06e9ad-0c88-4d9a-beda-c76de11b708e.pdf",
-        "title": "Q1 FY26 call transcript",
-        "exchange": null,
-        "page": 7,
-        "quote": "We expect the annual sustainable operating margin to be in high single digit over mid-to-long term in this business.",
-        "locator": null,
-        "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -4114,7 +4211,7 @@
         "quote": "Looking ahead, the FMEG segment is expected to continue its upward trajectory aligned with our Project Spring goals of achieving 1.5x – 2x industry growth and improving EBITDA margins to 8% - 10% by FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       },
@@ -4137,7 +4234,7 @@
         "quote": "We remain confident in the long- term potential of our FMEG business, continuing to align our efforts with Project Spring, targeting 1.5 to 2x of industry growth and improving EBITDA margins to 8% to 10% range by FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Gandharv Tongia"
       }
@@ -4161,7 +4258,7 @@
        "quote": "We remain confident in the long- term potential of our FMEG business, continuing to align our efforts with Project Spring, targeting 1.5 to 2x of industry growth and improving EBITDA margins to 8% to 10% range by FY30.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Gandharv Tongia"
      },
@@ -4182,7 +4279,7 @@
         "quote": "We remain confident in the long- term potential of our FMEG business, continuing to align our efforts with Project Spring, targeting 1.5 to 2x of industry growth and improving EBITDA margins to 8% to 10% range by FY30.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -4230,7 +4327,7 @@
         "quote": "So, we definitely believe that FMEG industry will start seeing at least double-digit growth from next year and we should be targeting at least 2x of the industry growth rate.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Gandharv Tongia"
       }
@@ -4254,7 +4351,7 @@
        "quote": "So, we definitely believe that FMEG industry will start seeing at least double-digit growth from next year and we should be targeting at least 2x of the industry growth rate.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Gandharv Tongia"
      },
@@ -4275,7 +4372,7 @@
         "quote": "So, we definitely believe that FMEG industry will start seeing at least double-digit growth from next year and we should be targeting at least 2x of the industry growth rate.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -4285,7 +4382,7 @@
      "driver_ids": []
     },
     {
-     "id": "72c2ef4bad499f02",
+     "id": "22bb240fa70e1823",
      "symbol": "POLYCAB",
      "metric": "EPC annual sustainable operating margin",
      "metric_key": "ebitda_margin",
@@ -4318,7 +4415,7 @@
         "quote": "The annual sustainable operating margin in this business is expected to be in high single digit over medium to long-term.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -4342,7 +4439,7 @@
        "quote": "The annual sustainable operating margin in this business is expected to be in high single digit over medium to long-term.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -4363,7 +4460,7 @@
         "quote": "The annual sustainable operating margin in this business is expected to be in high single digit over medium to long-term.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -4406,7 +4503,7 @@
         "quote": "We remain on track with our Project Spring capex roadmap of ₹ 60 to ₹ 80 billion over the next five years, which will power our capabilities, scale and innovation.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -4430,7 +4527,7 @@
        "quote": "We remain on track with our Project Spring capex roadmap of ₹ 60 to ₹ 80 billion over the next five years, which will power our capabilities, scale and innovation.",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -4451,7 +4548,7 @@
         "quote": "We remain on track with our Project Spring capex roadmap of ₹ 60 to ₹ 80 billion over the next five years, which will power our capabilities, scale and innovation.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -4494,7 +4591,7 @@
         "quote": "Now coming to FMEG, we expect the sector to register a growth of 8% to 10% in the near to mid-term, driven by factors like favourable demographics, urbanization...",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        "speaker": "Chirayu Upadhyaya"
       }
@@ -4518,7 +4615,7 @@
        "quote": "Now coming to FMEG, we expect the sector to register a growth of 8% to 10% in the near to mid-term, driven by factors like favourable demographics, urbanization...",
        "locator": null,
        "published_at": null,
-       "retrieved_at": "2026-11-11T08:09:36.493437Z"
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
       },
       "speaker": "Chirayu Upadhyaya"
      },
@@ -4539,7 +4636,7 @@
         "quote": "Now coming to FMEG, we expect the sector to register a growth of 8% to 10% in the near to mid-term, driven by factors like favourable demographics, urbanization...",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -4551,16 +4648,16 @@
    ],
    "credibility": {
     "shown": false,
-    "score_pct": null,
+    "score_pct": 0.0,
     "kept": 0,
-    "n": 0,
+    "n": 1,
     "numeric_n": 0,
-    "qualitative_n": 0,
+    "qualitative_n": 1,
     "min_n": 5,
     "trend": null,
     "recent": {
      "kept": 0,
-     "n": 0
+     "n": 1
     },
     "earlier": {
      "kept": 0,
@@ -4571,11 +4668,11 @@
    "counts": {
     "kept": 0,
     "missed": 0,
-    "goalposts_moved": 0,
+    "goalposts_moved": 1,
     "quietly_dropped": 0,
     "not_yet_due": 8,
-    "cant_score": 16,
-    "raised": 2
+    "cant_score": 15,
+    "raised": 1
    },
    "calls_read": 8
   },
@@ -4584,7 +4681,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T13:39:37.243896+05:30",
+    "as_of": "2026-11-11T09:38:06.395158Z",
     "resume_after": null,
     "written_by": null
    },
@@ -4615,7 +4712,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "296",
        "raw_unit": "crore",
@@ -4644,7 +4741,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "362",
        "raw_unit": "crore",
@@ -4673,7 +4770,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,230",
        "raw_unit": "crore",
@@ -4702,7 +4799,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "244",
        "raw_unit": "crore",
@@ -4731,7 +4828,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,252",
        "raw_unit": "crore",
@@ -4760,7 +4857,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "512",
        "raw_unit": "crore",
@@ -4789,7 +4886,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,428",
        "raw_unit": "crore",
@@ -4818,7 +4915,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,296",
        "raw_unit": "crore",
@@ -4847,7 +4944,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,809",
        "raw_unit": "crore",
@@ -4876,7 +4973,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "3,811",
        "raw_unit": "crore",
@@ -4930,7 +5027,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "296",
          "raw_unit": "crore",
@@ -4959,7 +5056,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "233",
          "raw_unit": "crore",
@@ -5008,7 +5105,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "362",
          "raw_unit": "crore",
@@ -5037,7 +5134,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "359",
          "raw_unit": "crore",
@@ -5086,7 +5183,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,230",
          "raw_unit": "crore",
@@ -5115,7 +5212,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "500",
          "raw_unit": "crore",
@@ -5164,7 +5261,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "244",
          "raw_unit": "crore",
@@ -5193,7 +5290,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "766",
          "raw_unit": "crore",
@@ -5242,7 +5339,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,252",
          "raw_unit": "crore",
@@ -5271,7 +5368,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "886",
          "raw_unit": "crore",
@@ -5320,7 +5417,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "512",
          "raw_unit": "crore",
@@ -5349,7 +5446,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "917",
          "raw_unit": "crore",
@@ -5398,7 +5495,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,428",
          "raw_unit": "crore",
@@ -5427,7 +5524,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,282",
          "raw_unit": "crore",
@@ -5476,7 +5573,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,296",
          "raw_unit": "crore",
@@ -5505,7 +5602,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,803",
          "raw_unit": "crore",
@@ -5554,7 +5651,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,809",
          "raw_unit": "crore",
@@ -5583,7 +5680,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "2,046",
          "raw_unit": "crore",
@@ -5632,7 +5729,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "3,811",
          "raw_unit": "crore",
@@ -5661,7 +5758,7 @@
           "quote": null,
           "locator": "screener:profit-loss/Net Profit/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "2,708",
          "raw_unit": "crore",
@@ -5717,7 +5814,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "296",
          "raw_unit": "crore",
@@ -5746,7 +5843,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-279",
          "raw_unit": "crore",
@@ -5775,7 +5872,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1",
          "raw_unit": "crore",
@@ -5824,7 +5921,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "362",
          "raw_unit": "crore",
@@ -5853,7 +5950,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-199",
          "raw_unit": "crore",
@@ -5882,7 +5979,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "16",
          "raw_unit": "crore",
@@ -5931,7 +6028,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,230",
          "raw_unit": "crore",
@@ -5960,7 +6057,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-286",
          "raw_unit": "crore",
@@ -5989,7 +6086,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "5",
          "raw_unit": "crore",
@@ -6038,7 +6135,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "244",
          "raw_unit": "crore",
@@ -6067,7 +6164,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-290",
          "raw_unit": "crore",
@@ -6096,7 +6193,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1",
          "raw_unit": "crore",
@@ -6145,7 +6242,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,252",
          "raw_unit": "crore",
@@ -6174,7 +6271,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-193",
          "raw_unit": "crore",
@@ -6203,7 +6300,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "2",
          "raw_unit": "crore",
@@ -6252,7 +6349,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "512",
          "raw_unit": "crore",
@@ -6281,7 +6378,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-527",
          "raw_unit": "crore",
@@ -6310,7 +6407,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "7",
          "raw_unit": "crore",
@@ -6359,7 +6456,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,428",
          "raw_unit": "crore",
@@ -6388,7 +6485,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-479",
          "raw_unit": "crore",
@@ -6417,7 +6514,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "21",
          "raw_unit": "crore",
@@ -6466,7 +6563,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,296",
          "raw_unit": "crore",
@@ -6495,7 +6592,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-859",
          "raw_unit": "crore",
@@ -6524,7 +6621,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1",
          "raw_unit": "crore",
@@ -6573,7 +6670,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,809",
          "raw_unit": "crore",
@@ -6602,7 +6699,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-970",
          "raw_unit": "crore",
@@ -6631,7 +6728,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "14",
          "raw_unit": "crore",
@@ -6680,7 +6777,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "3,811",
          "raw_unit": "crore",
@@ -6709,7 +6806,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-1,481",
          "raw_unit": "crore",
@@ -6738,7 +6835,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "10",
          "raw_unit": "crore",
@@ -6794,7 +6891,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-279",
          "raw_unit": "crore",
@@ -6843,7 +6940,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-199",
          "raw_unit": "crore",
@@ -6892,7 +6989,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-286",
          "raw_unit": "crore",
@@ -6941,7 +7038,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-290",
          "raw_unit": "crore",
@@ -6990,7 +7087,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-193",
          "raw_unit": "crore",
@@ -7039,7 +7136,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-527",
          "raw_unit": "crore",
@@ -7088,7 +7185,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-479",
          "raw_unit": "crore",
@@ -7137,7 +7234,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-859",
          "raw_unit": "crore",
@@ -7186,7 +7283,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-970",
          "raw_unit": "crore",
@@ -7235,7 +7332,7 @@
           "quote": null,
           "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "-1,481",
          "raw_unit": "crore",
@@ -7288,7 +7385,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "512",
        "raw_unit": "crore",
@@ -7317,7 +7414,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,428",
        "raw_unit": "crore",
@@ -7346,7 +7443,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,296",
        "raw_unit": "crore",
@@ -7375,7 +7472,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,809",
        "raw_unit": "crore",
@@ -7404,7 +7501,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "3,811",
        "raw_unit": "crore",
@@ -7433,7 +7530,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "917",
        "raw_unit": "crore",
@@ -7462,7 +7559,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,282",
        "raw_unit": "crore",
@@ -7491,7 +7588,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "1,803",
        "raw_unit": "crore",
@@ -7520,7 +7617,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,046",
        "raw_unit": "crore",
@@ -7549,7 +7646,7 @@
         "quote": null,
         "locator": "screener:profit-loss/Net Profit/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "2,708",
        "raw_unit": "crore",
@@ -7598,7 +7695,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "3,811",
        "raw_unit": "crore",
@@ -7627,7 +7724,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "-1,481",
        "raw_unit": "crore",
@@ -7656,7 +7753,7 @@
         "quote": null,
         "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "10",
        "raw_unit": "crore",
@@ -7673,7 +7770,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T13:39:37.243896+05:30",
+    "as_of": "2026-11-11T09:38:06.395158Z",
     "resume_after": null,
     "written_by": null
    },
@@ -7704,7 +7801,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "856",
        "raw_unit": "crore",
@@ -7733,7 +7830,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "800",
        "raw_unit": "crore",
@@ -7762,7 +7859,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "272",
        "raw_unit": "crore",
@@ -7791,7 +7888,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "157",
        "raw_unit": "crore",
@@ -7820,7 +7917,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "282",
        "raw_unit": "crore",
@@ -7849,7 +7946,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "118",
        "raw_unit": "crore",
@@ -7878,7 +7975,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "191",
        "raw_unit": "crore",
@@ -7907,7 +8004,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "161",
        "raw_unit": "crore",
@@ -7936,7 +8033,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "202",
        "raw_unit": "crore",
@@ -7965,7 +8062,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "236",
        "raw_unit": "crore",
@@ -8019,7 +8116,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "856",
          "raw_unit": "crore",
@@ -8048,7 +8145,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "141",
          "raw_unit": "crore",
@@ -8077,7 +8174,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2017",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "1,853",
          "raw_unit": "crore",
@@ -8126,7 +8223,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "800",
          "raw_unit": "crore",
@@ -8155,7 +8252,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "141",
          "raw_unit": "crore",
@@ -8184,7 +8281,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2018",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "2,206",
          "raw_unit": "crore",
@@ -8233,7 +8330,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "272",
          "raw_unit": "crore",
@@ -8262,7 +8359,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "141",
          "raw_unit": "crore",
@@ -8291,7 +8388,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2019",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "2,706",
          "raw_unit": "crore",
@@ -8340,7 +8437,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "157",
          "raw_unit": "crore",
@@ -8369,7 +8466,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "149",
          "raw_unit": "crore",
@@ -8398,7 +8495,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2020",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "3,688",
          "raw_unit": "crore",
@@ -8447,7 +8544,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "282",
          "raw_unit": "crore",
@@ -8476,7 +8573,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "149",
          "raw_unit": "crore",
@@ -8505,7 +8602,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2021",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "4,605",
          "raw_unit": "crore",
@@ -8554,7 +8651,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "118",
          "raw_unit": "crore",
@@ -8583,7 +8680,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "149",
          "raw_unit": "crore",
@@ -8612,7 +8709,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2022",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "5,394",
          "raw_unit": "crore",
@@ -8661,7 +8758,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "191",
          "raw_unit": "crore",
@@ -8690,7 +8787,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "150",
          "raw_unit": "crore",
@@ -8719,7 +8816,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2023",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "6,481",
          "raw_unit": "crore",
@@ -8768,7 +8865,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "161",
          "raw_unit": "crore",
@@ -8797,7 +8894,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "150",
          "raw_unit": "crore",
@@ -8826,7 +8923,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2024",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "8,037",
          "raw_unit": "crore",
@@ -8875,7 +8972,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "202",
          "raw_unit": "crore",
@@ -8904,7 +9001,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "150",
          "raw_unit": "crore",
@@ -8933,7 +9030,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2025",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "9,678",
          "raw_unit": "crore",
@@ -8982,7 +9079,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Borrowings/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "236",
          "raw_unit": "crore",
@@ -9011,7 +9108,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Equity Capital/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "151",
          "raw_unit": "crore",
@@ -9040,7 +9137,7 @@
           "quote": null,
           "locator": "screener:balance-sheet/Reserves/Mar 2026",
           "published_at": null,
-          "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+          "retrieved_at": "2026-11-11T09:38:06.395158Z"
          },
          "raw": "11,858",
          "raw_unit": "crore",
@@ -9078,7 +9175,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "96",
        "raw_unit": null,
@@ -9107,7 +9204,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "57",
        "raw_unit": null,
@@ -9136,7 +9233,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "45",
        "raw_unit": null,
@@ -9165,7 +9262,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "71",
        "raw_unit": null,
@@ -9194,7 +9291,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "67",
        "raw_unit": null,
@@ -9223,7 +9320,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "67",
        "raw_unit": null,
@@ -9252,7 +9349,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "58",
        "raw_unit": null,
@@ -9281,7 +9378,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "59",
        "raw_unit": null,
@@ -9310,7 +9407,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "54",
        "raw_unit": null,
@@ -9339,7 +9436,7 @@
         "quote": null,
         "locator": "screener:ratios/Working Capital Days/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "30",
        "raw_unit": null,
@@ -9375,7 +9472,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "94",
        "raw_unit": null,
@@ -9404,7 +9501,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "70",
        "raw_unit": null,
@@ -9433,7 +9530,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "91",
        "raw_unit": null,
@@ -9462,7 +9559,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "94",
        "raw_unit": null,
@@ -9491,7 +9588,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "96",
        "raw_unit": null,
@@ -9520,7 +9617,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "77",
        "raw_unit": null,
@@ -9549,7 +9646,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "65",
        "raw_unit": null,
@@ -9578,7 +9675,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "65",
        "raw_unit": null,
@@ -9607,7 +9704,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "64",
        "raw_unit": null,
@@ -9636,7 +9733,7 @@
         "quote": null,
         "locator": "screener:ratios/Cash Conversion Cycle/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "39",
        "raw_unit": null,
@@ -9672,7 +9769,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "80",
        "raw_unit": null,
@@ -9701,7 +9798,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2018",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "70",
        "raw_unit": null,
@@ -9730,7 +9827,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "61",
        "raw_unit": null,
@@ -9759,7 +9856,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "59",
        "raw_unit": null,
@@ -9788,7 +9885,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "60",
        "raw_unit": null,
@@ -9817,7 +9914,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "39",
        "raw_unit": null,
@@ -9846,7 +9943,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "32",
        "raw_unit": null,
@@ -9875,7 +9972,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "41",
        "raw_unit": null,
@@ -9904,7 +10001,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "42",
        "raw_unit": null,
@@ -9933,7 +10030,7 @@
         "quote": null,
         "locator": "screener:ratios/Debtor Days/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "48",
        "raw_unit": null,
@@ -9969,7 +10066,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2017",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "134",
        "raw_unit": null,
@@ -9998,7 +10095,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2019",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "128",
        "raw_unit": null,
@@ -10027,7 +10124,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2020",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "116",
        "raw_unit": null,
@@ -10056,7 +10153,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2021",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "113",
        "raw_unit": null,
@@ -10085,7 +10182,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2022",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "86",
        "raw_unit": null,
@@ -10114,7 +10211,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2023",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "104",
        "raw_unit": null,
@@ -10143,7 +10240,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2024",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "105",
        "raw_unit": null,
@@ -10172,7 +10269,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2025",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "86",
        "raw_unit": null,
@@ -10201,7 +10298,7 @@
         "quote": null,
         "locator": "screener:ratios/Inventory Days/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "99",
        "raw_unit": null,
@@ -10252,7 +10349,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Borrowings/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "236",
        "raw_unit": "crore",
@@ -10281,7 +10378,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Equity Capital/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "151",
        "raw_unit": "crore",
@@ -10310,7 +10407,7 @@
         "quote": null,
         "locator": "screener:balance-sheet/Reserves/Mar 2026",
         "published_at": null,
-        "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+        "retrieved_at": "2026-11-11T09:38:06.395158Z"
        },
        "raw": "11,858",
        "raw_unit": "crore",
@@ -10341,7 +10438,7 @@
       "quote": null,
       "locator": "screener:ratios/Working Capital Days/Mar 2026",
       "published_at": null,
-      "retrieved_at": "2026-11-11T13:39:37.243896+05:30"
+      "retrieved_at": "2026-11-11T09:38:06.395158Z"
      },
      "raw": "30",
      "raw_unit": null,
@@ -10356,7 +10453,7 @@
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T08:09:36.493437Z",
+    "as_of": "2026-11-11T09:38:05.788256Z",
     "resume_after": null,
     "written_by": null
    },
@@ -10376,7 +10473,7 @@
         "quote": "So if you see the 10.1% is already at the upper end of your projected targets. So could you highlight what are the key drivers behind it, and which of these segments are profitable? Is this solely contributed by the solar segment, and would you be looking to revise your Project Spring targets?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10387,7 +10484,7 @@
         "quote": "Given how steep a price increase have we seen in the fibre side, how do you see the profitability of these projects panning out over the next couple of years? And also, we have seen that overall, the EPC revenue has been quite weak. Any particular reason that's impacted this revenue?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10398,7 +10495,7 @@
         "quote": "The question is on the EBIT segment margin for the cables or overall EBITDA margin. Basically, it is within the guided range, but in the backdrop of, say, lower export mix or primary, secondary sales and stocking, where do you see it settling, say, in next 2, 3 quarters? How should we think of it?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10420,7 +10517,7 @@
         "quote": "And secondly, in terms of the new suppliers that are coming into the market. So do you what is the downside risk that you see to your Project Spring targets in terms of the growth as well as margins?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10431,7 +10528,7 @@
         "quote": "Now we understand that 13% decline, was it largely because of Middle East? And how do we foresee the coming quarters?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10442,7 +10539,7 @@
         "quote": "Congratulations on a great set of numbers despite the Middle East disruption. Sir, my first question is of the Cables & Wires sales growth of 30%, if we could break up on the approximate growth -- volume growth in Cables & Wires and also the price hikes that we have taken from Jan till now in different tranches?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10464,7 +10561,7 @@
         "quote": "My first question is in cables and wires domestic, you have grown 50%, overall you have grown 47% revenues. What could be our volume growth? And what could be our value growth for that?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10475,7 +10572,7 @@
         "quote": "If you can indicate the price hikes and volume growth in this quarter on a year-on-year basis. And now considering the copper prices, how do you see the pricing working out for Q2? That is question number one.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10486,7 +10583,7 @@
         "quote": "First, if you can quantify what sort of impact you had in March on account of these Middle East-related disruptions?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10508,7 +10605,7 @@
         "quote": "My question regarding, you mentioned that what is the unorganized competition in unorganized market in the wire segment currently, household segment?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10519,7 +10616,7 @@
         "quote": "So does this imply market share gain for Polycab in wires segment? And how much will be the market share, if you can quantify?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10530,7 +10627,7 @@
         "quote": "Congrats on the strong set of numbers. So, you highlighted 40% domestic volume growth. In your sense, what would have been industry growth and where is your market share trending now? Any qualitative colour will also be helpful.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10552,7 +10649,7 @@
         "quote": "Just wanted to check on the EHV side of the business. When can we expect it to be commissioned and when can we expect it to start contributing to the top line?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10563,7 +10660,7 @@
         "quote": "Firstly, in terms of capacity utilization, I think you mentioned we were around 70-odd percent. Do we have any capacity coming in anytime soon in FY27? And is there a possibility that we may run out of capacity if that's not the case?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        },
        {
         "source_type": "concall_transcript",
@@ -10574,7 +10671,7 @@
         "quote": "So, one of your peers had mentioned on their con call that their EHV plant is facing issues in terms of non-availability of technicians for vertical lines. Now I understand Polycab is also setting up vertical lines for EHV. So, are you facing any such issues in terms of non-availability of technicians and therefore, any delay? Or are we on track for it to commission?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10597,22 +10694,236 @@
   },
   "bull_bear": {
    "meta": {
-    "status": "building",
-    "reason": "not_built_yet",
+    "status": "ready",
+    "reason": null,
     "note": null,
-    "as_of": null,
+    "as_of": "2026-11-11T09:38:05.788256Z",
     "resume_after": null,
-    "written_by": null
+    "written_by": "gemini-3.6-flash"
    },
-   "bull": [],
-   "bear": []
+   "bull": [
+    {
+     "text": "Revenue grew at a 5-year CAGR of 26.9% while PAT achieved a 5-year CAGR of 25.0%.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Sales/Mar 2021",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Sales/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2021",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in profit & loss",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:profit-loss/Net Profit/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      }
+     ]
+    },
+    {
+     "text": "The business generated free cash flow of ₹2,340 Cr in FY26 with a low Debt/Equity ratio of 0.02x.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in cash flows",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in cash flows (investing schedule)",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets purchased/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in cash flows (investing schedule)",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:cash-flow/Cash from Investing Activity/Fixed assets sold/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in balance sheet",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:balance-sheet/Borrowings/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      }
+     ]
+    },
+    {
+     "text": "Cash conversion remained healthy with 5-year CFO/PAT at 1.01x and working capital days at 30 days in FY26.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in cash flows",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2022",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in cash flows",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2023",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in cash flows",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:cash-flow/Cash from Operating Activity/Mar 2024",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      },
+      {
+       "source_type": "screener_table",
+       "url": "https://www.screener.in/company/POLYCAB/consolidated/",
+       "title": "screener.in ratios",
+       "exchange": null,
+       "page": null,
+       "quote": null,
+       "locator": "screener:ratios/Working Capital Days/Mar 2026",
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:06.395158Z"
+      }
+     ]
+    }
+   ],
+   "bear": [
+    {
+     "text": "Management revised its lower-end expectation for EPC annual operating margins from high single digits to mid-to-high single digits.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=c54bf2c3-22fa-45e1-bf1a-2194e7b46183.pdf",
+       "title": "Q3 FY26 call transcript",
+       "exchange": null,
+       "page": 7,
+       "quote": "Segment profitability stood at ₹ 272 million, translating to a margin of 6.7%. Looking ahead, the annual sustainable operating margin is expected to remain in the high single digits over mid- to long term.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
+      },
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=f66f17ac-c40f-4309-afca-3e66af0956a0.pdf",
+       "title": "Q4 FY26 call transcript",
+       "exchange": null,
+       "page": 8,
+       "quote": "Looking ahead, the annual sustainable operating margin is expected to remain in the mid- to high single digits over mid- to long term.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
+      }
+     ]
+    },
+    {
+     "text": "Management identified risks regarding geopolitical tensions, elevated energy prices, global bond yields, and shipping route disruptions.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf",
+       "title": "Q2 FY27 call transcript",
+       "exchange": null,
+       "page": 4,
+       "quote": "Geopolitical tensions, elevated energy prices, higher global bond yields, and disruptions across certain international shipping routes have created near-term uncertainty across markets.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
+      }
+     ]
+    },
+    {
+     "text": "The company faces operational risks from commodity volatility, geopolitical developments, and logistics-related disruptions.",
+     "status": "verified",
+     "citations": [
+      {
+       "source_type": "concall_transcript",
+       "url": "https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname=77b6d277-0ffc-440d-ba8a-2bd9bc3dc43e.pdf",
+       "title": "Q2 FY27 call transcript",
+       "exchange": null,
+       "page": 5,
+       "quote": "While commodity volatility, geopolitical developments, and logistics-related disruptions may continue to influence individual quarters, the structural drivers of the demand remain firmly intact and in place.",
+       "locator": null,
+       "published_at": null,
+       "retrieved_at": "2026-11-11T09:38:05.788256Z"
+      }
+     ]
+    }
+   ]
   },
   "drivers": {
    "meta": {
     "status": "ready",
     "reason": null,
     "note": null,
-    "as_of": "2026-11-11T08:09:36.493437Z",
+    "as_of": "2026-11-11T09:38:05.788256Z",
     "resume_after": null,
     "written_by": null
    },
@@ -10636,7 +10947,7 @@
         "quote": "In line with our Project Spring roadmap, we remain confident of sustaining medium- to long-term EBITDA margins within our guided range of 11% to 13%.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10645,12 +10956,12 @@
       "70f7e499fef4ca1f",
       "76569d11001fd7b4",
       "fe08bd1e03442742",
-      "d06499d971740841",
+      "fe531a5733ae1356",
       "38c2b9b87afa522f",
       "b4f9c6156c8faee4",
-      "837c7872d97b7919",
-      "e8c5f5d20e16950f",
-      "72c2ef4bad499f02"
+      "3972ec63bdc360fb",
+      "367240d87642dd15",
+      "22bb240fa70e1823"
      ]
     },
     {
@@ -10672,7 +10983,7 @@
         "quote": "Our objective continues to be growing at 1.5x to 2x of the industry growth rate while steadily enhancing profitability.",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10704,7 +11015,7 @@
         "quote": "My first question is in cables and wires domestic, you have grown 50%, overall you have grown 47% revenues. What could be our volume growth? And what could be our value growth for that?",
         "locator": null,
         "published_at": null,
-        "retrieved_at": "2026-11-11T08:09:36.493437Z"
+        "retrieved_at": "2026-11-11T09:38:05.788256Z"
        }
       ]
      },
@@ -10861,20 +11172,22 @@
   ],
   "screener_url": "https://www.screener.in/company/POLYCAB/consolidated/",
   "quality": {
-   "quotes_checked": 0,
+   "quotes_checked": 442,
    "quotes_dropped": 7,
    "quotes_reanchored": 0,
-   "claims_dropped": 0
+   "claims_dropped": 1
   },
   "cost": {
-   "calls": 0,
-   "cache_hits": 8,
-   "tokens_in": 0,
-   "tokens_out": 0,
-   "est_usd": 0.0,
-   "models": {}
+   "calls": 2,
+   "cache_hits": 1,
+   "tokens_in": 1340,
+   "tokens_out": 568,
+   "est_usd": 0.003135,
+   "models": {
+    "gemini-3.6-flash": 1
+   }
   }
  },
  "job": null,
- "dossier_version": 8
+ "dossier_version": 34
 }
