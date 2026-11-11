@@ -123,12 +123,14 @@ class PostgresLLMLog:
         )  # fmt: skip
 
     def count_today(self, provider: str, model: str | None = None, purpose_prefix: str | None = None) -> int:
-        # Gemini reports the served version (e.g. 'gemini-3.8-flash-001'), so a model matches by prefix.
+        # A model matches itself and its served versions ('gemini-3.8-flash-001') — never a longer sibling name:
+        # a plain prefix made 'gemini-3.5-flash' count every 'gemini-3.5-flash-lite' call against its own 20/day.
         r = self.conn.execute(
             "select count(*) as n from public.llm_calls where provider = %s and created_at >= "
             "(date_trunc('day', now() at time zone 'America/Los_Angeles') at time zone 'America/Los_Angeles') "
-            "and (%s::text is null or model like %s || '%%') and (%s::text is null or purpose like %s || '%%')",
-            (provider, model, model, purpose_prefix, purpose_prefix),
+            "and (%s::text is null or model = %s or model ~ ('^' || regexp_replace(%s, '([.+*?^$()])', '\\\1', 'g') "
+            "|| '-[0-9]+$')) and (%s::text is null or purpose like %s || '%%')",
+            (provider, model, model, model, purpose_prefix, purpose_prefix),
         ).fetchone()
         return int(r["n"])
 
