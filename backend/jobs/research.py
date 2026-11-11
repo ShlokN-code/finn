@@ -96,7 +96,9 @@ def run_drivers(conn, symbols_arg: str, dry_run: bool) -> None:
     print("symbols:", ", ".join(syms) or "none")
     if dry_run or not syms:
         return
-    router = dv.CheapOnly(Router.default(PostgresLLMLog(conn)), budget)
+    router = dv.CheapOnly(
+        Router.default(PostgresLLMLog(conn)), budget, used=lambda: dv.flash_lite_used_today(conn, model)
+    )
     for sym in syms:
         r = dv.build_drivers(conn, sym, router)
         dv.save(conn, r)

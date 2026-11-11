@@ -33,11 +33,14 @@ class StrongTierBlocked(RuntimeError):
 
 
 class CheapOnly:
-    """Router wrapper for drivers-only builds: cheap tier only, and at most `budget` uncached calls."""
+    """Router wrapper for drivers-only builds: cheap tier only, and at most `budget` model attempts. Attempts are
+    counted from the call log when `used` is given (failed attempts count against quota), else from router stats."""
 
-    def __init__(self, inner, budget: int):
+    def __init__(self, inner, budget: int, used=None):
         self.inner, self.budget, self.spent = inner, budget, 0
         self.stats = inner.stats
+        self._used = used
+        self._start = used() if used else 0
 
     def run(self, tier, req):
         if tier != "cheap":
@@ -45,9 +48,10 @@ class CheapOnly:
         if self.spent >= self.budget:
             raise LLMUnavailable("drivers run budget used", kind="quota")
         before = self.inner.stats.calls
-        res = self.inner.run(tier, req)
-        self.spent += self.inner.stats.calls - before
-        return res
+        try:
+            return self.inner.run(tier, req)
+        finally:
+            self.spent = (self._used() - self._start) if self._used else self.spent + self.inner.stats.calls - before
 
 
 @dataclass

@@ -48,3 +48,24 @@ def test_budget_stops_further_calls():
 def test_plan_budget_keeps_150_free(used, budget):
     # 500/day free: a 50-call run is allowed only if ≥150 stay free afterwards (used ≤ 300).
     assert dv.plan_budget(used) == budget
+
+
+def test_failed_attempts_count_against_the_budget():
+    from finn.llm import LLMUnavailable
+
+    log = {"n": 0}
+
+    class Failing(FakeRouter):
+        def run(self, tier, req):
+            log["n"] += 5  # five logged attempts, all failed
+            raise LLMUnavailable("busy")
+
+    r = dv.CheapOnly(Failing(), budget=8, used=lambda: log["n"])
+    with pytest.raises(LLMUnavailable):
+        r.run("cheap", Req())
+    assert r.spent == 5
+    with pytest.raises(LLMUnavailable):
+        r.run("cheap", Req())
+    assert r.spent == 10
+    with pytest.raises(LLMUnavailable, match="budget"):
+        r.run("cheap", Req())
