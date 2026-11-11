@@ -153,6 +153,29 @@ Strong models: all four are out for the Pacific day (3.8 Flash, 3 Flash and 3.6 
 - [ ] Summary refresh reuse: nightly/forced rebuilds re-run REDUCE whenever any fact changes (market cap moves daily); reuse the stored summary unless the document set or ledger verdicts changed
 - [x] Frontend fixtures: validated INFY, BAJFINANCE, POLYCAB dossiers in `web/public/fixtures/` (`python -m jobs.research export`; built locally against Supabase — rebuild on Render once §7 is set)
 
+## Phase 4 — frontend (11–12 Nov 2026)
+
+Plan approved 11 Nov with six amendments (DECISIONS: "Phase 4 frontend: plan amendments").
+
+- [x] Brief contract: `BriefRequest`/`BriefResponse`, hidden items, header counts + est. time saved, season strip, feedback in → rules out — `f7c253c`; freshness scoped to the requested holdings — `c5f3e95`
+- [x] Showcase replay frozen as a ranked Brief (`jobs.snapshot --brief 2026-10-30` → `web/public/showcase/brief.json`) — `f7c253c`
+- [x] Design system, shell (tab bar, Ask bar, sheet, undo toast, states), provenance sheet, restyled cards — `ea9c512`
+- [x] Brief: cache-first, window chips, season strip + scoreboard, swipe 40% + scope + 5 s undo, Reviewed today, hidden drawer, Why #N, caught-up, Connect Telegram entry — `76061bc`
+- [x] Research: NSE autocomplete, dossier sections with their own status, one-tap build confirmation, BuildProgress with the quota pause, fixture fallback — `76061bc`
+- [x] Promise Ledger: tally, % only from n ≥ 5, filters, original → revised, provenance on every verdict and number — `76061bc`, copy fixes `3e5114d`
+- [x] Portfolio (holdings + latest Brief event + paste/CSV import) and Rules (adjustments with Reset, Telegram connect, alert rules) — `76061bc`
+- [x] QR landing with live phone iframe (no X-Frame-Options; verified on the deployed site), 3-step tour — `76061bc`, `f42e868`
+- [x] Drivers-only builds (Flash-Lite only, 50-call cap, 150 headroom) + `GET /research/drivers` + "What you're watching" — `536fa91`
+- [x] Loading / error / stale states checked with an unreachable API; auto-retry while waking; first-paint fallback at 0.9 s — `3e5114d`, `0936c0f`
+- [ ] **Drivers for the rest of the holdings.** First runs got HAL and EICHERMOT (plus RELIANCE partly) before Gemini Flash-Lite returned 503 "high demand". Re-run `python -m jobs.research drivers`: it skips holdings that already have drivers and checks headroom itself. ITC publishes no transcripts on screener.
+- [ ] Confirmed drivers → ×1.5 Level-1 boost in `/brief` (today `brief()` never passes drivers to `score()`); needs an event→driver match rule
+- [ ] `POST /portfolio`: last close, day change, 1-month sparkline, status dot (rule in DECISIONS), upcoming calendar; Portfolio scoreboard
+- [ ] Rules editing (thresholds, categories, budget, quiet hours, snoozes) synced via `PUT /subscriptions/me` when Telegram is connected; push rule changes to a connected Telegram copy
+- [ ] PWA: manifest, icons, offline cache of the latest Brief (web push stays below the cut)
+- [ ] Wire `/ask` when Friday's backend lands: `setAskContext` chips → `POST /research/{sym}/ask` → answer sheet; enable free text
+- [ ] Real-phone checks the browser pane can't do: iOS swipe vs scroll, haptics on Android, first paint on 4G
+- [ ] Brief payload: a 7-day Brief is ~1 MB uncompressed (results figures carry full provenance trees); brotli makes the transfer small, but consider trimming duplicated `inputs` server-side
+
 ## Phase 5
 
 - [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.
