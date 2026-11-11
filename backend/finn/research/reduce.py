@@ -49,6 +49,7 @@ SCHEMA = {
 
 _PLACEHOLDER = re.compile(r"\{(F\d+)\}")
 _NUMS = re.compile(r"\d+(?:\.\d+)?")
+_ID_TAIL = re.compile(r"\s*\(?\bfacts?[_ ]?ids?\b\s*:?\s*\[?\s*(?:F\d+\s*,?\s*)*\]?\)?\s*$", re.I)
 _ID_LIST = re.compile(r"\s*[\[{(]\s*F\d+(?:\s*,\s*F\d+)+\s*[\]})]")
 
 
@@ -178,9 +179,9 @@ def render(raw: dict | None, fs: list[Fact]) -> tuple[Claim | None, bool]:
     by = {f.id: f for f in fs}
     ids = [i for i in raw.get("fact_ids") or [] if i in by]
     text = " ".join(str(raw["text"]).split())
-    for grp in _ID_LIST.findall(text):  # '{F22, F15}' citations written into the text
+    for grp in _ID_LIST.findall(text) + _ID_TAIL.findall(text):  # '{F22, F15}' / 'Fact_ids: [F3]' in the text
         ids += [i for i in re.findall(r"F\d+", grp) if i in by]
-    text = _ID_LIST.sub("", text).strip()
+    text = _ID_TAIL.sub("", _ID_LIST.sub("", text)).strip()
     used = _PLACEHOLDER.findall(text)
     if any(u not in by or by[u].display is None for u in used):
         return None, True  # placeholders stand for numbers only

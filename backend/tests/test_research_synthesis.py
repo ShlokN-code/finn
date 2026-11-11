@@ -147,3 +147,15 @@ def test_segment_shares_over_100_percent_are_not_shares():
         {"name": "CV", "share_pct": 89.0, "quote": "CV and tractor share up 89%", "page": 1},
     ]
     assert segments(c) == []
+
+
+def test_reduce_strips_fact_id_tails():
+    f = _fig("ROCE", 33.0)
+    fs = [reduce.Fact("F3", "F3: ROCE = 33.0%", "33.0%", [f.citation])]
+    for text in (
+        "ROCE stood at {F3}. Fact_ids: [F3",
+        "ROCE stood at {F3}. Fact_ids:",
+        "ROCE stood at {F3}. (fact ids: F3)",
+    ):
+        c, _ = reduce.render({"text": text, "fact_ids": []}, fs)
+        assert c.text == "ROCE stood at 33.0%." and c.citations
