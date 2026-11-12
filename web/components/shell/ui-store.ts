@@ -68,7 +68,9 @@ export const useToast = () => useSyncExternalStore(toast.sub, toast.get, () => n
 // --- Ask bar context -----------------------------------------------------------------------------------------
 
 export type AskChip = { label: string; run: () => void };
-export type AskContext = { placeholder: string; chips: AskChip[] };
+/** `symbol` scopes free-text questions to one company (POST /research/{symbol}/ask); without it Ask explains where
+ * it works. */
+export type AskContext = { placeholder: string; chips: AskChip[]; symbol?: string };
 const DEFAULT_ASK: AskContext = { placeholder: "Ask FINN…", chips: [] };
 const ask = createStore<AskContext>(DEFAULT_ASK);
 export const setAskContext = (c: AskContext | null) => ask.set(c ?? DEFAULT_ASK);

@@ -555,3 +555,28 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - Render the XBRL as an HTML table ourselves: rejected, because a reader should see the company's own document.
   - Link only the iXBRL view: rejected; it's readable, but it isn't the statement as the company printed it.
   - Leave XBRL and label it: rejected; it's still unreadable on a phone.
+
+## 2026-11-12 · Phase 5 plan: amendments (product owner)
+- **Order:** classification fixes → blind held-out set → Ask → cost report → results-extraction eval (A) → ledger table (B) → nightly refresh → fixes → robustness → walkthrough (C) → smoke (D) → live push check (E) → known limitations (F), then Portfolio/Rules → PWA → snapshot. Proof before new screen features. Time-box: Fri 13 Nov 14:00 IST; whatever isn't done moves below the cut line.
+- **smoke.yml** only GETs cached data: it never triggers a build or an LLM call. The walkthrough's "research a never-built ticker" step runs only when started by hand, and its calls are counted in COST.md.
+- **Driver boost** applies only to drivers the user confirmed. "Why #N" names the matched driver ("affects: Margins"). A weak keyword match gives no boost.
+- **Snapshot re-capture** regenerates every copy together (DB, git JSON, web showcase file) and updates the banner date.
+- **Deliberately left out** (to list): annual-report red flags, NSE on-demand dispatch / exchange-data section, web push, with reasons.
+- Defaults accepted: Ask 8 per visitor per day; nightly refresh piggybacks on the first scheduled filing run at or after 22:00 IST; red flags and exchange data hidden instead of "Coming soon".
+
+## 2026-11-12 · Classification: results press releases titled with the numbers (dev set only)
+- **Context:** PLAN's persistent miss: "Persistent Achieves $452.4M Revenue in Q1 FY27 with 16.1% YoY Growth" fell to `press_release` because the subject never says "results".
+- **Decision:** rule `results_press_release_titled`: a press-release subject that names a period (Q1 FY27, 2QFY2027, "quarter/half year … ended") **and** a P&L word (revenue, profit, PAT, EBITDA, margin, net income, earnings) → results / presentation. Production volumes ("2QFY2027 Production and Delivery Volumes") and operating milestones ("1 GW Module Production in Q2 FY27") carry no P&L word and stay press releases.
+- **Measured:** across all 947 stored filings the rule matches 3, all genuine results press releases (EICHERMOT Q1, TATASTEEL Q1 and Q2); they were re-labelled and re-threaded. Dev set: rules only 96.5% of decided (55/57), full ladder 100% (60/60). The rules are now **frozen** for the held-out run. The remaining facility-opening case is labelled `press_release` by an earlier decision, so it is not a miss.
+
+## 2026-11-12 · Ask: one company, facts + BM25 passages, Flash-Lite, cached, capped per visitor
+- **Retrieval (code):** the dossier's numbered facts (the list REDUCE writes from: computed figures, ledger verdicts, analyst themes) plus the 6 best BM25 passages over the company's read transcripts and decks in `research_doc_text` (newest 12 documents). No vector store, no new documents fetched, so an answer never waits on a download.
+- **Model:** one cheap call (`research.ask.v1`: Flash-Lite, Groq fallback for requests under 6K tokens; never the strong tier). The prompt forbids outside knowledge and calculation, and says "found=false" is a valid answer.
+- **Code checks:** cited fact ids must exist; passage quotes must be in that passage's text; **every number in the answer must be printed in a cited fact or quote** (period labels like FY27 ignored), otherwise the answer is withheld as "Not found in sources" with reason `unsupported_number`. No surviving citation → "Not found in sources".
+- **Cost guards:**
+  - `ask_answers` caches per (symbol, normalised question, dossier version); a rebuilt dossier asks again. Cache hits cost nothing and don't count.
+  - `ask_usage`: 8 new answers per visitor per IST day (`ASK_VISITOR_DAILY`). The visitor is `sha256(salt | IP | IST date)` truncated, so it can't be reversed or linked across days; the IP comes from Vercel's `x-forwarded-for`, forwarded by the proxy as `x-finn-client` on `/ask` only.
+  - Someone calling Render directly could spoof that header; that only dodges the per-visitor cap. The router's `research.ask` lane (40/day across everyone, `RESEARCH_ASK_RPD`) is the hard ceiling, and it is separate from the push side's quota.
+- **No dossier yet:** `unavailable / no_dossier` → "Research X first". Ask is not offered on the Brief/Portfolio (no company in scope); the suggestion chips there still jump to the answer.
+- **Contract:** `AskAnswer` gains `reason`, `cached`, `remaining_today` (TypeScript regenerated).
+- **Alternatives:** whole transcripts in the prompt (long-context, like MAP): 15K+ tokens per question would eat Flash-Lite's TPM shared with builds and rule out the Groq fallback; embeddings: a second provider and an index to keep fresh for a 40-a-day feature.

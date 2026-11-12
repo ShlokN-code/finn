@@ -287,9 +287,23 @@ export interface AskAnswer {
    * Status 'not_found' → 'Not found in sources'
    */
   answer: Claim | null;
+  /**
+   * Served from the answer cache (no model call, not counted)
+   */
+  cached: boolean;
   figures: Figure[];
   model: string | null;
   question: string;
+  /**
+   * Why the answer is unavailable / not found (plain words in the UI)
+   */
+  reason:
+    | ("no_dossier" | "no_sources" | "visitor_cap" | "quota" | "model_unavailable" | "unsupported_number")
+    | null;
+  /**
+   * Questions this visitor has left today (IST)
+   */
+  remaining_today: number | null;
   resume_after: string | null;
   status: "answered" | "not_found" | "unavailable";
 }

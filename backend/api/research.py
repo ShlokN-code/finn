@@ -16,7 +16,7 @@ import threading
 import time
 from datetime import timedelta
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from finn.calendar import now_utc
@@ -125,12 +125,21 @@ class AskIn(BaseModel):
     question: str = Field(min_length=3, max_length=300)
 
 
+def _client_ip(request: Request) -> str | None:
+    """The visitor's IP for Ask's per-visitor cap: the web proxy forwards it as x-finn-client (Vercel's own
+    x-forwarded-for); a direct caller falls back to the socket peer. Spoofing it only dodges the per-visitor cap —
+    the router's research.ask lane still caps everyone together."""
+    fwd = request.headers.get("x-finn-client") or request.headers.get("x-forwarded-for") or ""
+    first = fwd.split(",")[0].strip()
+    return first or (request.client.host if request.client else None)
+
+
 @router.post("/{symbol}/ask")
-def ask(symbol: str, body: AskIn):
+def ask(symbol: str, body: AskIn, request: Request):
     with connect() as conn:
         sym = _symbol(conn, symbol)
         try:
             from finn.research.ask import answer
         except ImportError:
             return AskAnswer(status="unavailable", question=body.question).model_dump(mode="json")
-        return answer(conn, sym, body.question).model_dump(mode="json")
+        return answer(conn, sym, body.question, client_ip=_client_ip(request)).model_dump(mode="json")

@@ -29,7 +29,8 @@ RAW_PATH = HERE / "heldout_raw.jsonl"
 OUT_PATH = HERE / "heldout.jsonl"
 
 CATEGORIES = [
-    ("results", "quarterly/annual results: intimation of the board meeting, outcome, results press release/deck, results newspaper ad"),
+    ("results", "quarterly/annual results: board-meeting intimation, outcome, results press release/deck, "
+     "results newspaper ad"),
     ("mna", "acquisitions, mergers, demergers, stake sales, a subsidiary's IPO"),
     ("management_change", "appointment/resignation of a director, KMP, CEO/MD/CFO, company secretary, auditor"),
     ("litigation", "court/tribunal orders, regulator penalties, tax demands, disputes"),
@@ -109,7 +110,8 @@ def write(rows: list[dict], seed: int, frm: date, to: date) -> None:
     with CSV_PATH.open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow([f"# Blind held-out set: {len(rows)} NSE filings, {frm} to {to}, seed {seed}. Fill the "
-                    "'category' column with ONE value from the list below (exact spelling). Notes are optional."])  # fmt: skip
+                    "'category' column with ONE value from the list below (exact spelling). "
+                    "Notes are optional."])  # fmt: skip
         w.writerow(["# When a filing could be routine or material, choose the material category (DECISIONS.md)."])
         for c, hint in CATEGORIES:
             w.writerow([f"#   {c}", hint])
@@ -138,7 +140,8 @@ def merge(labelled_by: str = "reviewer (blind)") -> int:
         r = raw[rec["seq_id"]]
         out.append({"row": {k: r.get(k) for k in ("seq_id", "symbol", "desc", "an_dt", "attchmntFile", "sm_isin",
                                                    "exchdisstime", "sort_date", "attchmntText")},
-                    "label": label, "note": (rec.get("notes") or "").strip() or None, "labelled_by": labelled_by})  # fmt: skip
+                    "label": label, "note": (rec.get("notes") or "").strip() or None,
+                    "labelled_by": labelled_by})  # fmt: skip
     if problems:
         raise SystemExit("\n".join(problems))
     OUT_PATH.write_text("".join(json.dumps(o, ensure_ascii=False) + "\n" for o in out))

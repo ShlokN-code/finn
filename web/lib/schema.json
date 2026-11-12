@@ -303,6 +303,12 @@
           "default": null,
           "description": "Status 'not_found' \u2192 'Not found in sources'"
         },
+        "cached": {
+          "default": false,
+          "description": "Served from the answer cache (no model call, not counted)",
+          "title": "Cached",
+          "type": "boolean"
+        },
         "figures": {
           "items": {
             "$ref": "#/$defs/Figure"
@@ -325,6 +331,40 @@
         "question": {
           "title": "Question",
           "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "no_dossier",
+                "no_sources",
+                "visitor_cap",
+                "quota",
+                "model_unavailable",
+                "unsupported_number"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Why the answer is unavailable / not found (plain words in the UI)",
+          "title": "Reason"
+        },
+        "remaining_today": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Questions this visitor has left today (IST)",
+          "title": "Remaining Today"
         },
         "resume_after": {
           "anyOf": [
@@ -355,7 +395,10 @@
         "answer",
         "figures",
         "resume_after",
-        "model"
+        "model",
+        "reason",
+        "cached",
+        "remaining_today"
       ],
       "title": "AskAnswer",
       "type": "object"

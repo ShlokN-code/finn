@@ -32,6 +32,11 @@ async function proxy(req: Request, ctx: RouteContext<"/api/[...path]">) {
   const headers: Record<string, string> = { "content-type": "application/json" };
   const auth = req.headers.get("authorization");
   if (auth) headers.authorization = auth;
+  // Ask's per-visitor daily cap: the API hashes this with a salt and the IST date and never stores the IP.
+  if (/\/ask$/.test(path.join("/"))) {
+    const ip = (req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "").split(",")[0].trim();
+    if (ip) headers["x-finn-client"] = ip;
+  }
   try {
     // Query strings pass only where a route needs one (never e.g. ?force=true on /build: that spends quota).
     const search = /^research\/drivers$/.test(path.join("/")) ? new URL(req.url).search : "";

@@ -78,6 +78,7 @@ class Fact:
     line: str  # what the model sees
     display: str | None  # what a {F#} placeholder renders to — only figures have one
     citations: list[Citation]
+    figure: Figure | None = None  # the figure behind a number fact (Ask returns it as a tappable figure)
 
 
 @dataclass
@@ -116,14 +117,14 @@ def _fig_cites(f: Figure) -> list[Citation]:
 def facts(d: Dossier, calls: list[Call]) -> list[Fact]:
     out: list[Fact] = []
 
-    def add(line: str, display: str | None, cites: list[Citation]) -> None:
+    def add(line: str, display: str | None, cites: list[Citation], figure: Figure | None = None) -> None:
         if cites:
             fid = f"F{len(out) + 1}"
-            out.append(Fact(fid, f"{fid}: {line}", display, cites))
+            out.append(Fact(fid, f"{fid}: {line}", display, cites, figure))
 
     def fig(f: Figure, prefix: str = "") -> None:
         per = f" ({f.period.label})" if f.period else ""
-        add(f"{prefix}{f.label}{per} = {show(f)}", show(f), _fig_cites(f))
+        add(f"{prefix}{f.label}{per} = {show(f)}", show(f), _fig_cites(f), f)
 
     for f in d.snapshot.headline:
         fig(f)

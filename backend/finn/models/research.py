@@ -341,3 +341,8 @@ class AskAnswer(Model):
     figures: list[Figure] = Field(default_factory=list)
     resume_after: AwareDatetime | None = None
     model: str | None = None
+    reason: (
+        Literal["no_dossier", "no_sources", "visitor_cap", "quota", "model_unavailable", "unsupported_number"] | None
+    ) = Field(None, description="Why the answer is unavailable / not found (plain words in the UI)")
+    cached: bool = Field(False, description="Served from the answer cache (no model call, not counted)")
+    remaining_today: int | None = Field(None, description="Questions this visitor has left today (IST)")
