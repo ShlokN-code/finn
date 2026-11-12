@@ -355,6 +355,10 @@ class BriefRequest(Model):
     feedback: list[FeedbackAction] = Field(
         default_factory=list, max_length=200, description="Swipes to apply to `rules` before ranking"
     )
+    drivers: list[str] = Field(
+        default_factory=list, max_length=160,
+        description="Confirmed driver ids ('INFY:margins') — an event that touches one gets the ×1.5 Level-1 boost",
+    )  # fmt: skip
 
 
 class BriefResponse(Model):

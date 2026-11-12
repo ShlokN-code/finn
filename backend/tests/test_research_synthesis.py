@@ -185,3 +185,30 @@ def test_refresh_due_from_22_ist_once_a_day():
     assert slot_start("research_refresh", datetime(2026, 11, 12, 16, 0, tzinfo=UTC)) is None  # 21:30 IST
     s = slot_start("research_refresh", datetime(2026, 11, 12, 16, 35, tzinfo=UTC))  # 22:05 IST
     assert s is not None and s.hour == 22
+
+
+def test_map_splits_a_transcript_whose_answer_was_truncated():
+    from finn.llm import LLMResult, LLMUnavailable
+    from finn.research import extract
+
+    pages = [f"Page {i} text. We expect revenue growth of {i}0% next year, said the CEO." for i in range(1, 9)]
+    calls = []
+
+    class R:
+        def run(self, tier, req):
+            calls.append(req.document_text)
+            if "[[p.1]]" in req.document_text and "[[p.8]]" in req.document_text:
+                raise LLMUnavailable("gemini-3.5-flash-lite: gemini output truncated at 16000 tokens", "transient")
+            first = int(req.document_text.split("[[p.")[1].split("]]")[0])
+            return LLMResult(
+                {"guidance": [], "risks": [{"text": f"part from p{first}", "quote": pages[first - 1], "page": first}]},
+                "gemini",
+                "flash-lite",
+                10,
+                10,
+            )
+
+    parts = extract._map_parts(R(), pages, 0, len(pages), {}, 0)
+    assert len(parts) == 2 and len(calls) == 3
+    assert "[[p.5]]" in calls[2] and "[[p.4]]" not in calls[2]  # absolute page markers in the second half
+    assert extract.document_text(pages) == extract.document_text(pages, 0, len(pages))  # same cache key as before

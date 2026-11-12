@@ -119,16 +119,25 @@ def rank(
     rules: list[WeightRule],
     since: datetime | None,
     context: list[dict] | None = None,
+    drivers: list[str] | None = None,
 ) -> list[Card]:
+    from finn.ranking.drivers import match
+
     reps = repeat_counts(list(context or events))
     cards: list[Card] = []
     for e in events:
         if e["category"] in HIDDEN:
             continue
-        s = score(e, weights.get(e["symbol"]), rules, since=since, repeats=reps.get(e["id"], 0))
+        hits = match(e, drivers or [])  # only confirmed drivers, strong matches only
+        ev = {**e, "driver_ids": [d for d, _ in hits]} if hits else e
+        s = score(ev, weights.get(e["symbol"]), rules, since=since, repeats=reps.get(e["id"], 0),
+                  confirmed_drivers=dict(hits))  # fmt: skip
         if s.total <= 0:
             continue
-        cards.append(build_card(e, filings, s))
+        card = build_card(e, filings, s)
+        if hits:
+            card = card.model_copy(update={"affects_drivers": [lab for _, lab in hits]})
+        cards.append(card)
     cards.sort(key=lambda c: c.score.total, reverse=True)
     return cards
 
@@ -140,12 +149,13 @@ def brief(
     rules: list[WeightRule],
     feedback: list[FeedbackAction] | None = None,
     window: str = "since",
+    drivers: list[str] | None = None,
 ) -> BriefResponse:
     symbols = sorted(weights)
     rules = apply_actions(rules, feedback or [])
     events = load_events(conn, symbols, since)
     filings = load_filings(conn, events)
-    cards = rank(events, filings, weights, rules, since, _repeat_context(conn, symbols, since))
+    cards = rank(events, filings, weights, rules, since, _repeat_context(conn, symbols, since), drivers)
     hidden_rows = hidden_filings(conn, symbols, since)
     hidden = hidden_counts(hidden_rows)
     return BriefResponse(

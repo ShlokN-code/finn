@@ -201,8 +201,11 @@ SHAPES = {"guidance": Guidance, "actuals": Actual, "analyst_questions": Question
           "capex": Capex, "risks": Risk}  # fmt: skip
 
 
-def document_text(pages: list[str]) -> str:
-    return "\n".join(f"[[p.{i}]]\n{p.strip()}" for i, p in enumerate(strip_boilerplate(pages), start=1))
+def document_text(pages: list[str], lo: int = 0, hi: int | None = None) -> str:
+    """Pages lo..hi-1 with their absolute [[p.N]] markers (boilerplate stripped over the whole transcript)."""
+    sp = strip_boilerplate(pages)
+    hi = len(sp) if hi is None else hi
+    return "\n".join(f"[[p.{i + 1}]]\n{sp[i].strip()}" for i in range(lo, hi))
 
 
 def _anchor(kind: str, item: dict):
@@ -249,14 +252,35 @@ def map_transcript(conn, router, sha256: str, pages: list[str], tags: dict | Non
     hit = store.get_extraction(conn, sha256, EXTRACTOR, PROMPT_VERSION)
     if hit and (hit["stats"] or {}).get("validator") == VALIDATOR_VERSION:
         return hit["payload"], {**(hit["stats"] or {}), "cached": True, "model": hit["model"]}
-    req = LLMRequest(purpose=PURPOSE, system=SYSTEM, prompt=PROMPT, schema=SCHEMA, document_text=document_text(pages),
-                     max_output_tokens=MAX_OUTPUT, timeout_s=240, tags=tags or {})  # fmt: skip
-    res = router.run("cheap", req)
-    facts, stats = validate(res.data, pages)
-    stats.update(validator=VALIDATOR_VERSION, model=res.model, tokens_in=res.tokens_in, tokens_out=res.tokens_out,
-                 raw_counts={k: len(res.data.get(k) or []) for k in SHAPES})  # fmt: skip
-    store.save_extraction(conn, sha256, EXTRACTOR, PROMPT_VERSION, res.model, facts, stats)
+    parts = _map_parts(router, pages, 0, len(pages), tags or {}, 0)
+    raw = {k: [x for r in parts for x in (r.data.get(k) or [])] for k in SHAPES}
+    facts, stats = validate(raw, pages)
+    stats.update(validator=VALIDATOR_VERSION, model=parts[0].model, parts=len(parts),
+                 tokens_in=sum(r.tokens_in or 0 for r in parts), tokens_out=sum(r.tokens_out or 0 for r in parts),
+                 raw_counts={k: len(raw[k]) for k in SHAPES})  # fmt: skip
+    store.save_extraction(conn, sha256, EXTRACTOR, PROMPT_VERSION, parts[0].model, facts, stats)
     return facts, stats
+
+
+MAX_SPLIT_DEPTH = 2  # whole → halves → quarters
+MIN_SPLIT_PAGES = 4
+
+
+def _map_parts(router, pages: list[str], lo: int, hi: int, tags: dict, depth: int) -> list:
+    """One MAP call over pages lo..hi-1; if the answer was cut off at the output limit (a long, dense call: IDEA,
+    RELIANCE), the same pages in two halves, each with its own call. Quotes keep their absolute page numbers and
+    are validated against the whole transcript, so the merged result checks exactly like a single call."""
+    req = LLMRequest(purpose=PURPOSE, system=SYSTEM, prompt=PROMPT, schema=SCHEMA,
+                     document_text=document_text(pages, lo, hi), max_output_tokens=MAX_OUTPUT, timeout_s=240,
+                     tags={**tags, **({"part": f"p{lo + 1}-{hi}"} if (lo, hi) != (0, len(pages)) else {})})  # fmt: skip
+    try:
+        return [router.run("cheap", req)]
+    except LLMUnavailable as e:
+        if "truncated" not in str(e) or depth >= MAX_SPLIT_DEPTH or hi - lo < MIN_SPLIT_PAGES:
+            raise
+        log.info("MAP output truncated for pages %d-%d: splitting", lo + 1, hi)
+        mid = (lo + hi) // 2
+        return _map_parts(router, pages, lo, mid, tags, depth + 1) + _map_parts(router, pages, mid, hi, tags, depth + 1)
 
 
 __all__ = ["map_transcript", "validate", "LLMUnavailable", "Guidance", "Actual", "Question"]

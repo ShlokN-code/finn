@@ -72,7 +72,7 @@ def relevance(impact: str | None, event_driver_ids: list[str], confirmed: dict[s
     hit = [confirmed[d] for d in event_driver_ids if d in confirmed]
     if hit:
         r *= DRIVER_BOOST
-        notes.append(f"Touches your driver: {', '.join(hit)} (×{DRIVER_BOOST})")
+        notes.append(f"affects: {', '.join(hit)} — a driver you're watching (×{DRIVER_BOOST})")
     return r, notes
 
 

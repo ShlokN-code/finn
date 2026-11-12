@@ -492,6 +492,15 @@
       "additionalProperties": false,
       "description": "POST /brief. Holdings are used only to rank this response: never stored, never logged.",
       "properties": {
+        "drivers": {
+          "description": "Confirmed driver ids ('INFY:margins') \u2014 an event that touches one gets the \u00d71.5 Level-1 boost",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 160,
+          "title": "Drivers",
+          "type": "array"
+        },
         "feedback": {
           "description": "Swipes to apply to `rules` before ranking",
           "items": {
@@ -550,7 +559,8 @@
         "window",
         "since",
         "rules",
-        "feedback"
+        "feedback",
+        "drivers"
       ],
       "title": "BriefRequest",
       "type": "object"

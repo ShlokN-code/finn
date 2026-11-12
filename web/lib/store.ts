@@ -198,10 +198,20 @@ export function resetRule(id: string | null) {
 
 // --- Holdings ----------------------------------------------------------------------------------------------------
 
-export function holdingsSignature(h: LocalHolding[], rules: WeightRule[]): string {
+export function holdingsSignature(h: LocalHolding[], rules: WeightRule[], drivers: string[] = []): string {
   const hs = h.map((x) => `${x.symbol}:${x.weight_pct ?? ""}`).sort().join(",");
   const rs = rules.map((r) => `${r.id}:${r.multiplier}`).sort().join(",");
-  return `${hs}|${rs}`;
+  return drivers.length ? `${hs}|${rs}|${[...drivers].sort().join(",")}` : `${hs}|${rs}`;
+}
+
+/** Confirmed driver ids for the held symbols ("INFY:margins"), sent with each Brief for the ×1.5 boost. */
+export function confirmedDriverIds(confirmed: Record<string, string[]>, h: LocalHolding[]): string[] {
+  const held = new Set(h.map((x) => x.symbol));
+  return Object.entries(confirmed)
+    .filter(([sym]) => held.has(sym))
+    .flatMap(([, ids]) => ids)
+    .sort()
+    .slice(0, 160);
 }
 
 export const isDemoPortfolio = (h: LocalHolding[]) =>

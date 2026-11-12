@@ -41,7 +41,7 @@ def post_brief(body: BriefRequest):
     if all(w is None for w in weights.values()):
         weights = {s: round(100 / len(weights), 4) for s in weights}
     with connect() as conn:
-        b = brief(conn, weights, since, body.rules, body.feedback, window=body.window)
+        b = brief(conn, weights, since, body.rules, body.feedback, window=body.window, drivers=body.drivers)
     return b.model_dump(mode="json")
 
 

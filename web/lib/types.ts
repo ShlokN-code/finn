@@ -341,6 +341,12 @@ export interface BriefHolding {
  */
 export interface BriefRequest {
   /**
+   * Confirmed driver ids ('INFY:margins') — an event that touches one gets the ×1.5 Level-1 boost
+   *
+   * @maxItems 160
+   */
+  drivers: string[];
+  /**
    * Swipes to apply to `rules` before ranking
    *
    * @maxItems 200

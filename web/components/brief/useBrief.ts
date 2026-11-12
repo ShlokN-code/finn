@@ -11,6 +11,7 @@ import {
   cacheBrief,
   FALLBACK,
   holdingsSignature,
+  confirmedDriverIds,
   isDemoPortfolio,
   read,
   settleFeedback,
@@ -44,6 +45,8 @@ export function useBrief(opts: {
   const holdings = useStored<LocalHolding[]>("holdings", FALLBACK.holdings);
   const rules = useStored<WeightRule[]>("rules", FALLBACK.rules);
   const pending = useStored<FeedbackAction[]>("pending", FALLBACK.pending);
+  const confirmed = useStored<Record<string, string[]>>("drivers", FALLBACK.drivers);
+  const driverIds = useMemo(() => confirmedDriverIds(confirmed, holdings), [confirmed, holdings]);
   const [nonce, setNonce] = useState(0);
   const [state, setState] = useState<BriefState>({
     data: null,
@@ -72,7 +75,7 @@ export function useBrief(opts: {
     opts.window === "since" ? (opts.visit?.previous ?? null) : opts.window === "custom" ? opts.customSince : null;
   const reqWindow: BriefRequest["window"] =
     opts.window === "since" || opts.window === "custom" ? (since ? "since" : "7d") : opts.window;
-  const sig = useMemo(() => holdingsSignature(holdings, rules), [holdings, rules]);
+  const sig = useMemo(() => holdingsSignature(holdings, rules, driverIds), [holdings, rules, driverIds]);
   const cacheKey = `brief.${opts.window}`;
   const pendingKey = pending.map((p) => p.at).join(",");
 
@@ -143,6 +146,7 @@ export function useBrief(opts: {
       since: reqWindow === "since" ? since : null,
       rules,
       feedback: sent,
+      drivers: driverIds,
     };
     api
       .brief(req, ctrl.signal)
@@ -151,7 +155,7 @@ export function useBrief(opts: {
         liveRef.current = resp;
         retries.current = 0;
         const at = new Date().toISOString();
-        cacheBrief(cacheKey, { resp, at, sig: holdingsSignature(holdings, resp.rules) });
+        cacheBrief(cacheKey, { resp, at, sig: holdingsSignature(holdings, resp.rules, driverIds) });
         if (sent.length) settleFeedback(resp.rules, sent.map((p) => p.at).sort().at(-1) ?? null);
         setState((s) =>
           s.source === "fallback" && interacted.current
