@@ -426,6 +426,10 @@ export interface BriefResponse {
    */
   showcase: string | null;
   since: string | null;
+  /**
+   * Holdings FINN doesn't fetch filings for yet (only the demo portfolio and Telegram-connected holdings are ingested): an empty Brief for them is not 'caught up'
+   */
+  untracked: string[];
   window: string;
 }
 /**

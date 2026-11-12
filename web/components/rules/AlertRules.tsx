@@ -44,7 +44,13 @@ export function AlertRules() {
   const [sync, setSync] = useState<Sync>("local");
   const [msg, setMsg] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [now] = useState(() => Date.now()); // render-stable clock for "still snoozed?"
+
+  // Expired snoozes are dropped once on load (no clock reads during render: the page is prerendered).
+  useEffect(() => {
+    const cur = read<Snoozes>("snoozes", {});
+    const live = Object.fromEntries(Object.entries(cur).filter(([, u]) => new Date(u).getTime() > Date.now()));
+    if (Object.keys(live).length !== Object.keys(cur).length) write("snoozes", live);
+  }, []);
 
   // Connected: the server copy is the truth on load.
   useEffect(() => {
@@ -91,8 +97,8 @@ export function AlertRules() {
     }, 600);
   }
   const set = (patch: Partial<AlertSettings>) => save({ ...s, ...patch }, snoozes);
-  const liveSnoozes = Object.entries(snoozes).filter(([, until]) => new Date(until).getTime() > now);
-  const held = holdings.map((h) => h.symbol).filter((x) => !snoozes[x] || new Date(snoozes[x]).getTime() <= now);
+  const liveSnoozes = Object.entries(snoozes);
+  const held = holdings.map((h) => h.symbol).filter((x) => !snoozes[x]);
 
   return (
     <div>

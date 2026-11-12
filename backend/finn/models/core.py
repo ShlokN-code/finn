@@ -417,6 +417,11 @@ class BriefResponse(Model):
     since: AwareDatetime | None = None
     window: str
     showcase: str | None = Field(None, description="IST date of a frozen Showcase replay day; null when live")
+    untracked: list[str] = Field(
+        default_factory=list,
+        description="Holdings FINN doesn't fetch filings for yet (only the demo portfolio and Telegram-connected "
+        "holdings are ingested): an empty Brief for them is not 'caught up'",
+    )
 
 
 class Alert(Model):

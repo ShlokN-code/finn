@@ -657,6 +657,14 @@
           "default": null,
           "title": "Since"
         },
+        "untracked": {
+          "description": "Holdings FINN doesn't fetch filings for yet (only the demo portfolio and Telegram-connected holdings are ingested): an empty Brief for them is not 'caught up'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Untracked",
+          "type": "array"
+        },
         "window": {
           "title": "Window",
           "type": "string"
@@ -673,7 +681,8 @@
         "data_as_of",
         "since",
         "window",
-        "showcase"
+        "showcase",
+        "untracked"
       ],
       "title": "BriefResponse",
       "type": "object"

@@ -164,6 +164,20 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
           Showcase replay · {SHOWCASE_LABEL} · a saved results day, not live
         </Notice>
       )}
+      {!showcase && data && (data.untracked?.length ?? 0) > 0 && (
+        <Notice
+          tone="warn"
+          action={
+            <Link href="/connect" className="h-9 shrink-0 font-semibold underline underline-offset-4">
+              Connect Telegram
+            </Link>
+          }
+        >
+          Not tracked yet: {data.untracked.slice(0, 6).join(", ")}
+          {data.untracked.length > 6 ? ` +${data.untracked.length - 6}` : ""}. FINN fetches filings for the demo portfolio
+          and Telegram-connected holdings; connect to add these from the next 30-minute check.
+        </Notice>
+      )}
       {b.source === "fallback" && (
         <Notice
           tone="warn"
@@ -285,7 +299,10 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
                 </ul>
               </section>
             )}
-            <CaughtUp n={n} sinceLabel={sinceLabel} window={window_} showcase={showcase} onWiden={() => setWindow("7d")} />
+            {/* Nothing shown and some holdings aren't tracked: "caught up" would be untrue — the notice above explains. */}
+            {!(n === 0 && (data.untracked?.length ?? 0) > 0) && (
+              <CaughtUp n={n} sinceLabel={sinceLabel} window={window_} showcase={showcase} onWiden={() => setWindow("7d")} />
+            )}
             <div className="border-t border-rule">
               <ReviewedToday entries={reviewedToday} cards={cards} />
               <button type="button" onClick={() => setSheet("hidden")} className="flex min-h-12 w-full items-center gap-2 border-t border-rule px-4 text-left">

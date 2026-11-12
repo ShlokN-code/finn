@@ -95,6 +95,14 @@ def hidden_items(rows: list[dict]) -> list[HiddenItem]:
     ]  # fmt: skip
 
 
+def untracked(conn, symbols: list[str]) -> list[str]:
+    """Symbols with no NSE filing check on record — FINN isn't ingesting them (yet)."""
+    have = {r["scope"] for r in conn.execute(
+        "select scope from public.source_status where source = 'nse_announcements' and scope = any(%s)", (symbols,)
+    ).fetchall()}  # fmt: skip
+    return [s for s in symbols if s not in have]
+
+
 def data_as_of(conn, symbols: list[str] | None = None) -> datetime | None:
     """Freshness of the filings feed for these holdings: the oldest last-successful NSE check among them.
     Symbols FINN doesn't track yet have no row; if none do, the latest check of any symbol is used."""
@@ -163,6 +171,7 @@ def brief(
         counts=brief_counts(cards, len(hidden_rows), since),
         season=season_strip(conn, symbols, now_utc()),
         rules=rules, data_as_of=data_as_of(conn, symbols), since=since, window=window,
+        untracked=untracked(conn, symbols),
     )  # fmt: skip
 
 
