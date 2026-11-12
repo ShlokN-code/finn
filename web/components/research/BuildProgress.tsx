@@ -11,7 +11,7 @@ export function BuildProgress({ job, readyCount }: { job: DossierJob; readyCount
   const waiting = job.status === "waiting_quota" || job.steps.some((s) => s.status === "waiting");
   const c = job.counters;
   return (
-    <section className="mx-4 mt-3 rounded-xl border border-rule bg-surface p-4" aria-live="polite">
+    <section className="mx-4 mt-3 rounded-xl border border-rule bg-surface p-4" aria-live="polite" data-build-progress={job.status}>
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="t-micro text-ink-3">

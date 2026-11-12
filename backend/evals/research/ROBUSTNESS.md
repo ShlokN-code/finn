@@ -22,3 +22,16 @@ Draws: `python -m evals.research.draw_unseen --seed <seed> --robust 5` (seed log
 
 </details>
 
+
+## Run 12 Nov 2026 16:56 IST (rerun after fix, deployed 8252712)
+
+| Ticker | Build | Time | Calls | Sections ready | Ledger | Ask | Brief |
+|---|---|---|---|---|---|---|---|
+| TATACAP | partial | 369 s | — () | 7/10 | 22 promises | answered | HTTP 200, 0 cards |
+
+<details><summary>Section states</summary>
+
+- **TATACAP**: snapshot ready, trajectory ready, ledger ready, cash_quality unavailable · not_meaningful_for_lenders, balance_sheet ready, analysts ready, red_flags building · not_built_yet, bull_bear partial · not_found_in_sources, drivers ready, exchange_data building · not_built_yet
+
+</details>
+

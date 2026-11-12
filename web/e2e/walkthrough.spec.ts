@@ -112,6 +112,11 @@ test("research a ticker never built before (manual: FINN_BUILD_TICKER)", async (
   await page.goto(`/research/${sym}`);
   await skipTour(page);
   await page.getByRole("button", { name: `Research ${sym}` }).click();
+  // The build shows its progress, sections fill in while it runs, and the panel goes away when the job ends.
+  await expect(page.locator("[data-build-progress]")).toBeVisible({ timeout: 60_000 });
   await expect(page.locator("#snapshot")).toBeVisible({ timeout: 5 * 60_000 });
-  await expect(page.locator("#ledger")).toBeVisible({ timeout: 10 * 60_000 });
+  await expect(page.locator("[data-build-progress]")).toBeHidden({ timeout: 14 * 60_000 });
+  await expect(page.locator('[data-build-progress="failed"]')).toHaveCount(0);
+  await expect(page.locator("#ledger")).toBeVisible();
+  await expect(page.locator("#snapshot").getByText(/Coming soon|Something went wrong/)).toHaveCount(0);
 });

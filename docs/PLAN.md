@@ -201,6 +201,8 @@ Draw: `python -m evals.research.draw_unseen --seed 20261112 --robust 5` → pool
 | PGEL | partial (bull/bear) | 41 | answered, cited | 0 cards | — |
 | JASH | partial (bull/bear) | 49 | answered, cited (33 s: model retries) | 0 cards | — |
 
+**TATACAP rerun after the fix** (deployed `8252712`, job 52): partial in 369 s — snapshot, trajectory, ledger (22 promises), balance sheet, analysts, drivers ready; cash quality "not meaningful for lenders"; bull/bear 2 of 3 supported. 5 calls (≈ $0.005 list).
+
 **General finding across all five:** a Brief whose holdings FINN doesn't ingest returned 0 cards and the global freshness stamp, which read as "You're caught up". Fixed: `BriefResponse.untracked` + a notice ("Not tracked yet … connect Telegram to add them") and no "caught up" — `8252712`.
 
 - [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.
