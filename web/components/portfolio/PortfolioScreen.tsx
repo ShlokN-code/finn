@@ -108,7 +108,11 @@ export function PortfolioScreen() {
         </Notice>
       )}
       <p className="t-micro px-4 pb-2 text-ink-3">
-        Weight · close · day · 1 month{pf.data?.prices_as_of ? ` · prices as of ${pf.data.prices_as_of} close` : ""}
+        Weight · close · day · 1 month
+        {pf.data?.prices_as_of
+          ? ` · ${new Date(`${pf.data.prices_as_of}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" })} close`
+          : ""}
+        {pf.loading && !pf.data ? " · loading prices…" : pf.loading && pf.cached ? " · updating…" : ""}
       </p>
       {!b.data && !b.error ? (
         <Skeleton rows={4} label="Loading holdings" />

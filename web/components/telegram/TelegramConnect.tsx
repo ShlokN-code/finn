@@ -77,8 +77,9 @@ export function TelegramConnect() {
   return (
     <div className="space-y-3">
       <p className="t-body text-ink-2">
-        Results, management changes, unusual price moves and other material filings on your holdings — at most 5
-        messages a day, quiet from 10 pm to 7 am except M&amp;A, a CEO/MD exit or a rating downgrade.
+        Results, management changes, unusual price moves and other material filings on your holdings — by default at
+        most 5 messages a day, quiet from 10 pm to 7 am except M&amp;A, a CEO/MD exit or a rating downgrade (change these
+        under Alert rules).
       </p>
       <div className="rounded-xl bg-surface-2 p-3">
         <p className="t-micro text-ink-3">What gets uploaded</p>
