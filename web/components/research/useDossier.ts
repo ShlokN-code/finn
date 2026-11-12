@@ -58,6 +58,21 @@ export function useDossier(symbol: string, mock: boolean) {
     load();
   }, [load, tick]);
 
+  // A sleeping or redeploying server: retry by itself (every 10 s, for ~5 min) instead of waiting for a tap —
+  // the walkthrough caught a dossier page parked on "Try again" for 15 minutes during a deploy.
+  const wakeTries = useRef(0);
+  useEffect(() => {
+    if (s.status !== "error" || !s.error?.waking || wakeTries.current >= 30) return;
+    const t = setTimeout(() => {
+      wakeTries.current += 1;
+      setTick((n) => n + 1);
+    }, 10_000);
+    return () => clearTimeout(t);
+  }, [s.status, s.error, tick]);
+  useEffect(() => {
+    if (s.status === "ready") wakeTries.current = 0;
+  }, [s.status]);
+
   // Poll an active job.
   const job = s.resp?.job ?? null;
   const jobActive = isActive(job);
