@@ -580,3 +580,11 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **No dossier yet:** `unavailable / no_dossier` → "Research X first". Ask is not offered on the Brief/Portfolio (no company in scope); the suggestion chips there still jump to the answer.
 - **Contract:** `AskAnswer` gains `reason`, `cached`, `remaining_today` (TypeScript regenerated).
 - **Alternatives:** whole transcripts in the prompt (long-context, like MAP): 15K+ tokens per question would eat Flash-Lite's TPM shared with builds and rule out the Groq fallback; embeddings: a second provider and an index to keep fresh for a 40-a-day feature.
+
+## 2026-11-12 · Nightly research refresh; summary reuse
+- **Trigger:** no new scheduler entry. The ingest workflow's `pick` step marks `refresh=true` on a scheduled filing run at or after 21:55 IST, and a separate `research-refresh` job (own concurrency group, so it never blocks filing checks) runs `python -m jobs.research refresh --scheduled`, which runs once per IST day from 22:00 (`ingest_runs.job = research_refresh`). Weekdays only, like the filing slots. Manual: dispatch `job=refresh`.
+- **What it rebuilds:** the 4 demo tickers always; portfolio holdings only when they already have a dossier (first-time builds stay demo-only, Phase 3 budget). Each goes through the normal build queue (priority 60, after any visitor's build at 10).
+- **Model calls only for what changed:** transcripts and MAP extractions are cached by content hash; JUDGE's prompt has no date (router cache); **REDUCE is skipped when `synthesis_hash` is unchanged** — a hash of the document set (URL + content hash + status, plus MAP/JUDGE/REDUCE prompt versions) and every promise's verdict and revision. REDUCE's facts include the day's market cap, so before this every rebuild re-ran it. Screener tables and computed sections still refresh nightly at no model cost.
+- **Kept summary is honest about its age:** the snapshot's `as_of` stays at the day it was written.
+- **DB size guard:** the refresh skips (and logs a failure) above 400 MB (Supabase free tier: 500 MB).
+- **Backfill:** `doc_set_hash` / `synthesis_hash` were never written before; they were computed for the 7 stored dossiers so tonight's first refresh doesn't spend 7 strong calls on unchanged summaries.

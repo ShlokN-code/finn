@@ -7,6 +7,7 @@ on a bug. The last good dossier is the starting point, so a failed rebuild never
 
 from __future__ import annotations
 
+import hashlib
 import logging
 from datetime import datetime
 
@@ -36,7 +37,9 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     sec = store.security(conn, symbol)
     name = (sec or {}).get("name") or symbol
     now = now_utc()
-    prev = store.load_dossier(store.get_dossier_row(conn, symbol))
+    prev_row = store.get_dossier_row(conn, symbol)
+    prev = store.load_dossier(prev_row)
+    prev_synthesis = (prev_row or {}).get("synthesis_hash")
     d = prev.model_copy(deep=True) if prev else empty_dossier(symbol, name, now)
     d.built_at = now
     d.quality = DossierQuality()  # counts are per build, not cumulative
@@ -128,8 +131,17 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     else:
         strong_quota = None
         progress.step("judge", "skipped", "No promises to judge")
+    doc_hash = doc_set_hash(d)
+    syn_hash = synthesis_hash(doc_hash, d)
     if disc.status == "ok" or calls:
-        strong_quota = run_reduce(d, calls, router, tags, progress, now) or strong_quota
+        if prev is not None and prev_synthesis == syn_hash and _summary_ready(prev):
+            # Nothing REDUCE reads has changed in substance (same documents, same verdicts): keep the stored
+            # summary instead of a strong call. Its facts also include the day's market cap and prices, so without
+            # this an unchanged dossier would re-run REDUCE every night (DECISIONS: nightly refresh).
+            progress.step("reduce", "done", f"Summary reused — no new document or verdict since "
+                          f"{_ist(prev.snapshot.meta.as_of)}")  # fmt: skip
+        else:
+            strong_quota = run_reduce(d, calls, router, tags, progress, now) or strong_quota
     else:
         progress.step("reduce", "skipped", "Nothing to summarise")
         d.bull_bear.meta = meta("unavailable", "not_found_in_sources", "No financials or transcripts to summarise", now)
@@ -146,11 +158,37 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
         getattr(d, k).meta.status in ("ready", "unavailable")
         for k in ("snapshot", "trajectory", "ledger", "cash_quality", "balance_sheet", "bull_bear")
     )
-    store.publish(conn, d, complete=complete)
+    written = _summary_ready(d) and strong_quota is None
+    store.publish(conn, d, complete=complete, doc_set_hash=doc_hash, synthesis_hash=syn_hash if written else None)
     stats = {**d.cost.model_dump(), "calls_read": len(calls), "guidance": guidance}
     if quota is not None and quota.kind == "quota" and quota.retry_after:
         return Outcome("waiting_quota", stats=stats, error=str(quota)[:300], resume_after=quota.retry_after)
     return Outcome("done" if complete else "partial", stats=stats)
+
+
+def doc_set_hash(d: Dossier) -> str:
+    """The documents a dossier was read from (URL + content hash) and the prompt versions that read them."""
+    from finn.research import extract, judge, reduce
+
+    parts = sorted(f"{x.url}|{x.id}|{x.status}" for x in d.sources)
+    parts.append(f"map={extract.PROMPT_VERSION};judge={judge.PROMPT_VERSION};"
+                 f"reduce={reduce.PROMPT_VERSION}")  # fmt: skip
+    return hashlib.sha256("\n".join(parts).encode()).hexdigest()
+
+
+def synthesis_hash(doc_hash: str, d: Dossier) -> str:
+    """What REDUCE's summary depends on in substance: the documents and every promise's verdict. Daily market
+    data (market cap, price ratios) is deliberately left out."""
+    verdicts = sorted(f"{p.id}|{p.verdict}|{p.revision}" for p in d.ledger.promises)
+    return hashlib.sha256((doc_hash + "\n" + "\n".join(verdicts)).encode()).hexdigest()
+
+
+def _summary_ready(d: Dossier) -> bool:
+    return (
+        d.snapshot.meta.status == "ready"
+        and d.bull_bear.meta.status in ("ready", "partial")
+        and bool(d.bull_bear.bull or d.bull_bear.bear)
+    )
 
 
 def _tally_note(cr) -> str:

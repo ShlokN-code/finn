@@ -4,6 +4,7 @@ Manual runs never skip.
 
   filings: one run per 20 minutes (slots are every 30 min; GitHub's cron is often late by minutes to hours)
   daily:   one post-close run per IST day (counted from 16:00 IST, so a manual daytime backfill doesn't block it)
+  research_refresh: one per IST day, from the first filing slot at or after 22:00 IST
 """
 
 from __future__ import annotations
@@ -14,17 +15,27 @@ from finn.calendar import IST, to_ist
 
 FILINGS_SLOT = timedelta(minutes=20)
 DAILY_SLOT_START = time(16, 0)  # IST
+REFRESH_SLOT_START = time(22, 0)  # IST: the nightly research refresh rides on the first filing slot from 22:00
 
 
 def slot_start(job: str, now: datetime) -> datetime | None:
     """Earliest start time that counts as 'this slot already ran' for `job`; None = no slot logic."""
     if job == "check_filings":
         return now - FILINGS_SLOT
-    if job == "ingest_daily":
+    if job in ("ingest_daily", "research_refresh"):
         local = to_ist(now)
-        start = datetime.combine(local.date(), DAILY_SLOT_START, tzinfo=IST)
+        start = datetime.combine(local.date(), DAILY_SLOT_START if job == "ingest_daily" else REFRESH_SLOT_START,
+                                 tzinfo=IST)  # fmt: skip
         return start if local >= start else None
     return None
+
+
+def refresh_due(conn, now: datetime) -> tuple[bool, str]:
+    """The nightly research refresh: due from 22:00 IST, once per IST day."""
+    if slot_start("research_refresh", now) is None:
+        return False, f"before 22:00 IST ({to_ist(now):%H:%M})"
+    ran = already_ran(conn, "research_refresh", now)
+    return (False, f"already ran at {to_ist(ran):%H:%M} IST") if ran else (True, "due")
 
 
 def already_ran(conn, job: str, now: datetime) -> datetime | None:

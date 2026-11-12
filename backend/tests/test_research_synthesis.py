@@ -159,3 +159,29 @@ def test_reduce_strips_fact_id_tails():
     ):
         c, _ = reduce.render({"text": text, "fact_ids": []}, fs)
         assert c.text == "ROCE stood at 33.0%." and c.citations
+
+
+def test_synthesis_hash_ignores_market_data_but_not_documents_or_verdicts():
+    from finn.models.research import DocumentRef, Promise
+    from finn.research.build import doc_set_hash, synthesis_hash
+    from finn.research.skeleton import empty_dossier
+
+    now = datetime(2026, 11, 12, tzinfo=UTC)
+    d = empty_dossier("INFY", "Infosys", now)
+    base = synthesis_hash(doc_set_hash(d), d)
+    d.snapshot.headline = []  # market cap and prices move daily: not part of the hash
+    assert synthesis_hash(doc_set_hash(d), d) == base
+    d2 = d.model_copy(deep=True)
+    d2.sources = [DocumentRef.model_construct(id="abc", url="https://bse/x.pdf", status="read")]
+    assert synthesis_hash(doc_set_hash(d2), d2) != base
+    d3 = d.model_copy(deep=True)
+    d3.ledger.promises = [Promise.model_construct(id="p1", verdict="missed", revision=None)]
+    assert synthesis_hash(doc_set_hash(d3), d3) != base
+
+
+def test_refresh_due_from_22_ist_once_a_day():
+    from finn.ingest.schedule import slot_start
+
+    assert slot_start("research_refresh", datetime(2026, 11, 12, 16, 0, tzinfo=UTC)) is None  # 21:30 IST
+    s = slot_start("research_refresh", datetime(2026, 11, 12, 16, 35, tzinfo=UTC))  # 22:05 IST
+    assert s is not None and s.hour == 22
