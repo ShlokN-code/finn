@@ -29,7 +29,7 @@ STEPS = [
     ("ledger", "Scoring promises against what was delivered"),
     ("decks", "Checking investor decks for figures the calls didn't state"),
     ("judge", "Judging qualitative promises"),
-    ("reduce", "Writing the summary, red flags, bull and bear"),
+    ("reduce", "Writing the summary, bull and bear"),
     ("publish", "Publishing the dossier"),
 ]
 HEARTBEAT_S = 30

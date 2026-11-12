@@ -39,6 +39,16 @@ const TABS: [string, string][] = [
 
 const TEMPLATE = { bank: "Bank", nbfc: "NBFC", standard: null } as const;
 
+// Sections not built in this release (annual-report red flags, on-demand NSE exchange data) are hidden, not shown
+// as "Coming soon" (product owner, Phase 5). They reappear by themselves once a build fills them.
+const notBuilt = (m: { status: string; reason?: string | null }) => m.status === "building" && m.reason === "not_built_yet";
+function hiddenTabs(d: Dossier | null): Set<string> {
+  const out = new Set<string>();
+  if (d && notBuilt(d.red_flags.meta)) out.add("red-flags");
+  if (d && notBuilt(d.exchange_data.meta)) out.add("exchange");
+  return out;
+}
+
 function readyCount(d: Dossier | null): number {
   if (!d) return 0;
   const metas = [d.snapshot, d.trajectory, d.ledger, d.cash_quality, d.balance_sheet, d.analysts, d.bull_bear, d.drivers].map((s) => s.meta);
@@ -161,7 +171,7 @@ export function DossierScreen({ symbol }: { symbol: string }) {
       {d && (
         <>
           <nav aria-label="Sections" className="no-scrollbar sticky top-0 z-10 mt-2 flex gap-1 overflow-x-auto border-b border-rule bg-paper/95 px-3 backdrop-blur-sm">
-            {TABS.map(([id, label]) => (
+            {TABS.filter(([id]) => !hiddenTabs(d).has(id)).map(([id, label]) => (
               <a key={id} href={`#${id}`} onClick={(e) => (e.preventDefault(), jump(id))} className="t-small inline-flex h-11 shrink-0 items-center px-2 text-ink-2">
                 {label}
               </a>
@@ -173,10 +183,10 @@ export function DossierScreen({ symbol }: { symbol: string }) {
           <SeriesSectionView id="cash" title="Cash quality" section={d.cash_quality} />
           <SeriesSectionView id="balance-sheet" title="Balance sheet" section={d.balance_sheet} />
           <AnalystsSectionView d={d} />
-          <RedFlagsSectionView d={d} />
+          {!notBuilt(d.red_flags.meta) && <RedFlagsSectionView d={d} />}
           <BullBearSectionView d={d} />
           <DriversSectionView d={d} />
-          <ExchangeSectionView d={d} />
+          {!notBuilt(d.exchange_data.meta) && <ExchangeSectionView d={d} />}
           <SourcesSection d={d} />
           <p className="t-small px-4 text-ink-3">
             Primary sources only — no news, broker notes or model memory. Unsupported claims are removed; gaps say so.
