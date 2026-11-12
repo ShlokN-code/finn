@@ -199,3 +199,9 @@ Dossier builds run in a background thread inside the API process, so Render need
 3. **Save, rebuild and deploy**. Check: `https://<render-url>/research/POLYCAB` returns JSON with `"symbol": "POLYCAB"`.
 
 A restart or deploy mid-build is safe: the job's heartbeat stops, it goes back to the queue after 3 minutes, and every stage is cached in Supabase, so the rerun is quick. The daily cap on new dossiers is `RESEARCH_DAILY_BUILDS` (default 15).
+
+## 8. Daily smoke test (Phase 5) — nothing to set up
+- `.github/workflows/smoke.yml` runs `python -m jobs.smoke` every day at 09:00 IST (and on demand: Actions → smoke → Run workflow).
+- It only GETs cached data: Render `/ping`, `/version`, `/health/db`; the landing, `/brief` and `/research/INFY` pages; the edge-cached demo Brief (and checks its `data_as_of` is under 4 days old, so a dead ingest pipeline fails it); the symbol list; the cached INFY dossier; the showcase file. It never starts a build or calls a model.
+- **On failure GitHub emails you** — the account that last edited the workflow's schedule (Settings → Notifications → Actions decides the address). The log lists every failed check with its HTTP status.
+- GitHub's cron can fire late. It's a daily check, so lateness doesn't matter; for minute-level uptime the cron-job.org keepalive already pings `/ping` every 10 min.

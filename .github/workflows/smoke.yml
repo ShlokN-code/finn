@@ -1,0 +1,27 @@
+# Daily smoke test of the deployed app (DEPLOY.md §8). GETs cached data only — never a build, never a model call.
+# A failure fails the run, and GitHub emails the account that last changed this workflow's schedule.
+name: smoke
+
+on:
+  schedule:
+    - cron: "30 3 * * *"   # 09:00 IST daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      # Standard library only: no install, nothing that could pull a dependency that breaks the check itself.
+      - name: smoke
+        run: python -m jobs.smoke
