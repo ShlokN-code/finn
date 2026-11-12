@@ -621,5 +621,5 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Busy model ≠ out of quota (server):** Flash-Lite answered 503 "high demand" to all 5 attempts for BALKRISIND's first transcript; the build published a "partial" dossier with an empty ledger. A transient MAP failure now parks the job as `waiting_quota` for 15 minutes with `error = "model busy: …"` (at most 4 attempts, then it publishes what it has), and BuildProgress says "The AI model is busy right now — FINN retries at HH:MM" instead of "quota used up".
 - **Dossier page waits for a waking server by itself:** a "server is waking up" error (502/503/504/timeout) retries every 10 s for about 5 minutes. Before, the page sat on "Try again" (walkthrough, MAANALU, during a Render redeploy). The Brief already retried.
 
-## 2026-11-13 · cron-job.org token expiry recorded
+## 2026-11-12 · cron-job.org token expiry recorded
 - The fine-grained GitHub token in cron-job.org's dispatch jobs was created around 10 Nov 2026 with a **90-day expiry → about 8 Feb 2027** (product owner). After that, dispatches fail with HTTP 401, cron-job.org emails after 3 failures, and GitHub's own cron (backup) keeps ingest running less punctually until a new token is pasted in (DEPLOY.md §6a). Listed in the README's known-limitations table.
