@@ -283,6 +283,12 @@ class Router:
                 if hit:
                     return hit
                 raise LLMUnavailable(f"research daily cap {cap} reached ({lane})", "quota", next_quota_reset())
+        # Any model in the chain that already answered this exact request answers it again, before any live call:
+        # a nightly rebuild must not spend attempts on an overloaded first model when the second one's answer is
+        # cached (seen 12 Nov: two failed 3.8 Flash attempts before 3 Flash's cached JUDGE answer).
+        hit = self._cached(tier, req)
+        if hit:
+            return hit
         chain = [(p, m) for p in self.providers for m in _models(p, tier)]
         for idx, (p, model) in enumerate(chain):
             sendable = req if (p.supports_pdf() or not req.pdf) else self._as_text(req)
