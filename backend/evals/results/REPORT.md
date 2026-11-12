@@ -1,6 +1,6 @@
 # Results extraction eval
 
-Run 12 Nov 2026 15:01 IST: `python -m evals.results.run --n 5`. Method in the module docstring: card figures (read from NSE XBRL) vs the company's results PDF, page text, within printed precision. Computed figures (EBITDA, QoQ, YoY) count as correct when every printed input is on the page.
+Run 12 Nov 2026 15:21 IST: `python -m evals.results.run --n 5`. Method in the module docstring: card figures (read from NSE XBRL) vs the company's results PDF, page text, within printed precision. Computed figures (EBITDA, QoQ, YoY) count as correct when every printed input is on the page.
 
 ## Accuracy per field
 
@@ -12,19 +12,19 @@ Run 12 Nov 2026 15:01 IST: `python -m evals.results.run --n 5`. Method in the mo
 | EBITDA | 5 | 5 | 100% |
 | EBITDA QoQ | 5 | 5 | 100% |
 | EBITDA YoY | 5 | 5 | 100% |
-| PBT | 4 | 5 | 80% |
-| PBT QoQ | 3 | 5 | 60% |
-| PBT YoY | 3 | 5 | 60% |
+| PBT | 5 | 5 | 100% |
+| PBT QoQ | 4 | 5 | 80% |
+| PBT YoY | 4 | 5 | 80% |
 | PAT | 5 | 5 | 100% |
 | PAT QoQ | 5 | 5 | 100% |
 | PAT YoY | 4 | 5 | 80% |
-| **All** | **54** | **60** | **90.0%** |
+| **All** | **57** | **60** | **95.0%** |
 
 ## Cards
 
 | Card | Verification | Results PDF | Fields wrong |
 |---|---|---|---|
-| TATAPOWER:results:Q2 FY27 | mismatch | [p.8](https://nsearchives.nseindia.com/corporate/VPTPCL_11112026172001_outcome_final.pdf#page=8) | PBT, PBT QoQ, PBT YoY |
+| TATAPOWER:results:Q2 FY27 | partial | [p.8](https://nsearchives.nseindia.com/corporate/VPTPCL_11112026172001_outcome_final.pdf#page=8) | — |
 | KALYANKJIL:results:Q2 FY27 | cross_checked | [p.12](https://nsearchives.nseindia.com/corporate/KALYANKJIL_10112026170450_Results_q2_Signed.pdf#page=12) · visual check (scanned page; visual_checks.json) | — |
 | TITAGARH:results:Q2 FY27 | cross_checked | [p.11](https://nsearchives.nseindia.com/corporate/TWL_10112026204612_OutcomeofBM10112026.pdf#page=11) · visual check (scanned page; visual_checks.json) | PBT QoQ, PBT YoY, PAT YoY |
 | COCHINSHIP:results:Q2 FY27 | cross_checked | [p.10](https://nsearchives.nseindia.com/corporate/Aswi4739_10112026142305_SE_Intimation_Sgd.pdf#page=10) | — |
@@ -41,8 +41,8 @@ Run 12 Nov 2026 15:01 IST: `python -m evals.results.run --n 5`. Method in the mo
 
 | State | Cards |
 |---|---|
-| cross_checked | 11 |
-| mismatch | 4 |
-| partial | 1 |
-| **total** | **16** |
+| cross_checked | 14 |
+| partial | 2 |
+| mismatch | 1 |
+| **total** | **17** |
 

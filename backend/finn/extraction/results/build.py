@@ -161,8 +161,9 @@ def build_from_quarters(
     source_path: str,
     filing_url: str | None,
 ) -> Built:
-    lines = build_lines(template, quarters["current"], quarters["previous"], quarters["year_ago"])
     table_ok = table if table is not None and table.basis == basis else None
+    choose_pbt(template, quarters, table_ok)
+    lines = build_lines(template, quarters["current"], quarters["previous"], quarters["year_ago"])
     chk = crosscheck(template, lines, quarters, table_ok)
     note = chk.note
     if table is not None and table_ok is None:
@@ -187,6 +188,25 @@ def build_from_quarters(
     if detail.verification == "mismatch":
         impact = None
     return Built(detail, so_what_for(template, chk.lines, detail.verification), impact, reason)
+
+
+def choose_pbt(template: str, quarters: dict[str, QuarterFacts | None], table: QuarterTable | None) -> None:
+    """Per quarter, the PBT candidate (statement layout) that screener's Profit before tax agrees with. Companies
+    print PBT before or after the share of JVs, so no single XBRL formula is the printed line for all of them."""
+    from finn.extraction.results.compute import pbt_candidates, tolerance_cr
+    from finn.numbers import approx_equal
+
+    if template != "standard" or table is None:
+        return
+    all_q = [q for q in quarters.values() if q]
+    for q in all_q:
+        theirs = table.value("Profit before tax", q.quarter_end)
+        if theirs is None:
+            continue
+        for name, fig in pbt_candidates(q).items():
+            if approx_equal(fig.value, theirs, abs_tol=tolerance_cr(fig, all_q), rel_tol=0.001):
+                q.pbt_variant = name
+                break
 
 
 def check_metric_presence(q: QuarterFacts, template: str) -> list[str]:

@@ -4,15 +4,21 @@ Inputs are per-quarter facts in ₹ (XBRL) or ₹ crore (PDF), already tagged wi
 `ResultsLine`s whose current/previous/year-ago values are sourced Figures and whose QoQ/YoY are computed
 Figures listing their inputs.
 
-EBITDA (standard template) = profit before exceptional items and tax + finance costs + D&A − other income.
-That is *operating* EBITDA: other income (treasury yield, dividends) and one-off exceptional items are
-excluded, so it equals screener's "Operating Profit" (Sales − Expenses) and can be cross-checked.
+EBITDA (standard template) = revenue from operations − (total expenses − finance costs − D&A): *operating*
+EBITDA, read straight off the statement's own lines. Other income, exceptional items, a regulated utility's
+regulatory-deferral movement and the share of associates/JVs all sit below "total expenses", so none of them
+leak in; it equals screener's "Operating Profit" (Sales − Expenses) and can be cross-checked. When total expenses
+isn't tagged, the older route is used: PBT before exceptional items + finance costs + D&A − other income.
+PBT is the statement's "Profit before tax" = profit for the period + tax expense, when there are no discontinued
+operations (SEBI's ProfitBeforeTax element sits before regulatory-deferral movements and JV share in some
+layouts, e.g. Tata Power's).
 Banks report no EBITDA: NII = interest earned − interest expended; PPOP as reported; PAT.
 NBFCs: NII = interest income − finance costs; PPOP = PBT + impairment on financial instruments; PAT.
 """
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import date, datetime
 
@@ -21,9 +27,9 @@ from finn.models import Citation, Figure, ResultsLine
 from finn.numbers import pct_change
 
 EBITDA_NOTE = (
-    "EBITDA = profit before exceptional items and tax + finance costs + depreciation & amortisation − other "
-    "income. Excludes other income and exceptional items (operating EBITDA, comparable with screener's "
-    "'Operating Profit')."
+    "EBITDA = revenue from operations − (total expenses − finance costs − depreciation & amortisation). "
+    "Operating EBITDA: excludes other income, exceptional items, regulatory-deferral movements and the share of "
+    "associates/JVs (comparable with screener's 'Operating Profit')."
 )
 
 # XBRL element candidates per input, first match wins (SEBI in-capmkt taxonomy; bank and NBFC formats differ).
@@ -45,6 +51,7 @@ ELEMENTS: dict[str, tuple[str, ...]] = {
     ),
     "discontinued_pbt": ("ProfitLossFromDiscontinuedOperationsBeforeTax",),
     "tax": ("TaxExpense",),
+    "excise": (),  # an "Other expenses" item described as excise duty (read in facts_from_xbrl, not by name)
     # banks
     "interest_earned": ("InterestEarned",),
     "interest_expended": ("InterestExpended",),
@@ -64,7 +71,7 @@ LABELS = {
     "provisions": "Provisions and contingencies", "interest_income": "Interest income",
     "impairment": "Impairment on financial instruments", "expenses": "Total expenses",
     "share_assoc": "Share of profit/(loss) of associates & JVs",
-    "discontinued_pbt": "Discontinued operations before tax", "tax": "Tax expense",
+    "discontinued_pbt": "Discontinued operations before tax", "tax": "Tax expense", "excise": "Excise duty",
 }  # fmt: skip
 
 
@@ -84,6 +91,7 @@ class QuarterFacts:
     quarter_end: date
     basis: str
     facts: dict[str, Fact] = field(default_factory=dict)  # keyed by input name (ELEMENTS keys)
+    pbt_variant: str | None = None  # which statement layout's PBT (see pbt_candidates); None = default order
 
     def get(self, key: str) -> Fact | None:
         return self.facts.get(key)
@@ -95,32 +103,58 @@ def facts_from_xbrl(row: dict, quarter_end: date) -> QuarterFacts:
 
     facts = row["facts"]["facts"]
     out = QuarterFacts(quarter_end, row["basis"])
-    retrieved = row.get("fetched_at") or datetime.now().astimezone()
     for key, names in ELEMENTS.items():
         for name in names:
             hit = quarter_value(facts, name, quarter_end)
             if hit is None:
                 continue
             value_inr, f = hit
-            dec = f.get("decimals")
-            half = 0.5 * 10 ** (-int(dec)) / 1e7 if dec not in (None, "INF") else 0.0
-            out.facts[key] = Fact(
-                value_cr=value_inr / 1e7,
-                citation=Citation(
-                    source_type="xbrl",
-                    url=row["xbrl_url"],
-                    title=f"XBRL results {quarter_period(quarter_end).label} ({row['basis']})",
-                    exchange="NSE",
-                    locator=f"in-capmkt:{name}@{f.get('ctx')}",
-                    published_at=row.get("broadcast_at"),
-                    retrieved_at=retrieved,
-                ),
-                raw=f"{value_inr:.0f}",
-                raw_unit="rupees",
-                half_unit_cr=half,
-            )
+            out.facts[key] = _fact(row, name, f, value_inr, quarter_end)
             break
+    exc = _excise(row, quarter_end)
+    if exc:
+        out.facts["excise"] = exc
     return out
+
+
+def _fact(row: dict, name: str, f: dict, value_inr: float, quarter_end: date) -> Fact:
+    retrieved = row.get("fetched_at") or datetime.now().astimezone()
+    dec = f.get("decimals")
+    half = 0.5 * 10 ** (-int(dec)) / 1e7 if dec not in (None, "INF") else 0.0
+    return Fact(
+        value_cr=value_inr / 1e7,
+        citation=Citation(
+            source_type="xbrl",
+            url=row["xbrl_url"],
+            title=f"XBRL results {quarter_period(quarter_end).label} ({row['basis']})",
+            exchange="NSE",
+            locator=f"in-capmkt:{name}@{f.get('ctx')}",
+            published_at=row.get("broadcast_at"),
+            retrieved_at=retrieved,
+        ),
+        raw=f"{value_inr:.0f}",
+        raw_unit="rupees",
+        half_unit_cr=half,
+    )
+
+
+_EXCISE = re.compile(r"excise", re.I)
+
+
+def _excise(row: dict, quarter_end: date) -> Fact | None:
+    """Excise duty, when the filing itemises it under "Other expenses" (DescriptionOfOtherExpenses = "Excise Duty"
+    with an OtherExpenses value in the same context — ITC, RELIANCE). Screener's Sales is revenue net of it."""
+    descs = (row["facts"].get("meta") or {}).get("other_expense_items") or {}
+    ctxs = {c for c, text in descs.items() if _EXCISE.search(text or "")}
+    if not ctxs:
+        return None
+    from finn.extraction.results.xbrl import _d
+
+    for f in row["facts"]["facts"].get("OtherExpensesItem", []):
+        s, e = _d(f.get("start")), _d(f.get("end"))
+        if f.get("ctx") in ctxs and s and e == quarter_end and 80 <= (e - s).days <= 95:
+            return _fact(row, "OtherExpenses", f, f["value"], quarter_end)  # locator names the item's context
+    return None
 
 
 def template_for(q: QuarterFacts, industry: str | None = None) -> str:
@@ -188,17 +222,10 @@ def metric(name: str, q: QuarterFacts | None) -> Figure | None:
     if name == "Revenue":
         return _sourced("Revenue", q, "revenue")
     if name == "PBT":
-        # XBRL ProfitBeforeTax is before the share of associates/JVs and discontinued operations; the printed
-        # consolidated "Profit before tax" (and screener) include them.
-        base = _sourced(LABELS["pbt"], q, "pbt")
-        if base is None:
-            return None
-        extras = [f for k in ("share_assoc", "discontinued_pbt")
-                  if (f := _sourced(LABELS[k], q, k)) is not None and abs(f.value) >= 0.005]  # fmt: skip
-        if not extras:
-            return base.model_copy(update={"label": "PBT"})
-        formula = " + ".join([LABELS["pbt"]] + [e.label for e in extras])
-        return _computed("PBT", base.value + sum(e.value for e in extras), "INR_CR", q, formula, [base, *extras])
+        cands = pbt_candidates(q)
+        if q.pbt_variant and q.pbt_variant in cands:
+            return cands[q.pbt_variant]
+        return next(iter(cands.values()), None)
     if name == "PAT":
         if q.basis == "consolidated" and q.get("interest_expended") and q.get("ppop"):
             return bank_pat_pre_minority(q)
@@ -206,6 +233,10 @@ def metric(name: str, q: QuarterFacts | None) -> Figure | None:
     if name == "PPOP" and q.get("ppop"):
         return _sourced("PPOP", q, "ppop")
     if name == "EBITDA":
+        ins = _inputs(q, ["revenue", "expenses", "finance_costs", "dna"])
+        if ins:
+            v = ins[0].value - (ins[1].value - ins[2].value - ins[3].value)
+            return _computed("EBITDA", v, "INR_CR", q, "Revenue − (total expenses − finance costs − D&A)", ins)
         if q.get("pbt_pre_exceptional"):
             ins = _inputs(q, ["pbt_pre_exceptional", "finance_costs", "dna", "other_income"])
             if ins:
@@ -242,6 +273,36 @@ def metric(name: str, q: QuarterFacts | None) -> Figure | None:
         return _computed("PPOP", ins[0].value + ins[1].value, "INR_CR", q,
                          "PBT + impairment on financial instruments", ins)  # fmt: skip
     raise ValueError(f"unknown metric {name}")
+
+
+def pbt_candidates(q: QuarterFacts) -> dict[str, Figure]:
+    """The statement's "Profit before tax", by layout, in default order (all from sourced facts, code only):
+
+    pat_tax        PAT + tax: exact when the share of associates/JVs sits before tax (Tata Power, Tata Steel) and
+                   nothing is discontinued.
+    element_share  SEBI's ProfitBeforeTax element + JV share (+ discontinued operations before tax).
+    element        the ProfitBeforeTax element alone: Reliance prints PBT before the JV share, which it adds after
+                   tax, so PAT + tax overstates its printed PBT by the share.
+
+    The results build picks the candidate screener's quarterly table agrees with (`choose_pbt`); without that
+    confirmation the first available is shown, and the cross-check says so."""
+    out: dict[str, Figure] = {}
+    disc = q.get("discontinued_pbt")
+    has_disc = disc is not None and abs(disc.value_cr) >= 0.005
+    bank = q.get("interest_expended") is not None
+    if not bank and not has_disc and (ins := _inputs(q, ["pat", "tax"])):
+        out["pat_tax"] = _computed("PBT", ins[0].value + ins[1].value, "INR_CR", q,
+                                   "Profit for the period + tax expense", ins)  # fmt: skip
+    base = _sourced(LABELS["pbt"], q, "pbt")
+    if base is not None:
+        extras = [f for k in ("share_assoc", "discontinued_pbt")
+                  if (f := _sourced(LABELS[k], q, k)) is not None and abs(f.value) >= 0.005]  # fmt: skip
+        if extras:
+            formula = " + ".join([LABELS["pbt"]] + [e.label for e in extras])
+            out["element_share"] = _computed("PBT", base.value + sum(e.value for e in extras), "INR_CR", q, formula,
+                                             [base, *extras])  # fmt: skip
+        out["element"] = base.model_copy(update={"label": "PBT"})
+    return out
 
 
 METRICS = {

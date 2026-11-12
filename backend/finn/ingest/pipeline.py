@@ -435,7 +435,9 @@ def step_results_build(run: Run, symbols: list[str], days: int = 45, s: NSESessi
         stats["built"] += 1
         stats[b.detail.verification] += 1
         if b.detail.verification == "mismatch":
-            run.fail("results_build", sym, f"couldn't verify: {b.detail.verification_note}")
+            # a card state ("Couldn't verify — open filing"), not a run failure: it would otherwise mark every
+            # 30-minute run partial for as long as the card exists (PLAN: ITC/RELIANCE)
+            stats.setdefault("mismatch_cards", []).append(f"{sym}: {(b.detail.verification_note or '')[:200]}")
     run.stats["results"] = stats
 
 

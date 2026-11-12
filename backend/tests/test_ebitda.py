@@ -77,12 +77,43 @@ def test_parser_keeps_quarter_and_skips_dimensional_facts():
 
 def test_ebitda_excludes_other_income():
     e = metric("EBITDA", qfacts(Q2, INFY))
-    assert e.value == pytest.approx(11063 + 115 + 1359 - 848)  # 11,689
-    assert "other income" in e.formula and len(e.inputs) == 4
+    assert e.value == pytest.approx(11063 + 115 + 1359 - 848)  # 11,689 = revenue − (expenses − FC − D&A)
+    assert "total expenses" in e.formula and len(e.inputs) == 4
+
+
+def test_ebitda_ignores_regulatory_deferral_and_jv_share_below_expenses():
+    # A Tata Power-style statement: "PBT before exceptional items" (1,823.34) already includes a regulatory-deferral
+    # movement and the JV share; operating EBITDA reads revenue and expenses, so neither leaks in.
+    vals = {"RevenueFromOperations": 19051.26, "OtherIncome": 388.39, "Expenses": 17704.61, "FinanceCosts": 1406.78,
+            "DepreciationDepletionAndAmortisationExpense": 1259.86, "ProfitBeforeExceptionalItemsAndTax": 1823.34,
+            "ProfitLossForPeriod": 1300.0, "TaxExpense": 523.34}  # fmt: skip
+    e = metric("EBITDA", qfacts(Q1, vals))
+    assert e.value == pytest.approx(19051.26 - (17704.61 - 1406.78 - 1259.86))
+    assert e.value == pytest.approx(
+        metric("EBITDA", qfacts(Q1, vals | {"ProfitBeforeExceptionalItemsAndTax": 1.0})).value
+    )
+
+
+def test_pbt_is_pat_plus_tax_without_discontinued_operations():
+    # Tata Power Q2 FY27: SEBI's ProfitBeforeTax element (1,442.91) + JV share (486.80) = 1,929.71, but the statement
+    # prints Profit before tax (7+8) = 2,179.85 = PAT 1,652.04 + tax 527.81.
+    vals = {"RevenueFromOperations": 19635.94, "ProfitBeforeTax": 1442.91, "TaxExpense": 527.81,
+            "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": 486.80,
+            "ProfitLossForPeriod": 1652.04}  # fmt: skip
+    pbt = metric("PBT", qfacts(Q2, vals))
+    assert pbt.value == pytest.approx(2179.85) and pbt.formula == "Profit for the period + tax expense"
+    with_disc = metric("PBT", qfacts(Q2, vals | {"ProfitLossFromDiscontinuedOperationsBeforeTax": -12.0}))
+    assert with_disc.value == pytest.approx(1442.91 + 486.80 - 12.0)  # discontinued ops: the element route
+
+
+def test_ebitda_old_route_when_total_expenses_is_not_tagged():
+    vals = {k: v for k, v in INFY.items() if k != "Expenses"}
+    e = metric("EBITDA", qfacts(Q2, vals))
+    assert e.value == pytest.approx(11689) and "other income" in e.formula
 
 
 def test_ebitda_excludes_exceptional_items_when_only_pbt_is_given():
-    vals = {k: v for k, v in INFY.items() if k != "ProfitBeforeExceptionalItemsAndTax"}
+    vals = {k: v for k, v in INFY.items() if k not in ("ProfitBeforeExceptionalItemsAndTax", "Expenses")}
     vals |= {"ProfitBeforeTax": 11063 - 300, "ExceptionalItemsBeforeTax": -300}
     e = metric("EBITDA", qfacts(Q2, vals))
     assert e.value == pytest.approx(11689)  # a ₹300 Cr one-off loss doesn't depress operating EBITDA
@@ -90,7 +121,7 @@ def test_ebitda_excludes_exceptional_items_when_only_pbt_is_given():
 
 def test_margin_and_bps_change():
     cur = qfacts(Q2, INFY)
-    prev = qfacts(Q1, INFY | {"RevenueFromOperations": 47000})
+    prev = qfacts(Q1, INFY | {"RevenueFromOperations": 47000, "Expenses": 39029 - 2244})  # same EBITDA
     lines = build_lines("standard", cur, prev, None)
     m = next(x for x in lines if x.metric == "EBITDA margin")
     assert m.current.value == pytest.approx(11689 / 49244 * 100)
@@ -272,3 +303,61 @@ def test_nbfc_that_tags_interest_earned_is_not_a_bank_and_is_partly_checked():
     assert [i.status for i in by["NII"].inputs] == ["unverified", "verified"]
     assert by["PAT"].status == "verified"
     assert d.verification == "partial" and "NII" in d.verification_note and "PPOP" in d.verification_note
+
+
+def test_revenue_reconciles_with_screener_net_of_itemised_excise():
+    # RELIANCE Q2 FY27: Revenue from operations 3,32,861; excise duty 2,260 itemised under other expenses
+    # (DescriptionOfOtherExpenses "Excise Duty", context OneExpenses1D); screener's Sales 3,30,601 = the difference.
+    from finn.extraction.results.crosscheck import crosscheck
+
+    xml = instance(Q2, {"RevenueFromOperations": 332861}).replace(
+        b"</xbrli:xbrl>",
+        b'<xbrli:context id="OneExpenses1D"><xbrli:entity><xbrli:identifier scheme="x">X</xbrli:identifier>'
+        b'<xbrli:segment><xbrldi:explicitMember dimension="in-capmkt:OtherExpensesAxis">m1</xbrldi:explicitMember>'
+        b"</xbrli:segment></xbrli:entity><xbrli:period><xbrli:startDate>2026-07-01</xbrli:startDate><xbrli:endDate>2026-09-30"
+        b"</xbrli:endDate></xbrli:period></xbrli:context>"
+        b'<in-capmkt:DescriptionOfOtherExpenses contextRef="OneExpenses1D">Excise Duty'
+        b"</in-capmkt:DescriptionOfOtherExpenses>"
+        b'<in-capmkt:OtherExpenses contextRef="OneExpenses1D" unitRef="INR" decimals="-7">22600000000'
+        b"</in-capmkt:OtherExpenses>"
+        b"</xbrli:xbrl>",
+    )
+    row = {"facts": parse_instance(xml), "basis": "consolidated", "xbrl_url": "https://x/q2.xml",
+           "broadcast_at": NOW, "fetched_at": NOW}  # fmt: skip
+    q = facts_from_xbrl(row, Q2)
+    assert q.get("excise").value_cr == pytest.approx(2260)
+    table = QuarterTable("RELIANCE", "consolidated", "https://screener", "Rs. Crores", [Q2], {"Sales": [330601.0]})
+    lines = [x for x in build_lines("standard", q, None, None) if x.metric == "Revenue"]
+    res = crosscheck("standard", lines, {"current": q, "previous": None, "year_ago": None}, table)
+    rev = res.lines[0].current
+    assert rev.value == pytest.approx(332861) and rev.status == "verified"
+    assert "excise" in rev.check_note
+
+
+def test_pbt_layout_follows_the_statement_screener_confirms():
+    # RELIANCE Q2 FY27 prints PBT 38,613 before the JV share (300), which it adds after tax: PAT 29,550 + tax 9,363
+    # = 38,913 is not its printed PBT. Screener's Profit before tax picks the layout.
+    from finn.extraction.results.build import choose_pbt
+
+    vals = {"RevenueFromOperations": 332861, "ProfitBeforeTax": 38613, "TaxExpense": 9363,
+            "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": 300,
+            "ProfitLossForPeriod": 29550}  # fmt: skip
+    q = qfacts(Q2, vals)
+    assert metric("PBT", q).value == pytest.approx(38913)  # default (unconfirmed): PAT + tax
+    table = QuarterTable("RELIANCE", "consolidated", "https://screener", "Rs. Crores", [Q2],
+                         {"Profit before tax": [38613.0]})  # fmt: skip
+    choose_pbt("standard", {"current": q, "previous": None, "year_ago": None}, table)
+    assert q.pbt_variant == "element" and metric("PBT", q).value == pytest.approx(38613)
+
+
+def test_prior_quarter_disagreement_keeps_the_card_partial():
+    from finn.extraction.results.crosscheck import crosscheck
+
+    cur, prev = qfacts(Q2, INFY), qfacts(Q1, INFY)
+    lines = [x for x in build_lines("standard", cur, prev, None) if x.metric == "Revenue"]
+    table = QuarterTable("INFY", "consolidated", "https://screener", "Rs. Crores", [Q1, Q2],
+                         {"Sales": [40000.0, 49244.0]})  # fmt: skip  # Q1 disagrees (restated), Q2 agrees
+    res = crosscheck("standard", lines, {"current": cur, "previous": prev, "year_ago": None}, table)
+    assert res.verification == "partial" and "earlier quarter" in res.note
+    rev = res.lines[0]
+    assert rev.current.status == "verified" and rev.previous.status == "unverified" and rev.qoq.status == "unverified"

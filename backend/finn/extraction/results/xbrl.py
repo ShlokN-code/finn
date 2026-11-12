@@ -43,9 +43,17 @@ def parse_instance(xml: bytes) -> dict:
         text = (el.text or "").strip()
         if name in META_KEYS and text:
             meta.setdefault(name, text)
+        if name == "DescriptionOfOtherExpenses" and text:
+            # itemised other expenses: the description sits in its own context next to an OtherExpenses value
+            # (how ITC and RELIANCE tag excise duty)
+            meta.setdefault("other_expense_items", {})[el.get("contextRef") or ""] = text
         c = ctx.get(el.get("contextRef") or "")
-        if not c or c["dims"] or el.get("unitRef") is None:
+        if not c or el.get("unitRef") is None:
             continue
+        if c["dims"]:
+            if name != "OtherExpenses":
+                continue
+            name = "OtherExpensesItem"  # an itemised other expense (its description is in meta), not the total
         try:
             value = float(text)
         except ValueError:
