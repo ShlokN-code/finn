@@ -2,6 +2,7 @@
 // Rules: every feedback adjustment is visible with Reset (PRODUCT §5), Telegram connect, and the alert rules.
 import { useEffect } from "react";
 import { TelegramConnect } from "@/components/telegram/TelegramConnect";
+import { AlertRules } from "./AlertRules";
 import { setAskContext } from "@/components/shell/ui-store";
 import { CATEGORY_LABEL, CATEGORY_PLURAL, istDay } from "@/lib/format";
 import { FALLBACK, resetRule, useStored } from "@/lib/store";
@@ -22,17 +23,6 @@ function describe(r: WeightRule): string {
   }
 }
 
-const ALERT_RULES: [string, string][] = [
-  ["Price move", "±4% close to close, adjusted for dividends, bonuses and splits"],
-  ["Volume", "2× the 20-day average"],
-  ["Volatility-aware", "On — a move must also be unusual for that stock (z ≥ 2)"],
-  ["Sector-relative", "On — the stock's own part of the move"],
-  ["Push categories", "Results, M&A, management change, litigation, credit rating, pledging, price moves"],
-  ["Budget", "5 messages a day; the rest wait for your next Brief"],
-  ["Quiet hours", "22:00–07:00 IST; only M&A, a CEO/MD exit or a rating downgrade break through"],
-  ["Snooze", "Per stock, 1 day or 1 week — from the alert's Snooze button in Telegram"],
-];
-
 export function RulesScreen() {
   const rules = useStored<WeightRule[]>("rules", FALLBACK.rules);
   const pending = useStored<FeedbackAction[]>("pending", FALLBACK.pending);
@@ -51,7 +41,9 @@ export function RulesScreen() {
     <div className="pb-8">
       <header className="px-4 pb-2 pt-6">
         <h1 className="t-display">Rules</h1>
-        <p className="t-small mt-1 text-ink-2">Transparent multipliers, not a black box. Everything here stays on this phone.</p>
+        <p className="t-small mt-1 text-ink-2">
+          Transparent multipliers, not a black box. Everything here stays on this phone, unless you connect Telegram.
+        </p>
       </header>
 
       <section id="adjustments" className="mt-4 scroll-mt-4">
@@ -101,15 +93,7 @@ export function RulesScreen() {
 
       <section id="alert-rules" className="mt-8 scroll-mt-4">
         <h2 className="t-micro px-4 text-ink-3">Alert rules</h2>
-        <dl className="mt-2 divide-y divide-rule border-y border-rule bg-surface">
-          {ALERT_RULES.map(([k, v]) => (
-            <div key={k} className="grid grid-cols-[112px_1fr] gap-3 px-4 py-2.5">
-              <dt className="t-small font-medium">{k}</dt>
-              <dd className="t-small text-ink-2">{v}</dd>
-            </div>
-          ))}
-        </dl>
-        <p className="t-small px-4 pt-2 text-ink-3">These are the defaults Telegram alerts use today; per-stock editing arrives with the next release.</p>
+        <AlertRules />
       </section>
     </div>
   );

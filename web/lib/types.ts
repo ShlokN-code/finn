@@ -725,6 +725,13 @@ export interface BullBearSection {
   bull: [] | [Claim] | [Claim, Claim] | [Claim, Claim, Claim];
   meta: SectionMeta;
 }
+export interface CalendarItem {
+  kind: "results" | "board_meeting" | "dividend" | "bonus_split" | "agm" | "other";
+  label: string;
+  on: string;
+  symbol: string;
+  url: string | null;
+}
 export interface Credibility {
   earlier: TrendHalf | null;
   formula: string;
@@ -1275,4 +1282,58 @@ export interface Holding {
    * If the user pasted weights instead
    */
   weight_pct: number | null;
+}
+/**
+ * Status dot (PRODUCT §7), set in code from impact tags and the 1-month move (DECISIONS: status dot).
+ */
+export interface HoldingStatus {
+  event_id: string | null;
+  level: "intact" | "watch" | "pressure" | "unknown";
+  reason: string;
+}
+/**
+ * POST /portfolio. Symbols + weights only (quantities never leave the phone); never stored, never logged.
+ */
+export interface PortfolioRequest {
+  /**
+   * @minItems 1
+   * @maxItems 40
+   */
+  holdings: [BriefHolding, ...BriefHolding[]];
+}
+export interface PortfolioResponse {
+  /**
+   * Next 60 days, soonest first
+   */
+  calendar: CalendarItem[];
+  price_source: Citation | null;
+  prices_as_of: string | null;
+  rows: PortfolioRow[];
+  season: SeasonStrip | null;
+}
+export interface PortfolioRow {
+  close_date: string | null;
+  /**
+   * Adj-close change vs the previous session (code)
+   */
+  day_change_pct: number | null;
+  /**
+   * Corporate action going ex today, e.g. 'Ex-dividend ₹3'
+   */
+  ex_date_today: string | null;
+  /**
+   * ₹, split/bonus-adjusted close of the last session
+   */
+  last_close: number | null;
+  /**
+   * Adj-close change over ~21 sessions (code)
+   */
+  month_change_pct: number | null;
+  name: string | null;
+  /**
+   * Adj closes, oldest → newest (≈ 1 month)
+   */
+  spark: number[];
+  status: HoldingStatus;
+  symbol: string;
 }

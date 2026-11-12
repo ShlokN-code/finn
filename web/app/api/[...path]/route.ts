@@ -7,6 +7,7 @@ export const maxDuration = 60;
 const ALLOWED: [string, RegExp][] = [
   ["GET", /^version$/], // deploy checks (Render's commit), read-only
   ["POST", /^brief$/],
+  ["POST", /^portfolio$/], // prices, status dots, calendar, scoreboard — read-only, code only
   ["GET", /^events\/[^/]+\/card$/],
   ["POST", /^telegram\/link$/],
   ["GET", /^subscriptions\/me$/],

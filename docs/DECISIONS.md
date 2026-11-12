@@ -605,3 +605,13 @@ Short records of key decisions: context, decision, alternatives considered, why.
   - category: capex → Capex/Capacity, credit rating → Leverage, dividend/bonus → Payout;
   - concrete words in the headline or so-what for concrete drivers (order book/orders/letter of award, capacity/commissioning, deposits, asset quality, debt/borrowings…), whole words only. Generic words (growth, share, investment, costs, margin outside results) never boost (product owner: "if a keyword match is weak, don't boost").
 - "Why #N" names it ("affects: Margins — a driver you're watching (×1.5)") and the card shows the 👁 "affects: Margins" tag. Suggested-but-unconfirmed drivers never boost. The cached Brief's signature includes the confirmed ids, so confirming a driver re-ranks immediately.
+
+## 2026-11-12 · Portfolio: prices, status dot, calendar, scoreboard; editable alert rules
+- **`POST /portfolio`** (symbols + weights only, nothing stored, code only): last close, day change and 1-month change on adjusted closes, a ~23-session sparkline, "Ex today" from NSE corporate actions, a status dot, the next 60 days' board meetings (results meetings win over their plain "intimation" duplicate) and ex-dates, and the results-season scoreboard (the Brief's `season_strip`). Symbols FINN doesn't track show "No prices yet" and a grey "No data" dot. The phone keeps the last good answer per holdings set.
+- **Status dot rule (decided in code, shown with its reason):**
+  - 🔴 *under pressure*: a material event (results, M&A, management change, litigation, credit rating, pledging) tagged negative in the last 30 days, or down ≥ 15 % over ~1 month;
+  - 🟡 *watch*: any negative or mixed event in 30 days, a price move no disclosure explains in the last 7 days, or down ≥ 8 % over a month;
+  - 🟢 *intact* otherwise.
+  It uses only what FINN already computed (Level-0 tags, price signals); no model call. On today's demo portfolio: 3 under pressure (all litigation tagged negative), 9 watch, 6 intact.
+- **Rules are editable**: price-move %, volume multiple, volatility/sector toggles, daily budget, batching, quiet hours, push categories, snoozes (add 1 day / 1 week, unsnooze). Stored on the phone; when Telegram is connected, loaded from and saved to the server copy (`PUT /subscriptions/me`, now with `snoozes`), debounced, with a visible sync state. Connecting Telegram uploads this phone's edited rules. Per-stock price-move overrides stay in the contract but have no editor yet.
+- **Robustness fixes found by the random-ticker run:** a deck "quote" with no words (only a number) divided by zero in the re-anchor step and failed TATACAP's whole build; the re-anchor now refuses it, and any error in the optional deck lookup now skips that step instead of failing the dossier.

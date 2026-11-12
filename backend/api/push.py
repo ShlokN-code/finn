@@ -15,12 +15,12 @@ import os
 from datetime import timedelta
 
 from fastapi import APIRouter, Header, HTTPException, Request
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field
 
 from finn.calendar import now_utc
 from finn.cards.brief import brief, single_card
 from finn.db import connect
-from finn.models import AlertSettings, BriefHolding, BriefRequest, WeightRule
+from finn.models import AlertSettings, BriefHolding, BriefRequest, PortfolioRequest, WeightRule
 from finn.push import subscriptions as subs
 from finn.push.bot import handle_update
 from finn.push.telegram import Telegram
@@ -43,6 +43,16 @@ def post_brief(body: BriefRequest):
     with connect() as conn:
         b = brief(conn, weights, since, body.rules, body.feedback, window=body.window, drivers=body.drivers)
     return b.model_dump(mode="json")
+
+
+@router.post("/portfolio")
+def post_portfolio(body: PortfolioRequest):
+    """Prices, status dots, calendar and scoreboard for the phone's holdings. Read-only, code only, nothing stored."""
+    from finn.cards.portfolio import portfolio
+
+    syms = list(dict.fromkeys(h.symbol.upper() for h in body.holdings))
+    with connect() as conn:
+        return portfolio(conn, syms).model_dump(mode="json")
 
 
 @router.get("/events/{event_id}/card")
@@ -109,6 +119,7 @@ class MeIn(BaseModel):
     holdings: list[BriefHolding] | None = Field(None, max_length=subs.MAX_SYMBOLS)
     settings: AlertSettings | None = None
     rules: list[WeightRule] | None = Field(None, max_length=500)
+    snoozes: dict[str, AwareDatetime] | None = Field(None, max_length=40, description="symbol → until (UTC)")
 
 
 @router.put("/subscriptions/me")
@@ -124,6 +135,8 @@ def put_me(body: MeIn, authorization: str = Header("")):
         subs.update(conn, sub["id"], holdings, body.settings.model_dump(mode="json") if body.settings else None)
         if body.rules is not None:
             subs.replace_rules(conn, sub["id"], body.rules)
+        if body.snoozes is not None:
+            subs.replace_snoozes(conn, sub["id"], body.snoozes)
     return {"ok": True}
 
 

@@ -709,6 +709,57 @@
       "title": "BullBearSection",
       "type": "object"
     },
+    "CalendarItem": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "results",
+            "board_meeting",
+            "dividend",
+            "bonus_split",
+            "agm",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "on": {
+          "format": "date",
+          "title": "On",
+          "type": "string"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "symbol",
+        "on",
+        "kind",
+        "label",
+        "url"
+      ],
+      "title": "CalendarItem",
+      "type": "object"
+    },
     "Card": {
       "additionalProperties": false,
       "description": "A ranked Brief item. COMPUTED on read from Event + holdings + rules; never stored.",
@@ -2747,6 +2798,45 @@
       "title": "Holding",
       "type": "object"
     },
+    "HoldingStatus": {
+      "additionalProperties": false,
+      "description": "Status dot (PRODUCT \u00a77), set in code from impact tags and the 1-month move (DECISIONS: status dot).",
+      "properties": {
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "level": {
+          "enum": [
+            "intact",
+            "watch",
+            "pressure",
+            "unknown"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "reason",
+        "event_id"
+      ],
+      "title": "HoldingStatus",
+      "type": "object"
+    },
     "Impact": {
       "description": "Level-0 relevance: effect on the company's business \u2014 not a stock call.",
       "enum": [
@@ -3309,6 +3399,200 @@
         "achievements"
       ],
       "title": "PersonProfile",
+      "type": "object"
+    },
+    "PortfolioRequest": {
+      "additionalProperties": false,
+      "description": "POST /portfolio. Symbols + weights only (quantities never leave the phone); never stored, never logged.",
+      "properties": {
+        "holdings": {
+          "items": {
+            "$ref": "#/$defs/BriefHolding"
+          },
+          "maxItems": 40,
+          "minItems": 1,
+          "title": "Holdings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "holdings"
+      ],
+      "title": "PortfolioRequest",
+      "type": "object"
+    },
+    "PortfolioResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "calendar": {
+          "description": "Next 60 days, soonest first",
+          "items": {
+            "$ref": "#/$defs/CalendarItem"
+          },
+          "title": "Calendar",
+          "type": "array"
+        },
+        "price_source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Citation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "prices_as_of": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prices As Of"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/PortfolioRow"
+          },
+          "title": "Rows",
+          "type": "array"
+        },
+        "season": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SeasonStrip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "rows",
+        "calendar",
+        "season",
+        "prices_as_of",
+        "price_source"
+      ],
+      "title": "PortfolioResponse",
+      "type": "object"
+    },
+    "PortfolioRow": {
+      "additionalProperties": false,
+      "properties": {
+        "close_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Close Date"
+        },
+        "day_change_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Adj-close change vs the previous session (code)",
+          "title": "Day Change Pct"
+        },
+        "ex_date_today": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Corporate action going ex today, e.g. 'Ex-dividend \u20b93'",
+          "title": "Ex Date Today"
+        },
+        "last_close": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "\u20b9, split/bonus-adjusted close of the last session",
+          "title": "Last Close"
+        },
+        "month_change_pct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Adj-close change over ~21 sessions (code)",
+          "title": "Month Change Pct"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "spark": {
+          "description": "Adj closes, oldest \u2192 newest (\u2248 1 month)",
+          "items": {
+            "type": "number"
+          },
+          "title": "Spark",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/HoldingStatus"
+        },
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "name",
+        "last_close",
+        "close_date",
+        "day_change_pct",
+        "month_change_pct",
+        "spark",
+        "ex_date_today",
+        "status"
+      ],
+      "title": "PortfolioRow",
       "type": "object"
     },
     "PressurePoint": {

@@ -131,6 +131,16 @@ def snoozed(conn, sub_id: int) -> dict[str, datetime]:
     return {r["symbol"]: r["until"] for r in rows}
 
 
+def replace_snoozes(conn, sub_id: int, snoozes: dict[str, datetime]) -> None:
+    """The phone's snooze list replaces the server's (Rules screen: add 1 day / 1 week, or remove)."""
+    with conn.transaction():
+        conn.execute("delete from public.snoozes where subscription_id = %s", (sub_id,))
+        for sym, until in snoozes.items():
+            if until > datetime.now(UTC):
+                conn.execute("insert into public.snoozes (subscription_id, symbol, until) values (%s,%s,%s)",
+                             (sub_id, sym.upper(), until))  # fmt: skip
+
+
 def rules(conn, sub_id: int) -> list[WeightRule]:
     rows = conn.execute("select rule from public.feedback_rules where subscription_id = %s", (sub_id,)).fetchall()
     return [WeightRule.model_validate(r["rule"]) for r in rows]

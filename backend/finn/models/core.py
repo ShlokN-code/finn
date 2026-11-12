@@ -361,6 +361,48 @@ class BriefRequest(Model):
     )  # fmt: skip
 
 
+class PortfolioRequest(Model):
+    """POST /portfolio. Symbols + weights only (quantities never leave the phone); never stored, never logged."""
+
+    holdings: list[BriefHolding] = Field(min_length=1, max_length=40)
+
+
+class HoldingStatus(Model):
+    """Status dot (PRODUCT §7), set in code from impact tags and the 1-month move (DECISIONS: status dot)."""
+
+    level: Literal["intact", "watch", "pressure", "unknown"]
+    reason: str
+    event_id: str | None = None
+
+
+class PortfolioRow(Model):
+    symbol: str
+    name: str | None = None
+    last_close: float | None = Field(None, description="₹, split/bonus-adjusted close of the last session")
+    close_date: date | None = None
+    day_change_pct: float | None = Field(None, description="Adj-close change vs the previous session (code)")
+    month_change_pct: float | None = Field(None, description="Adj-close change over ~21 sessions (code)")
+    spark: list[float] = Field(default_factory=list, description="Adj closes, oldest → newest (≈ 1 month)")
+    ex_date_today: str | None = Field(None, description="Corporate action going ex today, e.g. 'Ex-dividend ₹3'")
+    status: HoldingStatus
+
+
+class CalendarItem(Model):
+    symbol: str
+    on: date
+    kind: Literal["results", "board_meeting", "dividend", "bonus_split", "agm", "other"]
+    label: str
+    url: str | None = None
+
+
+class PortfolioResponse(Model):
+    rows: list[PortfolioRow]
+    calendar: list[CalendarItem] = Field(default_factory=list, description="Next 60 days, soonest first")
+    season: SeasonStrip | None = None
+    prices_as_of: date | None = None
+    price_source: Citation | None = None
+
+
 class BriefResponse(Model):
     """The ranked Brief for one window."""
 

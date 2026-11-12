@@ -5,6 +5,7 @@ import { useState, useSyncExternalStore } from "react";
 import { ArrowUpRight, Send } from "lucide-react";
 import { effectiveWeights } from "@/lib/holdings";
 import { FALLBACK, useStored, type LocalHolding } from "@/lib/store";
+import { localAlertSettings } from "@/components/rules/AlertRules";
 
 const SECRET_KEY = "finn.telegram.secret";
 type Link = { deep_link: string; expires_at: string; uploaded: { symbol: string; weight_pct: number | null }[] };
@@ -39,6 +40,7 @@ export function TelegramConnect() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           holdings: effectiveWeights(holdings).map((h) => ({ symbol: h.symbol, weight_pct: h.weight_pct })),
+          settings: localAlertSettings(), // the rules edited on this phone become the alerts' rules
         }),
       });
       const body = await r.json().catch(() => ({}));

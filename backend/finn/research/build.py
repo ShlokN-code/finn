@@ -111,7 +111,12 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
         from finn.research import deck
 
         progress.step("decks", "running", message="Checking investor decks for figures the calls didn't state")
-        dr = deck.lookup(conn, router, symbol, disc, d.ledger.promises, led.unscored, now, tags)
+        deck_error = None
+        try:
+            dr = deck.lookup(conn, router, symbol, disc, d.ledger.promises, led.unscored, now, tags)
+        except Exception as e:  # optional enrichment: a bug here must never sink the dossier
+            log.exception("deck lookup failed for %s", symbol)
+            dr, deck_error = deck.DeckResult(), f"Skipped after an error ({type(e).__name__})"
         if dr.found:
             led = apply_ledger(d, symbol, disc, links, docs, calls, quota, now, extra=dr.calls)
         d.ledger.decks_read = sum(1 for x in dr.sources if x.status == "read")
@@ -119,8 +124,8 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
         d.sources += [x for x in dr.sources if x.url not in known]
         if dr.quota is not None and dr.quota.kind == "quota":
             quota = dr.quota
-        progress.step("decks", "done", f"{dr.found} of {dr.requested} missing figure(s) found in "
-                      f"{d.ledger.decks_read} deck(s)")  # fmt: skip
+        progress.step("decks", "failed" if deck_error else "done", deck_error or f"{dr.found} of {dr.requested} "
+                      f"missing figure(s) found in {d.ledger.decks_read} deck(s)")  # fmt: skip
     else:
         progress.step("decks", "skipped", "No promise is waiting only on a delivered figure")
 

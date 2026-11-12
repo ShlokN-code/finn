@@ -110,6 +110,8 @@ class Checker:
 
     def _reanchor(self, quote: str, page: int, number) -> Located | None:
         want = set(_WORD.findall(norm(quote)))
+        if not want:
+            return None  # a quote with no words (only a number or punctuation) can't be re-anchored
         num = _num_str(number)
         best: tuple[float, int, str] | None = None
         for i in (page - 1, page - 2, page):

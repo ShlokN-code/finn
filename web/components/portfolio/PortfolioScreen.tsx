@@ -1,7 +1,7 @@
 "use client";
-// Portfolio: holdings with weight and their latest event from the Brief; paste/CSV import (stored on the phone).
-// Prices, sparklines, the calendar and the scoreboard arrive with /portfolio (Friday); the season scoreboard is
-// already one tap away in the Brief.
+// Portfolio: holdings with weight, last close, day change, 1-month sparkline and a status dot (POST /portfolio, code
+// only), their latest event from the Brief, upcoming events and the results-season scoreboard; paste/CSV import
+// (stored on the phone).
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,12 +10,27 @@ import { useBrief } from "@/components/brief/useBrief";
 import { Sheet } from "@/components/shell/Sheet";
 import { Notice, Skeleton } from "@/components/shell/StateView";
 import { setAskContext } from "@/components/shell/ui-store";
-import { Dot, IMPACT } from "@/components/ui/signal";
+import { Dot, IMPACT, type Tone } from "@/components/ui/signal";
+import { Sparkline } from "@/components/cards/Sparkline";
+import { SeasonSheet } from "@/components/brief/sheets";
+import { usePortfolio } from "./usePortfolio";
 import { api } from "@/lib/client";
 import { CATEGORY_LABEL, displayHeadline, istWhen } from "@/lib/format";
 import { effectiveWeights, parseHoldings } from "@/lib/holdings";
 import { FALLBACK, isDemoPortfolio, read, useHydrated, useStored, write, type LocalHolding } from "@/lib/store";
-import type { Card, DriversSection } from "@/lib/types";
+import type { Card, DriversSection, HoldingStatus, PortfolioResponse, PortfolioRow } from "@/lib/types";
+
+const STATUS: Record<HoldingStatus["level"], { tone: Tone; word: string }> = {
+  intact: { tone: "pos", word: "Intact" },
+  watch: { tone: "warn", word: "Watch" },
+  pressure: { tone: "neg", word: "Under pressure" },
+  unknown: { tone: "muted", word: "No data" },
+};
+const inr = (v: number) => `₹${v.toLocaleString("en-IN", { maximumFractionDigits: v < 100 ? 2 : 1 })}`;
+function Move({ pct }: { pct: number | null }) {
+  if (pct === null) return <span className="text-ink-3">—</span>;
+  return <span className="tabular-nums">{pct >= 0 ? "▲" : "▼"} {Math.abs(pct).toFixed(1)}%</span>;
+}
 
 function latestAt(c: Card): string {
   return [...c.timeline.map((t) => t.at)].sort().at(-1) ?? c.as_of;
@@ -26,6 +41,10 @@ export function PortfolioScreen() {
   const enabled = useHydrated();
   const router = useRouter();
   const b = useBrief({ window: "7d", customSince: null, visit: null, showcase: false, enabled });
+  const [retry, setRetry] = useState(0);
+  const pf = usePortfolio(holdings, enabled, retry);
+  const prow = useMemo(() => new Map((pf.data?.rows ?? []).map((r) => [r.symbol, r])), [pf.data]);
+  const [season, setSeason] = useState(false);
   const [editing, setEditing] = useState(false);
   const demo = isDemoPortfolio(holdings);
   const weights = useMemo(() => effectiveWeights(holdings), [holdings]);
@@ -79,7 +98,18 @@ export function PortfolioScreen() {
         </div>
       </header>
       {b.error && !b.data && <Notice tone="warn">Couldn&apos;t load this week&apos;s events — {b.error.waking ? "the server is waking up" : b.error.message}.</Notice>}
-      <p className="t-micro px-4 pb-2 text-ink-3">Weight · latest material event, last 7 days</p>
+      {pf.error && (
+        <Notice tone="warn">
+          {pf.data ? "Showing prices saved on this phone" : "Prices didn't load"} —{" "}
+          {pf.error.waking ? "the server is waking up" : pf.error.message}.{" "}
+          <button type="button" className="underline underline-offset-4" onClick={() => setRetry((n) => n + 1)}>
+            Retry
+          </button>
+        </Notice>
+      )}
+      <p className="t-micro px-4 pb-2 text-ink-3">
+        Weight · close · day · 1 month{pf.data?.prices_as_of ? ` · prices as of ${pf.data.prices_as_of} close` : ""}
+      </p>
       {!b.data && !b.error ? (
         <Skeleton rows={4} label="Loading holdings" />
       ) : (
@@ -87,6 +117,7 @@ export function PortfolioScreen() {
           {rows.map((h) => {
             const c = latest.get(h.symbol);
             const impact = c?.impact ? IMPACT[c.impact] : null;
+            const p = prow.get(h.symbol);
             return (
               <li key={h.symbol}>
                 <Link
@@ -95,9 +126,14 @@ export function PortfolioScreen() {
                 >
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline gap-2">
+                      {p && <StatusDot p={p} />}
                       <span className="text-[15px] font-semibold">{h.symbol}</span>
                       {h.quantity !== null && <span className="t-small text-ink-3">{h.quantity.toLocaleString("en-IN")} sh</span>}
                     </span>
+                    {p && <PriceLine p={p} />}
+                    {p && p.status.level !== "intact" && p.status.level !== "unknown" && (
+                      <span className="t-small block text-ink-3">{p.status.reason}</span>
+                    )}
                     {c ? (
                       <span className="t-small mt-0.5 flex items-start gap-1.5 text-ink-2">
                         {impact && <Dot tone={impact.tone} className="mt-[7px]" />}
@@ -122,13 +158,86 @@ export function PortfolioScreen() {
       )}
       {holdings.some((h) => h.weight_pct === null) && (
         <p className="t-small px-4 pt-2 text-ink-3">
-          Holdings entered as share quantities split the remaining weight equally until prices are wired in.
+          Holdings entered as share quantities split the remaining weight equally.
         </p>
+      )}
+      {pf.data && <Upcoming data={pf.data} />}
+      {pf.data?.season && (
+        <section className="pt-6">
+          <p className="t-micro px-4 pb-2 text-ink-3">Results season</p>
+          <button type="button" onClick={() => setSeason(true)} className="flex w-full items-center gap-2 border-y border-rule bg-surface px-4 py-3 text-left">
+            <span className="flex-1 text-[15px]">
+              {pf.data.season.quarter.label}: {pf.data.season.reported}/{pf.data.season.total} reported ·{" "}
+              {pf.data.season.cross_checked} cross-checked · PAT up {pf.data.season.pat_up}, down {pf.data.season.pat_down}
+            </span>
+            <ChevronRight className="size-4 shrink-0 text-ink-3" />
+          </button>
+          <SeasonSheet open={season} season={pf.data.season} onClose={() => setSeason(false)} />
+        </section>
       )}
       <Watching symbols={rows.map((r) => r.symbol)} />
 
       <ImportSheet open={editing} onClose={() => setEditing(false)} current={holdings} demo={demo} />
     </div>
+  );
+}
+
+function StatusDot({ p }: { p: PortfolioRow }) {
+  const s = STATUS[p.status.level];
+  return (
+    <span aria-label={`${s.word}: ${p.status.reason}`} title={p.status.reason} className="self-center">
+      <Dot tone={s.tone} />
+    </span>
+  );
+}
+
+function PriceLine({ p }: { p: PortfolioRow }) {
+  if (p.last_close === null) return <span className="t-small block text-ink-3">No prices yet — FINN tracks prices for the demo portfolio and Telegram holdings</span>;
+  return (
+    <span className="t-small mt-0.5 flex items-center gap-2 text-ink-2">
+      <span className="tabular-nums">{inr(p.last_close)}</span>
+      <Move pct={p.day_change_pct} />
+      <Sparkline values={p.spark} width={64} height={16} className="text-ink-3" />
+      <span className="text-ink-3">
+        1M <Move pct={p.month_change_pct} />
+      </span>
+      {p.ex_date_today && <span className="text-ink-3">· {p.ex_date_today}</span>}
+    </span>
+  );
+}
+
+const KIND: Record<string, string> = { results: "Results", board_meeting: "Board", dividend: "Dividend", bonus_split: "Bonus/split", agm: "AGM", other: "Action" };
+
+function Upcoming({ data }: { data: PortfolioResponse }) {
+  return (
+    <section className="pt-6">
+      <p className="t-micro px-4 pb-2 text-ink-3">Coming up · next 60 days</p>
+      {data.calendar.length === 0 ? (
+        <p className="t-small px-4 text-ink-3">No board meetings or ex-dates announced for your holdings yet.</p>
+      ) : (
+        <ul className="divide-y divide-rule border-y border-rule bg-surface">
+          {data.calendar.map((c, i) => (
+            <li key={i} className="flex items-baseline gap-3 px-4 py-2.5">
+              <span className="t-small w-14 shrink-0 tabular-nums text-ink-2">
+                {new Date(`${c.on}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" })}
+              </span>
+              <span className="min-w-0 flex-1 text-[14px]">
+                <span className="font-semibold">{c.symbol}</span> · {KIND[c.kind] ?? c.kind}
+                <span className="t-small block truncate text-ink-3">
+                  {c.url ? (
+                    <a href={c.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+                      {c.label}
+                    </a>
+                  ) : (
+                    c.label
+                  )}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 

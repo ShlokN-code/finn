@@ -70,3 +70,12 @@ def test_validate_drops_analyst_guidance_invented_numbers_and_missing_quotes():
     assert len(facts["guidance"]) == 1 and facts["guidance"][0]["target_low"] == 11
     assert stats["dropped"]["number_not_in_quote"] == 1 and stats["dropped"]["not_management"] == 1
     assert stats["dropped_total"] if "dropped_total" in stats else stats["reasons"]["not_in_source"] == 1
+
+
+def test_reanchor_never_divides_by_zero_on_a_wordless_quote():
+    # TATACAP (robustness run, 12 Nov): a deck figure whose "quote" was only a number crashed the whole build
+    from finn.research.checker import Checker
+
+    chk = Checker(["Total AUM 2,28,000 crore as of September 30, 2026"])
+    assert chk.locate("2,28,000", 1, 228000.0) is None or chk.locate("2,28,000", 1, 228000.0).page == 1
+    assert chk.locate("—", 1, 5.0) is None

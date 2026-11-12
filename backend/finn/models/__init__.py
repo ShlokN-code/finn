@@ -19,6 +19,7 @@ from finn.models.core import (
     BriefHolding,
     BriefRequest,
     BriefResponse,
+    CalendarItem,
     Card,
     ChipDetail,
     Driver,
@@ -28,10 +29,14 @@ from finn.models.core import (
     Filing,
     HiddenItem,
     Holding,
+    HoldingStatus,
     ManagementDetail,
     MoveExplanation,
     OneLinerDetail,
     PersonProfile,
+    PortfolioRequest,
+    PortfolioResponse,
+    PortfolioRow,
     PriceVolumeDetail,
     PriorRole,
     ResultsDetail,
@@ -60,6 +65,7 @@ from finn.models.research import (
 EXPORTED = [
     Citation, Figure, Claim, Period, Filing, Event, Card, Alert, Holding, Driver, Promise, Dossier,
     WeightRule, AlertSettings, DossierJob, DossierResponse, AskAnswer, BriefRequest, BriefResponse,
+    PortfolioRequest, PortfolioResponse,
 ]  # fmt: skip
 
 __all__ = [
@@ -77,6 +83,11 @@ __all__ = [
     "BriefHolding",
     "BriefRequest",
     "BriefResponse",
+    "CalendarItem",
+    "HoldingStatus",
+    "PortfolioRequest",
+    "PortfolioResponse",
+    "PortfolioRow",
     "FeedbackAction",
     "HiddenItem",
     "SeasonRow",
