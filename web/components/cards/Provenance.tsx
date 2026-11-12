@@ -160,11 +160,12 @@ export function FigureProvenance({ f }: { f: Figure }) {
   );
 }
 
-export function ClaimProvenance({ claim }: { claim: Claim }) {
+/** `sourcesOnly`: the claim's text is already on screen (an Ask answer) — show the status and its citations. */
+export function ClaimProvenance({ claim, sourcesOnly = false }: { claim: Claim; sourcesOnly?: boolean }) {
   const st = STATUS[claim.status] ?? STATUS.unverified;
   return (
     <div>
-      <p className="font-serif text-[18px] leading-[25px]">{claim.text}</p>
+      {!sourcesOnly && <p className="font-serif text-[18px] leading-[25px]">{claim.text}</p>}
       <p className={`t-small mt-1 ${st.cls}`}>{st.text}</p>
       <div className="mt-3">
         {dedupe(claim.citations).map((c, i) => (

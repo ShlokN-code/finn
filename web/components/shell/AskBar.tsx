@@ -212,7 +212,7 @@ function Answer({ a, symbol }: { a: AskAnswer; symbol: string }) {
       )}
       <div className="mt-3 border-t border-rule pt-2">
         <p className="t-micro text-ink-3">Sources</p>
-        <ClaimProvenance claim={a.answer} />
+        <ClaimProvenance claim={a.answer} sourcesOnly />
       </div>
       {foot && <p className="t-small mt-2 text-ink-3">{foot}</p>}
     </div>
