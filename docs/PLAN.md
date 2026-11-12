@@ -205,6 +205,18 @@ Draw: `python -m evals.research.draw_unseen --seed 20261112 --robust 5` → pool
 
 **General finding across all five:** a Brief whose holdings FINN doesn't ingest returned 0 cards and the global freshness stamp, which read as "You're caught up". Fixed: `BriefResponse.untracked` + a notice ("Not tracked yet … connect Telegram to add them") and no "caught up" — `8252712`.
 
+### Walkthrough manual step: research a never-built ticker (12 Nov 2026)
+
+`FINN_BUILD_TICKER=<SYM> npx playwright test -g "never built"` on the deployed site, tickers drawn with `--robust 1` (seeds 20261113–15). It found three general bugs, all fixed:
+
+| Ticker | Result | Finding → fix |
+|---|---|---|
+| GESHIP | complete dossier, 8 cheap + 2 strong | The step only waited for the section frames; it now waits for the build to end — `4936870` |
+| BALKRISIND | build ended in 2.5 min; the page still said "running" 14 min later | (1) a failed final refetch left a stale "running" job with no poll → job status written first, refetch retried; (2) Flash-Lite 503 ×5 published an empty ledger → a busy model parks the build 15 min — `383a7d2`; rebuilt: complete (job 55) |
+| MAANALU | first try: page parked on "server is waking up" during a redeploy | dossier page now retries by itself — `3c512eb`; rerun **passed end to end in 5.8 min** (job 56, partial: bull/bear under 3 supported points) |
+
+Final full walkthrough on `3c512eb`: **15/15**.
+
 - [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.
   - Pick ~20 new NSE filings that were not in the dev set or the ~750-filing pull used to write the rules: other symbols and/or later dates, stratified across NSE categories, including a few content-free subjects.
   - **Blind labelling:** the product owner labels them before anyone runs the classifier on them. Store as `backend/evals/classification/heldout.jsonl` (same format, `labelled_by: reviewer (blind)`), committed before the first run.

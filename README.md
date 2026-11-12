@@ -158,7 +158,7 @@ FINN pays $0: Gemini, Groq, GitHub Actions, Render, Vercel and Supabase are all 
 |---|---|---|
 | 30-min filing check | 1.4 cheap on average (0 when nothing is new) | ≈ $0.001 |
 | Daily post-close ingest | ~33 cheap | ≈ $0.02 |
-| First-time dossier (with transcripts) | ~8 cheap + 2 strong | ≈ $0.18 (mean of 10 first builds) |
+| First-time dossier (with transcripts) | ~8 cheap + 2 strong | ≈ $0.17 (mean of 11 first builds) |
 | Cached dossier / nightly refresh with no new document | 0 (cached; summary reused) | $0 |
 | Ask (new question) | 1 cheap | ≈ $0.0008 |
 | Drivers for one holding | ≤ 3 cheap | ≈ $0.07 |

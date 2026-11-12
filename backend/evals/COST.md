@@ -1,8 +1,8 @@
 # Cost report
 
-Generated 12 Nov 2026 17:35 IST by `python -m evals.cost_report` from `llm_calls` (702 model attempts, 520 answered, 10 Nov – 12 Nov 2026 UTC) and the job tables. **FINN pays $0**: everything runs on free tiers (Gemini AI Studio, Groq, GitHub Actions on a public repo, Render, Vercel, Supabase). Dollar figures are what the same calls would cost at the paid **list price** (Flash-Lite $0.3/2.5 and Flash $0.75/3.75 per million input/output tokens).
+Generated 12 Nov 2026 18:05 IST by `python -m evals.cost_report` from `llm_calls` (722 model attempts, 536 answered, 10 Nov – 12 Nov 2026 UTC) and the job tables. **FINN pays $0**: everything runs on free tiers (Gemini AI Studio, Groq, GitHub Actions on a public repo, Render, Vercel, Supabase). Dollar figures are what the same calls would cost at the paid **list price** (Flash-Lite $0.3/2.5 and Flash $0.75/3.75 per million input/output tokens).
 
-All-time: 2664.8K tokens in, 1094.1K out, **$3.64 at list price**.
+All-time: 2801.5K tokens in, 1193.8K out, **$3.94 at list price**.
 
 ## Push side (scheduled ingest)
 
@@ -10,7 +10,7 @@ Model calls only happen for filings the exchange label and rules can't classify,
 
 | Run | Runs logged | Model calls / run (avg) | List-price cost / run | Median duration |
 |---|---|---|---|---|
-| 30-min filing check | 46 | 1.2 (max 33) | $0.0009 (max $0.0250) | 99 s |
+| 30-min filing check | 47 | 1.2 (max 33) | $0.0009 (max $0.0250) | 100 s |
 | Daily post-close ingest (16:30) | 3 | 21.7 (max 34) | $0.0145 (max $0.0219) | 406 s |
 | 07:00 alerts release | 5 | 0.0 (max 0) | $0.0000 (max $0.0000) | 2 s |
 
@@ -26,12 +26,12 @@ Push-side calls per IST day (classification, tagging, management profiles):
 
 | Tier | Filings | Share |
 |---|---|---|
-| rule | 520 | 54.8% |
+| rule | 521 | 54.8% |
 | exchange | 262 | 27.6% |
 | model | 166 | 17.5% |
 | failed | 1 | 0.1% |
 
-949 stored filings. `exchange` = NSE's label alone, `rule` = subject regex, `model` = Flash-Lite (reading the first PDF pages when the subject says nothing), `failed` = retried next run.
+950 stored filings. `exchange` = NSE's label alone, `rule` = subject regex, `model` = Flash-Lite (reading the first PDF pages when the subject says nothing), `failed` = retried next run.
 
 ## Research dossiers
 
@@ -46,14 +46,15 @@ Push-side calls per IST day (classification, tagging, management profiles):
 | BAJFINANCE | job 5: 2 cheap + 0 strong, $0.0439 | 8 | 9 | 7 | 136.3K / 71.5K | $0.23 | 12 |
 | INFY | job 4: 8 cheap + 0 strong, $0.21 | 9 | 7 | 9 | 218.4K / 63.6K | $0.23 | 10 |
 | JASH | job 51: 9 cheap + 2 strong, $0.22 | 9 | 2 | 12 | 118.3K / 71.4K | $0.22 | 1 |
+| BALKRISIND | job 54: 0 cheap + 1 strong, $0.0027 | 8 | 3 | 11 | 90.0K / 72.3K | $0.22 | 2 |
 | HCC | job 49: 9 cheap + 2 strong, $0.15 | 9 | 2 | 0 | 105.5K / 43.0K | $0.15 | 1 |
 | HGINFRA | job 47: 7 cheap + 2 strong, $0.12 | 7 | 2 | 6 | 77.6K / 39.1K | $0.12 | 1 |
 | TATACAP | job 48: 5 cheap + 0 strong, $0.11 | 5 | 2 | 5 | 106.7K / 33.2K | $0.12 | 2 |
 | GESHIP | job 53: 8 cheap + 2 strong, $0.11 | 8 | 2 | 2 | 127.5K / 25.7K | $0.11 | 1 |
-| BALKRISIND | job 54: 0 cheap + 1 strong, $0.0027 | 0 | 1 | 7 | 875 / 553 | $0.0027 | 1 |
+| MAANALU | job 56: 4 cheap + 2 strong, $0.0882 | 4 | 2 | 0 | 47.6K / 28.0K | $0.0882 | 1 |
 | JPOLYINVST | job 37: 0 cheap + 1 strong, $0.0026 | 0 | 1 | 0 | 818 / 538 | $0.0026 | 2 |
 
-- **First-time dossier with transcripts:** $0.18 at list price (mean of the first builds of 10 tickers): ~1 Flash-Lite MAP call per transcript (8 max) + up to 3 deck lookups, then 2 strong calls (JUDGE, REDUCE). MAP output tokens dominate (a transcript's facts and quotes are copied out).
+- **First-time dossier with transcripts:** $0.17 at list price (mean of the first builds of 11 tickers): ~1 Flash-Lite MAP call per transcript (8 max) + up to 3 deck lookups, then 2 strong calls (JUDGE, REDUCE). MAP output tokens dominate (a transcript's facts and quotes are copied out).
 - **Ticker without transcripts** (e.g. JPOLYINVST): 0 cheap calls, 1 strong call (REDUCE) ≈ $0.004.
 - **Cached dossier:** $0 — 1 build jobs finished with no model call at all (everything from the cache; REDUCE's prompt has no date, so an unchanged dossier hits the cache).
 - **Opening a dossier** never calls a model: it reads the stored copy.
@@ -65,7 +66,7 @@ Push-side calls per IST day (classification, tagging, management profiles):
 
 ## Ask
 
-11 answered model calls so far: **$0.0010 per question at list price** (~2.2K tokens in, ~123 out, ~2.5 s). 11 distinct answers cached, served 7 times from the cache at $0. Caps: 8 new answers per visitor per IST day; 40 per day for everyone together (Flash-Lite's `research.ask` lane).
+11 answered model calls so far: **$0.0010 per question at list price** (~2.2K tokens in, ~123 out, ~2.5 s). 11 distinct answers cached, served 9 times from the cache at $0. Caps: 8 new answers per visitor per IST day; 40 per day for everyone together (Flash-Lite's `research.ask` lane).
 
 ## Free-tier usage vs limits
 
@@ -80,9 +81,9 @@ Per Pacific day (Gemini's quota day: resets 13:30 IST). Failed attempts count to
 | 11 Nov | gemini-3.5-flash-lite | 172 | 121 | 500 | 34% |
 | 11 Nov | gemini-3.6-flash | 21 | 15 | 20 | 105% |
 | 11 Nov | gemini-3.8-flash | 32 | 3 | 20 | 160% |
-| 12 Nov | gemini-3-flash-preview | 15 | 15 | 20 | 75% |
-| 12 Nov | gemini-3.5-flash-lite | 104 | 71 | 500 | 21% |
-| 12 Nov | gemini-3.8-flash | 18 | 4 | 20 | 90% |
+| 12 Nov | gemini-3-flash-preview | 19 | 19 | 20 | 95% |
+| 12 Nov | gemini-3.5-flash-lite | 118 | 83 | 500 | 24% |
+| 12 Nov | gemini-3.8-flash | 20 | 4 | 20 | 100% |
 
 | Service | Free limit | FINN's use |
 |---|---|---|
@@ -99,11 +100,11 @@ Per Pacific day (Gemini's quota day: resets 13:30 IST). Failed attempts count to
 | Item | Unit cost | Assumption | Per month |
 |---|---|---|---|
 | Push side (18 holdings) | $0.0692 / day | measured average per IST day | $2.07 |
-| First-time dossiers | $0.18 | 15 per day (the daily cap), every day | $80.47 |
+| First-time dossiers | $0.17 | 15 per day (the daily cap), every day | $76.76 |
 | Ask | $0.0010 | 40 per day (the daily cap) | $1.17 |
-| Nightly refresh | $0 unless a new document | 1 new transcript/week per demo ticker ≈ 1 MAP + 2 strong | $0.72 |
+| Nightly refresh | $0 unless a new document | 1 new transcript/week per demo ticker ≈ 1 MAP + 2 strong | $0.68 |
 
-If every daily cap were used every day, the list price would be about $83.71 a month, almost all of it first-time dossiers; a realistic month (a few new tickers a week) is a few dollars. On the free tiers it costs nothing. The binding constraint is the strong models' 20 requests a day each, not money: that is why numeric verdicts are computed in code and the summary is reused unless the document set changes.
+If every daily cap were used every day, the list price would be about $80.01 a month, almost all of it first-time dossiers; a realistic month (a few new tickers a week) is a few dollars. On the free tiers it costs nothing. The binding constraint is the strong models' 20 requests a day each, not money: that is why numeric verdicts are computed in code and the summary is reused unless the document set changes.
 
 Strong-model rows above 100% are attempts, not billed requests: on 11 Nov `gemini-3.8-flash` answered 503 (overloaded) and timed out on most attempts. The router counts every attempt against the day (conservative), and after two failures skips that model for 10 minutes.
 
