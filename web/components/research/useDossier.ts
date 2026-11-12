@@ -70,12 +70,17 @@ export function useDossier(symbol: string, mock: boolean) {
         const j = await api.job(job.id);
         if (cancelled) return;
         const { dossier_version, ...jobOnly } = j;
-        if (dossier_version !== version.current || !isActive(jobOnly)) {
-          await load();
-        } else {
-          setS((p) => (p.resp ? { ...p, resp: { ...p.resp, job: jobOnly } } : p));
+        const ended = !isActive(jobOnly);
+        if (dossier_version !== version.current || ended) await load();
+        if (cancelled) return;
+        // The job's own status always lands, even if that refetch failed: a stale "running" panel with no poll
+        // behind it is what the walkthrough caught (12 Nov). A failed final refetch is retried on its own.
+        setS((p) => (p.resp ? { ...p, resp: { ...p.resp, job: jobOnly } } : p));
+        if (ended) {
+          if (version.current !== dossier_version) setTimeout(() => void load(), 5000);
+          return;
         }
-        if (isActive(jobOnly)) timer = setTimeout(poll, jobOnly.status === "waiting_quota" ? 60_000 : 3000);
+        timer = setTimeout(poll, jobOnly.status === "waiting_quota" ? 60_000 : 3000);
       } catch {
         if (!cancelled) timer = setTimeout(poll, 6000);
       }

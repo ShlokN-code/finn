@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from finn.calendar import now_utc
 from finn.llm import LLMUnavailable, PostgresLLMLog, Router
@@ -24,6 +24,15 @@ from finn.research.skeleton import empty_dossier
 log = logging.getLogger("finn.research.build")
 
 PIPELINE_VERSION = "1"
+BUSY_RETRY = timedelta(minutes=15)
+BUSY_MAX_ATTEMPTS = 4
+
+
+def _attempts(conn, job_id: int | None) -> int:
+    if job_id is None:
+        return 0
+    row = conn.execute("select attempts from public.research_jobs where id = %s", (job_id,)).fetchone()
+    return int(row["attempts"]) if row else 0
 
 
 def meta(status: str, reason: str | None = None, note: str | None = None, as_of: datetime | None = None,
@@ -86,6 +95,10 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
         except LLMUnavailable as e:
             quota = e
             log.warning("MAP stopped for %s: %s", symbol, e)
+            if e.kind != "quota" and e.retry_after is None and _attempts(conn, job_id) < BUSY_MAX_ATTEMPTS:
+                # Model busy (503s), not out of quota: park and retry in a few minutes rather than publishing an
+                # empty ledger (BALKRISIND, 12 Nov). The worker re-claims the job after resume_after.
+                e.retry_after = now + BUSY_RETRY
             break
         dropped += int(st.get("dropped_total") or st.get("checked", 0) - st.get("found", 0) - st.get("reanchored", 0))
         guidance += len(facts.get("guidance", []))
@@ -168,6 +181,9 @@ def build(conn, symbol: str, progress: Progress, job_id: int | None = None, rout
     stats = {**d.cost.model_dump(), "calls_read": len(calls), "guidance": guidance}
     if quota is not None and quota.kind == "quota" and quota.retry_after:
         return Outcome("waiting_quota", stats=stats, error=str(quota)[:300], resume_after=quota.retry_after)
+    if quota is not None and quota.retry_after and quota.kind != "quota":
+        return Outcome("waiting_quota", stats=stats, error=f"model busy: {str(quota)[:250]}",
+                       resume_after=quota.retry_after)  # fmt: skip
     return Outcome("done" if complete else "partial", stats=stats)
 
 
@@ -286,7 +302,7 @@ def apply_ledger(d: Dossier, symbol: str, disc, links, docs, calls, quota, now: 
     from finn.research import insights
     from finn.research.ledger import build_ledger
 
-    resume = quota.retry_after if quota is not None and quota.kind == "quota" else None
+    resume = quota.retry_after if quota is not None and (quota.kind == "quota" or quota.retry_after) else None
     unread = len([x for x in docs if x.ref.status == "read"]) - len(calls)
     if not links:
         reason = "no_screener_page" if disc.status != "ok" else "no_transcripts"
