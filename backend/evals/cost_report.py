@@ -205,6 +205,9 @@ def build(conn) -> str:
         f"- **Cached dossier:** $0 — {zero} build jobs finished with no model call at all (everything from the cache; "
         "REDUCE's prompt has no date, so an unchanged dossier hits the cache).",
         "- **Opening a dossier** never calls a model: it reads the stored copy.",
+        "- **Where the newest builds came from:** HGINFRA, TATACAP, HCC, PGEL, JASH = the Phase 5 robustness run "
+        "(seed 20261112, through the deployed API); GESHIP, BALKRISIND, MAANALU = the walkthrough's manual "
+        '"research a never-built ticker" step (`FINN_BUILD_TICKER`). Their calls are included above.',
         "",
     ]
 
