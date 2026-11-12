@@ -44,6 +44,16 @@ CASES = [
      "results", "presentation", "rule"),
     ("Press Release", "a press release dated November 03, 2026, titled \"Royal Enfield at EICMA 2026",
      "press_release", None, "rule"),
+    # results press releases titled with the numbers, not the word "results" (Phase 5 dev-set fix)
+    ("Press Release", "a press release dated August 02, 2026, titled \"Persistent Achieves $452.4M Revenue in Q1 "
+     "FY27 with 16.1% YoY Growth \".", "results", "presentation", "rule"),
+    ("Press Release", "a press release dated November 07, 2026, titled 'Tata Steel reports Consolidated EBITDA of "
+     "Rs 10,665 crores for the quarter and Rs 20,035 crores for the half year ended September 30, 2026'.",
+     "results", "presentation", "rule"),
+    ("Press Release", "a press release dated October 7, 2026, titled \"Tata Steel: 2QFY2027 Production and Delivery "
+     "Volumes (Provisional)\".", "press_release", None, "rule"),
+    ("Press Release", "a press release dated October 8, 2026, titled \"TP Solar Records 1 GW Module Production in "
+     "Q2 FY27\"", "press_release", None, "rule"),
     ("Updates", "Hooghly-CSL, a wholly owned subsidiary of CSL, secured a Notable* order from a Domestic Client",
      "press_release", None, "rule"),
     ("General Updates", "Disclosure under Regulation 30 of SEBI LODR Regulations ESG Rating",

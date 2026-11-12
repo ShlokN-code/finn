@@ -49,6 +49,17 @@ RULES: list[Rule] = [
         Label(C.results, S.intimation),
     ),  # fmt: skip
     r("results_press_release", r"press release[^.]{0,40}" + RESULTS_WORDS, Label(C.results, S.presentation)),
+    # A results press release titled with the numbers instead of the word "results"
+    # ("Persistent Achieves $452.4M Revenue in Q1 FY27 with 16.1% YoY Growth", "Tata Steel reports Consolidated
+    # EBITDA of Rs 10,665 crores for the quarter … ended September 30"): a period plus a P&L word in a
+    # press-release subject.
+    r(
+        "results_press_release_titled",
+        r"^(?=.*press release)(?=.*(?:\b(?:Q[1-4]|H[12]|[1-4]Q)\s*'?FY\s*'?\d{2,4}\b|\b(?:quarter|half[- ]year)\b"
+        r"[^.]{0,80}\bended\b))"
+        r"(?=.*\b(?:revenues?|profit|pat|ebitda|margins?|net income|earnings)\b)",
+        Label(C.results, S.presentation),
+    ),  # fmt: skip
     r(
         "results_presentation",
         r"(investor|earnings) presentation[^.]{0,80}(quarter|results)",

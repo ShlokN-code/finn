@@ -3,6 +3,10 @@
 python -m evals.classification.run            # rules only (tiers a+b); model-tier items count as abstained
 python -m evals.classification.run --model    # full ladder: cheap model + first PDF pages where the subject
                                               # says nothing (uses the LLM cache/log and the PDF disk cache)
+python -m evals.classification.run --set heldout [--model]   # the blind held-out set (heldout.jsonl)
+
+Sets: `dev` = labelled.jsonl (60 filings the rules were written from, so its score is optimistic); `heldout` =
+heldout.jsonl (labelled blind by the product owner; frozen — no rule or prompt change is made from its misses).
 
 Labels in labelled.jsonl were written by Claude and reviewed by the product owner (10 Nov 2026); uncertain
 ones were checked against the filing PDF (see `note`).
@@ -24,8 +28,10 @@ HERE = Path(__file__).resolve().parent
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", action="store_true")
+    ap.add_argument("--set", choices=["dev", "heldout"], default="dev")
     args = ap.parse_args()
-    items = [json.loads(line) for line in (HERE / "labelled.jsonl").read_text().splitlines() if line.strip()]
+    path = HERE / {"dev": "labelled.jsonl", "heldout": "heldout.jsonl"}[args.set]
+    items = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
     router, conn = None, None
     if args.model:
@@ -61,7 +67,7 @@ def main() -> None:
     n = len(items)
     decided = sum(t["n"] for k, t in per_tier.items() if k != "failed")
     correct = sum(t["correct"] for t in per_tier.values())
-    print(f"labelled filings: {n}   mode: {'full ladder' if args.model else 'rules only'}")
+    print(f"set: {args.set}   labelled filings: {n}   mode: {'full ladder' if args.model else 'rules only'}")
     print(f"{'tier':10}{'n':>5}{'correct':>9}{'accuracy':>10}")
     for tier in ("exchange", "rule", "model", "failed"):
         t = per_tier.get(tier)
