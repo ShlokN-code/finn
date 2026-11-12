@@ -98,10 +98,21 @@ CI fails if `web/lib/schema.json` or `web/lib/types.ts` is stale.
 |---|---|---|---|---|
 | Dev (60 filings, Aug–Nov 2026, portfolio) | Rules only | 96.5 % (55/57) | 95 % | 91.7 % |
 | Dev | Full ladder (+ Flash-Lite, first PDF pages for content-free subjects) | 100 % (60/60) | 100 % | 100 % |
-| **Held-out** (20 filings, 11–12 Nov 2026, other companies; labelled blind by an independent agent from the PDFs) | Rules only | 66.7 % (10/15) | 75 % | 50.0 % |
-| **Held-out** | Full ladder | 70.0 % (14/20) | 100 % | 70.0 % |
+| **Held-out** (20 filings, 11–12 Nov 2026, other companies; labelled blind by an independent agent from the PDFs, reviewed) | Rules only | 80.0 % (12/15) — *before review 66.7 % (10/15)* | 75 % | 60.0 % — *before review 50.0 %* |
+| **Held-out** | Full ladder | 80.0 % (16/20) — *before review 70.0 % (14/20)* | 100 % | 80.0 % — *before review 70.0 %* |
 
-The dev set is optimistic: the rules were written from those same three months of filings. The held-out set was drawn by `python -m evals.classification.draw_heldout --seed 20261112`. It is stratified by NSE label, one filing per company, includes 3 content-free subjects, and excludes every company in the dev set or the filings table. A fresh agent that never saw the code, rules, dev set or this work labelled it from each filing's PDF (category definitions + the material-over-routine rule only), and the labels were committed (`5e015db`) before the classifier ran on them. Numbers above are **before review**; the product owner's review of the disagreements is recorded below once done. It is frozen: no rule or prompt change is made from its misses.
+The dev set is optimistic: the rules were written from those same three months of filings. The held-out set was drawn by `python -m evals.classification.draw_heldout --seed 20261112`. It is stratified by NSE label, one filing per company, includes 3 content-free subjects, and excludes every company in the dev set or the filings table. A fresh agent that never saw the code, rules, dev set or this work labelled it from each filing's PDF (category definitions + the material-over-routine rule only), and the labels were committed (`5e015db`) before the classifier ran on them. It is frozen: no rule or prompt change is made from its misses.
+
+**Review:** the product owner reviewed all 6 filings where the agent and FINN disagreed. They confirmed 4 of the agent's labels and corrected 2 (`labelled_by: corrected by reviewer after review`, with the agent's label kept in `note`): a Reg 32 statement and a monitoring-agency report that both report *no deviation* are routine compliance, not fund-raise news. Both numbers are shown above.
+
+**Main failure mode: subject lines that don't describe the attached PDF.** FINN opens a PDF only when the subject says nothing (e.g. "Copy of Newspaper Publication"). Otherwise it trusts the subject:
+- *Triveni Turbine*: subject "Giving guarantees/indemnity…", but the PDF is the board outcome approving Q2 results → FINN: routine.
+- *Page Industries*: subject "Board … declared interim dividend", but the PDF is the Q2 results with the dividend → FINN: dividend.
+- A third miss has the same root: *R M Drip*'s "Press Release on Financial Performance for the Quarter" names neither "results" nor a P&L figure → FINN: press_release.
+
+*Does this hide results in practice?* Not in these cases. A results card is built when the results thread has an outcome filing; the numbers then come from NSE XBRL. Both companies also filed the standard "Outcome of Board Meeting: … submitted the financial results", which the rules classify as a results outcome. So the card would appear; only the misread filing itself shows as a dividend chip (Page) or sits in the hidden drawer (Triveni). The real risk is a company whose *only* results filing has a misleading subject. Then the thread has just the board-meeting intimation, no XBRL is fetched, and no numbers card appears until the next run that sees an outcome. Across our 15 tracked results threads this quarter it never happened: every thread whose meeting has passed has an outcome filing and a card.
+
+**Next step (not done; held-out stays frozen):** read the first page when the attachment name or the event thread suggests results, even if the subject doesn't. Examples: a file named `RESULTS30092026.pdf` or `Outcome_Board_…`, or any filing on the day of a results board meeting. A miss would then cost one cheap model call instead of a misread.
 
 Run with `python -m evals.classification.run --set dev|heldout [--model]` from `backend/`.
 

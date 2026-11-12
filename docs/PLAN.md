@@ -217,6 +217,8 @@ Draw: `python -m evals.research.draw_unseen --seed 20261112 --robust 5` → pool
 
 Final full walkthrough on `3c512eb`: **15/15**.
 
+- [ ] **Next (classification, product owner 13 Nov):** read the first PDF page when the attachment name (`RESULTS…`, `Outcome_Board…`) or the event thread (a results board meeting that day) suggests results but the subject doesn't. Held-out misses Triveni/Page come from subjects that don't describe the PDF. Not done in Phase 5; the held-out set stays frozen.
+- [x] **Held-out classification eval** — drawn `1c0007c`; labelled blind by an independent agent and committed before any run `5e015db`; reviewer corrected 2 of the 6 disagreements `0dfbf9f`. Rules only 66.7 % → 80.0 % of decided (50 % → 60 % overall); full ladder 70 % → 80 % (before → after review). Original item:
 - [ ] **Held-out classification eval (~20 filings, never used for tuning).** The current 60-filing set is a *dev* set: the rules were written from the same Aug–Nov 2026 filings, so its score is optimistic.
   - Pick ~20 new NSE filings that were not in the dev set or the ~750-filing pull used to write the rules: other symbols and/or later dates, stratified across NSE categories, including a few content-free subjects.
   - **Blind labelling:** the product owner labels them before anyone runs the classifier on them. Store as `backend/evals/classification/heldout.jsonl` (same format, `labelled_by: reviewer (blind)`), committed before the first run.
