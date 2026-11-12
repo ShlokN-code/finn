@@ -98,10 +98,10 @@ CI fails if `web/lib/schema.json` or `web/lib/types.ts` is stale.
 |---|---|---|---|---|
 | Dev (60 filings, Aug–Nov 2026, portfolio) | Rules only | 96.5 % (55/57) | 95 % | 91.7 % |
 | Dev | Full ladder (+ Flash-Lite, first PDF pages for content-free subjects) | 100 % (60/60) | 100 % | 100 % |
-| **Held-out** (20 filings, 11–12 Nov 2026, other companies, labelled blind) | Rules only | *pending the blind labels* | | |
-| **Held-out** | Full ladder | *pending the blind labels* | | |
+| **Held-out** (20 filings, 11–12 Nov 2026, other companies; labelled blind by an independent agent from the PDFs) | Rules only | 66.7 % (10/15) | 75 % | 50.0 % |
+| **Held-out** | Full ladder | 70.0 % (14/20) | 100 % | 70.0 % |
 
-The dev set is optimistic: the rules were written from those same three months of filings. The held-out set was drawn by `python -m evals.classification.draw_heldout --seed 20261112`. It is stratified by NSE label, one filing per company, includes 3 content-free subjects, and excludes every company in the dev set or the filings table. The product owner labelled it before the classifier ever ran on it. It is frozen: no rule or prompt change is made from its misses.
+The dev set is optimistic: the rules were written from those same three months of filings. The held-out set was drawn by `python -m evals.classification.draw_heldout --seed 20261112`. It is stratified by NSE label, one filing per company, includes 3 content-free subjects, and excludes every company in the dev set or the filings table. A fresh agent that never saw the code, rules, dev set or this work labelled it from each filing's PDF (category definitions + the material-over-routine rule only), and the labels were committed (`5e015db`) before the classifier ran on them. Numbers above are **before review**; the product owner's review of the disagreements is recorded below once done. It is frozen: no rule or prompt change is made from its misses.
 
 Run with `python -m evals.classification.run --set dev|heldout [--model]` from `backend/`.
 
