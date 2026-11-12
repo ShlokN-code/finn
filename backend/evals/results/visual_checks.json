@@ -1,0 +1,134 @@
+{
+  "KALYANKJIL:results:Q2 FY27": {
+    "why": "Scanned statement with a poor OCR text layer ('Jewelters lndia'), so the text check can't read its numbers.",
+    "reader": "Claude, from the rendered page image (110 dpi), 12 Nov 2026",
+    "page": 12,
+    "unit": "Rs. in Millions",
+    "printed": {
+      "Revenue": [
+        103226.16,
+        105889.27,
+        78560.26
+      ],
+      "Profit before exceptional items and tax": [
+        4866.14,
+        4648.17,
+        3502.65
+      ],
+      "Finance costs": [
+        1086.88,
+        1084.01,
+        949.36
+      ],
+      "Depreciation and amortisation": [
+        1271.91,
+        1150.39,
+        1032.12
+      ],
+      "Other income": [
+        780.38,
+        557.38,
+        514.14
+      ],
+      "PBT": [
+        5600.78,
+        4648.17,
+        3502.65
+      ],
+      "PAT": [
+        4270.95,
+        3486.65,
+        2605.1
+      ]
+    },
+    "fields": {
+      "Revenue": true,
+      "Revenue QoQ": true,
+      "Revenue YoY": true,
+      "EBITDA": true,
+      "EBITDA QoQ": true,
+      "EBITDA YoY": true,
+      "PBT": true,
+      "PBT QoQ": true,
+      "PBT YoY": true,
+      "PAT": true,
+      "PAT QoQ": true,
+      "PAT YoY": true
+    }
+  },
+  "TITAGARH:results:Q2 FY27": {
+    "why": "The text layer drops decimal points ('8201' for 82.01), so the text check can't tell 57 from 57.27.",
+    "reader": "Claude, from the rendered page image (110 dpi), 12 Nov 2026",
+    "page": 11,
+    "unit": "Rs. in Crores",
+    "printed": {
+      "Revenue": [
+        792.56,
+        765.07,
+        799.03
+      ],
+      "Profit before share of JVs, exceptional items and tax": [
+        82.67,
+        71.46,
+        67.39
+      ],
+      "Finance costs": [
+        15.91,
+        15.1,
+        18.25
+      ],
+      "Depreciation and amortisation": [
+        15.56,
+        14.96,
+        12.42
+      ],
+      "Other income": [
+        7.21,
+        6.64,
+        14.44
+      ],
+      "PBT": [
+        82.01,
+        70.88,
+        62.73
+      ],
+      "PAT (continuing operations)": [
+        63.2,
+        52.6,
+        42.46
+      ],
+      "PAT (total)": [
+        63.2,
+        52.58,
+        42.43
+      ]
+    },
+    "card": {
+      "PBT": [
+        82.01,
+        70.86,
+        57.27
+      ],
+      "PAT": [
+        63.2,
+        52.58,
+        37.0
+      ]
+    },
+    "note": "The year-ago column is 'Unaudited (Restated) (Refer Note 4)': Sep 2025 was restated for discontinued operations. The card's year-ago PBT/PAT are as first reported in the Sep 2025 XBRL (57.27 / 37.00); the previous-quarter PBT is 70.86 in the Q1 XBRL vs 70.88 printed here. EBITDA's inputs match (year-ago 83.62 printed inputs vs 83.63 on the card: rounding).",
+    "fields": {
+      "Revenue": true,
+      "Revenue QoQ": true,
+      "Revenue YoY": true,
+      "EBITDA": true,
+      "EBITDA QoQ": true,
+      "EBITDA YoY": true,
+      "PBT": true,
+      "PBT QoQ": false,
+      "PBT YoY": false,
+      "PAT": true,
+      "PAT QoQ": true,
+      "PAT YoY": false
+    }
+  }
+}
