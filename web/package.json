@@ -9,7 +9,8 @@
     "lint": "eslint",
     "gen:schema": "cd ../backend && ../.venv/bin/python -m finn.models.export_schema > ../web/lib/schema.json",
     "gen:types": "node scripts/gen-types.mjs",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -25,6 +26,7 @@
     "uqr": "0.1.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

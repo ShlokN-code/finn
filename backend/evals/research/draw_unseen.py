@@ -8,6 +8,8 @@ python -m evals.research.draw_unseen [--seed 20261111] [--extra 0]
 - Draw 1 — banks/NBFCs: company name matches FIN_RE (the equity list carries no industry, so the name decides).
 - Draw 2 — outside the Nifty 100 (evals/research/nifty100_2026-11-11.csv, NSE archive) and not matching FIN_RE.
 - `--extra N` draws N more from pool 2 (used when a drawn ticker has no screener page — it is kept, not replaced).
+- `--robust N` (Phase 5 robustness): N tickers uniformly from the whole pool, which then also excludes drivers,
+  research jobs, the held-out classification set and the dev set.
 The seed is fixed and logged so the pick is reproducible and not hand-chosen.
 """
 
@@ -32,6 +34,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=20261111)
     ap.add_argument("--extra", type=int, default=0)
+    ap.add_argument("--robust", type=int, default=0)
     a = ap.parse_args()
     nifty = {r["Symbol"] for r in csv.DictReader(NIFTY100.open())}
     with connect() as c:
@@ -39,7 +42,25 @@ def main() -> None:
         seen = {"TRENT"} | set(DEMO_PORTFOLIO) | set(DEMO)
         for t in ("dossiers", "research_documents", "filings", "results_filings", "prices_daily"):
             seen |= {r["symbol"] for r in c.execute(f"select distinct symbol from public.{t}").fetchall()}  # noqa: S608
+        if a.robust:
+            for t in ("drivers", "research_jobs", "ask_answers"):
+                seen |= {r["symbol"] for r in c.execute(f"select distinct symbol from public.{t}").fetchall()}  # noqa: S608
+    if a.robust:
+        import json
+
+        here = Path(__file__).resolve().parents[1] / "classification"
+        for f in ("labelled.jsonl", "heldout_raw.jsonl"):
+            for line in (here / f).read_text().splitlines():
+                if line.strip():
+                    r = json.loads(line)
+                    seen.add((r.get("row") or r)["symbol"])
     pool = [r for r in rows if r["symbol"] not in seen]
+    if a.robust:
+        picks = random.Random(a.seed).sample(pool, a.robust)
+        print(f"seed={a.seed} pool={len(pool)} excluded={len(seen)} robust={a.robust}")
+        for p in picks:
+            print(f"{p['symbol']} ({p['name']})")
+        return
     fin = [r for r in pool if FIN_RE.search(r["name"] or "")]
     other = [r for r in pool if not FIN_RE.search(r["name"] or "") and r["symbol"] not in nifty]
     rng = random.Random(a.seed)
