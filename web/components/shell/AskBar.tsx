@@ -44,9 +44,9 @@ function unavailableText(a: AskAnswer, symbol: string): string {
   }
 }
 
-// Companies with a dossier and those Ask can answer (GET /research/built), fetched once per page load; the shipped
-// demo dossiers if it fails.
-type Coverage = { built: string[]; askable: string[] };
+// Companies with a dossier and those Ask can answer (GET /research/built), fetched once per page load. If it fails,
+// picks fall back to the shipped demo dossiers and `askable` is unknown (null): the Ask API then decides.
+type Coverage = { built: string[]; askable: string[] | null };
 let coverageOnce: Promise<Coverage> | null = null;
 function loadCoverage(): Promise<Coverage> {
   coverageOnce ??= api
@@ -54,7 +54,7 @@ function loadCoverage(): Promise<Coverage> {
     .then((r) => ({ built: r.symbols, askable: r.askable ?? r.symbols }))
     .catch(() => {
       coverageOnce = null;
-      return { built: [...DEMO_TICKERS], askable: [...DEMO_TICKERS] };
+      return { built: [...DEMO_TICKERS], askable: null };
     });
   return coverageOnce;
 }
@@ -217,7 +217,7 @@ function FindCompanyAsk({
   const [cov, setCov] = useState<Coverage | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
   const [needPick, setNeedPick] = useState(false);
-  const [none, setNone] = useState<string | null>(null); // a company Ask can't answer, shown without an API call
+  const [submitted, setSubmitted] = useState<string | null>(null);
   const [find, setFind] = useState("");
   useEffect(() => {
     let live = true;
@@ -238,7 +238,8 @@ function FindCompanyAsk({
   );
   const mine = useMemo(() => [...ranked, ...(askable ?? DEMO_TICKERS)], [ranked, askable]);
   const named = useMemo(() => (index ? findCompany(q, index, mine) : null), [q, index, mine]);
-  const picks = useMemo(() => (askable ? ranked.filter((s) => askable.includes(s)).slice(0, MAX_PICKS) : []), [ranked, askable]);
+  const pickable = cov ? (askable ?? cov.built) : null;
+  const picks = useMemo(() => (pickable ? ranked.filter((s) => pickable.includes(s)).slice(0, MAX_PICKS) : []), [ranked, pickable]);
   const hits = useMemo(() => (list && find.trim() ? searchSymbols(list, find, 5) : []), [list, find]);
   const nameOf = (s: string) => {
     const n = index?.names.get(s);
@@ -246,18 +247,27 @@ function FindCompanyAsk({
   };
   const canAsk = (s: string) => !askable || askable.includes(s); // unknown coverage → let the API decide
   const target = named?.symbol ?? picked;
+  // "No research for X yet" is derived, not stored at tap time: a company picked (or asked about) before coverage
+  // loaded still gets it the moment coverage says Ask can't answer it.
+  const none = target && !canAsk(target) && (target === picked || target === submitted) ? target : null;
 
   const go = (sym: string, question: string) => {
-    if (!canAsk(sym)) return setNone(sym);
-    setNone(null);
-    if (question.trim().length >= 3) void ask(sym, question);
+    setSubmitted(sym);
+    if (canAsk(sym) && question.trim().length >= 3) void ask(sym, question);
   };
+  // Selecting always shows something: a company Ask can't answer gets "No research for X yet"; one it can is asked
+  // at once when there's a question, else it becomes the pressed chip and the question field takes focus (called
+  // inside the tap, so a phone keeps its keyboard up for the question).
   const choose = (sym: string) => {
     setPicked(sym);
     setNeedPick(false);
     setFind("");
     go(sym, q);
+    if (canAsk(sym) && q.trim().length < 3) document.getElementById("ask-q")?.focus();
   };
+  const chips = picked && !picks.includes(picked) && canAsk(picked) ? [picked, ...picks] : picks;
+  // An earlier answer about another company is cleared from view once a different company is chosen.
+  const showResult = !target || st.kind === "idle" || st.sym === target;
 
   return (
     <>
@@ -271,7 +281,12 @@ function FindCompanyAsk({
         <label className="t-micro text-ink-3" htmlFor="ask-q">
           Your question about a company
         </label>
-        <QuestionField q={q} setQ={setQ} busy={st.kind === "loading"} placeholder="e.g. What did Infosys say about margins?" />
+        <QuestionField
+          q={q}
+          setQ={setQ}
+          busy={st.kind === "loading"}
+          placeholder={target ? `Your question about ${nameOf(target)}` : "e.g. What did Infosys say about margins?"}
+        />
         <p className="t-small mt-1.5 text-ink-3" data-ask-target={target ?? ""}>
           {target
             ? `About ${nameOf(target)} (${target}). `
@@ -287,9 +302,9 @@ function FindCompanyAsk({
           </p>
           {cov === null ? (
             <p className="t-small mt-1 text-ink-3">Loading your companies…</p>
-          ) : picks.length ? (
+          ) : chips.length ? (
             <div className="mt-1.5 flex flex-wrap gap-2">
-              {picks.map((s) => (
+              {chips.map((s) => (
                 <button
                   key={s}
                   type="button"
@@ -325,7 +340,15 @@ function FindCompanyAsk({
             <ul id="ask-company-results" role="listbox" className="mt-1 divide-y divide-rule rounded-xl border border-rule">
               {hits.map(([s, n]) => (
                 <li key={s} role="option" aria-selected={picked === s}>
-                  <button type="button" onClick={() => choose(s)} className="flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left">
+                  <button
+                    type="button"
+                    // Keep focus in the search field while the tap lands: a blur would drop the phone keyboard and
+                    // shift the sheet under the finger. The click (not pointerdown) selects, so scrolling past an
+                    // option doesn't pick it.
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => choose(s)}
+                    className="flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left"
+                  >
                     <span className="min-w-0 flex-1">
                       <span className="block text-[15px] font-semibold">{s}</span>
                       <span className="t-small block truncate text-ink-2">{companyName(n)}</span>
@@ -339,10 +362,15 @@ function FindCompanyAsk({
         </div>
       )}
 
+      {picked && !named && !none && q.trim().length < 3 && st.kind !== "loading" && (
+        <p className="t-small rounded-xl border border-rule px-4 py-3 font-medium" data-ask-selected={picked}>
+          {nameOf(picked)} ({picked}) selected. Type your question above, then tap Ask.
+        </p>
+      )}
       {none ? (
         <NoResearch sym={none} name={nameOf(none)} onLeave={onLeave} />
       ) : (
-        <Result st={st} onRetry={(s, qq) => void ask(s, qq)} nameOf={nameOf} onLeave={onLeave} />
+        showResult && <Result st={st} onRetry={(s, qq) => void ask(s, qq)} nameOf={nameOf} onLeave={onLeave} />
       )}
     </>
   );

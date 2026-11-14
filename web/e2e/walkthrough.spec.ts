@@ -140,6 +140,54 @@ test("Ask on Research home: search any company; a holding without a dossier answ
   await expect(ans.getByText(/call transcripts only/)).toBeVisible();
 });
 
+// Android: a company found with "Search any company" (not one of the 5 picks) was tapped and nothing visible
+// happened. Tap it the way a phone does and check it is selected: a pressed chip, and the question field takes focus.
+test("Ask: tapping a searched company selects it visibly, then asks about it", async ({ page }, info) => {
+  test.skip(info.project.name !== "phone", "touch taps");
+  await openBrief(page);
+  await page.locator("[data-ask-bar] button").click();
+  await page.locator("#ask-company").tap();
+  await page.keyboard.type("tata steel");
+  const option = '#ask-company-results [role="option"]:has-text("TATASTEEL") button';
+  await expect(page.locator(option)).toBeVisible();
+  await page.tap(option);
+  await expect(page.locator("[data-ask-picks]").getByRole("button", { name: "TATASTEEL", pressed: true })).toBeVisible();
+  await expect(page.locator('[data-ask-target="TATASTEEL"]')).toBeVisible();
+  await expect(page.locator('[data-ask-selected="TATASTEEL"]')).toBeVisible();
+  await expect(page.locator("#ask-q")).toBeFocused();
+  // With a question, Ask answers about the selected company (from its call transcripts: it has no dossier).
+  await page.keyboard.type("What did management say about volumes?");
+  await page.getByRole("button", { name: "Ask", exact: true }).tap();
+  const ans = page.locator("[data-ask-state]");
+  await expect(ans).toBeVisible({ timeout: 60_000 });
+  expect(["answered", "not_found"]).toContain(await ans.getAttribute("data-ask-state"));
+});
+
+test("Ask: tapping a searched company Ask can't answer says so", async ({ page }, info) => {
+  test.skip(info.project.name !== "phone", "touch taps");
+  // The tap lands before the list of askable companies arrives: the answer must still appear when it does.
+  await page.route("**/api/research/built", async (r) => {
+    await new Promise((res) => setTimeout(res, 2500));
+    await r.continue();
+  });
+  await openBrief(page);
+  await page.locator("[data-ask-bar] button").click();
+  await page.locator("#ask-company").tap();
+  await page.keyboard.type("itc");
+  await page.tap('#ask-company-results [role="option"] button:has(span:text-is("ITC"))');
+  await expect(page.locator('[data-ask-state="no_research"]').getByText("No research for ITC yet")).toBeVisible();
+});
+
+test("Research search: tapping a suggestion opens the company", async ({ page }, info) => {
+  test.skip(info.project.name !== "phone", "touch taps");
+  await page.goto("/research");
+  await skipTour(page);
+  await page.getByRole("combobox").tap();
+  await page.keyboard.type("tata steel");
+  await page.tap('#ticker-results [role="option"]:has-text("TATASTEEL") button');
+  await expect(page).toHaveURL(/\/research\/TATASTEEL$/);
+});
+
 // Android Chrome closed the keyboard after every key (the sheet re-took focus on each re-render). Type one key at a
 // time, as a phone keyboard does, and check the field still has focus after each one.
 async function typeKeepingFocus(page: Page, field: Locator, text: string) {
