@@ -4,6 +4,86 @@ Short records of key decisions: context, decision, alternatives considered, why.
 
 ---
 
+## 2026-11-09 · Product decisions from the spec (PRODUCT §12)
+These were made with the spec, before any code. They are recorded here so every §12 decision has an entry. Others have their own entries below:
+- "XBRL first": see "Results from three XBRL filings".
+- Model routing: see "Cheap LLM tier" and "LLM budget for research".
+- No login: see "Holdings: browser by default".
+
+### PWA over a native app
+- **Context:** the evaluator's first contact is a link, probably opened on a laptop, with about 5 minutes to spend. A native build needs an install: TestFlight also needs an invite, and Expo Go needs its own app.
+- **Decision:** a mobile-first Next.js PWA on Vercel.
+  - Laptops get a landing page with a live phone preview and a QR. Phones go straight to the Brief.
+  - The manifest, icons and an offline copy of the latest Brief come with it (`8252712`).
+  - Nothing needs installing.
+- **Alternatives:**
+  - React Native / Expo: an install for the evaluator, and a second build pipeline.
+  - TestFlight: invites, review delays, iPhone only.
+- **Why:** one codebase, and every fix is live on the next push, including after submission.
+
+### Push through Telegram; web push not offered
+- **Context:** the spec planned both Telegram and PWA web push. Web push has two problems on the phones evaluators carry:
+  - On iPhone it works only after "Add to Home Screen" (iOS 16.4+), which most evaluators won't do.
+  - Several Android brands popular in India (Xiaomi, Vivo, Oppo) delay web notifications through battery optimisation.
+  
+  WhatsApp would suit Indian users best, but business messaging needs Meta business verification and template approval, which isn't possible in six days.
+- **Decision:** Telegram is the push channel. It behaves the same on every phone, with no install or permission prompt.
+  - "Connect Telegram" sends a test alert at once.
+  - Messages carry Open in FINN and Snooze buttons.
+  
+  Web push was cut in the Phase 5 plan (12 Nov, "Phase 5 plan: amendments") and is listed in the README under deliberately left out. The PWA stays, for zero-install access.
+- **Alternatives:**
+  - Web push as a second channel: a permission flow plus service-worker subscriptions that would reach few evaluators.
+  - WhatsApp: needs approval.
+- **Why:** an alert has to arrive on the evaluator's phone the first time they try it.
+
+### "The LLM reads, code calculates"
+- **Context:** models read filings well, but arithmetic they can't show is unauditable. Every number on screen must be re-derivable from its source.
+- **Decision:** models only extract (with a verbatim quote and page) or write language. Every number FINN shows is computed or checked in Python:
+  - **Results:** EBITDA, margins, QoQ and YoY come from XBRL facts. A results card's impact tag is decided in code.
+  - **Promise Ledger:** code decides numeric kept/missed, goalposts moved on numeric targets, quietly dropped, and credibility. The model judges only qualitative promises and may flag a revision.
+  - **Summaries:** REDUCE writes `{F#}` placeholders that code fills in. A typed number survives only if a cited fact prints it.
+  - **Ask:** an answer is withheld if it contains a number not printed in a cited fact or quote.
+  - **Code only:** ranking, est. time saved, the status dot and price/volume signals.
+- **Alternatives:** let the model compute and cite. Unauditable; in testing, the model called "utilisation 85.8%" kept against a 83–85% target.
+- **Why:** a reader can re-derive every figure from its inputs and its source.
+
+### Long context for concalls, BM25 for lookups, no vector database
+- **Context:** a concall transcript is 13–17K tokens, which Flash-Lite takes whole. Annual reports run to hundreds of pages.
+- **Decision:**
+  - MAP reads each transcript whole in one cheap call. It splits into halves only when the answer is truncated.
+  - Lookups across documents use BM25 over stored page text (`finn/research/bm25.py`): JUDGE's evidence from later calls, and Ask's passages.
+  - No embeddings and no vector store.
+  - Annual-report retrieval was planned for red flags. Red flags were cut (Phase 5), so it isn't built.
+- **Alternatives:**
+  - Chunk and embed transcripts: loses guidance context that spans pages, and adds a provider and an index to keep fresh.
+  - Whole transcripts for every Ask question: 15K+ tokens per question.
+- **Why:** fewer moving parts, verbatim quotes keep their page numbers, and the cache key is the document's hash.
+
+### Visible feedback rules, not a learned ranking
+- **Context:** one user, a handful of swipes a day, and every position must be explainable ("Why is this #1?").
+- **Decision:**
+  - "Not useful" multiplies a weight by 0.8 at a scope the user picks; "Useful" multiplies it by 1.25. Weights are bounded, and critical categories have a floor.
+  - Every adjustment is a visible `WeightRule` on the Rules screen, with Reset.
+  - Ranking is one formula in Python (see "Ranking constants").
+- **Alternatives:** learning-to-rank or a bandit. They need data FINN doesn't have, and they can't be explained or undone line by line.
+- **Why:** the user can see, and reverse, everything FINN has learned.
+
+### "What you're watching" is suggested from disclosures
+- **Context:** most users never fill in a blank "thesis" box.
+- **Decision:**
+  - FINN suggests up to 3 drivers per holding from the company's own transcripts, scored in code (2 × guidance mentions + analyst questions). The user confirms with one tap.
+  - Only confirmed drivers boost ranking: ×1.5, strong matches only, named in "Why #N".
+  - The optional Level-2 thesis line exists in the contract but has no editor.
+- **Alternatives:** an up-front thesis form; keyword matching on the user's own text.
+- **Why:** no typing, and each suggestion carries its citations.
+
+### "Brief", not "Today"
+- **Decision:** the main tab is "Brief". Its header names the actual window: since your last visit (with the time), 24h, 3d, 7d or custom.
+- **Why:** the window is configurable, and "Today" would be wrong after a weekend or a week away.
+
+---
+
 ## 2026-11-10 · Python 3.12 venv from the Anaconda interpreter
 - **Context:** The only 3.12 on the dev machine is Anaconda's; the system default is 3.13. Must not use the Anaconda base env.
 - **Decision:** `.venv/` at repo root created with `/opt/anaconda3/bin/python3.12 -m venv`. A venv carries none of base's packages. Render pins 3.12 via `backend/.python-version` and `PYTHON_VERSION`.
@@ -628,3 +708,11 @@ Short records of key decisions: context, decision, alternatives considered, why.
 - **Product owner:** the held-out set is labelled by a fresh agent that never saw this session, the classifier, the rules or the dev set. It got only the category definitions, the material-over-routine rule, and each filing's subject, company, date and PDF link, and read every PDF itself. Labels were committed (`5e015db`) before the classifier ran. The product owner then reviewed every disagreement: 4 confirmed, 2 corrected to routine (a no-deviation Reg 32 statement and a monitoring-agency report are periodic compliance, material only if they report a deviation), recorded as "corrected by reviewer after review".
 - **Measured on frozen rules (before → after review):** rules only 66.7 % → 80.0 % of decided (50 % → 60 % overall); full ladder 70 % → 80 %. Dev: 96.5 % / 100 %.
 - **Failure mode:** subjects that don't describe the attached PDF (Triveni "guarantees", Page Industries "dividend", both actually results outcomes; R M Drip's "financial performance" press release). Checked on NSE: both companies also filed the standard results outcome, which the rules classify correctly, so the results card isn't lost. A company whose only results filing has a misleading subject would get no card until a later outcome; this never happened in our 15 tracked threads. Next step (PLAN): read the first page when the attachment name or a same-day results board meeting suggests results.
+
+## 2026-11-14 · Sources open the original document; no re-drawn snippet image
+- **Context (Phase 6):** we considered adding an image of each cited passage to the provenance sheet: the quote cropped from the PDF page and highlighted.
+- **Decision:** dropped. A picture FINN draws is one more thing FINN made, so it adds no trust over the company's own filing. The sheet keeps:
+  - the verbatim quote and its page;
+  - an Open button that goes to the original document at that page (`url#page=N`), labelled with the page because mobile PDF viewers often ignore `#page`.
+- **Alternatives:** server-rendered crops (storage, and still a copy); OCR overlays (a second reading of the page that could disagree with the first).
+- **Next step:** an in-app viewer for the original filing that opens at the page with the figure highlighted on the document itself.
