@@ -93,7 +93,7 @@ def summarize(name: str, inp: dict) -> str | None:
     return f"**{short}**"
 
 
-def convert(src: Path, out_path: Path, until_turn: int | None) -> tuple[str, int, str]:
+def convert(src: Path, out_path: Path, until_turn: int | None, from_turn: int | None = None) -> tuple[str, int, str]:
     records = [json.loads(line) for line in src.open()]
     errors = {
         b["tool_use_id"]
@@ -110,6 +110,7 @@ def convert(src: Path, out_path: Path, until_turn: int | None) -> tuple[str, int
     recap: list[str] = []
     turn = 0
     first_ts = ""
+    start = 0  # index in `out` where the log begins (--from-turn)
 
     def flush_tools() -> None:
         if tools:
@@ -130,8 +131,18 @@ def convert(src: Path, out_path: Path, until_turn: int | None) -> tuple[str, int
             flush_recap()
             out += ["", "*(The session's context was compacted here; the conversation continues.)*", ""]
             continue
+        user_text = None
         if kind == "user" and isinstance(content, str):
-            text = clean_user(content)
+            user_text = clean_user(content)
+        elif kind == "user" and isinstance(content, list) and not any(b.get("type") == "tool_result" for b in content):
+            # A message sent with an image: its text blocks plus a marker (the image itself isn't kept).
+            texts = [b.get("text", "") for b in content if b.get("type") == "text" and not b.get("text", "").startswith("[Image")]
+            images = sum(1 for b in content if b.get("type") == "image")
+            user_text = clean_user("\n".join(texts))
+            if images:
+                user_text = (user_text + "\n\n" if user_text else "") + f"*[{images} image{'s' if images > 1 else ''} attached]*"
+        if user_text is not None:
+            text = user_text
             if not text:
                 continue
             flush_recap()
@@ -139,6 +150,8 @@ def convert(src: Path, out_path: Path, until_turn: int | None) -> tuple[str, int
                 break
             turn += 1
             ts = d.get("timestamp", "")[:16].replace("T", " ")
+            if from_turn and turn == from_turn:
+                start, first_ts = len(out), ts
             first_ts = first_ts or ts
             quoted = [("> " + ln) if ln else ">" for ln in text.splitlines()]
             out += ["", "---", "", f"## {turn}. You  <sub>{ts} UTC</sub>", "", *quoted, "", "### Claude", ""]
@@ -175,7 +188,7 @@ def convert(src: Path, out_path: Path, until_turn: int | None) -> tuple[str, int
                 if s:
                     tools.append(s + (" ✗" if b["id"] in errors else ""))
     flush_recap()
-    body = re.sub(r"\n{3,}", "\n\n", "\n".join(out)).rstrip()
+    body = re.sub(r"\n{3,}", "\n\n", "\n".join(out[start:])).rstrip()
     return body, turn, first_ts
 
 
@@ -186,10 +199,12 @@ def main() -> None:
     ap.add_argument("--summary", default="", help="one-paragraph outcome shown under the header")
     ap.add_argument("--transcript", type=Path, help="session .jsonl (default: newest for this repo)")
     ap.add_argument("--until-turn", type=int, help="stop after the Nth user message")
+    ap.add_argument("--from-turn", type=int, help="start at the Nth user message (a forked session's own part)")
+    ap.add_argument("--note", default="", help="extra line under the header, e.g. where a forked session's history is")
     args = ap.parse_args()
 
     src = args.transcript or default_transcript()
-    body, turns, first_ts = convert(src, args.out, args.until_turn)
+    body, turns, first_ts = convert(src, args.out, args.until_turn, args.from_turn)
     date = datetime.strptime(first_ts, "%Y-%m-%d %H:%M").strftime("%-d %b %Y") if first_ts else "?"
     header = f"""# {args.title}
 
@@ -202,6 +217,8 @@ that returned an error. Raw tool output and internal reasoning are omitted.
 - "Recap" lines are the end-of-turn summary shown in the app.
 - The transcript does not always store short mid-turn progress notes; each turn's main reply is present.
 """
+    if args.note:
+        header += f"\n{args.note}\n"
     if args.summary:
         header += f"\n**Outcome:** {args.summary}\n"
     text = header + body + "\n"
