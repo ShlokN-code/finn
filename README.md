@@ -34,9 +34,11 @@ The API runs on Render's free tier, which can sleep. The first screen never wait
 <tr>
 <td align="center"><img src="docs/screenshots/ledger.png" width="230" alt="Promise Ledger for INFY"><br><sub><b>Promise Ledger:</b> management's guidance vs what was delivered</sub></td>
 <td align="center"><img src="docs/screenshots/ledger-provenance.png" width="230" alt="Provenance sheet of a ledger figure"><br><sub><b>Every verdict cites the calls,</b> with the verbatim quote and page</sub></td>
-<td align="center"><sub>Screenshots: deployed site, 375 px, demo portfolio, 14 Nov 2026.</sub></td>
+<td align="center"><img src="docs/screenshots/telegram.png" width="230" alt="Telegram test alert"><br><sub><b>Telegram:</b> Test alert after /start: a cross-checked results card with Open in FINN and Snooze</sub></td>
 </tr>
 </table>
+
+<sub>App screenshots: the deployed site at 375 px with the demo portfolio, 14 Nov 2026. Telegram: the product owner's phone.</sub>
 
 ## How it works
 
