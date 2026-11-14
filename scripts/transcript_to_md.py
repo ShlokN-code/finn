@@ -58,6 +58,8 @@ def rel(text: str) -> str:
 def clean_user(s: str) -> str:
     s = re.sub(r"<system-reminder>.*?</system-reminder>", "", s, flags=re.DOTALL)
     s = re.sub(r"</?pasted_content[^>]*>", "", s)
+    if s.lstrip().startswith(("<local-command", "<command-name>")):
+        return ""  # slash commands like /export, run outside the conversation
     return s.strip()
 
 
@@ -124,6 +126,10 @@ def convert(src: Path, out_path: Path, until_turn: int | None) -> tuple[str, int
         kind = d.get("type")
         msg = d.get("message") or {}
         content = msg.get("content")
+        if kind == "user" and d.get("isCompactSummary"):
+            flush_recap()
+            out += ["", "*(The session's context was compacted here; the conversation continues.)*", ""]
+            continue
         if kind == "user" and isinstance(content, str):
             text = clean_user(content)
             if not text:
