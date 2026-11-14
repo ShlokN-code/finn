@@ -288,6 +288,10 @@ export interface AskAnswer {
    */
   answer: Claim | null;
   /**
+   * What the answer was read from: the dossier's facts and documents, or (no dossier yet) only the company's call transcripts/decks already read
+   */
+  basis: ("dossier" | "transcripts") | null;
+  /**
    * Served from the answer cache (no model call, not counted)
    */
   cached: boolean;

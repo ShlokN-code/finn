@@ -303,6 +303,23 @@
           "default": null,
           "description": "Status 'not_found' \u2192 'Not found in sources'"
         },
+        "basis": {
+          "anyOf": [
+            {
+              "enum": [
+                "dossier",
+                "transcripts"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What the answer was read from: the dossier's facts and documents, or (no dossier yet) only the company's call transcripts/decks already read",
+          "title": "Basis"
+        },
         "cached": {
           "default": false,
           "description": "Served from the answer cache (no model call, not counted)",
@@ -398,7 +415,8 @@
         "model",
         "reason",
         "cached",
-        "remaining_today"
+        "remaining_today",
+        "basis"
       ],
       "title": "AskAnswer",
       "type": "object"

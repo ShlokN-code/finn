@@ -9,7 +9,12 @@ sentences, citing fact ids and verbatim passage quotes. Code then:
 - refuses any number in the answer that isn't printed in a cited fact or quote (the model reads, code calculates);
 - without a surviving citation, answers "Not found in sources".
 
-Cost guards: answers are cached per (symbol, normalised question, dossier version); a visitor (salted daily hash of
+Without a dossier yet: a company whose transcripts were already read (a drivers build reads a holding's latest
+3 calls) is answered from those passages alone, with no facts, citing them; the answer says so (`basis`). Nothing
+is built and no model is called beyond the Ask call itself. A company with neither gets `no_dossier`.
+
+Cost guards: answers are cached per (symbol, normalised question, dossier version; for transcript-only answers
+minus the number of documents read, so a newly read call asks again); a visitor (salted daily hash of
 the client IP) gets ASK_VISITOR_DAILY new answers per IST day (cache hits are free); the router's `research.ask`
 lane caps all visitors together (RESEARCH_ASK_RPD).
 """
@@ -97,12 +102,36 @@ class Source:
     citation_base: dict  # source_type, url, title, retrieved_at
 
 
+_DOCS = (
+    "from public.research_documents where symbol = %s and status = 'read' and sha256 is not null and kind in "
+    "('transcript', 'investor_presentation')"
+)
+
+
+def doc_count(conn, symbol: str) -> int:
+    """Read transcripts/decks stored for the company (at most MAX_DOCS are used)."""
+    return min(MAX_DOCS, conn.execute(f"select count(*) as n {_DOCS}", (symbol,)).fetchone()["n"])
+
+
+def askable_symbols(conn) -> list[str]:
+    """Companies Ask can answer: a readable dossier, or at least one read transcript/deck whose text is stored."""
+    rows = conn.execute(
+        "select d.symbol from public.research_documents d join public.research_doc_text t on t.sha256 = d.sha256 "
+        "where d.status = 'read' and d.kind in ('transcript', 'investor_presentation') group by d.symbol"
+    ).fetchall()
+    return sorted({r["symbol"] for r in rows} | set(rstore.built_symbols(conn)))
+
+
+def _name(conn, symbol: str) -> str:
+    row = conn.execute("select name from public.securities where symbol = %s", (symbol,)).fetchone()
+    return row["name"] if row else symbol
+
+
 def load_sources(conn, symbol: str) -> list[tuple[Passage, dict]]:
     """Every passage of the company's read transcripts and decks (newest first, at most MAX_DOCS documents)."""
     rows = conn.execute(
-        "select url, kind, title, period_label, call_date, sha256, fetched_at from public.research_documents "
-        "where symbol = %s and status = 'read' and sha256 is not null and kind in ('transcript', "
-        "'investor_presentation') order by call_date desc nulls last, fetched_at desc limit %s",
+        f"select url, kind, title, period_label, call_date, sha256, fetched_at {_DOCS} "
+        "order by call_date desc nulls last, fetched_at desc limit %s",
         (symbol, MAX_DOCS),
     ).fetchall()
     out = []
@@ -130,13 +159,21 @@ def retrieve(question: str, sources: list[tuple[Passage, dict]], k: int = N_PASS
     return [Source(f"P{i}", p, meta[id(p)]) for i, (_, p) in enumerate(hits, 1)]
 
 
-def build_request(d: Dossier, question: str, fs: list[Fact], srcs: list[Source]) -> LLMRequest:
-    head = f"Company: {d.name} ({d.symbol}); figures are {d.basis or 'reported'}.\n\nFacts:\n"
+def build_request(
+    d: Dossier | None, question: str, fs: list[Fact], srcs: list[Source], symbol: str = "", name: str = ""
+) -> LLMRequest:
+    """`d` None → a transcript-only question (no facts): the company is named from `symbol` / `name`."""
+    symbol = d.symbol if d else symbol
+    head = (
+        f"Company: {d.name} ({d.symbol}); figures are {d.basis or 'reported'}.\n\nFacts:\n"
+        if d
+        else f"Company: {name or symbol} ({symbol}).\n\nFacts:\n"
+    )
     fact_lines = "\n".join(f.line for f in fs[:MAX_FACTS]) or "(none)"
     pas = "\n\n".join(f"{s.pid} [{s.citation_base['title']}, page {s.passage.page}]: {s.passage.text}" for s in srcs)
     prompt = f"{head}{fact_lines}\n\nPassages:\n{pas or '(none)'}\n\nQuestion: {question.strip()}"
     return LLMRequest(purpose=PURPOSE, system=SYSTEM, prompt=prompt, schema=SCHEMA, max_output_tokens=1024,
-                      timeout_s=45, tags={"symbol": d.symbol, "kind": "ask"})  # fmt: skip
+                      timeout_s=45, tags={"symbol": symbol, "kind": "ask"})  # fmt: skip
 
 
 # --- checking the model's answer ---------------------------------------------------------------------------------
@@ -227,9 +264,11 @@ def answer(conn, symbol: str, question: str, client_ip: str | None = None, route
     question = " ".join(question.split())
     row = rstore.get_dossier_row(conn, symbol)
     d = rstore.load_dossier(row)
-    if d is None:
+    n_docs = 0 if d else doc_count(conn, symbol)
+    if d is None and not n_docs:
         return AskAnswer(status="unavailable", question=question, reason="no_dossier")
-    version = int(row.get("version") or 1)
+    version = int(row.get("version") or 1) if d else -n_docs
+    basis = "dossier" if d else "transcripts"
     qn = normalise_question(question)
     hit = _cached(conn, symbol, qn, version)
     visitor = visitor_id(client_ip)
@@ -241,11 +280,12 @@ def answer(conn, symbol: str, question: str, client_ip: str | None = None, route
         return AskAnswer(status="unavailable", question=question, reason="visitor_cap",
                          resume_after=_next_ist_midnight(), remaining_today=0)  # fmt: skip
 
-    fs = facts(d, [])
+    fs = facts(d, []) if d else []
     srcs = retrieve(question, load_sources(conn, symbol))
     if not fs and not srcs:
-        return AskAnswer(status="not_found", question=question, reason="no_sources", remaining_today=left)
-    req = build_request(d, question, fs, srcs)
+        return AskAnswer(status="not_found", question=question, reason="no_sources", remaining_today=left,
+                         basis=basis)  # fmt: skip
+    req = build_request(d, question, fs, srcs, symbol=symbol, name=_name(conn, symbol) if d is None else "")
     router = router or Router.default(PostgresLLMLog(conn))
     try:
         res = router.run("cheap", req)
@@ -258,7 +298,7 @@ def answer(conn, symbol: str, question: str, client_ip: str | None = None, route
         left = max(0, visitor_cap() - _count(conn, visitor))
     claim, figures, reason = check(res.data, question, fs, srcs)
     a = AskAnswer(status="answered" if claim else "not_found", question=question, answer=claim, figures=figures,
-                  model=res.model, reason=reason, remaining_today=left)  # fmt: skip
+                  model=res.model, reason=reason, remaining_today=left, basis=basis)  # fmt: skip
     _store(conn, symbol, qn, version, a)
     conn.commit()
     return a

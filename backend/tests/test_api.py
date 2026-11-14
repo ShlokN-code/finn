@@ -43,7 +43,10 @@ def test_research_built_lists_dossier_symbols(monkeypatch):
         yield object()
 
     monkeypatch.setattr(research, "connect", fake_connect)
+    from finn.research import ask
+
     monkeypatch.setattr(research.store, "built_symbols", lambda conn: ["HDFCBANK", "INFY"])
+    monkeypatch.setattr(ask, "askable_symbols", lambda conn: ["HAL", "HDFCBANK", "INFY"])
     r = client.get("/research/built")
     assert r.status_code == 200
-    assert r.json() == {"symbols": ["HDFCBANK", "INFY"]}
+    assert r.json() == {"symbols": ["HDFCBANK", "INFY"], "askable": ["HAL", "HDFCBANK", "INFY"]}

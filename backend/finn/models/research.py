@@ -346,3 +346,8 @@ class AskAnswer(Model):
     ) = Field(None, description="Why the answer is unavailable / not found (plain words in the UI)")
     cached: bool = Field(False, description="Served from the answer cache (no model call, not counted)")
     remaining_today: int | None = Field(None, description="Questions this visitor has left today (IST)")
+    basis: Literal["dossier", "transcripts"] | None = Field(
+        None,
+        description="What the answer was read from: the dossier's facts and documents, or (no dossier yet) only the "
+        "company's call transcripts/decks already read",
+    )

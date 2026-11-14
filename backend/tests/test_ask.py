@@ -52,3 +52,62 @@ def test_normalise_and_visitor():
     a = visitor_id("1.2.3.4", date(2026, 11, 12))
     assert a == visitor_id("1.2.3.4", date(2026, 11, 12)) and a != visitor_id("1.2.3.4", date(2026, 11, 13))
     assert "1.2.3.4" not in a and len(a) == 20
+
+
+class _Conn:
+    def commit(self):
+        pass
+
+
+class _Res:
+    cached, model = False, "gemini-flash-lite"
+    quote = "Management said order inflows were strong this quarter across defence"
+    data = {"found": True, "answer": "Management said order inflows were strong this quarter.",
+            "passages": [{"id": "P1", "quote": quote}]}  # fmt: skip
+
+
+class _Router:
+    def __init__(self):
+        self.reqs = []
+
+    def run(self, tier, req):
+        self.reqs.append((tier, req))
+        return _Res()
+
+
+def _no_dossier(monkeypatch, n_docs: int, keys: list):
+    from finn.research import ask
+
+    monkeypatch.setattr(ask.rstore, "get_dossier_row", lambda conn, s: None)
+    monkeypatch.setattr(ask, "doc_count", lambda conn, s: n_docs)
+    monkeypatch.setattr(ask, "_cached", lambda conn, s, qn, v: keys.append(v))  # append → None: a cache miss
+    monkeypatch.setattr(ask, "used_today", lambda conn, v: 0)
+    monkeypatch.setattr(ask, "_count", lambda conn, v: 1)
+    monkeypatch.setattr(ask, "_store", lambda conn, s, qn, v, a: keys.append(("stored", v)))
+    monkeypatch.setattr(ask, "_name", lambda conn, s: "Hindustan Aeronautics Limited")
+    text = "Management said order inflows were strong this quarter across defence platforms and exports, they added."
+    meta = {"source_type": "concall_transcript", "url": "https://bse/hal-q2.pdf",
+            "title": "Q2 FY27 earnings call transcript", "retrieved_at": NOW}  # fmt: skip
+    monkeypatch.setattr(ask, "load_sources", lambda conn, s: [(Passage("u", 3, text), meta)])
+    return ask
+
+
+def test_no_dossier_answers_from_transcripts_already_read(monkeypatch):
+    keys: list = []
+    ask = _no_dossier(monkeypatch, 3, keys)
+    router = _Router()
+    a = ask.answer(_Conn(), "HAL", "What did management say about order inflows?", router=router)
+    assert a.status == "answered" and a.basis == "transcripts"
+    assert a.answer.citations[0].url == "https://bse/hal-q2.pdf" and a.answer.citations[0].page == 3
+    tier, req = router.reqs[0]
+    assert tier == "cheap" and len(router.reqs) == 1  # the Ask call is the only model call
+    assert "Company: Hindustan Aeronautics Limited (HAL)" in req.prompt and "Facts:\n(none)" in req.prompt
+    assert keys == [-3, ("stored", -3)]  # cached apart from dossier answers, keyed by documents read
+
+
+def test_no_dossier_and_no_transcripts_is_no_dossier(monkeypatch):
+    keys: list = []
+    ask = _no_dossier(monkeypatch, 0, keys)
+    router = _Router()
+    a = ask.answer(_Conn(), "ITC", "What did management say about cigarettes?", router=router)
+    assert a.status == "unavailable" and a.reason == "no_dossier" and not router.reqs and not keys
