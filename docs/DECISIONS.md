@@ -740,3 +740,13 @@ These were made with the spec, before any code. They are recorded here so every 
   - The MAP extractions aren't fed to Ask. They are quotes from the same transcripts, which BM25 already searches, and reading them would add a second path to check.
 - **Picker:** never every holding. At most 5 picks, the largest holdings Ask can answer, plus "Search any company" on the NSE autocomplete. Picking or naming a company Ask can't answer shows "No research for X yet" with Open in Research, without an API call. Research home's Ask bar now has the same flow. The suggestion chips stay, and there is still no Ask bar on Rules.
 - **Alternatives:** build a dossier on demand when asked (minutes and strong-model quota per question); MAP-only facts as the fact list (another format to check, for little over the raw passages).
+
+## 2026-11-15 · A tap must always show its result
+- **Bug (product owner, Android):** in the Ask picker, a company found with "Search any company" and tapped looked like a no-op. It was selected, but with an empty question the only change was a grey hint line at the top of the sheet, often behind the keyboard. A second, rarer path stayed silent too: a tap landing before the askable list loaded was treated as askable, and nothing updated once the list arrived.
+- **Decision:** every selection shows its result.
+  - A company Ask can answer, with a question typed: it is asked at once.
+  - Without a question: it becomes the pressed chip, the question field takes focus with the company's name, and a line asks for the question.
+  - A company Ask can't answer: "No research for X yet" with Open in Research. This state is derived at render time, so it also appears when the askable list arrives after the tap.
+  - Suggestions keep the search field's focus on tap (`mousedown` preventDefault), so the keyboard doesn't drop and shift the sheet. Selection stays on `click`, so scrolling past an option doesn't pick it.
+- **Alternative:** select on `pointerdown`. Rejected: a finger that starts a scroll on an option would pick it.
+- **Tests:** the walkthrough taps with touch events on the phone profile, including a run where `/research/built` is held back by 2.5 s. Both Ask tap tests fail on the previous code. The Research tab's ticker search was already fine, and it has a tap test now too.

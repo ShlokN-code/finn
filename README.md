@@ -148,9 +148,10 @@ flowchart TB
 The remaining promises are not yet due (FY27 and later) or can't be scored (no date, or a benchmark-relative target).
 
 ### End to end
-- **Walkthrough** (`web/e2e/walkthrough.spec.ts`, run against the deployed site at 375 px and 1280 px): **29/29**, 11 skipped by design (phone-only and manual steps).
+- **Walkthrough** (`web/e2e/walkthrough.spec.ts`, run against the deployed site at 375 px and 1280 px): **32/32**, 14 skipped by design (phone-only and manual steps).
   - Covers: landing + QR + live preview, the Brief, swipe + UNDO, a card's readable source, the ledger's provenance sheet, Ask (on a company; from the Brief, Portfolio and Research home by naming one or picking it; a transcript-only answer), Rules, and the Connect Telegram deep link.
   - On a phone profile, it types into every text field one key at a time and checks the field keeps focus after each key (an Android keyboard bug, fixed 15 Nov).
+  - It also taps search suggestions with touch events and checks each tap visibly selects (an Android "nothing happens" bug, fixed 15 Nov).
   - Its manual step builds a never-seen ticker. It found three general bugs, all fixed (PLAN.md, Phase 5).
 - **Robustness** ([ROBUSTNESS.md](backend/evals/research/ROBUSTNESS.md)): 5 random NSE tickers (logged seed) through the deployed API.
   - 4 built partial dossiers.
