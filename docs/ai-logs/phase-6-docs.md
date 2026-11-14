@@ -9,7 +9,7 @@ AI log of a Claude Code session on FINN (started 14 Nov 2026 UTC). Converted fro
 
 This log was built inside the session it records, so it ends just before the commit that adds it and the warm-up that followed that push.
 
-**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Then Ask without a dossier (answers from call transcripts a drivers build already read, labelled so) and a capped picker (5 largest askable holdings plus search for any company), also on Research home. Walkthrough 29/29 on the deployed site.
+**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Then Ask without a dossier (answers from call transcripts a drivers build already read, labelled so) and a capped picker (5 largest askable holdings plus search for any company), also on Research home. Then a tap fix: a company tapped in the picker's search always shows its result (pressed chip and question focus, an answer, or 'No research for X yet'), with touch-tap tests. Walkthrough 32/32 on the deployed site.
 
 ---
 
@@ -626,4 +626,99 @@ The live walkthrough passes at 29/29. The 11 skips are by design: the 8 phone-on
 Everything is warm, and Render is on `2352f4e`, the last backend commit. Updating the walkthrough numbers in the README and PLAN, then rebuilding the Phase 6 log.
 
 - **Bash** — Update walkthrough numbers; commit docs
+- **Bash** — Rebuild, redact and phase-check the Phase 6 log
+
+The hits are the same descriptive mentions as last time, the 4 turns are all yours, and redaction finds nothing. Checking that turn 4 is this request, then updating the index and pushing.
+
+- **Bash** — Verify turn 4; commit and push log and index
+- **Bash** — Wait for Vercel, then warm the live site
+
+I did both follow-ups, including 1a. They're deployed, the walkthrough passes 29/29 on the live site, and the rebuilt Phase 6 log is pushed. It took about 45 minutes of the hour.
+
+**1a. Ask without a full research build**
+- **Yes, it works.** The drivers builds had already stored the text of the latest 3 call transcripts for 17 of your 18 demo holdings. ITC is the only one with none.
+- **How it answers:** a company with no full research is answered from those transcripts alone, with the same checks as before. Quotes must appear word for word on the cited page, and any number not printed in a cited quote is withheld. The only missing piece is the computed figures a full build adds.
+- **Model use:** the Ask call itself is the only model call; nothing is built on demand.
+- **Labelling:** these answers say "From HAL's call transcripts only: FINN hasn't built its full research yet."
+- **Example:** I asked about HAL's order inflows. The answer quoted its Q4 FY26 call transcript at page 18, and the quote was confirmed in the source.
+- **Coverage:** `/research/built` now also lists the companies Ask can answer, 29 in all, up from 15.
+- **One thing I didn't use:** the earlier model extractions from those calls. They are quotes from the same transcripts the search already reads, so they wouldn't add anything.
+
+**1b. Picker**
+- **Picks:** at most 5, your largest holdings that Ask can answer. For the demo portfolio that's HDFCBANK, RELIANCE, INFY, BAJFINANCE and DIXON.
+- **Search any company:** a field below the picks, using the same autocomplete as Research.
+- **A company Ask can't answer** (picked, searched or named, e.g. ITC) shows "No research for ITC yet" with "Open ITC in Research", straight away.
+
+**2. Research home**
+The Ask bar there now works like Brief and Portfolio: name a company and it answers, otherwise it shows the picker. The suggestion chips stay, and there's still no Ask bar on Rules.
+
+**Checks**
+- **Walkthrough:** 29/29 on the deployed site, 11 skipped by design (the 8 typing tests are phone-only, plus the 3 skipped before).
+  - New tests: the 5-pick limit, searching for ITC, and a transcripts-only answer for HAL.
+  - Typing tests: every typed field keeps focus key by key, including the two new Ask fields.
+- **Render:** `/version` shows 2352f4e, the last commit that touched `backend/`.
+- **Live site:** warmed after the final push; all pages return 200, and the demo Brief went MISS, then HIT.
+- **Phase 6 log:** 4 turns, all yours; the redaction found nothing to change.
+
+**Your cover note:** the walkthrough line should now read **29/29**, not 15/15.
+
+> **Recap:** Ask now answers 29 companies: those with research, plus holdings whose call transcripts were already read, labelled "transcripts only". The picker shows at most 5 holdings plus a company search, on Brief, Portfolio and Research home. Walkthrough 29/29 on the live site, Phase 6 log pushed, site warmed.
+
+---
+
+## 5. You  <sub>2026-11-14 20:13 UTC</sub>
+
+> Bug from my Android phone: in the Ask picker's "Search any company" field, I type a company not in the top 5 (e.g. "tata steel", "idea"), I see it in the suggestions, I tap it, and nothing happens. The top-5 picks work fine.
+>
+> - Find why a tap on a suggestion doesn't select it. Likely the input's blur closes the dropdown before the tap lands, or the sheet treats the dropdown as an outside tap. Fix it (e.g. select on pointerdown with preventDefault, or don't close on blur while a suggestion is being tapped).
+> - Check the same in the Research tab's main ticker search.
+> - Selecting a company must always do something visible: ask the question if the company is askable, otherwise show "No research for X yet → Open in Research". Never a silent no-op.
+> - Add a Playwright test on the phone profile (hasTouch) that types "tata steel" and taps the suggestion with page.tap, and assert it gets selected. Run it against the old code first to prove it catches the bug.
+>
+> Then deploy, run the full walkthrough, warm the site, rebuild the Phase 6 log and push. Time-box: 45 minutes.
+
+### Claude
+
+- **Task list** — Find why tapping a suggestion seems to do nothing; Write tap test; prove it fails on live code; Fix selection: always visible, keep focus; Local tests and build; Deploy, walkthrough on live site, warm; Rebuild Phase 6 log, push, warm
+- **Bash** — Locate selection handlers in AskBar and ResearchHome
+- **Bash** — Add tap tests; run them against live (old) code
+- **Read** `web/test-results/walkthrough-Ask-tapping-a--1143e--visibly-then-asks-about-it-phone/test-failed-1.png`
+- **Bash** — Read the current picker code
+- **Bash** — Make selection visible and keep focus on tap
+
+Typecheck and lint pass. Running the tap tests and all the Ask and typing tests against a local server.
+
+- **preview_start**
+- **Bash** — Run tap, Ask and typing tests locally
+
+The ITC tap test failed. Checking the screenshot.
+
+- **Read** `web/test-results/walkthrough-Ask-tapping-a--264d7-ny-Ask-can-t-answer-says-so-phone/test-failed-1.png`
+- **Bash** — Derive no-research state; unknown coverage defers to API
+- **Bash** — Rerun tests locally, tap tests three times
+
+All pass, and the tap tests passed 3 out of 3 repeats. To pin down the race, the ITC test will also hold back `/research/built` by 2.5 s, so the tap lands before the list arrives.
+
+- **Bash** — Cover the coverage race; rerun; production build
+
+The race test passes twice and the build passes. Next I'm confirming that the race test also fails on the previous `AskBar`.
+
+- **Bash** — Run tap tests on the previous AskBar, then restore
+
+Both tap tests fail on the previous code (no selected chip, and no "No research for ITC yet" after the slow list arrives), and both pass with the fix, which is restored. Committing and deploying.
+
+- **preview_stop**
+- **Bash** — Commit and push the tap fix
+- **Bash** — Wait for Vercel deploy of the tap fix
+- **Bash** — Run full walkthrough against deployed site
+
+One test failed on the live run: "Ask on Research home". It took 6.7 minutes, which points to something hanging rather than a wrong selection. Checking the error.
+
+- **Bash** — Read the failing test's error context
+- **Bash** — Rerun Research-home Ask test; check sleep log
+
+It passes 4 out of 4 (2–3 s each), so the earlier failure was a stall during that run, not the app. The full walkthrough needs a clean pass, so I'm re-running it.
+
+- **Bash** — Rerun the full walkthrough on deployed site
+- **Bash** — Warm site; update and commit docs
 - **Bash** — Rebuild, redact and phase-check the Phase 6 log
