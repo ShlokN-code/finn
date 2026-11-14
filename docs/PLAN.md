@@ -9,6 +9,8 @@ Product scope lives in PRODUCT.md; reasons live in DECISIONS.md. The phase break
 
 ## Research dossier — on-demand NSE data via GitHub Actions dispatch
 
+**Cut in Phase 5: not built.** The README lists it under "Deliberately left out". The items below stay as the design.
+
 Background: NSE returns 403 to Render; GitHub-hosted runners are not blocked (DATA_SOURCES.md). A ticker never seen before gets its NSE-only data (XBRL results, corporate actions, filings) from a dispatched GitHub Actions job. Decision: DECISIONS.md, "On-demand NSE data via workflow dispatch".
 
 - [ ] **Core dossier works without NSE.** Snapshot, trajectory, Promise Ledger, cash quality and balance sheet are built from screener tables + BSE-hosted PDFs (transcripts, annual reports, decks) on Render. NSE data only enriches (XBRL-verified results, corporate actions, filing timeline) and never blocks or delays the core sections.
@@ -226,3 +228,21 @@ Final full walkthrough on `3c512eb`: **15/15**.
   - `run.py --set heldout|dev` reports each separately (rules only and full ladder).
   - **README reports both numbers:** dev set and held-out, side by side.
 
+## Phase 6 — docs and submission (14 Nov 2026)
+
+- [x] AI logs for phases 0–4 — `6dc4a26`
+  - Each file checked to hold one session, its own phase.
+  - Phase 2's export had lost the turns before a context compaction, so its complete log was rebuilt from the transcript.
+  - Redacted before the first commit: a `.env` diff in the Phase 2 export, and home paths.
+  - Indexed in `docs/ai-logs/README.md`.
+- [x] DECISIONS: every PRODUCT §12 decision now has an entry. Added: PWA, Telegram over web push, "LLM reads, code calculates", long context vs RAG, feedback rules, drivers from disclosures, "Brief". Plus the snippet-image decision.
+- [x] README for evaluators. Screenshots are from the deployed site at 375 px with the demo portfolio. It also has the QR, Mermaid architecture, evals, cost, key decisions, known limitations, deliberately left out and next steps.
+- [ ] Telegram screenshot from the product owner's phone → `docs/screenshots/telegram.png`.
+- [ ] Phase 5 and 6 logs exported → check the phase, redact, commit, index.
+- [ ] After the latency probe ends: `backend/evals/README.md` is stale ("needs human review", no held-out set). Fix in one backend commit.
+- [ ] Final checks:
+  - walkthrough 15/15 on the deployed site;
+  - latest smoke run green;
+  - Render `/version` = last backend commit;
+  - warm the live site.
+- [ ] *Later (not for submission):* a reused dossier summary keeps the figures of the day it was written. INFY's snapshot text says market cap ₹4,67,921 Cr (11 Nov) beside today's ₹4,64,586 Cr tile. REDUCE already writes `{F#}` placeholders, so they could be re-filled with the current figures at read time, with no model call.
