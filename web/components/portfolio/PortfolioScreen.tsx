@@ -65,6 +65,7 @@ export function PortfolioScreen() {
     const top = rows[0]?.symbol;
     setAskContext({
       placeholder: "Ask about your holdings…",
+      findCompany: true,
       chips: [
         ...(top ? [{ label: `Research ${top}, your largest holding`, run: () => router.push(`/research/${top}`) }] : []),
         { label: "Which holdings had news this week?", run: () => document.getElementById("holdings")?.scrollIntoView({ behavior: "smooth" }) },

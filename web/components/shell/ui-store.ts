@@ -68,9 +68,10 @@ export const useToast = () => useSyncExternalStore(toast.sub, toast.get, () => n
 // --- Ask bar context -----------------------------------------------------------------------------------------
 
 export type AskChip = { label: string; run: () => void };
-/** `symbol` scopes free-text questions to one company (POST /research/{symbol}/ask); without it Ask explains where
- * it works. */
-export type AskContext = { placeholder: string; chips: AskChip[]; symbol?: string };
+/** `symbol` scopes free-text questions to one company (POST /research/{symbol}/ask). `findCompany` (Brief, Portfolio)
+ * takes free text and asks the company it names, or offers the user's holdings that have research. `hidden` removes
+ * the bar (Rules). Otherwise Ask explains where it works. */
+export type AskContext = { placeholder: string; chips: AskChip[]; symbol?: string; findCompany?: boolean; hidden?: boolean };
 const DEFAULT_ASK: AskContext = { placeholder: "Ask FINN…", chips: [] };
 const ask = createStore<AskContext>(DEFAULT_ASK);
 export const setAskContext = (c: AskContext | null) => ask.set(c ?? DEFAULT_ASK);

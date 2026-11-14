@@ -1,6 +1,6 @@
 // The evaluator's five minutes, scripted (PRODUCT §11), at phone (375 px) and laptop (1280 px) widths, against the
 // deployed site. Read-only except "Connect Telegram", which creates a one-time link that expires in 15 minutes.
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const ASK_Q = "What revenue growth guidance did management give for FY27?"; // cached: no model call
 
@@ -77,7 +77,7 @@ test("Ask about a company: a cited answer (or an honest 'Not found')", async ({ 
   await page.goto("/research/INFY");
   await skipTour(page);
   await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible({ timeout: 60_000 });
-  await page.getByRole("button", { name: /Ask about INFY/ }).click();
+  await page.locator("[data-ask-bar] button").click();
   await page.getByPlaceholder(/What did management say about margins/).fill(ASK_Q);
   await page.getByRole("button", { name: "Ask", exact: true }).click();
   const ans = page.locator("[data-ask-state]");
@@ -86,10 +86,130 @@ test("Ask about a company: a cited answer (or an honest 'Not found')", async ({ 
   await expect(ans.getByText("Sources")).toBeVisible();
 });
 
+test("Ask on the Brief: names a company → its answer, with a way into its research", async ({ page }) => {
+  await openBrief(page);
+  await page.locator("[data-ask-bar] button").click();
+  const field = page.locator("#ask-q");
+  await field.fill("What did Infosys say about deal wins?");
+  await expect(page.locator('[data-ask-target="INFY"]')).toHaveText(/About Infosys \(INFY\)/);
+  // No company named → the holdings with research are offered as picks; picking one asks it (a cached question).
+  await field.fill(ASK_Q);
+  const pick = page.locator("[data-ask-picks]").getByRole("button", { name: "INFY", exact: true });
+  await expect(pick).toBeVisible();
+  await pick.click();
+  const ans = page.locator("[data-ask-state]");
+  await expect(ans).toBeVisible({ timeout: 60_000 });
+  expect(await ans.getAttribute("data-ask-state")).toBe("answered");
+  await page.getByRole("link", { name: /Open INFY research/ }).click();
+  await expect(page).toHaveURL(/\/research\/INFY$/);
+});
+
+test("Ask on Portfolio: a company without research says so and opens it in Research", async ({ page }) => {
+  await page.goto("/portfolio");
+  await skipTour(page);
+  await page.locator("[data-ask-bar] button").click();
+  await page.locator("#ask-q").fill("How is Asian Paints doing on margins?");
+  await expect(page.locator('[data-ask-target="ASIANPAINT"]')).toBeVisible();
+  await page.getByRole("button", { name: "Ask", exact: true }).click();
+  const none = page.locator('[data-ask-state="no_research"]');
+  await expect(none).toBeVisible({ timeout: 60_000 });
+  await expect(none.getByText("No research for Asian Paints yet")).toBeVisible();
+  expect(await none.getByRole("link", { name: "Open ASIANPAINT in Research" }).getAttribute("href")).toBe("/research/ASIANPAINT");
+});
+
+// Android Chrome closed the keyboard after every key (the sheet re-took focus on each re-render). Type one key at a
+// time, as a phone keyboard does, and check the field still has focus after each one.
+async function typeKeepingFocus(page: Page, field: Locator, text: string) {
+  await field.tap();
+  await expect(field).toBeFocused();
+  for (const ch of text) {
+    await page.keyboard.type(ch);
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)))); // let effects run
+    await expect(field, `focus after typing ${JSON.stringify(ch)}`).toBeFocused();
+  }
+}
+
+const TYPING: { name: string; open: (page: Page) => Promise<Locator>; text: string; value: string | RegExp }[] = [
+  {
+    name: "Ask bar on a company",
+    open: async (page) => {
+      await page.goto("/research/INFY");
+      await skipTour(page);
+      await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible({ timeout: 60_000 });
+      await page.locator("[data-ask-bar] button").click();
+      return page.locator("#ask-q");
+    },
+    text: "margin guidance",
+    value: "margin guidance",
+  },
+  {
+    name: "Ask bar on the Brief",
+    open: async (page) => {
+      await openBrief(page);
+      await page.locator("[data-ask-bar] button").click();
+      return page.locator("#ask-q");
+    },
+    text: "Infosys margins",
+    value: "Infosys margins",
+  },
+  {
+    name: "Ask bar on Portfolio",
+    open: async (page) => {
+      await page.goto("/portfolio");
+      await skipTour(page);
+      await page.locator("[data-ask-bar] button").click();
+      return page.locator("#ask-q");
+    },
+    text: "HDFC Bank NIM",
+    value: "HDFC Bank NIM",
+  },
+  {
+    name: "Research ticker search",
+    open: async (page) => {
+      await page.goto("/research");
+      await skipTour(page);
+      return page.getByRole("combobox");
+    },
+    text: "hdfc bank",
+    value: "hdfc bank",
+  },
+  {
+    name: "Portfolio paste/CSV import",
+    open: async (page) => {
+      await page.goto("/portfolio");
+      await skipTour(page);
+      await page.getByRole("button", { name: /Use my holdings|Edit holdings/ }).click();
+      return page.getByRole("dialog").locator("textarea");
+    },
+    text: "INFY 7%\nITC 5%",
+    value: "INFY 7%\nITC 5%",
+  },
+  {
+    name: "Rules quiet hours (time field)",
+    open: async (page) => {
+      await page.goto("/rules");
+      await skipTour(page);
+      return page.getByLabel("Quiet from");
+    },
+    text: "2130",
+    value: /^\d\d:\d\d$/,
+  },
+];
+
+for (const t of TYPING) {
+  test(`typing keeps focus on a phone: ${t.name}`, async ({ page }, info) => {
+    test.skip(info.project.name !== "phone", "phone keyboards only");
+    const field = await t.open(page);
+    await typeKeepingFocus(page, field, t.text);
+    await expect(field).toHaveValue(t.value);
+  });
+}
+
 test("Rules: alert rules and the Telegram entry are on screen", async ({ page }) => {
   await page.goto("/rules");
   await skipTour(page);
   await expect(page.getByRole("heading", { name: "Rules", exact: true })).toBeVisible();
+  await expect(page.locator("[data-ask-bar]")).toHaveCount(0); // no Ask bar on Rules
   await expect(page.getByText("Price move", { exact: true })).toBeVisible();
   await expect(page.getByText("Quiet hours", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /Connect Telegram/ })).toBeVisible();

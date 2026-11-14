@@ -61,6 +61,7 @@ export const api = {
     call<DossierJob & { dossier_version: number }>(`/api/research/jobs/${id}`, { signal }, 20_000),
   fixture: (sym: string) => call<DossierResponse>(`/fixtures/dossier_${sym}.json`, { cache: "default" }),
   symbols: () => call<{ symbols: [string, string][] }>("/api/research/symbols", {}, 58_000),
+  built: () => call<{ symbols: string[] }>("/api/research/built", {}, 58_000),
   drivers: (symbols: string[]) =>
     call<{ drivers: Record<string, DriversSection | null> }>(
       `/api/research/drivers?symbols=${encodeURIComponent(symbols.join(","))}`,

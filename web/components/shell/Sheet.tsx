@@ -1,6 +1,6 @@
 "use client";
 // Bottom sheet: provenance, scope choice, Why #1, hidden drawer, import. Thumb-zone actions, Esc/backdrop closes.
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useEffectEvent, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { useHydrated } from "@/lib/store";
@@ -22,11 +22,17 @@ export function Sheet({
 }) {
   const hydrated = useHydrated();
   const panel = useRef<HTMLDivElement>(null);
+  // Callers pass a fresh `onClose` arrow on every render. If the effect below depended on it, every keystroke in an
+  // input inside the sheet (which re-renders the caller) would re-run it: focus jumped to the panel and back, and
+  // Android closed the keyboard after each key. The effect runs once per open; Escape reads the latest onClose.
+  const closeOnEscape = useEffectEvent((e: KeyboardEvent) => {
+    if (e.key === "Escape") onClose();
+  });
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
     panel.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => closeOnEscape(e);
     window.addEventListener("keydown", onKey);
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -35,7 +41,7 @@ export function Sheet({
       document.body.style.overflow = overflow;
       prev?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
   if (!hydrated || !open) return null;
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center" role="dialog" aria-modal>

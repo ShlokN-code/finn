@@ -114,11 +114,12 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
 
   const onCommit = (card: Card) => (dir: SwipeDir) => (dir === "right" ? markReviewed(card) : markNotUseful(card));
 
-  // Ask bar: three suggestions that jump to the answer on this screen.
+  // Ask bar: free text about a company it names, plus three suggestions that jump to the answer on this screen.
   useEffect(() => {
     const top = visible[0];
     setAskContext({
-      placeholder: "Ask about today's Brief…",
+      placeholder: "Ask about a company or today's Brief…",
+      findCompany: true,
       chips: [
         ...(top
           ? [{ label: `What's behind #1 — ${top.symbol}?`, run: () => { setExpanded((s) => new Set(s).add(top.id)); document.querySelector(`[data-card="${CSS.escape(top.id)}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" }); } }]

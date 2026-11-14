@@ -1,10 +1,15 @@
 "use client";
-// Always-visible Ask bar, scoped to the screen. On a company (ctx.symbol) free text goes to
-// POST /api/research/{symbol}/ask: an answer from that company's dossier facts and its own transcripts/decks,
-// with sources, or "Not found in sources". The 3 suggestions still jump to the section that answers them (no
-// model call). Elsewhere Ask explains that it works inside a company.
-import { useEffect, useRef, useState } from "react";
-import { MessageSquareText, Loader2 } from "lucide-react";
+// Ask bar, scoped to the screen; one endpoint, POST /api/research/{symbol}/ask: an answer from that company's dossier
+// facts and its own transcripts/decks, with sources, or "Not found in sources".
+// - On a company (ctx.symbol) free text goes to that company.
+// - On Brief and Portfolio (ctx.findCompany) free text goes to the company it names ("Infosys" → INFY, matched in
+//   code against the NSE list); naming none offers the user's holdings that have research as picks; a named company
+//   without research gets "No research for X yet" and a way into Research.
+// - Hidden on Rules. Elsewhere Ask explains that it works inside a company.
+// The suggestion chips still jump to the part of the screen that answers them (no model call).
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { MessageSquareText, Loader2, ChevronRight } from "lucide-react";
 import { Sheet } from "./Sheet";
 import { useAskContext } from "./ui-store";
 import { api, FetchError } from "@/lib/client";
@@ -12,12 +17,16 @@ import type { AskAnswer } from "@/lib/types";
 import { ClaimProvenance } from "@/components/cards/Provenance";
 import { FigureValue } from "@/components/cards/FigureValue";
 import { istClock, istDay } from "@/lib/format";
+import { buildIndex, findCompany } from "@/lib/askMatch";
+import { DEMO_TICKERS } from "@/lib/demo";
+import { FALLBACK, useStored, type LocalHolding } from "@/lib/store";
+import { companyName, useSymbols } from "@/lib/symbols";
 
 type State =
   | { kind: "idle" }
-  | { kind: "loading"; q: string }
-  | { kind: "done"; a: AskAnswer }
-  | { kind: "error"; q: string; msg: string };
+  | { kind: "loading"; sym: string; q: string }
+  | { kind: "done"; sym: string; a: AskAnswer }
+  | { kind: "error"; sym: string; q: string; msg: string };
 
 function unavailableText(a: AskAnswer, symbol: string): string {
   const when = a.resume_after ? `${istDay(a.resume_after)}, ${istClock(a.resume_after)} IST` : "later";
@@ -33,6 +42,19 @@ function unavailableText(a: AskAnswer, symbol: string): string {
   }
 }
 
+// Symbols with a dossier, fetched once per page load (GET /research/built); the shipped demo dossiers if it fails.
+let builtOnce: Promise<string[]> | null = null;
+function loadBuilt(): Promise<string[]> {
+  builtOnce ??= api
+    .built()
+    .then((r) => r.symbols)
+    .catch(() => {
+      builtOnce = null;
+      return [...DEMO_TICKERS];
+    });
+  return builtOnce;
+}
+
 export function AskBar() {
   const ctx = useAskContext();
   const [open, setOpen] = useState(false);
@@ -40,25 +62,26 @@ export function AskBar() {
   const [st, setSt] = useState<State>({ kind: "idle" });
   const ctrl = useRef<AbortController | null>(null);
   const symbol = ctx.symbol;
+  const scope = symbol ?? (ctx.findCompany ? "*" : "");
 
-  // A new company (or none) starts a fresh conversation (reset during render, React's pattern for prop changes).
-  const [forSymbol, setForSymbol] = useState(symbol);
-  if (forSymbol !== symbol) {
-    setForSymbol(symbol);
+  // A new screen scope starts a fresh conversation (reset during render, React's pattern for prop changes).
+  const [forScope, setForScope] = useState(scope);
+  if (forScope !== scope) {
+    setForScope(scope);
     setSt({ kind: "idle" });
     setQ("");
   }
-  useEffect(() => () => ctrl.current?.abort(), [symbol]);
+  useEffect(() => () => ctrl.current?.abort(), [scope]);
 
-  const ask = async (question: string) => {
-    if (!symbol || question.trim().length < 3) return;
+  const ask = async (sym: string, question: string) => {
+    if (question.trim().length < 3) return;
     ctrl.current?.abort();
     const c = new AbortController();
     ctrl.current = c;
-    setSt({ kind: "loading", q: question.trim() });
+    setSt({ kind: "loading", sym, q: question.trim() });
     try {
-      const a = await api.ask(symbol, question.trim(), c.signal);
-      if (!c.signal.aborted) setSt({ kind: "done", a });
+      const a = await api.ask(sym, question.trim(), c.signal);
+      if (!c.signal.aborted) setSt({ kind: "done", sym, a });
     } catch (e) {
       if (c.signal.aborted) return;
       const msg =
@@ -67,13 +90,16 @@ export function AskBar() {
           : e instanceof FetchError
             ? e.message
             : "Couldn't reach FINN.";
-      setSt({ kind: "error", q: question.trim(), msg });
+      setSt({ kind: "error", sym, q: question.trim(), msg });
     }
   };
 
+  if (ctx.hidden) return null;
+  const close = () => setOpen(false);
+
   return (
     <>
-      <div className="px-3 pb-2 pt-2">
+      <div className="px-3 pb-2 pt-2" data-ask-bar>
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -83,58 +109,30 @@ export function AskBar() {
           <span className="truncate">{ctx.placeholder}</span>
         </button>
       </div>
-      <Sheet open={open} onClose={() => setOpen(false)} eyebrow="Ask" title={ctx.placeholder.replace(/…$/, "")}>
+      <Sheet open={open} onClose={close} eyebrow="Ask" title={ctx.placeholder.replace(/…$/, "")}>
         <div className="space-y-2">
-          {symbol && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                void ask(q);
-              }}
-            >
-              <label className="t-micro text-ink-3" htmlFor="ask-q">
-                Your question about {symbol}
-              </label>
-              <div className="mt-1 flex gap-2">
-                <input
-                  id="ask-q"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  maxLength={300}
-                  enterKeyHint="send"
-                  placeholder="e.g. What did management say about margins?"
-                  className="h-11 min-w-0 flex-1 rounded-xl border border-rule bg-paper px-3 text-[15px] outline-none focus:border-ink-3"
-                />
-                <button
-                  type="submit"
-                  disabled={q.trim().length < 3 || st.kind === "loading"}
-                  className="h-11 shrink-0 rounded-xl bg-ink px-4 text-[15px] font-medium text-paper disabled:opacity-40"
-                >
-                  Ask
-                </button>
-              </div>
-              <p className="t-small mt-1.5 text-ink-3">
-                Answers only from {symbol}&apos;s filings, transcripts and decks, with sources. No news, no outside
-                knowledge.
-              </p>
-            </form>
-          )}
-
-          {st.kind === "loading" && (
-            <div className="flex items-center gap-2 py-3 text-ink-2" role="status">
-              <Loader2 className="size-4 animate-spin" />
-              <span className="t-small">Reading {symbol}&apos;s transcripts and figures…</span>
-            </div>
-          )}
-          {st.kind === "error" && (
-            <div className="rounded-xl border border-rule px-4 py-3" role="alert">
-              <p className="t-small text-ink-2">{st.msg}</p>
-              <button type="button" className="t-small mt-1 underline" onClick={() => void ask(st.q)}>
-                Retry
-              </button>
-            </div>
-          )}
-          {st.kind === "done" && symbol && <Answer a={st.a} symbol={symbol} />}
+          {symbol ? (
+            <>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void ask(symbol, q);
+                }}
+              >
+                <label className="t-micro text-ink-3" htmlFor="ask-q">
+                  Your question about {symbol}
+                </label>
+                <QuestionField q={q} setQ={setQ} busy={st.kind === "loading"} placeholder="e.g. What did management say about margins?" />
+                <p className="t-small mt-1.5 text-ink-3">
+                  Answers only from {symbol}&apos;s filings, transcripts and decks, with sources. No news, no outside
+                  knowledge.
+                </p>
+              </form>
+              <Result st={st} onRetry={(s, qq) => void ask(s, qq)} />
+            </>
+          ) : ctx.findCompany ? (
+            <FindCompanyAsk q={q} setQ={setQ} st={st} ask={ask} onLeave={close} />
+          ) : null}
 
           {ctx.chips.length > 0 ? (
             <div className="pt-3">
@@ -157,7 +155,8 @@ export function AskBar() {
               </ul>
             </div>
           ) : (
-            !symbol && (
+            !symbol &&
+            !ctx.findCompany && (
               <p className="t-small text-ink-2">
                 Ask works inside a company: open one from Research (or a card&apos;s ticker) and ask about its
                 guidance, margins, debt or what management said.
@@ -166,6 +165,195 @@ export function AskBar() {
           )}
         </div>
       </Sheet>
+    </>
+  );
+}
+
+function QuestionField({ q, setQ, busy, placeholder }: { q: string; setQ: (v: string) => void; busy: boolean; placeholder: string }) {
+  return (
+    <div className="mt-1 flex gap-2">
+      <input
+        id="ask-q"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        maxLength={300}
+        enterKeyHint="send"
+        placeholder={placeholder}
+        className="h-11 min-w-0 flex-1 rounded-xl border border-rule bg-paper px-3 text-[16px] outline-none focus:border-ink-3"
+      />
+      <button
+        type="submit"
+        disabled={q.trim().length < 3 || busy}
+        className="h-11 shrink-0 rounded-xl bg-ink px-4 text-[15px] font-medium text-paper disabled:opacity-40"
+      >
+        Ask
+      </button>
+    </div>
+  );
+}
+
+/** Brief / Portfolio: ask about the company the question names, or one of the user's holdings with research. */
+function FindCompanyAsk({
+  q,
+  setQ,
+  st,
+  ask,
+  onLeave,
+}: {
+  q: string;
+  setQ: (v: string) => void;
+  st: State;
+  ask: (sym: string, q: string) => Promise<void>;
+  onLeave: () => void;
+}) {
+  const list = useSymbols();
+  const holdings = useStored<LocalHolding[]>("holdings", FALLBACK.holdings);
+  const [built, setBuilt] = useState<string[] | null>(null);
+  const [picked, setPicked] = useState<string | null>(null);
+  const [needPick, setNeedPick] = useState(false);
+  useEffect(() => {
+    let live = true;
+    void loadBuilt().then((b) => live && setBuilt(b));
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const index = useMemo(() => (list ? buildIndex(list) : null), [list]);
+  const held = useMemo(() => holdings.map((h) => h.symbol), [holdings]);
+  const mine = useMemo(() => [...held, ...(built ?? DEMO_TICKERS)], [held, built]);
+  const named = useMemo(() => (index ? findCompany(q, index, mine) : null), [q, index, mine]);
+  const picks = useMemo(() => (built ? held.filter((s) => built.includes(s)) : []), [held, built]);
+  const nameOf = (s: string) => {
+    const n = index?.names.get(s);
+    return n ? companyName(n) : s;
+  };
+  const target = named?.symbol ?? picked;
+
+  return (
+    <>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (target) void ask(target, q);
+          else setNeedPick(true);
+        }}
+      >
+        <label className="t-micro text-ink-3" htmlFor="ask-q">
+          Your question about a company
+        </label>
+        <QuestionField q={q} setQ={setQ} busy={st.kind === "loading"} placeholder="e.g. What did Infosys say about margins?" />
+        <p className="t-small mt-1.5 text-ink-3" data-ask-target={named?.symbol ?? ""}>
+          {named
+            ? `About ${nameOf(named.symbol)} (${named.symbol}). `
+            : picked
+              ? `About ${nameOf(picked)} (${picked}). `
+              : "Name a company (e.g. Infosys or INFY), or pick one below. "}
+          Answers only from its filings, transcripts and decks, with sources.
+        </p>
+      </form>
+
+      {!named && (
+        <div className="pt-1" data-ask-picks>
+          <p className={`t-small ${needPick && !picked ? "font-medium text-ink" : "text-ink-2"}`}>
+            {needPick && !picked ? "Which company? Ask about:" : "Ask about:"}
+          </p>
+          {built === null ? (
+            <p className="t-small mt-1 text-ink-3">Loading your companies with research…</p>
+          ) : picks.length ? (
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {picks.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  aria-pressed={picked === s}
+                  onClick={() => {
+                    setPicked(s);
+                    setNeedPick(false);
+                    if (q.trim().length >= 3) void ask(s, q);
+                  }}
+                  className={`h-9 rounded-full border px-3 text-[14px] font-medium ${picked === s ? "border-ink bg-ink text-paper" : "border-rule"}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="t-small mt-1 text-ink-3">
+              None of your holdings has research yet. Name a company, or open one from{" "}
+              <Link href="/research" onClick={onLeave} className="underline underline-offset-4">
+                Research
+              </Link>
+              .
+            </p>
+          )}
+        </div>
+      )}
+
+      <Result st={st} onRetry={(s, qq) => void ask(s, qq)} nameOf={nameOf} onLeave={onLeave} />
+    </>
+  );
+}
+
+function Result({
+  st,
+  onRetry,
+  nameOf,
+  onLeave,
+}: {
+  st: State;
+  onRetry: (sym: string, q: string) => void;
+  nameOf?: (s: string) => string;
+  onLeave?: () => void;
+}) {
+  if (st.kind === "loading")
+    return (
+      <div className="flex items-center gap-2 py-3 text-ink-2" role="status">
+        <Loader2 className="size-4 animate-spin" />
+        <span className="t-small">Reading {st.sym}&apos;s transcripts and figures…</span>
+      </div>
+    );
+  if (st.kind === "error")
+    return (
+      <div className="rounded-xl border border-rule px-4 py-3" role="alert">
+        <p className="t-small text-ink-2">{st.msg}</p>
+        <button type="button" className="t-small mt-1 underline" onClick={() => onRetry(st.sym, st.q)}>
+          Retry
+        </button>
+      </div>
+    );
+  if (st.kind !== "done") return null;
+  // Outside the company's page (Brief, Portfolio): say plainly when there's no research, and link into it.
+  if (nameOf && st.a.status === "unavailable" && st.a.reason === "no_dossier")
+    return (
+      <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="no_research">
+        <p className="t-headline">No research for {nameOf(st.sym)} yet</p>
+        <p className="t-small mt-1 text-ink-2">
+          FINN builds it from {nameOf(st.sym)}&apos;s filings, call transcripts and decks in 2–4 minutes; then you can ask
+          here.
+        </p>
+        <Link
+          href={`/research/${encodeURIComponent(st.sym)}`}
+          onClick={onLeave}
+          className="mt-3 inline-flex h-10 items-center rounded-full bg-ink px-4 text-[14px] font-medium text-paper"
+        >
+          Open {st.sym} in Research
+        </Link>
+      </div>
+    );
+  return (
+    <>
+      <Answer a={st.a} symbol={st.sym} />
+      {nameOf && (
+        <Link
+          href={`/research/${encodeURIComponent(st.sym)}`}
+          onClick={onLeave}
+          className="t-small inline-flex min-h-10 items-center gap-1 font-medium underline underline-offset-4"
+        >
+          Open {st.sym} research
+          <ChevronRight className="size-4" />
+        </Link>
+      )}
     </>
   );
 }

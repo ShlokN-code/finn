@@ -1,6 +1,6 @@
 "use client";
 // Rules: every feedback adjustment is visible with Reset (PRODUCT §5), Telegram connect, and the alert rules.
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { TelegramConnect } from "@/components/telegram/TelegramConnect";
 import { AlertRules } from "./AlertRules";
 import { setAskContext } from "@/components/shell/ui-store";
@@ -26,15 +26,10 @@ function describe(r: WeightRule): string {
 export function RulesScreen() {
   const rules = useStored<WeightRule[]>("rules", FALLBACK.rules);
   const pending = useStored<FeedbackAction[]>("pending", FALLBACK.pending);
-  useEffect(() => {
-    setAskContext({
-      placeholder: "Ask about your rules…",
-      chips: [
-        { label: "How do I see less of something?", run: () => document.getElementById("adjustments")?.scrollIntoView({ behavior: "smooth" }) },
-        { label: "What gets sent to Telegram?", run: () => document.getElementById("telegram")?.scrollIntoView({ behavior: "smooth" }) },
-        { label: "When will alerts stay quiet?", run: () => document.getElementById("alert-rules")?.scrollIntoView({ behavior: "smooth" }) },
-      ],
-    });
+  // No Ask bar on Rules: the settings are on screen, and Ask answers about companies. A layout effect, so the bar
+  // is gone before the first paint after navigating here.
+  useLayoutEffect(() => {
+    setAskContext({ placeholder: "", chips: [], hidden: true });
     return () => setAskContext(null);
   }, []);
   return (

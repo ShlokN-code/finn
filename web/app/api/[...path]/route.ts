@@ -15,6 +15,7 @@ const ALLOWED: [string, RegExp][] = [
   ["DELETE", /^subscriptions\/me$/],
   // Research (Phase 3): builds run in the background on the API, so every call here returns quickly.
   ["GET", /^research\/symbols$/],
+  ["GET", /^research\/built$/], // symbols with a dossier (Ask's picks on Brief/Portfolio)
   ["GET", /^research\/drivers$/],
   ["GET", /^research\/jobs\/\d+$/],
   ["GET", /^research\/[A-Za-z0-9&_-]{1,20}$/],
