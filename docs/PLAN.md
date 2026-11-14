@@ -235,8 +235,8 @@ Final full walkthrough on `3c512eb`: **15/15**.
   - Phase 2's export had lost the turns before a context compaction, so its complete log was rebuilt from the transcript.
   - Redacted before the first commit: a `.env` diff in the Phase 2 export, and home paths.
   - Indexed in `docs/ai-logs/README.md`.
-- [x] DECISIONS: every PRODUCT §12 decision now has an entry. Added: PWA, Telegram over web push, "LLM reads, code calculates", long context vs RAG, feedback rules, drivers from disclosures, "Brief". Plus the snippet-image decision.
-- [x] README for evaluators. Screenshots are from the deployed site at 375 px with the demo portfolio. It also has the QR, Mermaid architecture, evals, cost, key decisions, known limitations, deliberately left out and next steps.
+- [x] DECISIONS: every PRODUCT §12 decision now has an entry. Added: PWA, Telegram over web push, "LLM reads, code calculates", long context vs RAG, feedback rules, drivers from disclosures, "Brief". Plus the snippet-image decision. — `4622bf3`
+- [x] README for evaluators. Screenshots are from the deployed site at 375 px with the demo portfolio. It also has the QR, Mermaid architecture, evals, cost, key decisions, known limitations, deliberately left out and next steps. — `8121cc4`; images and Mermaid checked on GitHub
 - [ ] Telegram screenshot from the product owner's phone → `docs/screenshots/telegram.png`.
 - [ ] Phase 5 and 6 logs exported → check the phase, redact, commit, index.
 - [ ] After the latency probe ends: `backend/evals/README.md` is stale ("needs human review", no held-out set). Fix in one backend commit.
