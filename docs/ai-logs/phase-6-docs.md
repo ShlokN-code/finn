@@ -9,7 +9,7 @@ AI log of a Claude Code session on FINN (started 14 Nov 2026 UTC). Converted fro
 
 This log was built inside the session it records, so it ends just before the commit that adds it and the warm-up that followed that push.
 
-**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Walkthrough 25/25 on the deployed site.
+**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Then Ask without a dossier (answers from call transcripts a drivers build already read, labelled so) and a capped picker (5 largest askable holdings plus search for any company), also on Research home. Walkthrough 29/29 on the deployed site.
 
 ---
 
@@ -501,3 +501,129 @@ Committing the docs locally; they'll go out in the same push as the log. Now the
 - **Bash** — Regenerate draft log and locate boundaries
 - **Bash** — View draft-block edges and log tail
 - **Bash** — Build, redact and phase-check the Phase 6 log
+- **Bash** — Show context of pattern and email hits
+- **Bash** — Check line 201 and log header
+
+Every hit is a mention of a pattern name, not a value. The only email left is ENAM's public address (your prompt, and my earlier note about it). Updating the index line, then committing and pushing.
+
+- **Bash** — Commit and push Phase 6 log, index, converter
+
+Pushed docs-only (`d7a9552`, `81198ae`), with no backend changes since a8f4186. Waiting for Vercel, then the final warm-up.
+
+- **Bash** — Wait for Vercel deploy of the docs push (background)
+- **Bash** — Check Vercel deploy status
+
+The deploy is still pending. I'll warm the site when the watcher reports it finished.
+
+- **Bash** — Wait briefly, then recheck Vercel status ✗
+
+Vercel is still deploying the docs push. I'll warm the site as soon as it reports success.
+
+- **Bash** — Warm live site after final push; confirm versions
+
+Both fixes are live, the walkthrough passes 25/25 on the deployed site, and the rebuilt Phase 6 log is pushed. I used about an hour of your 1.5. The fallback wasn't needed.
+
+**1. Keyboard bug (fixed)**
+- **Cause:** the bottom sheet re-ran its focus code whenever its close handler changed, and most screens pass a new one on every render. So each keystroke moved focus off the field and back, and Android closed the keyboard.
+- **What was affected:** the Ask bar on every tab, and the paste/CSV import box, which is in a sheet too. The Research ticker search and Rules weren't affected. Rules' "number fields" are +/− buttons; its only typed fields are the quiet-hours times.
+- **Fix:** in [Sheet.tsx](../../web/components/shell/Sheet.tsx), the focus code now runs once when the sheet opens. Escape still closes it.
+- **Test:** the walkthrough now types one key at a time on the phone profile and checks the field still has focus after each key. It covers all six typed fields: Ask on a company, on Brief and on Portfolio, ticker search, import, and quiet hours. To prove the test works, I ran it against the old sheet code: it failed on the first key for the three Ask bars and the import box.
+
+**2. Ask bar**
+- **Naming a company:** on Brief and Portfolio, a question that names a company ("Infosys", "HDFC Bank", "INFY") goes to the existing Ask endpoint. The answer comes back with an "Open INFY research" link. The company is matched in code against the NSE list, not by a model.
+- **No company named:** the sheet offers your holdings that have research as "Ask about:" picks. For the demo portfolio that's HDFCBANK, BAJFINANCE and INFY.
+- **A company without research:** you get "No research for Asian Paints yet" and an "Open ASIANPAINT in Research" button. The Ask endpoint answers this before using any model quota.
+- **Suggested chips:** kept. **Rules:** the Ask bar is hidden.
+- **One backend addition:** the picks needed to know which holdings have research. A fixed list would have missed HDFCBANK, so I added a small read-only endpoint, `GET /research/built`, that lists the 15 companies with research. If it fails, the app falls back to the four demo companies.
+
+**Checks**
+- **Walkthrough:** 25 passed, 9 skipped by design (6 phone-only typing tests on laptop, plus the 3 skipped before).
+- **Render:** `/version` shows a8f4186, the last commit that touched `backend/`.
+- **Live site:** warmed after the final push. All pages return 200, and the demo Brief went MISS, then HIT.
+
+**Docs and log**
+- DECISIONS, PLAN and the README walkthrough line (now 25/25) are updated.
+- The Phase 6 log is rebuilt from this session's transcript and passes the phase check. The redaction found nothing to change, and the only email left is ENAM's public address.
+- The cover note, shot list and email are replaced with markers in both places they appeared.
+- The log converter was counting a background-task notice and a tool-call retry as your messages; it now skips them.
+
+**Your cover note** says "Deployed-site walkthrough: 15/15". Change it to **25/25**; the word count stays the same.
+
+> **Recap:** The Android keyboard bug is fixed. Ask on Brief and Portfolio now answers about the company a question names, and Rules has no Ask bar. Deployed and checked: walkthrough 25/25 on the live site, Render on a8f4186, rebuilt Phase 6 log pushed, site warmed. The cover note still says 15/15 and needs the new number.
+
+---
+
+## 4. You  <sub>2026-11-14 19:51 UTC</sub>
+
+> Two Ask-bar follow-ups from testing on my phone.
+>
+> 1. "Ask about" picks show only HDFCBANK, BAJFINANCE and INFY, because Ask needs a full dossier.
+>    a. Coverage: check whether Ask can answer from data the drivers builds already stored (transcript text + MAP extractions for 16 of 18 holdings), without a full dossier. If yes, enable Ask for any company with stored transcript text, citing those documents, with no model calls beyond the Ask call itself. Update /research/built (or add a field) to list askable companies.
+>    b. Design: never list every holding. Show at most 5 picks (the largest askable holdings), plus a "Search any company" field reusing the ticker autocomplete. Picking a company that isn't askable shows "No research for X yet" with "Open in Research".
+> 2. Research home (no company open): the Ask bar shows only suggestions. Give it the same flow as Brief/Portfolio: a question naming a company gets answered; otherwise show the picker from 1b.
+>
+> Same rules as before: keep the suggested chips, no Ask bar on Rules, the typing tests stay green. Then deploy, run the walkthrough, warm the site, rebuild the Phase 6 log and push.
+> Time-box: 1 hour. If 1a is risky, skip it and do only 1b and 2.
+
+### Claude
+
+- **Task list** — Check if Ask can answer from drivers-build data; Backend: Ask without dossier; list askable companies; Web: 5 picks + search; Research home flow; Tests, typecheck, build locally; Deploy, walkthrough on live site, warm; Rebuild Phase 6 log, push, warm
+- **Bash** — Read the Ask module
+
+Ask needs only two things: the dossier's numbered facts, and BM25 passages from stored transcript and deck text. Next I'm checking what the drivers builds stored for each holding.
+
+- **Bash** — Read the drivers-only build
+- **Bash** — Count stored transcripts and text per demo holding
+- **Bash** — Read AskAnswer contract and cache table
+- **Bash** — Find ask_answers schema and Ask tests
+- **Bash** — Survey existing Ask tests
+- **Bash** — Read Ask entry point and build_request callers
+- **Bash** — Find callers of build_request and answer
+- **Bash** — Ask answers from transcripts without a dossier; askable list
+- **Bash** — Check passage helpers and test imports
+- **Bash** — Add Ask transcript-only tests; run suite and ruff
+- **Bash** — Show ruff error and format diff
+
+Backend tests pass (378). I'm fixing two lint and format nits, then I'll regenerate the shared types and push the backend.
+
+- **Bash** — Fix lint, regenerate schema and TS types
+- **Bash** — Check askable list on DB; commit and push backend
+- **Bash** — Read effectiveWeights and AskBar find-mode code
+- **Bash** — Rewrite find-company picker; Research home flow
+- **Bash** — Extend walkthrough; typecheck; check Render version
+
+Render is already on 2352f4e. Running the new and changed tests against a local web server that uses the live API.
+
+- **preview_start**
+- **Bash** — Run Ask and typing tests locally
+
+All pass locally, including the transcript-only HAL question. Starting the production build, and taking a look at the sheet at phone width.
+
+- **Bash** — Production build of the web app (background)
+- **Browser** — resize_window mobile
+- **Browser** — navigate http://localhost:3001/research, computer, javascript_tool, computer, find
+- **Bash** — Show build result
+- **Browser** — computer, javascript_tool, computer, computer ✗
+- **Browser** — javascript_tool, computer, computer
+- **Browser** — resize_window desktop
+- **preview_stop**
+- **Bash** — Commit and push web picker changes
+- **Bash** — Wait for Vercel deploy of the picker commit (background)
+
+While Vercel deploys, I'm writing the DECISIONS entry and the PLAN and README updates.
+
+- **Bash** — Add DECISIONS, PLAN and README updates
+- **Bash** — Check Vercel deploy status
+
+Vercel is still building `760b8c3`. When it reports success, I'll run the full walkthrough against the live site.
+
+- **Bash** — Run full walkthrough against deployed site
+
+The live walkthrough passes at 29/29. The 11 skips are by design: the 8 phone-only typing tests on laptop, plus the 3 skipped before. Warming the site and checking `/version`.
+
+- **Bash** — Warm live site; confirm Render version
+
+Everything is warm, and Render is on `2352f4e`, the last backend commit. Updating the walkthrough numbers in the README and PLAN, then rebuilding the Phase 6 log.
+
+- **Bash** — Update walkthrough numbers; commit docs
+- **Bash** — Rebuild, redact and phase-check the Phase 6 log
