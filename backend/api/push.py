@@ -15,6 +15,7 @@ import os
 from datetime import timedelta
 
 from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from pydantic import AwareDatetime, BaseModel, Field
 
 from finn.calendar import now_utc
@@ -90,10 +91,16 @@ async def telegram_webhook(request: Request, x_telegram_bot_api_secret_token: st
     if not expected or not hmac.compare_digest(x_telegram_bot_api_secret_token, expected):
         raise HTTPException(401, "bad secret")
     update = await request.json()
-    with connect() as conn:
-        what = handle_update(conn, Telegram(), update)
+    # The handler connects to Postgres and calls Telegram synchronously: run it in the threadpool, never on the
+    # event loop (an async handler doing blocking I/O stalls every other request while it runs).
+    what = await run_in_threadpool(_handle_update, update)
     log.info("telegram update %s → %s", update.get("update_id"), what)
     return {"ok": True}
+
+
+def _handle_update(update: dict) -> str:
+    with connect() as conn:
+        return handle_update(conn, Telegram(), update)
 
 
 def _sub_from(authorization: str) -> tuple[object, dict]:
