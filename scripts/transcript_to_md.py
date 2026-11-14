@@ -60,6 +60,10 @@ def clean_user(s: str) -> str:
     s = re.sub(r"</?pasted_content[^>]*>", "", s)
     if s.lstrip().startswith(("<local-command", "<command-name>")):
         return ""  # slash commands like /export, run outside the conversation
+    if s.lstrip().startswith(("<task-notification>", "[SYSTEM NOTIFICATION")) or s.startswith(
+        "The previous response failed to produce a valid tool call"
+    ):
+        return ""  # harness events (a background task finished, a tool-call retry), not the developer's words
     return s.strip()
 
 

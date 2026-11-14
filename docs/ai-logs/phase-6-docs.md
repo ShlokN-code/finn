@@ -7,7 +7,9 @@ AI log of a Claude Code session on FINN (started 14 Nov 2026 UTC). Converted fro
 - "Recap" lines are the end-of-turn summary shown in the app.
 - The transcript does not always store short mid-turn progress notes; each turn's main reply is present.
 
-**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks (walkthrough 15/15, smoke green, /version = last backend commit).
+This log was built inside the session it records, so it ends just before the commit that adds it and the warm-up that followed that push.
+
+**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Walkthrough 25/25 on the deployed site.
 
 ---
 
@@ -307,3 +309,195 @@ Vercel posts a status for every commit, docs included, so after the final push I
 The memory note already records that docs-only commits don't redeploy Render, so I'm only correcting its stale one-line index entry. Then I'll build the Phase 6 log from this session's transcript.
 
 - **Bash** — Fix memory index line; build the Phase 6 log
+
+Phase check passes: the first prompt is the Phase 6 prompt. Running the redaction, plus a check that none of the secret fragments I handled this session leaked into the log.
+
+- **Bash** — Redact Phase 6 log and verify no secrets
+- **Bash** — Locate the drafts block in the Phase 6 log
+- **Bash** — View boundaries of the drafts block
+- **Bash** — Replace the drafts block with a marker
+- **Bash** — Check remaining match and git status
+
+The one remaining hit is your own prompt naming the recipient, which is fine. Committing and pushing the Phase 6 log, PLAN and index, then waiting for Vercel's deploy before warming.
+
+- **Bash** — Commit and push the Phase 6 log and PLAN
+- **Bash** — Wait for Vercel to finish deploying the last commit (background)
+
+While Vercel deploys, here's the final cover note text to paste into the reply.
+
+- **Bash** — Print the final cover note
+- **Bash** — Read the Vercel deploy wait output
+
+Vercel is still building the last commit. I'll warm the site as soon as its deploy status turns green.
+
+Vercel finished deploying `c67da4a`. Warming the live site now: landing, Brief, the edge-cached demo Brief (twice, to confirm a cache HIT), and the INFY dossier.
+
+- **Bash** — Warm the live site and confirm edge cache hit
+
+All the final checks pass and every phase log is committed. The live site is warmed, and nothing else needs deploying.
+
+**Final checks**
+- **Walkthrough:** 15/15 on the deployed site. The 3 skipped tests are skipped on purpose (the manual "research a never-built ticker" step on both widths, and Telegram on laptop).
+- **Smoke:** the latest run (#3, today 16:18 IST) passed.
+- **Render:** `/version` shows `4abac9c`, the last commit that touched `backend/`. That commit is the rewritten `backend/evals/README.md`, which no longer says the labels need review or that there's no held-out set.
+- **Live site:** warmed after Vercel finished the last deploy (`c67da4a`). The demo Brief came back MISS, then HIT from the edge cache.
+
+**Other requests**
+- **Telegram screenshot:** added to the README with your caption.
+- **DECISIONS.md:** nothing was uncommitted. This phase's changes went in earlier (`4622bf3`).
+
+**What the phase check found in the logs**
+- **Phase 5 is a fork, not two separate sessions.** The second session repeats the first one's turns 1–12 word for word. So part 1 is turns 1–12, and part 2 starts at turn 13, the held-out labelling. Each file says where the other half is.
+- **One unrelated exchange is left out.** The first Phase 5 session ended with a question about a market-sizing slide on EV car sales, which isn't part of the build.
+- **The log converter was dropping messages sent with an image.** I fixed that and rebuilt Phase 2, which gained two on-topic turns: your screenshots of a GitHub run.
+- **The Phase 6 log leaves out the cover note, shot list and email**, since you asked for those not to be committed. A one-line marker stands in their place.
+- **Redaction:** no secrets turned up in the Phase 5 or Phase 6 logs; only local paths were changed, 5 per file. I kept `assessment@enam.com` in your Phase 6 prompt because it's ENAM's public address, not a personal one.
+
+*(Here Claude gave the revised cover note and the updated submission email in chat. They are left out of this log, as above.)*
+
+> **Recap:** Final checks pass: walkthrough 15/15, smoke #3 green, Render on 4abac9c, Vercel on c67da4a, and the site is warmed (demo Brief cache MISS then HIT). All Phase 0–6 logs are committed, phase-checked and redacted, and nothing is uncommitted. No further deploys are planned.
+
+---
+
+## 3. You  <sub>2026-11-14 19:04 UTC</sub>
+
+> Two fixes, in this order.
+>
+> 1. BUG (fix first): on my Android phone (Chrome), typing in the Ask bar closes the keyboard after every key press; I have to tap the box again for each letter.
+>    - Check every text input: Ask bar (all tabs), Research ticker search, paste/CSV import, Rules number fields.
+>    - Find why the input loses focus or remounts on each keystroke (e.g. a component defined inside render, a changing key, the sheet re-rendering, or the URL/query updating per keystroke) and fix it.
+>    - Add a Playwright test that types character by character on a phone profile and asserts the input keeps focus after each key, for each input.
+>
+> 2. Ask bar:
+>    - Brief and Portfolio: allow typing.
+>      - If the question names a company with a dossier (ticker or name, e.g. "Infosys" → INFY), answer in the same sheet with an "Open <TICKER> research" link.
+>      - If no company is named, show the user's holdings that have dossiers as tap-to-pick chips ("Ask about: …").
+>      - If the named company has no dossier, say "No research for <X> yet" with a button to open it in Research.
+>      - Keep the suggested chips.
+>    - Rules: hide the Ask bar.
+>    - Reuse the existing Ask endpoint.
+>
+> Then: tests, deploy, re-run the walkthrough (updated for these changes), and warm the live site.
+> Time-box: 1.5 hours total. Fix 1 is required. If 2 gets risky, fall back to: hide the bar on Rules, and on Brief/Portfolio set the placeholder to "Ask about a company: open it in Research".
+>
+>
+> When everything is deployed and checked, rebuild the Phase 6 log from this session's transcript so it includes these fixes, run the same redaction, and commit and push it (docs only). Warm the live site once more after that push.
+
+### Claude
+
+*(The session's context was compacted here; the conversation continues.)*
+
+- **Task list** — Find why inputs lose focus on each key; Fix focus bug; add phone typing test; Ask bar on Brief/Portfolio; hide on Rules; Run tests and build locally; Deploy, run walkthrough on live site, warm; Rebuild Phase 6 log, redact, push, warm
+- **Bash** — Check repo state and list web inputs
+- **Bash** — Find input components and Ask bar usage
+- **Bash** — Read AskBar, AppShell, ui-store and Sheet
+- **Bash** — Locate inputs, sheets and inner components
+- **Bash** — Read ResearchHome and AlertRules
+- **Bash** — Read Portfolio screen and import sheet
+- **Bash** — Read walkthrough test and Playwright config
+- **Bash** — Read demo, symbols and client API helpers
+- **Bash** — List backend research and Ask routes
+- **Bash** — Read research API routes
+- **Bash** — Check drivers loader and Ask answer flow
+- **Bash** — List built dossiers and client dossier cache keys
+- **Bash** — Inspect web API proxy and research router header
+- **Bash** — Read proxy route and API tests
+- **Bash** — Check store helpers, API test style, Ask context callers
+- **Bash** — Read Brief/Rules Ask context and schema constant
+
+Starting the backend piece now so Render can deploy while I work on the web side.
+
+- **Task list** — Find why inputs lose focus on each key; Add /research/built endpoint; push for Render; Fix focus bug; add phone typing test; Ask bar on Brief/Portfolio; hide on Rules; Run tests and build locally; Deploy, run walkthrough on live site, warm; Rebuild Phase 6 log, redact, push, warm
+- **Bash** — Add built-dossiers endpoint with test and run it
+- **Bash** — Run backend tests, commit and push endpoint
+
+Backend endpoint pushed (a8f4186) and Render is deploying it. Next is the Sheet focus fix.
+
+- **Edit** `web/components/shell/Sheet.tsx`
+- **Bash** — Update Sheet import and check env and types
+
+Sheet fix done. Next comes the company matcher, a small pure module I can unit-test, and then the Ask bar rewrite.
+
+- **Bash** — Check node version and NSE name shapes
+- **Write** `web/lib/askMatch.ts`
+- **Bash** — Unit-check the company matcher on sample questions
+
+The matcher passes all 22 sample questions (names, tickers, no company, ambiguous "Tata"). Now I'm rewriting the Ask bar.
+
+- **Bash** — Wire Ask context flags, client call, proxy route
+- **Write** `web/components/shell/AskBar.tsx`
+
+Switching the abort controller back to a ref, as it was before. A state value there adds re-renders and gains nothing.
+
+- **Bash** — Restore ref controller; typecheck and lint
+
+Typecheck and lint pass. Now the Playwright tests: a typing test per input (phone profile), the Ask flows on Brief and Portfolio, and a check that Rules has no Ask bar.
+
+- **Bash** — Find custom window trigger and Ask bar wrapper
+- **Bash** — Tag Ask bar wrapper for tests
+
+Now the tests. I'll add them to the walkthrough spec.
+
+- **Bash** — Add focus and Ask tests to walkthrough
+
+Tests type-check. Next I'll run them against a local dev server: first with the fix, then with the old `Sheet` restored, to confirm the test actually catches the bug.
+
+- **Bash** — Check launch config and Render version
+
+Render is already on a8f4186, so `/research/built` is live. Starting the local web server against the live API.
+
+- **preview_start**
+- **Bash** — Check the new endpoint on Render
+- **Bash** — Run new tests against the local fixed build
+
+All 9 new tests pass locally. Next I'm temporarily putting back the old `Sheet` to prove the typing test catches the bug.
+
+- **Bash** — Run typing tests with old Sheet, then restore fix
+- **Bash** — Production build of the web app (background)
+- **Browser** — resize_window mobile
+- **Browser** — navigate http://localhost:3001/brief, computer, find
+- **Bash** — Show build result
+- **Browser** — computer, javascript_tool, computer, computer ✗
+
+The production build failed while prerendering `/e/[id]` (`CLIENT_HOOK_DYNAMIC`). I'm checking whether my new `usePathname` call in the Ask bar is the cause.
+
+- **Bash** — Inspect build error and TabBar hook usage
+- **Bash** — Remove usePathname, rebuild production bundle
+
+The build passes now. Re-running the new tests locally on both phone and laptop, and taking a look at the sheet.
+
+- **Bash** — Run new tests locally on both profiles
+- **Browser** — navigate http://localhost:3001/brief, computer, javascript_tool, computer, computer
+- **Bash** — Commit and push web fix and Ask changes
+- **Bash** — Wait for Vercel deploy of the web commit (background)
+
+While Vercel deploys, I'll add the DECISIONS entry and the PLAN items.
+
+- **Bash** — Read DECISIONS tail, PLAN Phase 6, walkthrough mentions
+- **Bash** — Add DECISIONS entry and PLAN items
+- **Bash** — Fix wording; check Vercel wait progress
+
+The Vercel status hasn't been posted yet. I'll wait for the deploy watcher to finish.
+
+- **Bash** — Check deploy watcher output
+- **Bash** — Inspect current Phase 6 log and index line
+- **Bash** — Draft Phase 6 log to locate draft blocks
+- **Bash** — View turns 3–5 of the draft log
+- **Bash** — Check the redaction script usage
+- **Bash** — Check Vercel deploy status
+
+Vercel has deployed 959427c. Running the full walkthrough against the live site now.
+
+- **Bash** — Run full walkthrough against deployed site
+- **Bash** — Warm live site, check edge cache and Render version
+- **Browser** — resize_window desktop
+- **preview_stop**
+- **Bash** — Read README walkthrough and Ask mentions
+- **Bash** — Update README walkthrough and Ask lines; PLAN checks
+
+Committing the docs locally; they'll go out in the same push as the log. Now the converter fix.
+
+- **Bash** — Commit docs; make converter skip harness messages
+- **Bash** — Regenerate draft log and locate boundaries
+- **Bash** — View draft-block edges and log tail
+- **Bash** — Build, redact and phase-check the Phase 6 log
