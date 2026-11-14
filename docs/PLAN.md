@@ -237,12 +237,12 @@ Final full walkthrough on `3c512eb`: **15/15**.
   - Indexed in `docs/ai-logs/README.md`.
 - [x] DECISIONS: every PRODUCT §12 decision now has an entry. Added: PWA, Telegram over web push, "LLM reads, code calculates", long context vs RAG, feedback rules, drivers from disclosures, "Brief". Plus the snippet-image decision. — `4622bf3`
 - [x] README for evaluators. Screenshots are from the deployed site at 375 px with the demo portfolio. It also has the QR, Mermaid architecture, evals, cost, key decisions, known limitations, deliberately left out and next steps. — `8121cc4`; images and Mermaid checked on GitHub
-- [ ] Telegram screenshot from the product owner's phone → `docs/screenshots/telegram.png`.
-- [ ] Phase 5 and 6 logs exported → check the phase, redact, commit, index.
-- [ ] After the latency probe ends: `backend/evals/README.md` is stale ("needs human review", no held-out set). Fix in one backend commit.
-- [ ] Final checks:
-  - walkthrough 15/15 on the deployed site;
-  - latest smoke run green;
-  - Render `/version` = last backend commit;
-  - warm the live site.
+- [x] Telegram screenshot from the product owner's phone → `docs/screenshots/telegram.png`. — `6d2bd32`
+- [x] Phase 5 and 6 logs, built from the session transcripts. Phase 5 is in two parts, because the second session is a fork of the first. Phase check, redaction and index as before — `6ae0897` and the phase's last commit.
+- [x] After the latency probe ended: `backend/evals/README.md` rewritten to the current state; Render redeployed — `4abac9c`.
+- [x] Final checks, 14 Nov:
+  - walkthrough 15/15 on the deployed site (3 tests skipped by design);
+  - latest smoke run (#3, 16:18 IST) green;
+  - Render `/version` = `4abac9c`, the last backend commit;
+  - live site warmed after the final push.
 - [ ] *Later (not for submission):* a reused dossier summary keeps the figures of the day it was written. INFY's snapshot text says market cap ₹4,67,921 Cr (11 Nov) beside today's ₹4,64,586 Cr tile. REDUCE already writes `{F#}` placeholders, so they could be re-filled with the current figures at read time, with no model call.

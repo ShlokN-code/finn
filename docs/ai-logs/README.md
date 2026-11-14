@@ -10,7 +10,7 @@ FINN was built in seven Claude Code sessions, one per phase, between 9 and 14 No
 | 3 — Research engine + Promise Ledger | 11 Nov | Any-ticker dossier from screener and BSE-hosted transcripts and decks, Promise Ledger (code scores numbers, model judges language), citation checker, unseen-ticker acceptance | [phase-3-research.md](phase-3-research.md) |
 | 4 — Frontend | 11–12 Nov | Mobile PWA: Brief, provenance sheet, dossier and ledger, Portfolio, Rules, QR landing with live phone preview, first paint under 1 s with Render asleep | [phase-4-frontend.md](phase-4-frontend.md) |
 | 5 — Hardening, evals, cost | 12–14 Nov | Ask, cost report, results and ledger evals, nightly refresh, Portfolio and Rules editing, PWA, robustness on random tickers, walkthrough, smoke test, live push check; then the blind held-out eval and the `/ping` latency fix | [part 1](phase-5-hardening-part1.md) · [part 2](phase-5-hardening-part2.md) (condensed; part 2 is a fork of part 1 after turn 12) |
-| 6 — Docs and submission | 14 Nov | README for evaluators, decisions audit against the spec, this index | *export pending* |
+| 6 — Docs and submission | 14 Nov | README for evaluators (screenshots, QR, architecture, evals, cost, limitations), decisions audit against the spec, these logs (redacted, phase-checked) and this index, final checks | [phase-6-docs.md](phase-6-docs.md) (condensed) |
 
 ## Two formats
 
