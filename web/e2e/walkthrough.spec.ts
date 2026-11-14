@@ -96,6 +96,7 @@ test("Ask on the Brief: names a company → its answer, with a way into its rese
   await field.fill(ASK_Q);
   const pick = page.locator("[data-ask-picks]").getByRole("button", { name: "INFY", exact: true });
   await expect(pick).toBeVisible();
+  expect(await page.locator("[data-ask-picks] button[aria-pressed]").count()).toBeLessThanOrEqual(5); // never every holding
   await pick.click();
   const ans = page.locator("[data-ask-state]");
   await expect(ans).toBeVisible({ timeout: 60_000 });
@@ -115,6 +116,28 @@ test("Ask on Portfolio: a company without research says so and opens it in Resea
   await expect(none).toBeVisible({ timeout: 60_000 });
   await expect(none.getByText("No research for Asian Paints yet")).toBeVisible();
   expect(await none.getByRole("link", { name: "Open ASIANPAINT in Research" }).getAttribute("href")).toBe("/research/ASIANPAINT");
+});
+
+test("Ask on Research home: search any company; a holding without a dossier answers from its transcripts", async ({ page }) => {
+  await page.goto("/research");
+  await skipTour(page);
+  await page.locator("[data-ask-bar] button").click();
+  await expect(page.locator("[data-ask-picks] button[aria-pressed]").first()).toBeVisible();
+  // Search any company → one Ask can't answer says so, without asking.
+  await page.locator("#ask-company").fill("ITC");
+  await page.locator("#ask-company-results").getByRole("button", { name: /^ITC\b/ }).first().click();
+  const none = page.locator('[data-ask-state="no_research"]');
+  await expect(none.getByText("No research for ITC yet")).toBeVisible();
+  expect(await none.getByRole("link", { name: "Open ITC in Research" }).getAttribute("href")).toBe("/research/ITC");
+  // A holding with no dossier whose calls were read (drivers build): answered from those transcripts, labelled so.
+  await page.locator("#ask-q").fill("What did Hindustan Aeronautics say about order inflows?");
+  await expect(page.locator('[data-ask-target="HAL"]')).toBeVisible();
+  await page.getByRole("button", { name: "Ask", exact: true }).click();
+  const ans = page.locator("[data-ask-state]");
+  await expect(ans).toBeVisible({ timeout: 60_000 });
+  expect(["answered", "not_found"]).toContain(await ans.getAttribute("data-ask-state"));
+  expect(await ans.getAttribute("data-ask-basis")).toBe("transcripts");
+  await expect(ans.getByText(/call transcripts only/)).toBeVisible();
 });
 
 // Android Chrome closed the keyboard after every key (the sheet re-took focus on each re-render). Type one key at a
@@ -162,6 +185,27 @@ const TYPING: { name: string; open: (page: Page) => Promise<Locator>; text: stri
     },
     text: "HDFC Bank NIM",
     value: "HDFC Bank NIM",
+  },
+  {
+    name: "Ask bar on Research home",
+    open: async (page) => {
+      await page.goto("/research");
+      await skipTour(page);
+      await page.locator("[data-ask-bar] button").click();
+      return page.locator("#ask-q");
+    },
+    text: "Persistent deal wins",
+    value: "Persistent deal wins",
+  },
+  {
+    name: "Ask: search any company",
+    open: async (page) => {
+      await openBrief(page);
+      await page.locator("[data-ask-bar] button").click();
+      return page.locator("#ask-company");
+    },
+    text: "asian paints",
+    value: "asian paints",
   },
   {
     name: "Research ticker search",

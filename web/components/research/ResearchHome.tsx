@@ -27,6 +27,7 @@ export function ResearchHome() {
   useEffect(() => {
     setAskContext({
       placeholder: "Ask about any company…",
+      findCompany: true,
       chips: [
         { label: "Did Bajaj Finance keep its promises?", run: () => open("BAJFINANCE") },
         { label: "What do analysts keep asking Infosys?", run: () => router.push("/research/INFY#analysts") },

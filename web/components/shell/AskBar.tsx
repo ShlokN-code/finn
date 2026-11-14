@@ -1,10 +1,11 @@
 "use client";
 // Ask bar, scoped to the screen; one endpoint, POST /api/research/{symbol}/ask: an answer from that company's dossier
-// facts and its own transcripts/decks, with sources, or "Not found in sources".
+// facts and its own transcripts/decks, with sources, or "Not found in sources". A company without a dossier whose
+// call transcripts were already read is answered from those transcripts alone, and the answer says so.
 // - On a company (ctx.symbol) free text goes to that company.
-// - On Brief and Portfolio (ctx.findCompany) free text goes to the company it names ("Infosys" → INFY, matched in
-//   code against the NSE list); naming none offers the user's holdings that have research as picks; a named company
-//   without research gets "No research for X yet" and a way into Research.
+// - On Brief, Portfolio and Research home (ctx.findCompany) free text goes to the company it names ("Infosys" → INFY,
+//   matched in code against the NSE list). Naming none offers at most 5 picks (the largest askable holdings) and a
+//   search for any company. A company Ask can't answer gets "No research for X yet" and a way into Research.
 // - Hidden on Rules. Elsewhere Ask explains that it works inside a company.
 // The suggestion chips still jump to the part of the screen that answers them (no model call).
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,7 +21,8 @@ import { istClock, istDay } from "@/lib/format";
 import { buildIndex, findCompany } from "@/lib/askMatch";
 import { DEMO_TICKERS } from "@/lib/demo";
 import { FALLBACK, useStored, type LocalHolding } from "@/lib/store";
-import { companyName, useSymbols } from "@/lib/symbols";
+import { companyName, searchSymbols, useSymbols } from "@/lib/symbols";
+import { effectiveWeights } from "@/lib/holdings";
 
 type State =
   | { kind: "idle" }
@@ -42,18 +44,22 @@ function unavailableText(a: AskAnswer, symbol: string): string {
   }
 }
 
-// Symbols with a dossier, fetched once per page load (GET /research/built); the shipped demo dossiers if it fails.
-let builtOnce: Promise<string[]> | null = null;
-function loadBuilt(): Promise<string[]> {
-  builtOnce ??= api
+// Companies with a dossier and those Ask can answer (GET /research/built), fetched once per page load; the shipped
+// demo dossiers if it fails.
+type Coverage = { built: string[]; askable: string[] };
+let coverageOnce: Promise<Coverage> | null = null;
+function loadCoverage(): Promise<Coverage> {
+  coverageOnce ??= api
     .built()
-    .then((r) => r.symbols)
+    .then((r) => ({ built: r.symbols, askable: r.askable ?? r.symbols }))
     .catch(() => {
-      builtOnce = null;
-      return [...DEMO_TICKERS];
+      coverageOnce = null;
+      return { built: [...DEMO_TICKERS], askable: [...DEMO_TICKERS] };
     });
-  return builtOnce;
+  return coverageOnce;
 }
+
+const MAX_PICKS = 5;
 
 export function AskBar() {
   const ctx = useAskContext();
@@ -192,7 +198,7 @@ function QuestionField({ q, setQ, busy, placeholder }: { q: string; setQ: (v: st
   );
 }
 
-/** Brief / Portfolio: ask about the company the question names, or one of the user's holdings with research. */
+/** Brief, Portfolio, Research home: ask about the company the question names, or pick one. */
 function FindCompanyAsk({
   q,
   setQ,
@@ -208,34 +214,57 @@ function FindCompanyAsk({
 }) {
   const list = useSymbols();
   const holdings = useStored<LocalHolding[]>("holdings", FALLBACK.holdings);
-  const [built, setBuilt] = useState<string[] | null>(null);
+  const [cov, setCov] = useState<Coverage | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
   const [needPick, setNeedPick] = useState(false);
+  const [none, setNone] = useState<string | null>(null); // a company Ask can't answer, shown without an API call
+  const [find, setFind] = useState("");
   useEffect(() => {
     let live = true;
-    void loadBuilt().then((b) => live && setBuilt(b));
+    void loadCoverage().then((c) => live && setCov(c));
     return () => {
       live = false;
     };
   }, []);
 
   const index = useMemo(() => (list ? buildIndex(list) : null), [list]);
-  const held = useMemo(() => holdings.map((h) => h.symbol), [holdings]);
-  const mine = useMemo(() => [...held, ...(built ?? DEMO_TICKERS)], [held, built]);
+  const askable = cov?.askable ?? null;
+  const ranked = useMemo(
+    () =>
+      [...effectiveWeights(holdings)]
+        .sort((a, b) => (b.weight_pct ?? 0) - (a.weight_pct ?? 0) || a.symbol.localeCompare(b.symbol))
+        .map((h) => h.symbol),
+    [holdings],
+  );
+  const mine = useMemo(() => [...ranked, ...(askable ?? DEMO_TICKERS)], [ranked, askable]);
   const named = useMemo(() => (index ? findCompany(q, index, mine) : null), [q, index, mine]);
-  const picks = useMemo(() => (built ? held.filter((s) => built.includes(s)) : []), [held, built]);
+  const picks = useMemo(() => (askable ? ranked.filter((s) => askable.includes(s)).slice(0, MAX_PICKS) : []), [ranked, askable]);
+  const hits = useMemo(() => (list && find.trim() ? searchSymbols(list, find, 5) : []), [list, find]);
   const nameOf = (s: string) => {
     const n = index?.names.get(s);
     return n ? companyName(n) : s;
   };
+  const canAsk = (s: string) => !askable || askable.includes(s); // unknown coverage → let the API decide
   const target = named?.symbol ?? picked;
+
+  const go = (sym: string, question: string) => {
+    if (!canAsk(sym)) return setNone(sym);
+    setNone(null);
+    if (question.trim().length >= 3) void ask(sym, question);
+  };
+  const choose = (sym: string) => {
+    setPicked(sym);
+    setNeedPick(false);
+    setFind("");
+    go(sym, q);
+  };
 
   return (
     <>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (target) void ask(target, q);
+          if (target) go(target, q);
           else setNeedPick(true);
         }}
       >
@@ -243,12 +272,10 @@ function FindCompanyAsk({
           Your question about a company
         </label>
         <QuestionField q={q} setQ={setQ} busy={st.kind === "loading"} placeholder="e.g. What did Infosys say about margins?" />
-        <p className="t-small mt-1.5 text-ink-3" data-ask-target={named?.symbol ?? ""}>
-          {named
-            ? `About ${nameOf(named.symbol)} (${named.symbol}). `
-            : picked
-              ? `About ${nameOf(picked)} (${picked}). `
-              : "Name a company (e.g. Infosys or INFY), or pick one below. "}
+        <p className="t-small mt-1.5 text-ink-3" data-ask-target={target ?? ""}>
+          {target
+            ? `About ${nameOf(target)} (${target}). `
+            : "Name a company (e.g. Infosys or INFY), or pick one below. "}
           Answers only from its filings, transcripts and decks, with sources.
         </p>
       </form>
@@ -258,8 +285,8 @@ function FindCompanyAsk({
           <p className={`t-small ${needPick && !picked ? "font-medium text-ink" : "text-ink-2"}`}>
             {needPick && !picked ? "Which company? Ask about:" : "Ask about:"}
           </p>
-          {built === null ? (
-            <p className="t-small mt-1 text-ink-3">Loading your companies with research…</p>
+          {cov === null ? (
+            <p className="t-small mt-1 text-ink-3">Loading your companies…</p>
           ) : picks.length ? (
             <div className="mt-1.5 flex flex-wrap gap-2">
               {picks.map((s) => (
@@ -267,11 +294,7 @@ function FindCompanyAsk({
                   key={s}
                   type="button"
                   aria-pressed={picked === s}
-                  onClick={() => {
-                    setPicked(s);
-                    setNeedPick(false);
-                    if (q.trim().length >= 3) void ask(s, q);
-                  }}
+                  onClick={() => choose(s)}
                   className={`h-9 rounded-full border px-3 text-[14px] font-medium ${picked === s ? "border-ink bg-ink text-paper" : "border-rule"}`}
                 >
                   {s}
@@ -279,19 +302,67 @@ function FindCompanyAsk({
               ))}
             </div>
           ) : (
-            <p className="t-small mt-1 text-ink-3">
-              None of your holdings has research yet. Name a company, or open one from{" "}
-              <Link href="/research" onClick={onLeave} className="underline underline-offset-4">
-                Research
-              </Link>
-              .
-            </p>
+            <p className="t-small mt-1 text-ink-3">None of your holdings can be asked about yet. Search for any company below.</p>
+          )}
+          <label className="t-micro mt-3 block text-ink-3" htmlFor="ask-company">
+            Search any company
+          </label>
+          <input
+            id="ask-company"
+            value={find}
+            onChange={(e) => setFind(e.target.value)}
+            placeholder={list ? "Name or NSE symbol" : "Loading the NSE list…"}
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="search"
+            role="combobox"
+            aria-expanded={hits.length > 0}
+            aria-controls="ask-company-results"
+            className="mt-1 h-11 w-full rounded-xl border border-rule bg-paper px-3 text-[16px] outline-none focus:border-ink-3"
+          />
+          {hits.length > 0 && (
+            <ul id="ask-company-results" role="listbox" className="mt-1 divide-y divide-rule rounded-xl border border-rule">
+              {hits.map(([s, n]) => (
+                <li key={s} role="option" aria-selected={picked === s}>
+                  <button type="button" onClick={() => choose(s)} className="flex min-h-11 w-full items-center gap-2 px-3 py-2 text-left">
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-semibold">{s}</span>
+                      <span className="t-small block truncate text-ink-2">{companyName(n)}</span>
+                    </span>
+                    {askable && !askable.includes(s) && <span className="t-small shrink-0 text-ink-3">no research yet</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       )}
 
-      <Result st={st} onRetry={(s, qq) => void ask(s, qq)} nameOf={nameOf} onLeave={onLeave} />
+      {none ? (
+        <NoResearch sym={none} name={nameOf(none)} onLeave={onLeave} />
+      ) : (
+        <Result st={st} onRetry={(s, qq) => void ask(s, qq)} nameOf={nameOf} onLeave={onLeave} />
+      )}
     </>
+  );
+}
+
+function NoResearch({ sym, name, onLeave }: { sym: string; name: string; onLeave?: () => void }) {
+  return (
+    <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="no_research">
+      <p className="t-headline">No research for {name} yet</p>
+      <p className="t-small mt-1 text-ink-2">
+        FINN builds it from {name}&apos;s filings, call transcripts and decks in 2–4 minutes; then you can ask here.
+      </p>
+      <Link
+        href={`/research/${encodeURIComponent(sym)}`}
+        onClick={onLeave}
+        className="mt-3 inline-flex h-10 items-center rounded-full bg-ink px-4 text-[14px] font-medium text-paper"
+      >
+        Open {sym} in Research
+      </Link>
+    </div>
   );
 }
 
@@ -323,24 +394,9 @@ function Result({
       </div>
     );
   if (st.kind !== "done") return null;
-  // Outside the company's page (Brief, Portfolio): say plainly when there's no research, and link into it.
+  // Outside the company's page: say plainly when there's no research, and link into it.
   if (nameOf && st.a.status === "unavailable" && st.a.reason === "no_dossier")
-    return (
-      <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="no_research">
-        <p className="t-headline">No research for {nameOf(st.sym)} yet</p>
-        <p className="t-small mt-1 text-ink-2">
-          FINN builds it from {nameOf(st.sym)}&apos;s filings, call transcripts and decks in 2–4 minutes; then you can ask
-          here.
-        </p>
-        <Link
-          href={`/research/${encodeURIComponent(st.sym)}`}
-          onClick={onLeave}
-          className="mt-3 inline-flex h-10 items-center rounded-full bg-ink px-4 text-[14px] font-medium text-paper"
-        >
-          Open {st.sym} in Research
-        </Link>
-      </div>
-    );
+    return <NoResearch sym={st.sym} name={nameOf(st.sym)} onLeave={onLeave} />;
   return (
     <>
       <Answer a={st.a} symbol={st.sym} />
@@ -371,19 +427,20 @@ function Answer({ a, symbol }: { a: AskAnswer; symbol: string }) {
   }
   if (a.status === "not_found" || !a.answer) {
     return (
-      <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="not_found">
+      <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="not_found" data-ask-basis={a.basis ?? "dossier"}>
         <p className="t-headline">Not found in sources</p>
         <p className="t-small mt-1 text-ink-2">
           {a.reason === "unsupported_number"
             ? "The model's answer used a number that isn't printed in the sources, so FINN withheld it."
             : `${symbol}'s dossier, transcripts and decks don't answer this. FINN doesn't guess.`}
         </p>
+        <TranscriptsOnly a={a} symbol={symbol} />
         {foot && <p className="t-small mt-2 text-ink-3">{foot}</p>}
       </div>
     );
   }
   return (
-    <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="answered">
+    <div className="rounded-xl border border-rule px-4 py-3" data-ask-state="answered" data-ask-basis={a.basis ?? "dossier"}>
       <p className="t-headline">{a.answer.text}</p>
       {a.figures.length > 0 && (
         <ul className="mt-2 space-y-1">
@@ -402,7 +459,17 @@ function Answer({ a, symbol }: { a: AskAnswer; symbol: string }) {
         <p className="t-micro text-ink-3">Sources</p>
         <ClaimProvenance claim={a.answer} sourcesOnly />
       </div>
+      <TranscriptsOnly a={a} symbol={symbol} />
       {foot && <p className="t-small mt-2 text-ink-3">{foot}</p>}
     </div>
+  );
+}
+
+function TranscriptsOnly({ a, symbol }: { a: AskAnswer; symbol: string }) {
+  if (a.basis !== "transcripts") return null;
+  return (
+    <p className="t-small mt-2 text-ink-3" data-ask-basis-note>
+      From {symbol}&apos;s call transcripts only: FINN hasn&apos;t built its full research yet.
+    </p>
   );
 }
