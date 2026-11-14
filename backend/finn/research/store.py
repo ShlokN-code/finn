@@ -168,6 +168,15 @@ def get_dossier_row(conn, symbol: str) -> dict | None:
     return conn.execute("select * from public.dossiers where symbol = %s", (symbol,)).fetchone()
 
 
+def built_symbols(conn) -> list[str]:
+    """Symbols with a readable dossier (current contract), without loading any payload."""
+    rows = conn.execute(
+        "select symbol from public.dossiers where payload is not null and schema_version = %s order by symbol",
+        (SCHEMA_VERSION,),
+    ).fetchall()
+    return [r["symbol"] for r in rows]
+
+
 def load_dossier(row: dict | None) -> Dossier | None:
     """The stored dossier, or None when it was written by an older contract (it gets rebuilt)."""
     if not row or row["schema_version"] != SCHEMA_VERSION:

@@ -30,3 +30,20 @@ def test_health_sources_is_cached(monkeypatch):
     assert len(calls) == 2
     r = client.get("/health/sources")
     assert r.status_code == 200 and "probes" in r.json()
+
+
+def test_research_built_lists_dossier_symbols(monkeypatch):
+    """/research/built is its own route (not read as a ticker by /research/{symbol}) and returns the store's list."""
+    from contextlib import contextmanager
+
+    from api import research
+
+    @contextmanager
+    def fake_connect():
+        yield object()
+
+    monkeypatch.setattr(research, "connect", fake_connect)
+    monkeypatch.setattr(research.store, "built_symbols", lambda conn: ["HDFCBANK", "INFY"])
+    r = client.get("/research/built")
+    assert r.status_code == 200
+    assert r.json() == {"symbols": ["HDFCBANK", "INFY"]}

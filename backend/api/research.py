@@ -1,6 +1,7 @@
 """Research endpoints (Phase 3).
 
 GET  /research/symbols          NSE equity list for autocomplete ([symbol, name]); cached for a day
+GET  /research/built            symbols that have a dossier (Ask's "Ask about:" picks on Brief/Portfolio)
 GET  /research/{symbol}         DossierResponse: the last good dossier (instant) + the active/latest build job
 POST /research/{symbol}/build   start a build (reuses an active job; a fresh dossier isn't rebuilt); daily cap
 GET  /research/jobs/{id}        DossierJob — poll every ~3 s; refetch the dossier when dossier_version changes
@@ -64,6 +65,13 @@ def _response(conn, sym: str) -> DossierResponse:
 def symbols():
     with connect() as conn:
         return {"symbols": _securities(conn)["rows"]}
+
+
+@router.get("/built")
+def built():
+    """Symbols with a readable dossier. Defined before /{symbol} so it isn't read as a ticker."""
+    with connect() as conn:
+        return {"symbols": store.built_symbols(conn)}
 
 
 @router.get("/drivers")
