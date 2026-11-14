@@ -57,7 +57,7 @@ The API runs on Render's free tier, which can sleep. The first screen never wait
   - **Code** scores numeric promises: kept, missed, goalposts moved, quietly dropped.
   - **The model** judges only qualitative ones, and must cite both calls.
   - **Credibility:** the % appears only from 5 scored promises upward.
-- **Ask.** Answers about one company from its own facts and passages. A number that isn't printed in a cited source gets withheld as "Not found in sources". On the Brief and Portfolio, Ask takes the company the question names (matched in code against the NSE list), or offers your holdings that have research.
+- **Ask.** Answers about one company from its own facts and passages. A number that isn't printed in a cited source gets withheld as "Not found in sources". On the Brief, Portfolio and Research home, Ask takes the company the question names (matched in code against the NSE list), or offers up to 5 of your holdings and a search for any company. A company without a dossier whose call transcripts were already read is answered from those transcripts alone, and the answer says so.
 - **The loop.** The ledger suggests up to 3 drivers per holding ("What you're watching"). Confirmed drivers boost matching events in the Brief.
 
 ## Architecture
@@ -148,8 +148,8 @@ flowchart TB
 The remaining promises are not yet due (FY27 and later) or can't be scored (no date, or a benchmark-relative target).
 
 ### End to end
-- **Walkthrough** (`web/e2e/walkthrough.spec.ts`, run against the deployed site at 375 px and 1280 px): **25/25**, 9 skipped by design (phone-only and manual steps).
-  - Covers: landing + QR + live preview, the Brief, swipe + UNDO, a card's readable source, the ledger's provenance sheet, Ask (on a company, and from the Brief and Portfolio by naming one), Rules, and the Connect Telegram deep link.
+- **Walkthrough** (`web/e2e/walkthrough.spec.ts`, run against the deployed site at 375 px and 1280 px): **29/29**, 11 skipped by design (phone-only and manual steps).
+  - Covers: landing + QR + live preview, the Brief, swipe + UNDO, a card's readable source, the ledger's provenance sheet, Ask (on a company; from the Brief, Portfolio and Research home by naming one or picking it; a transcript-only answer), Rules, and the Connect Telegram deep link.
   - On a phone profile, it types into every text field one key at a time and checks the field keeps focus after each key (an Android keyboard bug, fixed 15 Nov).
   - Its manual step builds a never-seen ticker. It found three general bugs, all fixed (PLAN.md, Phase 5).
 - **Robustness** ([ROBUSTNESS.md](backend/evals/research/ROBUSTNESS.md)): 5 random NSE tickers (logged seed) through the deployed API.

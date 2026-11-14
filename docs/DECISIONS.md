@@ -728,3 +728,15 @@ These were made with the spec, before any code. They are recorded here so every 
   - A model to pick the company: spends quota on every question, and can guess.
   - A static list of built dossiers: would miss HDFCBANK, which is in the demo portfolio and has a dossier.
   - The placeholder-only fallback ("open it in Research"): kept in reserve; not needed.
+
+## 2026-11-15 · Ask without a dossier, and a capped picker
+- **Context (product owner, testing on a phone):** the "Ask about" picks showed only HDFCBANK, BAJFINANCE and INFY, because Ask needed a full dossier. But the drivers builds had already read the latest 3 call transcripts for 17 of the 18 demo holdings and stored their text. ITC is the one without.
+- **Decision: Ask answers from those transcripts when there's no dossier.**
+  - Same retrieval (BM25 over the stored transcript/deck pages) and the same checks: quotes must be found verbatim in the passage, and no number may appear that isn't printed in a cited quote. The only thing missing is the dossier's computed facts.
+  - The Ask call is the only model call. Nothing is built or MAPped on demand.
+  - `AskAnswer.basis = "transcripts"`, and the UI says "From X's call transcripts only: FINN hasn't built its full research yet".
+  - Cache key: minus the number of documents read, so a newly read call asks again; dossier answers keep the dossier version.
+  - `GET /research/built` now also returns `askable`, 29 companies on 15 Nov.
+  - The MAP extractions aren't fed to Ask. They are quotes from the same transcripts, which BM25 already searches, and reading them would add a second path to check.
+- **Picker:** never every holding. At most 5 picks, the largest holdings Ask can answer, plus "Search any company" on the NSE autocomplete. Picking or naming a company Ask can't answer shows "No research for X yet" with Open in Research, without an API call. Research home's Ask bar now has the same flow. The suggestion chips stay, and there is still no Ask bar on Rules.
+- **Alternatives:** build a dossier on demand when asked (minutes and strong-model quota per question); MAP-only facts as the fact list (another format to check, for little over the raw passages).
