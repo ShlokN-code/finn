@@ -716,3 +716,15 @@ These were made with the spec, before any code. They are recorded here so every 
   - an Open button that goes to the original document at that page (`url#page=N`), labelled with the page because mobile PDF viewers often ignore `#page`.
 - **Alternatives:** server-rendered crops (storage, and still a copy); OCR overlays (a second reading of the page that could disagree with the first).
 - **Next step:** an in-app viewer for the original filing that opens at the page with the figure highlighted on the document itself.
+
+## 2026-11-15 · Phone keyboard closed on every key; Ask on Brief and Portfolio
+- **Bug (product owner, Android Chrome):** typing in the Ask bar closed the keyboard after every key. `Sheet`'s focus effect depended on `onClose`, and callers pass a new arrow on every render. Each keystroke re-rendered the caller, so the effect's cleanup moved focus back to the Ask button and the re-run moved it to the panel. The field lost focus and Android closed the keyboard. The import textarea had the same bug; the ticker search and Rules' time fields were never inside a sheet. **Fix:** the effect runs once per open, and Escape reads the latest `onClose` through `useEffectEvent`. **Why Playwright missed it:** `fill()` sets the value in one step. The walkthrough now types one key at a time on the phone profile and checks focus after each key, for every typed input. With the old `Sheet` it fails on the first key.
+- **Ask on Brief and Portfolio (product owner):** these screens now take free text. The company is found **in code**, not by a model: a name ("Infosys", "HDFC Bank") or an NSE symbol typed in capitals is matched against the NSE list, and the longest name wins. For the user's holdings and the companies with research, the symbol in lower case ("infy") and a distinctive first word ("Reliance") also count; "Tata" stays ambiguous. The question then goes to the **existing** `POST /research/{symbol}/ask`, which already answers `no_dossier` before any quota is spent. The rest:
+  - a company without research gets "No research for X yet" and a link into Research;
+  - if no company is named, the holdings that have research are offered as picks;
+  - a new read-only `GET /research/built` lists the symbols with a dossier (no payloads). If it fails, the four demo dossiers are used.
+  - The suggested chips stay. There is no Ask bar on Rules.
+- **Alternatives:**
+  - A model to pick the company: spends quota on every question, and can guess.
+  - A static list of built dossiers: would miss HDFCBANK, which is in the demo portfolio and has a dossier.
+  - The placeholder-only fallback ("open it in Research"): kept in reserve; not needed.

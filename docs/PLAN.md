@@ -245,4 +245,7 @@ Final full walkthrough on `3c512eb`: **15/15**.
   - latest smoke run (#3, 16:18 IST) green;
   - Render `/version` = `4abac9c`, the last backend commit;
   - live site warmed after the final push.
+- [x] Fix: on Android, typing in the Ask bar closed the keyboard after every key (the sheet re-took focus on each re-render). Every typed input now has a per-key focus test on a phone profile in the walkthrough — `959427c`
+- [x] Ask on Brief and Portfolio takes free text. It asks the company the question names (with an Open research link), offers the holdings that have research when none is named, and says "No research for X yet" otherwise. Same Ask endpoint, plus `GET /research/built`. No Ask bar on Rules — `a8f4186`, `959427c`
+- [x] Checks after these fixes, 15 Nov: walkthrough **25/25** on the deployed site (9 skipped by design: 6 phone-only typing tests on laptop, plus the 3 from before); Render `/version` = `a8f4186`, the last backend commit; live site warmed (demo Brief edge-cache HIT).
 - [ ] *Later (not for submission):* a reused dossier summary keeps the figures of the day it was written. INFY's snapshot text says market cap ₹4,67,921 Cr (11 Nov) beside today's ₹4,64,586 Cr tile. REDUCE already writes `{F#}` placeholders, so they could be re-filled with the current figures at read time, with no model call.
