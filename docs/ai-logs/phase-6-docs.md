@@ -9,7 +9,7 @@ AI log of a Claude Code session on FINN (started 14 Nov 2026 UTC). Converted fro
 
 This log was built inside the session it records, so it ends just before the commit that adds it and the warm-up that followed that push.
 
-**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Then Ask without a dossier (answers from call transcripts a drivers build already read, labelled so) and a capped picker (5 largest askable holdings plus search for any company), also on Research home. Then a tap fix: a company tapped in the picker's search always shows its result (pressed chip and question focus, an answer, or 'No research for X yet'), with touch-tap tests. Walkthrough 32/32 on the deployed site.
+**Outcome:** README rewritten for evaluators (375 px screenshots with the demo portfolio, QR, Mermaid architecture, evals, cost, limitations, left out, next steps); every PRODUCT §12 decision recorded in DECISIONS; AI logs phase-checked and redacted (a .env diff found in one export, never committed); Phase 2 and 5 logs rebuilt from transcripts; evals README; final checks. Then two fixes from the product owner's Android phone: typing in a sheet no longer closes the keyboard (a per-key focus test for every text field), and Ask on the Brief and Portfolio answers about the company a question names, or offers the holdings that have research. Then Ask without a dossier (answers from call transcripts a drivers build already read, labelled so) and a capped picker (5 largest askable holdings plus search for any company), also on Research home. Then a tap fix: a company tapped in the picker's search always shows its result (pressed chip and question focus, an answer, or 'No research for X yet'), with touch-tap tests; and Ask placeholders that fit a 375 px phone ('Ask about any company…', 'Ask about <short name>…'). Walkthrough 32/32 on the deployed site.
 
 ---
 
@@ -722,3 +722,77 @@ It passes 4 out of 4 (2–3 s each), so the earlier failure was a stall during t
 - **Bash** — Rerun the full walkthrough on deployed site
 - **Bash** — Warm site; update and commit docs
 - **Bash** — Rebuild, redact and phase-check the Phase 6 log
+
+Five turns, all yours. Redaction is clean, and the only hits are the same pattern mentions and the public address as before. Updating the index, pushing, and doing the final warm-up.
+
+- **Bash** — Commit and push log; wait for Vercel; warm site
+
+The tap bug is fixed and deployed. The walkthrough passes 32/32 on the live site, the rebuilt Phase 6 log is pushed, and the site is warmed. It took about 35 of the 45 minutes.
+
+**What was wrong**
+The tap was being received; it just didn't show anything. Tata Steel and Idea can both be asked about. Picked with no question typed, they were selected silently: the search box cleared, and the only change was a small grey "About Tata Steel (TATASTEEL)" line at the top of the sheet, often behind the keyboard. The top-5 picks looked fine because the chosen chip turns dark. Nothing was closing the list early; the field had no blur handler.
+
+While testing I found a second silent case. A tap that lands before the list of answerable companies has loaded is treated as answerable. When the list then arrives, nothing updates, so a tap on ITC could show neither a chip nor "No research".
+
+**The fix**
+- **A company Ask can answer, with a question typed:** it's asked straight away.
+- **Without a question:** it becomes the dark selected chip, even if it isn't in the top 5. The question field takes focus with "Your question about Tata Steel", and a line asks you to type your question.
+- **A company Ask can't answer:** "No research for X yet" with Open in Research. This now also appears if the list loads after the tap. If the list fails to load, the app asks the server instead of guessing.
+- **Keyboard:** tapping a suggestion no longer takes focus away from the search field, so the keyboard stays up and the sheet doesn't shift under your finger. Selection still happens on the tap's release, so scrolling past an option doesn't pick it.
+
+**The Research tab's ticker search** was already fine (a tap opens the company). It now has a tap test too.
+
+**Tests** (phone profile, touch taps with `page.tap`)
+- Tap Tata Steel from search: it must show as selected and focus the question field, and a typed question must then get an answer.
+- Tap ITC from search, with the list of answerable companies held back by 2.5 s: it must show "No research for ITC yet".
+- Tap a Research-tab suggestion: it must open the company.
+
+Both Ask tests failed on the code that was live and pass with the fix.
+
+**Checks**
+- **Walkthrough:** 32/32 on the deployed site, with 14 skipped by design: 11 phone-only typing and tap tests on laptop, plus the 3 skipped before.
+  - The first full run had one failure: the Research-home Ask test stalled for 6.7 minutes, well past its own 2-minute limit, with the sheet not even open. It passed 4 out of 4 on its own, and the full re-run was clean.
+- **Render:** `/version` shows 2352f4e, the last backend commit. These fixes were web-only.
+- **Phase 6 log:** 5 turns, all yours; the redaction found nothing to change. The live site was warmed after the final push.
+
+**Your cover note:** the walkthrough line should now read **32/32**.
+
+> **Recap:** Tapping a company in the Ask picker's search now always shows a result: a selected chip with the question field focused, an answer, or "No research for X yet". It's deployed with touch-tap tests that fail on the old code. Walkthrough 32/32 on the live site, Phase 6 log pushed, site warmed.
+
+---
+
+## 6. You  <sub>2026-11-15 05:19 UTC</sub>
+
+> Last change before I submit. The Ask bar placeholder ("e.g. What did Infosys say about mar…") is cut off on my phone. Replace it with:
+> - Brief, Portfolio and Research home: "Ask about any company…"
+> - A company page: "Ask about <short company name>…"
+> Check that it fits at 375 px without truncating, including long names (fall back to the ticker if the name doesn't fit). Update any tests that assert the placeholder, deploy, run the full walkthrough, warm the site, rebuild the Phase 6 log and push. Time-box: 20 minutes. Nothing else.
+
+### Claude
+
+- **Task list** — Change Ask placeholders; fit long names at 375 px; Update tests; verify fit in the browser; Deploy, full walkthrough, warm; Rebuild Phase 6 log, push, warm
+- **Bash** — Find Ask placeholders and dossier Ask context
+- **Bash** — Check what name DossierScreen has
+- **Bash** — Add askAbout helper; switch placeholders and test
+
+Typecheck and lint are clean. Measuring the fit on the real field at 375 px: every NSE short name that passes the 18-character rule, rendered as "Ask about X…" in the field's own font.
+
+- **preview_start**
+- **Browser** — resize_window mobile
+- **Browser** — navigate http://localhost:3001/research/INFY, computer, javascript_tool
+- **Browser** — computer screenshot
+- **Bash** — Run Ask, tap and typing tests locally
+
+The sheet shows "Ask about Infosys…" in full, and the local tests pass (21 passed, 11 skipped by design). Building, committing and deploying.
+
+- **Browser** — resize_window desktop
+- **preview_stop**
+- **Bash** — Build, commit, push; wait for Vercel
+
+Vercel has deployed `77fcc7c`. Running the full walkthrough against the live site.
+
+- **Bash** — Full walkthrough on live site, then warm
+
+The live walkthrough is still 32/32 (14 skipped by design), and the site is warm. Last step: the PLAN tick and the Phase 6 log.
+
+- **Bash** — PLAN tick; rebuild, redact and check Phase 6 log
