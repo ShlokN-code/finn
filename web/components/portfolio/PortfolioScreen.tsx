@@ -64,7 +64,7 @@ export function PortfolioScreen() {
   useEffect(() => {
     const top = rows[0]?.symbol;
     setAskContext({
-      placeholder: "Ask about your holdings…",
+      placeholder: "Ask about any company…",
       findCompany: true,
       chips: [
         ...(top ? [{ label: `Research ${top}, your largest holding`, run: () => router.push(`/research/${top}`) }] : []),

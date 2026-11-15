@@ -21,7 +21,7 @@ import { istClock, istDay } from "@/lib/format";
 import { buildIndex, findCompany } from "@/lib/askMatch";
 import { DEMO_TICKERS } from "@/lib/demo";
 import { FALLBACK, useStored, type LocalHolding } from "@/lib/store";
-import { companyName, searchSymbols, useSymbols } from "@/lib/symbols";
+import { askAbout, companyName, searchSymbols, useSymbols } from "@/lib/symbols";
 import { effectiveWeights } from "@/lib/holdings";
 
 type State =
@@ -128,7 +128,7 @@ export function AskBar() {
                 <label className="t-micro text-ink-3" htmlFor="ask-q">
                   Your question about {symbol}
                 </label>
-                <QuestionField q={q} setQ={setQ} busy={st.kind === "loading"} placeholder="e.g. What did management say about margins?" />
+                <QuestionField q={q} setQ={setQ} busy={st.kind === "loading"} placeholder={ctx.placeholder} />
                 <p className="t-small mt-1.5 text-ink-3">
                   Answers only from {symbol}&apos;s filings, transcripts and decks, with sources. No news, no outside
                   knowledge.
@@ -285,7 +285,7 @@ function FindCompanyAsk({
           q={q}
           setQ={setQ}
           busy={st.kind === "loading"}
-          placeholder={target ? `Your question about ${nameOf(target)}` : "e.g. What did Infosys say about margins?"}
+          placeholder={target ? askAbout(target, index?.names.get(target)) : "Ask about any company…"}
         />
         <p className="t-small mt-1.5 text-ink-3" data-ask-target={target ?? ""}>
           {target

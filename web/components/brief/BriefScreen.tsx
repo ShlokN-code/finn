@@ -118,7 +118,7 @@ export function BriefScreen({ gateDesktop = false }: { gateDesktop?: boolean }) 
   useEffect(() => {
     const top = visible[0];
     setAskContext({
-      placeholder: "Ask about a company or today's Brief…",
+      placeholder: "Ask about any company…",
       findCompany: true,
       chips: [
         ...(top

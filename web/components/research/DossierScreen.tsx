@@ -7,7 +7,7 @@ import { ErrorState, Notice, Skeleton } from "@/components/shell/StateView";
 import { setAskContext } from "@/components/shell/ui-store";
 import { FIXTURE_DATE } from "@/lib/demo";
 import { istDay, istTime } from "@/lib/format";
-import { companyName } from "@/lib/symbols";
+import { askAbout, cachedName, companyName } from "@/lib/symbols";
 import type { Dossier } from "@/lib/types";
 import { BuildProgress } from "./BuildProgress";
 import {
@@ -82,7 +82,7 @@ export function DossierScreen({ symbol }: { symbol: string }) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   useEffect(() => {
-    if (!d) return setAskContext({ placeholder: `Ask about ${symbol}…`, chips: [], symbol });
+    if (!d) return setAskContext({ placeholder: askAbout(symbol, cachedName(symbol)), chips: [], symbol });
     const chips = d.ask_chips.map((label) => {
       const l = label.toLowerCase();
       const theme = d.drivers.items.find((dr) => l.includes(dr.label.toLowerCase()))?.label;
@@ -94,7 +94,7 @@ export function DossierScreen({ symbol }: { symbol: string }) {
       if (l.includes("risk") || l.includes("bear")) return { label, run: () => jump("bull-bear") };
       return { label, run: () => jump("snapshot") };
     });
-    setAskContext({ placeholder: `Ask about ${symbol}…`, chips: chips.slice(0, 3), symbol });
+    setAskContext({ placeholder: askAbout(symbol, d.name), chips: chips.slice(0, 3), symbol });
     return () => setAskContext(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [d?.symbol, d?.ask_chips.join("|")]);

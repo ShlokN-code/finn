@@ -78,7 +78,8 @@ test("Ask about a company: a cited answer (or an honest 'Not found')", async ({ 
   await skipTour(page);
   await expect(page.getByRole("navigation", { name: "Sections" })).toBeVisible({ timeout: 60_000 });
   await page.locator("[data-ask-bar] button").click();
-  await page.getByPlaceholder(/What did management say about margins/).fill(ASK_Q);
+  await expect(page.locator("#ask-q")).toHaveAttribute("placeholder", "Ask about Infosys…");
+  await page.locator("#ask-q").fill(ASK_Q);
   await page.getByRole("button", { name: "Ask", exact: true }).click();
   const ans = page.locator("[data-ask-state]");
   await expect(ans).toBeVisible({ timeout: 60_000 });

@@ -58,3 +58,17 @@ export function searchSymbols(list: [string, string][], q: string, limit = 8): [
 export function companyName(name: string): string {
   return name.replace(/\s+(limited|ltd\.?)$/i, "").replace(/\b([A-Z])([A-Z]+)\b/g, (m, a, b) => (m.length > 4 ? a + b.toLowerCase() : m));
 }
+
+/** Longest short name that fits "Ask about <name>…" in the Ask field at 375 px (measured: Ask sheet, 16 px). */
+export const ASK_NAME_MAX = 18;
+
+/** "Ask about Infosys…"; the ticker when the short name wouldn't fit ("Ask about JPOLYINVST…"). */
+export function askAbout(symbol: string, name?: string | null): string {
+  const short = name ? companyName(name) : "";
+  return `Ask about ${short && short.length <= ASK_NAME_MAX ? short : symbol}…`;
+}
+
+/** The company's name from the NSE list cached on this phone, if it's there. */
+export function cachedName(symbol: string): string | null {
+  return read<Cached | null>("symbols", null)?.list.find(([s]) => s === symbol)?.[1] ?? null;
+}
